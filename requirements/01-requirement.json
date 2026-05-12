@@ -1,0 +1,590 @@
+{
+  "$schema": "https://raw.githubusercontent.com/David-Init-Institute/requirements-hierarchy/main/schema/v1.0/requirement.schema.json",
+  "requirement": {
+    "id": "REQ-001",
+    "title": "AI Recruitment Automation Platform",
+    "version": "0.2.0",
+    "status": "DRAFT",
+    "date": "2026-05-12",
+    "author": "DuyMT",
+    "reviewStatus": "GATE_1_UPDATED",
+    "type": "SOFTWARE_SYSTEM",
+    "domain": "HR-Tech / Recruitment Automation",
+
+    "description": "Automated multi-tenant SaaS platform for recruitment agencies to streamline end-to-end hiring workflows. Multi-client architecture with data isolation, semantic candidate matching, CV screening, interview scheduling, objective test scoring, pipeline management, and JP/VN/EN translation.",
+
+    "problemStatement": "Recruitment agencies manually handle candidate sourcing, CV screening, interview scheduling, test scoring, and content generation — processes that are time-consuming, error-prone, and inconsistent across clients. An automated recruitment platform is needed to streamline the recruitment lifecycle, reduce time-to-hire, and improve candidate quality across multiple agency clients.",
+
+    "context": {
+      "businessContext": "Recruitment agencies serving multiple employer clients need to process high volumes of candidates efficiently while maintaining quality and compliance. AI automation can reduce manual overhead by 40-60%.",
+      "targetMarket": "Small-to-medium recruitment agencies (5-100 recruiters) serving B2B employer clients, with focus on Japan-Vietnam-English markets",
+      "deploymentModel": "Cloud-based SaaS, multi-tenant architecture on GCP"
+    },
+
+    "stakeholders": {
+      "primaryUsers": [
+        {
+          "role": "Agency Admin",
+          "description": "Manages agency settings, clients, billing, and user permissions",
+          "persona": "Administrative decision-maker"
+        },
+        {
+          "role": "Recruiter",
+          "description": "Day-to-day operator: posts jobs, screens candidates, schedules interviews, manages multiple client accounts",
+          "persona": "Core workflow user"
+        },
+        {
+          "role": "Interviewer",
+          "description": "Conducts interviews (live or AI-assisted), reviews automated scores",
+          "persona": "Evaluation specialist"
+        },
+        {
+          "role": "Candidate",
+          "description": "External job seeker interacting via portal and chatbot",
+          "persona": "End-user / applicant"
+        },
+        {
+          "role": "HiringCompany (Employer)",
+          "description": "Views pipeline dashboards, provides feedback, approves hires",
+          "persona": "Customer stakeholder"
+        },
+        {
+          "role": "Translator / Localizer",
+          "description": "Reviews AI-generated translations (JP/VN/EN) when confidence is low",
+          "persona": "Content specialist"
+        }
+      ]
+    },
+
+    "agencyDataModel": {
+      "description": "Core entity model for recruitment agency operations with multi-client support",
+      "entities": {
+        "Agency": {
+          "fields": ["id", "name", "logo_url", "settings", "subscription_tier", "created_at"],
+          "relations": ["has_many Recruiters", "has_many ClientCompanies", "has_many CandidatePools", "has_many Jobs"]
+        },
+        "Recruiter": {
+          "fields": ["id", "name", "email", "role", "agency_id"],
+          "roles": ["admin", "recruiter", "interviewer"],
+          "relations": ["belongs_to Agency", "manages N:M ClientCompanies"]
+        },
+        "ClientCompany": {
+          "fields": ["id", "name", "industry", "contact_info", "agency_id"],
+          "relations": ["belongs_to Agency", "has_many Jobs", "has_many Candidates", "managed_by N:M Recruiters"]
+        },
+        "Job": {
+          "fields": ["id", "title", "description", "requirements", "salary_range", "client_id", "status", "stages_config"],
+          "relations": ["belongs_to ClientCompany", "has_many Applications"]
+        },
+        "Candidate": {
+          "fields": ["id", "full_name", "email", "phone", "location", "resume_url", "languages"],
+          "relations": ["has_many Applications"]
+        },
+        "Application": {
+          "fields": ["id", "candidate_id", "job_id", "status", "stage", "applied_at", "ai_match_score"],
+          "relations": ["belongs_to Candidate", "belongs_to Job", "has_one Interview", "has_one Assessment", "has_many LocalizedContents", "has_one AIMatch"]
+        },
+        "Interview": {
+          "fields": ["id", "application_id", "type", "scheduled_at", "interviewer_id", "status", "recording_url"],
+          "types": ["phone_screen", "technical", "onsite"],
+          "relations": ["belongs_to Application"]
+        },
+        "Assessment": {
+          "fields": ["id", "application_id", "type", "score", "breakdown", "ai_feedback"],
+          "types": ["mcq", "predefined_answer"],
+          "relations": ["belongs_to Application"]
+        },
+        "LocalizedContent": {
+          "fields": ["id", "source_lang", "target_lang", "source_text", "translated_text", "entity_type", "status", "confidence", "version"],
+          "entityTypes": ["cv", "interview_feedback", "job_description"],
+          "languagePairs": ["JP-VN", "JP-EN", "VN-EN", "EN-JP", "EN-VN", "VN-JP"],
+          "relations": ["belongs_to Application"]
+        },
+        "AIMatch": {
+          "fields": ["id", "application_id", "embedding_vector", "matching_score", "skill_scores", "org_preference_score", "explanation"],
+          "relations": ["belongs_to Application"]
+        }
+      }
+    },
+
+    "features": [
+      {
+        "id": "F-001",
+        "name": "Candidate Sourcing",
+        "key": "candidate sourcing",
+        "priority": "P0-MVP",
+        "phase": "MVP",
+        "description": "Multi-channel candidate search across job boards, LinkedIn, and internal databases with semantic matching, ranking based on weighted criteria (skills, experience, organizational preference signals), and automated outreach messaging to top candidates.",
+        "aiPipeline": "CV Parse → Embedding → Vector Search → Weighted Scoring → Match Score",
+        "acceptanceCriteria": [
+          "Search across minimum 3 external channels",
+          "AI matching score accuracy > 85% vs manual recruiter assessment",
+          "Automated outreach sent within 5 minutes of match",
+          "Candidate deduplication across client pools"
+        ],
+        "aiCapabilities": ["candidate_matching", "ranking_scoring", "outreach_generation"]
+      },
+      {
+        "id": "F-002",
+        "name": "CV Parsing & Screening",
+        "key": "CV parsing",
+        "priority": "P0-MVP",
+        "phase": "MVP",
+        "description": "Resume/CV parsing from PDF and DOCX with structured data extraction, screening using weighted scoring and vector similarity against job requirements, explainable scoring, and duplicate detection across client pools.",
+        "aiPipeline": "Document parsing → Entity extraction → Semantic matching → Scoring",
+        "acceptanceCriteria": [
+          "Parse accuracy > 90% for structured fields",
+          "Support PDF and DOCX formats",
+          "Screening score generated within 15 seconds",
+          "Duplicate detection across all client candidate pools"
+        ],
+        "aiCapabilities": ["document_parsing", "entity_extraction", "semantic_matching", "scoring"]
+      },
+      {
+        "id": "F-003",
+        "name": "Interview Scheduling",
+        "key": "Interview scheduling",
+        "priority": "P0-MVP",
+        "phase": "MVP",
+        "description": "Calendar integration (Google/Outlook), automatic availability collection and matching for candidate/interviewer/panel, multi-round scheduling, automated reminders, timezone-aware scheduling with priority on JP/VN/EN timezones.",
+        "schedulingLogic": {
+          "availabilityCollection": "Candidate provides preferred slots via portal; interviewer sets availability windows; system reads calendar events via OAuth API",
+          "slotSuggestionAlgorithm": "Find overlapping availability, prioritize within 48h, respect business hours (9:00-18:00 local per participant), suggest top 3 ranked by urgency and preferences",
+          "timezoneSupport": "All times stored in UTC, displayed in local timezone, auto-detect from candidate location/IP, primary support: JST (JP), ICT (VN), multiple EN zones"
+        },
+        "acceptanceCriteria": [
+          "Calendar sync latency < 60 seconds",
+          "Multi-timezone conflict resolution",
+          "Automated reminder sent 24h before interview",
+          "Support phone screen, technical, and onsite rounds"
+        ],
+        "integrations": ["google_calendar", "outlook_calendar"]
+      },
+      {
+        "id": "F-004",
+        "name": "Assessment Scoring (Objective Only)",
+        "key": "assessment scoring",
+        "priority": "P0-MVP",
+        "phase": "MVP",
+        "scope": "MVP ONLY — objective question types only",
+        "description": "Configurable MCQ assessments with predefined answer scoring, threshold-based pass/fail, instant results, and recruiter override capability.",
+        "inMvp": ["MCQ (single/multiple correct)", "Predefined answer matching (exact/regex)", "Threshold pass/fail configuration", "Recruiter override"],
+        "notInMvp": ["Coding judge", "AI essay scoring", "Behavioral analysis", "Sandbox code execution"],
+        "scoringFlow": [
+          "Candidate completes assessment → Submission stored",
+          "Auto-grading engine evaluates MCQ/short answers → Instant score",
+          "Score vs threshold comparison → Pass/fail determination",
+          "AI-generated score breakdown → Attached to application",
+          "Recruiter can override pass/fail decision"
+        ],
+        "acceptanceCriteria": [
+          "MCQ auto-grading with 100% accuracy",
+          "Score available within 5 seconds of submission",
+          "Recruiter override capability for edge cases",
+          "Configurable passing threshold per job"
+        ],
+        "aiCapabilities": ["predefined_answer_matching", "score_breakdown_generation"]
+      },
+      {
+        "id": "F-005",
+        "name": "Pipeline Management",
+        "key": "Pipeline design",
+        "priority": "P0-MVP",
+        "phase": "MVP",
+        "description": "Visual pipeline/kanban board with configurable stages, client-specific workflows, drag-and-drop configuration, automated transitions, and real-time dashboard metrics.",
+        "configurableStages": [
+          {"stageId": "applied", "defaultName": "Applied", "autoTransition": "On application submission"},
+          {"stageId": "screening", "defaultName": "Screening", "autoTransition": "After CV parse + AI score"},
+          {"stageId": "interview", "defaultName": "Interview", "autoTransition": "If AI score ≥ threshold OR recruiter override"},
+          {"stageId": "technical", "defaultName": "Technical", "autoTransition": "If interview passed"},
+          {"stageId": "offer", "defaultName": "Offer", "autoTransition": "If technical assessment passed"},
+          {"stageId": "hired", "defaultName": "Hired", "autoTransition": "If offer accepted"},
+          {"stageId": "rejected", "defaultName": "Rejected", "autoTransition": "At any stage by decision or auto-fail"}
+        ],
+        "perClientCustomization": true,
+        "acceptanceCriteria": [
+          "Drag-and-drop stage reordering",
+          "Custom workflow per client",
+          "Automated transition on pass/fail/timeout triggers",
+          "Real-time dashboard with candidate count by stage"
+        ]
+      },
+      {
+        "id": "F-006",
+        "name": "Translation (JP/VN/EN)",
+        "key": "Translation",
+        "priority": "P0-MVP",
+        "phase": "MVP",
+        "description": "LLM-based translation for CVs, interview feedback, and job descriptions across Japanese, Vietnamese, and English with human review queue for low-confidence outputs.",
+        "languagePairs": ["JP↔VN", "JP↔EN", "VN↔EN"],
+        "supportedContentTypes": ["CV/resume", "Interview feedback", "Job description"],
+        "aiCapabilities": ["translation", "language_detection", "summary_generation"],
+        "acceptanceCriteria": [
+          "Translation available for JP, VN, EN language pairs",
+          "Source language auto-detection",
+          "Human review queue for confidence < 80%",
+          "Translation latency < 30 seconds per document"
+        ]
+      },
+      {
+        "id": "F-007",
+        "name": "Email & Notifications",
+        "key": "Email",
+        "priority": "P0-MVP",
+        "phase": "MVP",
+        "description": "Template-based email system with automated notifications for candidates, recruiters, and clients. Agency branding support.",
+        "templates": ["Application received", "Interview scheduled", "Stage update", "Offer letter", "Rejection", "Pipeline progress report"],
+        "integrations": ["SendGrid", "AWS SES"],
+        "acceptanceCriteria": [
+          "Email sent within 60 seconds of trigger event",
+          "Template customization per agency brand",
+          "Multi-language email support (JP/VN/EN)"
+        ]
+      },
+      {
+        "id": "F-008",
+        "name": "RBAC & Authentication",
+        "key": "RBAC",
+        "priority": "P0-MVP",
+        "phase": "Foundation",
+        "description": "Role-based access control with email/password authentication, optional SSO, and multi-factor authentication.",
+        "rbacMatrix": {
+          "createEditArchiveJobs": ["agency_admin", "recruiter"],
+          "viewManageCandidates": ["agency_admin", "recruiter", "interviewer", "client"],
+          "rejectCandidates": ["agency_admin", "recruiter"],
+          "approveOffers": ["agency_admin", "recruiter", "client"],
+          "viewSalary": ["agency_admin", "recruiter", "client"],
+          "exportCV": ["agency_admin", "recruiter"],
+          "manageUsersRoles": ["agency_admin"],
+          "viewAnalytics": ["agency_admin", "recruiter", "client"]
+        },
+        "authMethods": ["email_password", "google_sso", "microsoft_sso"],
+        "acceptanceCriteria": [
+          "5 roles with distinct permission sets",
+          "JWT-based auth with refresh tokens",
+          "bcrypt password hashing",
+          "Optional MFA support"
+        ]
+      },
+      {
+        "id": "F-009",
+        "name": "Multi-Client Data Isolation",
+        "key": "multi_client",
+        "priority": "P0-MVP",
+        "phase": "MVP",
+        "description": "Recruiter manages multiple client companies with strict data isolation. Client-scoped jobs, candidates, and applications. Shared candidate pool with deduplication.",
+        "acceptanceCriteria": [
+          "Recruiter can switch between managed clients",
+          "Data scoped to active client context",
+          "Cross-client candidate deduplication",
+          "Per-client pipeline configuration"
+        ]
+      }
+    ],
+
+    "integrations": {
+      "required": [
+        {
+          "name": "Email System",
+          "provider": "SendGrid or AWS SES",
+          "purpose": "Candidate notifications, recruiter alerts, client updates",
+          "priority": "P0",
+          "type": "SMTP_API"
+        },
+        {
+          "name": "Calendar Integration",
+          "provider": "Google Calendar / Microsoft Outlook",
+          "purpose": "Interview scheduling and availability sync",
+          "priority": "P0",
+          "type": "OAuth_API"
+        },
+        {
+          "name": "AI Provider",
+          "provider": "OpenAI (primary) + Gemini (fallback)",
+          "purpose": "CV parsing, embedding, matching, scoring, translation",
+          "priority": "P0",
+          "type": "REST_API",
+          "fallbackStrategy": "If primary provider fails, automatically route to fallback provider"
+        }
+      ],
+      "planned": [
+        {
+          "name": "External ATS",
+          "provider": "Greenhouse, Lever, Workday",
+          "purpose": "Import/export candidate data, avoid duplication",
+          "priority": "P1",
+          "type": "REST_API / Webhook"
+        }
+      ]
+    },
+
+    "aiArchitecture": {
+      "mvpPipeline": "CV Parse → Embedding (OpenAI/Sentence-Transformers) → Vector Search (pgvector/Pinecone) → Weighted Scoring (skills 40%, exp 30%, edu 20%, org preference 10%) → Optional Translation → Optional Summarization",
+      "notInMvp": [
+        "Real-time AI interviewer",
+        "Agentic AI workflows",
+        "Advanced reranking orchestration",
+        "AI essay scoring",
+        "Behavioral video analysis",
+        "Coding judge sandbox"
+      ],
+      "embeddingModel": "OpenAI text-embedding-3-large",
+      "llmPrimary": "GPT-4o",
+      "llmFallback": "Gemini 1.5 Pro",
+      "translation": "LLM-based (GPT-4o primary, Gemini fallback)",
+      "vectorStore": "pgvector (PostgreSQL extension) or Pinecone"
+    },
+
+    "nonFunctionalRequirements": {
+      "performance": [
+        {
+          "metric": "Page load time",
+          "target": "< 2 seconds",
+          "scope": "Dashboard views"
+        },
+        {
+          "metric": "CV parsing + AI scoring",
+          "target": "< 15 seconds",
+          "scope": "End-to-end per candidate"
+        },
+        {
+          "metric": "AI matching score",
+          "target": "< 15 seconds",
+          "scope": "Per candidate-job pair"
+        },
+        {
+          "metric": "Scheduling suggestions",
+          "target": "< 5 seconds",
+          "scope": "Availability computation"
+        },
+        {
+          "metric": "Translation",
+          "target": "< 30 seconds",
+          "scope": "Per document"
+        },
+        {
+          "metric": "Concurrent users",
+          "target": "500+",
+          "scope": "All tenants combined"
+        }
+      ],
+      "security": {
+        "rbac": "Per-entity level access control with 5 distinct roles",
+        "authentication": "Email/password + optional SSO (Google, Microsoft) + optional MFA",
+        "encryption": "AES-256 at rest, TLS 1.3 in transit",
+        "compliance": ["GDPR", "CCPA"],
+        "auditLogging": "All candidate data access logged with who, what, when, IP, device",
+        "uploadValidation": {
+          "fileTypes": ["PDF", "DOCX"],
+          "maxSizeMB": 25,
+          "malwareScanning": "ClamAV or equivalent",
+          "magicBytesVerification": true
+        },
+        "rateLimiting": {
+          "apiRequestsPerMinutePerUser": 100,
+          "uploadsPerMinutePerUser": 10
+        },
+        "ipDeviceLogging": true
+      },
+      "scalability": [
+        "Multi-tenant architecture with data isolation per agency",
+        "Horizontal scaling for AI processing via BullMQ queue",
+        "CDN for static assets",
+        "Database read replicas for analytics queries"
+      ],
+      "reliability": [
+        {
+          "metric": "Uptime SLA",
+          "target": "99.5%"
+        },
+        {
+          "metric": "Recovery Point Objective",
+          "target": "24 hours"
+        },
+        "Fallback to rule-based processing when LLM services are unavailable",
+        "Health check endpoints for all critical services"
+      ]
+    },
+
+    "failureHandling": {
+      "cvParseFail": {
+        "userMessage": "We couldn't fully parse your resume. Please review the extracted fields below and correct any errors.",
+        "systemAction": "Show editable extracted fields, allow manual override, queue for retry"
+      },
+      "aiUnavailable": {
+        "userMessage": "Our AI service is temporarily busy. Your request has been queued and will be processed within 2 minutes.",
+        "systemAction": "Show estimated wait time, degrade to rule-based processing"
+      },
+      "calendarSyncFail": {
+        "userMessage": "We couldn't connect to your calendar. Please check your connection and try again.",
+        "systemAction": "Retry with exponential backoff (3 attempts), manual entry fallback"
+      },
+      "translationFail": {
+        "userMessage": "Translation service is temporarily unavailable. Original text is displayed.",
+        "systemAction": "Fallback to source language, queue for retry, manual translation option"
+      },
+      "generalPrinciples": [
+        "Always show original data when AI services fail",
+        "Never block the user — provide manual fallback for every automated step",
+        "Log all failures with full context",
+        "Retry with exponential backoff, max 3 attempts",
+        "Toast/notification for transient errors, inline for persistent issues"
+      ]
+    },
+
+    "technologyStack": {
+      "frontend": {
+        "framework": "Next.js 14+",
+        "language": "TypeScript",
+        "styling": "Tailwind CSS",
+        "routing": "App Router"
+      },
+      "backend": {
+        "runtime": "Node.js",
+        "framework": "NestJS",
+        "queue": "BullMQ (Redis)"
+      },
+      "database": {
+        "primary": "PostgreSQL",
+        "vectorSearch": "pgvector",
+        "cache": "Redis"
+      },
+      "aiLayer": {
+        "primary": "OpenAI GPT-4o + text-embedding-3-large",
+        "fallback": "Google Gemini 1.5 Pro",
+        "translation": "LLM-based (GPT-4o primary, Gemini fallback)",
+        "fallbackStrategy": "Queue for retry, then graceful degradation to rule-based"
+      },
+      "storage": {
+        "type": "S3-compatible",
+        "options": ["MinIO", "AWS S3"],
+        "maxFileSizeMB": 25
+      },
+      "authentication": {
+        "provider": "NextAuth.js / Auth.js",
+        "methods": ["email_password", "google_sso", "microsoft_sso", "optional_mfa"],
+        "sessionManagement": "JWT with refresh tokens"
+      },
+      "deployment": {
+        "cloud": "GCP",
+        "compute": "Cloud Run or GKE",
+        "containerization": "Docker",
+        "ciCd": "GitHub Actions or Cloud Build"
+      },
+      "monitoring": ["Sentry", "custom logging", "health check endpoints"]
+    },
+
+    "resolvedOpenQuestions": [
+      {
+        "id": "OQ-001",
+        "question": "Which specific AI cloud provider should power the AI features?",
+        "resolution": "OpenAI GPT-4o (primary) + Google Gemini 1.5 Pro (fallback)",
+        "dateResolved": "2026-05-12"
+      },
+      {
+        "id": "OQ-002",
+        "question": "Multi-tenancy depth — branded client portals or unified view?",
+        "resolution": "Single workspace with client-scoped data isolation",
+        "dateResolved": "2026-05-12"
+      },
+      {
+        "id": "OQ-003",
+        "question": "Expected monthly budget for AI APIs and infrastructure?",
+        "resolution": "$500–$1,500/month — determines model selection, caching strategy, rate limits",
+        "dateResolved": "2026-05-12"
+      },
+      {
+        "id": "OQ-004",
+        "question": "Deployment target: Cloud, VPS, or self-hosted?",
+        "resolution": "GCP (Cloud Run or GKE)",
+        "dateResolved": "2026-05-12"
+      },
+      {
+        "id": "OQ-005",
+        "question": "Existing data to migrate from other systems?",
+        "resolution": "Optional — Phase 2",
+        "dateResolved": "2026-05-12"
+      }
+    ],
+
+    "successCriteria": [
+      { "criterion": "All P0 features functional in MVP", "measureable": true, "target": "9 features operational" },
+      { "criterion": "AI screening accuracy", "measureable": true, "target": "> 85% match rate vs manual assessment" },
+      { "criterion": "CV parsing accuracy", "measureable": true, "target": "> 90% for structured fields" },
+      { "criterion": "Interview scheduling time reduction", "measureable": true, "target": "60% vs manual process" },
+      { "criterion": "Translation quality", "measureable": true, "target": "< 10% require human review" },
+      { "criterion": "Onboarding time", "measureable": true, "target": "< 5 minutes to see full pipeline" },
+      { "criterion": "Data breaches", "measureable": true, "target": "0 breaches, GDPR compliance verified" },
+      { "criterion": "Multi-tenant support", "measureable": true, "target": "3+ simultaneous agency tenants" },
+      { "criterion": "Failure handling", "measureable": true, "target": "All 4 failure scenarios handled gracefully" }
+    ],
+
+    "releasePhases": [
+      {
+        "phase": "Foundation",
+        "timeline": "Weeks 1-4",
+        "features": ["F-008"],
+        "milestone": "Working scaffold with auth, RBAC, database schema"
+      },
+      {
+        "phase": "MVP ATS + AI",
+        "timeline": "Months 1-4",
+        "features": ["F-001", "F-002", "F-003", "F-004", "F-005", "F-006", "F-007", "F-009"],
+        "milestone": "Core ATS with AI matching, screening, scheduling, translation in production"
+      },
+      {
+        "phase": "P1 — AI Automation",
+        "timeline": "Months 5-7",
+        "features": ["chatbot", "AI_summaries", "advanced_analytics", "reranking"],
+        "milestone": "Full AI automation layer"
+      },
+      {
+        "phase": "P2 — Advanced Features",
+        "timeline": "Months 8+",
+        "features": ["AI_interviewer", "content_generation", "image_generation", "white_label", "event_sourcing"],
+        "milestone": "Complete product suite"
+      }
+    ],
+
+    "nextSteps": [
+      "Confirm resolved decisions — review and approve 5 resolved open questions",
+      "Create system design document — architecture diagram, agency data model, AI pipeline",
+      "Define API contracts — REST endpoints, WebSocket events, AI service interfaces",
+      "Database schema — ERD for all 10 entities with indexes and constraints",
+      "UI/UX wireframes — aligned with reference image and updated MVP scope",
+      "Sprint 1 planning — Foundation: Auth + RBAC + Data model"
+    ]
+  },
+
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "createdAt": "2026-05-12",
+    "updatedAt": "2026-05-12",
+    "changeLog": [
+      "v0.1.0 → v0.2.0: Reduced MVP scope per user feedback",
+      "Added: Agency/Client/Recruiter data model with multi-tenancy",
+      "Added: Translation requirements (JP/VN/EN)",
+      "Added: Auto scheduling logic with timezone support",
+      "Clarified: Auto test scoring — objective only in MVP",
+      "Added: RBAC matrix with 5 roles and entity-level permissions",
+      "Added: Security requirements (upload validation, malware scanning, audit logs)",
+      "Added: User-facing failure handling UX",
+      "Added: Pipeline design with 7 configurable stages",
+      "Resolved all 5 open questions with user-decided values",
+      "Added: AI architecture with primary/fallback provider strategy",
+      "Updated timeline: Foundation 2-4 weeks, MVP 2-4 months",
+      "Added: LLM-first architecture spec (04-llm-architecture-spec.md) with AI domain boundaries, 6 output schemas, prompt governance, translation rules, event catalog, queue priorities, cost governance, and 6 ADRs"
+    ],
+    "gateStatus": {
+      "currentGate": 2,
+      "gateName": "Gate 2: System Design & LLM Architecture — Complete",
+      "passed": true,
+      "blockingItems": [],
+      "pendingReview": [
+        "Database ERD review and approval before code implementation",
+        "Open questions OQ-006 (batch translation), OQ-007 (outreach approach), OQ-008 (dedup strategy)"
+      ],
+      "summary": "System design and LLM-first architecture spec completed. 04-llm-architecture-spec.md defines AI domain boundaries, 6 output schemas, prompt governance, translation rules, event catalog, queue priorities, cost model, 12 non-goals, and 6 ADRs. Ready for database ERD review and code scaffolding."
+    }
+  }
+}

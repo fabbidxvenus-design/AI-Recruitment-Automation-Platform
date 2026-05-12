@@ -1,0 +1,966 @@
+{
+  "$schema": "https://raw.githubusercontent.com/David-Init-Institute/requirements-hierarchy/main/schema/v1.0/requirement.schema.json",
+  "requirement": {
+    "id": "REQ-GATE2",
+    "title": "AI Recruitment Automation Platform — Atomic Requirements",
+    "version": "0.1.0",
+    "status": "DRAFT",
+    "date": "2026-05-12",
+    "author": "DuyMT",
+    "reviewStatus": "GATE_2_DEFINITION",
+    "type": "SOFTWARE_SYSTEM",
+    "domain": "HR-Tech / Recruitment Automation",
+    "upstream": "01-requirement.md (v0.2.0)",
+    "summary": "Decomposition of all upstream requirements into 91 atomic REQ-* statements across 5 categories: Functional (45), Non-Functional (14), Data (14), Integration (8), Constraint (10). Each requirement includes priority, rationale, acceptance criteria, and source traceability.",
+
+    "functionalRequirements": [
+      {
+        "id": "FR-001",
+        "category": "Candidate Sourcing",
+        "text": "System shall search candidates across multiple external channels (job boards, LinkedIn, internal databases).",
+        "priority": "P0",
+        "rationale": "Reduces manual sourcing effort.",
+        "acceptanceCriteria": "System supports ≥3 channel connectors; search query returns results from each within 30s.",
+        "sourceTraceability": ["RAW-001"]
+      },
+      {
+        "id": "FR-002",
+        "category": "Candidate Sourcing",
+        "text": "System shall match candidates to job descriptions using semantic search (embedding similarity).",
+        "priority": "P0",
+        "rationale": "Core AI value proposition.",
+        "acceptanceCriteria": "Cosine similarity computed for each candidate-job pair; results ranked by score.",
+        "sourceTraceability": ["RAW-001"]
+      },
+      {
+        "id": "FR-003",
+        "category": "Candidate Sourcing",
+        "text": "System shall rank candidates using weighted scoring (skills 40%, experience 30%, education 20%, organizational preference 10%).",
+        "priority": "P0",
+        "rationale": "Transparent, configurable ranking.",
+        "acceptanceCriteria": "Composite score computed and displayed per candidate; weight values are admin-configurable.",
+        "sourceTraceability": ["RAW-001"]
+      },
+      {
+        "id": "FR-004",
+        "category": "Candidate Sourcing",
+        "text": "System shall send automated outreach messages to top-ranked candidates.",
+        "priority": "P1",
+        "rationale": "Reduces recruiter manual work.",
+        "acceptanceCriteria": "Message dispatched within 5 min of match; recruiter can review before send.",
+        "sourceTraceability": ["RAW-001"]
+      },
+      {
+        "id": "FR-005",
+        "category": "CV Parsing & Screening",
+        "text": "System shall parse resume files in PDF and DOCX formats.",
+        "priority": "P0",
+        "rationale": "Primary input format for candidates.",
+        "acceptanceCriteria": "Parsing succeeds for ≥95% of valid PDF/DOCX files; structured fields extracted.",
+        "sourceTraceability": ["RAW-002"]
+      },
+      {
+        "id": "FR-006",
+        "category": "CV Parsing & Screening",
+        "text": "System shall extract structured fields from parsed CVs: full name, email, phone, location, skills, work experience, education.",
+        "priority": "P0",
+        "rationale": "Enables downstream matching and screening.",
+        "acceptanceCriteria": "Each field extracted with ≥90% accuracy on test corpus.",
+        "sourceTraceability": ["RAW-002"]
+      },
+      {
+        "id": "FR-007",
+        "category": "CV Parsing & Screening",
+        "text": "System shall screen parsed CVs against job requirements using weighted scoring and vector similarity.",
+        "priority": "P0",
+        "rationale": "Core screening automation.",
+        "acceptanceCriteria": "Screening score generated within 15 seconds; score includes explainable breakdown.",
+        "sourceTraceability": ["RAW-002"]
+      },
+      {
+        "id": "FR-008",
+        "category": "CV Parsing & Screening",
+        "text": "System shall score and rank candidates with explainable rationale per score factor.",
+        "priority": "P0",
+        "rationale": "Trust and transparency for recruiter decisions.",
+        "acceptanceCriteria": "Each score component shows contributing factors (e.g., 'Skills match: 8/10').",
+        "sourceTraceability": ["RAW-002"]
+      },
+      {
+        "id": "FR-009",
+        "category": "CV Parsing & Screening",
+        "text": "System shall detect duplicate candidates across all client pools.",
+        "priority": "P1",
+        "rationale": "Prevents duplicate applications in multi-client environment.",
+        "acceptanceCriteria": "Duplicate detected when similarity > 90% on name + email + phone combination.",
+        "sourceTraceability": ["RAW-002", "RAW-009"]
+      },
+      {
+        "id": "FR-010",
+        "category": "Interview Scheduling",
+        "text": "System shall integrate with Google Calendar and Microsoft Outlook for availability sync.",
+        "priority": "P0",
+        "rationale": "Core scheduling dependency.",
+        "acceptanceCriteria": "Calendar events readable/writeable; sync latency <60s.",
+        "sourceTraceability": ["RAW-003"]
+      },
+      {
+        "id": "FR-011",
+        "category": "Interview Scheduling",
+        "text": "System shall collect candidate availability via portal or email link.",
+        "priority": "P0",
+        "rationale": "Required for slot matching.",
+        "acceptanceCriteria": "Candidate submits ≥1 preferred slot; data stored and available for matching.",
+        "sourceTraceability": ["RAW-003", "RAW-015"]
+      },
+      {
+        "id": "FR-012",
+        "category": "Interview Scheduling",
+        "text": "System shall collect interviewer availability from connected calendars.",
+        "priority": "P0",
+        "rationale": "Required for slot matching.",
+        "acceptanceCriteria": "Interviewer availability windows read automatically from calendar.",
+        "sourceTraceability": ["RAW-003", "RAW-015"]
+      },
+      {
+        "id": "FR-013",
+        "category": "Interview Scheduling",
+        "text": "System shall suggest top 3 optimal interview slots based on overlapping availability.",
+        "priority": "P0",
+        "rationale": "Reduces back-and-forth scheduling.",
+        "acceptanceCriteria": "Suggestions generated within 5 seconds; respects business hours and timezones.",
+        "sourceTraceability": ["RAW-003", "RAW-015"]
+      },
+      {
+        "id": "FR-014",
+        "category": "Interview Scheduling",
+        "text": "System shall support multi-round scheduling (phone screen → technical → onsite).",
+        "priority": "P0",
+        "rationale": "Reflects real recruitment workflows.",
+        "acceptanceCriteria": "Each round type configurable; sequential and parallel round flows supported.",
+        "sourceTraceability": ["RAW-003"]
+      },
+      {
+        "id": "FR-015",
+        "category": "Interview Scheduling",
+        "text": "System shall send automated reminders to participants 24 hours before scheduled interviews.",
+        "priority": "P0",
+        "rationale": "Reduces no-show rate.",
+        "acceptanceCriteria": "Reminder sent via email and in-app notification 24h before interview.",
+        "sourceTraceability": ["RAW-003", "RAW-014"]
+      },
+      {
+        "id": "FR-016",
+        "category": "Interview Scheduling",
+        "text": "System shall support rescheduling via self-service links in notifications.",
+        "priority": "P1",
+        "rationale": "Improves candidate experience.",
+        "acceptanceCriteria": "Candidate/interviewer can reschedule from link without recruiter intervention.",
+        "sourceTraceability": ["RAW-003"]
+      },
+      {
+        "id": "FR-017",
+        "category": "Interview Scheduling",
+        "text": "System shall handle timezone-aware scheduling for JP (JST), VN (ICT), and EN (US/EU) timezones.",
+        "priority": "P0",
+        "rationale": "Core market requirement.",
+        "acceptanceCriteria": "All times stored in UTC; displayed in participant-local timezone; auto-detect from location/IP.",
+        "sourceTraceability": ["RAW-003", "RAW-015"]
+      },
+      {
+        "id": "FR-018",
+        "category": "Assessment Scoring",
+        "text": "System shall support configurable MCQ assessments (single and multiple correct answers).",
+        "priority": "P0",
+        "rationale": "Foundational assessment type.",
+        "acceptanceCriteria": "MCQ rendered and graded correctly; supports ≥10 questions per assessment.",
+        "sourceTraceability": ["RAW-004"]
+      },
+      {
+        "id": "FR-019",
+        "category": "Assessment Scoring",
+        "text": "System shall support predefined answer scoring (exact match, regex).",
+        "priority": "P0",
+        "rationale": "Enables short-answer auto-grading.",
+        "acceptanceCriteria": "Scoring engine matches answers with 100% accuracy for predefined patterns.",
+        "sourceTraceability": ["RAW-004"]
+      },
+      {
+        "id": "FR-020",
+        "category": "Assessment Scoring",
+        "text": "System shall evaluate assessments instantly and return scores within 5 seconds.",
+        "priority": "P0",
+        "rationale": "Candidate experience — immediate feedback.",
+        "acceptanceCriteria": "Score returned ≤5s after submission.",
+        "sourceTraceability": ["RAW-004"]
+      },
+      {
+        "id": "FR-021",
+        "category": "Assessment Scoring",
+        "text": "System shall allow recruiters to configure pass/fail thresholds per job.",
+        "priority": "P0",
+        "rationale": "Different roles require different bars.",
+        "acceptanceCriteria": "Threshold configurable from 0–100 per job; default 60.",
+        "sourceTraceability": ["RAW-004"]
+      },
+      {
+        "id": "FR-022",
+        "category": "Assessment Scoring",
+        "text": "System shall generate AI-driven score breakdowns with strengths and weaknesses.",
+        "priority": "P0",
+        "rationale": "Adds value beyond simple pass/fail.",
+        "acceptanceCriteria": "Breakdown generated within 15s; includes per-question or per-skill analysis.",
+        "sourceTraceability": ["RAW-004"]
+      },
+      {
+        "id": "FR-023",
+        "category": "Assessment Scoring",
+        "text": "System shall allow recruiters to override auto-pass/fail decisions.",
+        "priority": "P0",
+        "rationale": "Human-in-the-loop for edge cases.",
+        "acceptanceCriteria": "Override recorded with reason; audit trail maintained.",
+        "sourceTraceability": ["RAW-004"]
+      },
+      {
+        "id": "FR-024",
+        "category": "Pipeline Management",
+        "text": "System shall provide a visual kanban board for candidate pipeline stages.",
+        "priority": "P0",
+        "rationale": "Core ATS functionality.",
+        "acceptanceCriteria": "Board renders all candidates by stage; drag-and-drop supported.",
+        "sourceTraceability": ["RAW-008"]
+      },
+      {
+        "id": "FR-025",
+        "category": "Pipeline Management",
+        "text": "System shall support configurable pipeline stages per client (default: Applied → Screening → Interview → Technical → Offer → Hired/Rejected).",
+        "priority": "P0",
+        "rationale": "Client-specific workflows.",
+        "acceptanceCriteria": "Admin can add, rename, reorder stages; defaults applied on client creation.",
+        "sourceTraceability": ["RAW-008"]
+      },
+      {
+        "id": "FR-026",
+        "category": "Pipeline Management",
+        "text": "System shall trigger automatic stage transitions based on configurable rules (pass/fail/timeout).",
+        "priority": "P0",
+        "rationale": "Reduces manual stage management.",
+        "acceptanceCriteria": "Auto-transition fires within 60s of trigger event (e.g., assessment pass).",
+        "sourceTraceability": ["RAW-008"]
+      },
+      {
+        "id": "FR-027",
+        "category": "Pipeline Management",
+        "text": "System shall display a real-time dashboard with candidate counts and pipeline metrics per stage.",
+        "priority": "P0",
+        "rationale": "At-a-glance visibility for recruiters and clients.",
+        "acceptanceCriteria": "Dashboard updates within 10s of stage changes; shows counts, conversion rates.",
+        "sourceTraceability": ["RAW-008"]
+      },
+      {
+        "id": "FR-028",
+        "category": "Translation & Localization",
+        "text": "System shall translate CVs/resumes between JP, VN, and EN using LLM-based translation.",
+        "priority": "P0",
+        "rationale": "Core market need (Japan-Vietnam hiring).",
+        "acceptanceCriteria": "Translation delivered within 30 seconds; covers full document.",
+        "sourceTraceability": ["RAW-006"]
+      },
+      {
+        "id": "FR-029",
+        "category": "Translation & Localization",
+        "text": "System shall translate interview feedback between JP, VN, and EN.",
+        "priority": "P0",
+        "rationale": "Enables cross-language interviewer panels.",
+        "acceptanceCriteria": "Feedback translated preserving context; delivered within 15s.",
+        "sourceTraceability": ["RAW-006"]
+      },
+      {
+        "id": "FR-030",
+        "category": "Translation & Localization",
+        "text": "System shall translate job descriptions between JP, VN, and EN.",
+        "priority": "P1",
+        "rationale": "Content localization for multi-market job postings.",
+        "acceptanceCriteria": "JD translated within 30s; industry terminology preserved.",
+        "sourceTraceability": ["RAW-006"]
+      },
+      {
+        "id": "FR-031",
+        "category": "Translation & Localization",
+        "text": "System shall auto-detect source language of input content.",
+        "priority": "P0",
+        "rationale": "Removes manual language selection step.",
+        "acceptanceCriteria": "Language detected with ≥95% confidence before translation.",
+        "sourceTraceability": ["RAW-006"]
+      },
+      {
+        "id": "FR-032",
+        "category": "Translation & Localization",
+        "text": "System shall route low-confidence translations (<80%) to a human review queue.",
+        "priority": "P0",
+        "rationale": "Quality control for critical content.",
+        "acceptanceCriteria": "Items with confidence <80% flagged; visible in reviewer queue.",
+        "sourceTraceability": ["RAW-006"]
+      },
+      {
+        "id": "FR-033",
+        "category": "Email & Notifications",
+        "text": "System shall send automated email notifications to candidates (application received, interview scheduled, stage updates, rejection/offer).",
+        "priority": "P0",
+        "rationale": "Candidate communication is mandatory.",
+        "acceptanceCriteria": "Email sent within 60s of trigger event; delivered to valid addresses.",
+        "sourceTraceability": ["RAW-007", "RAW-014"]
+      },
+      {
+        "id": "FR-034",
+        "category": "Email & Notifications",
+        "text": "System shall send automated notifications to recruiters (new application, AI match ready, scheduling conflicts).",
+        "priority": "P0",
+        "rationale": "Keeps recruiters informed in real time.",
+        "acceptanceCriteria": "In-app notification within 30s; email within 60s.",
+        "sourceTraceability": ["RAW-007", "RAW-014"]
+      },
+      {
+        "id": "FR-035",
+        "category": "Email & Notifications",
+        "text": "System shall send pipeline progress reports to HiringCompanies.",
+        "priority": "P1",
+        "rationale": "Client retention and satisfaction.",
+        "acceptanceCriteria": "Configurable frequency (daily/weekly); email delivery.",
+        "sourceTraceability": ["RAW-007"]
+      },
+      {
+        "id": "FR-036",
+        "category": "Email & Notifications",
+        "text": "System shall support email templates with agency branding customization.",
+        "priority": "P0",
+        "rationale": "Professional communication brand consistency.",
+        "acceptanceCriteria": "Templates editable per agency; HTML + plain text formats.",
+        "sourceTraceability": ["RAW-007"]
+      },
+      {
+        "id": "FR-037",
+        "category": "Authentication & Access Control",
+        "text": "System shall authenticate users via email and password (bcrypt hashing).",
+        "priority": "P0",
+        "rationale": "Foundational security.",
+        "acceptanceCriteria": "Login flow succeeds for valid credentials; rejects invalid.",
+        "sourceTraceability": ["RAW-011"]
+      },
+      {
+        "id": "FR-038",
+        "category": "Authentication & Access Control",
+        "text": "System shall support optional SSO via Google and Microsoft accounts.",
+        "priority": "P1",
+        "rationale": "Reduces friction for enterprise users.",
+        "acceptanceCriteria": "OAuth2 flow completes; user mapped to agency account.",
+        "sourceTraceability": ["RAW-011"]
+      },
+      {
+        "id": "FR-039",
+        "category": "Authentication & Access Control",
+        "text": "System shall support optional multi-factor authentication.",
+        "priority": "P1",
+        "rationale": "Enhanced security for agency admins.",
+        "acceptanceCriteria": "MFA setup and verification flow works; bypassable for non-admin roles.",
+        "sourceTraceability": ["RAW-011"]
+      },
+      {
+        "id": "FR-040",
+        "category": "Authentication & Access Control",
+        "text": "System shall enforce role-based access control at entity level (not just route level).",
+        "priority": "P0",
+        "rationale": "Data isolation between roles and clients.",
+        "acceptanceCriteria": "Each API call validated against RBAC matrix; unauthorized access rejected with 403.",
+        "sourceTraceability": ["RAW-009", "RAW-011"]
+      },
+      {
+        "id": "FR-041",
+        "category": "Authentication & Access Control",
+        "text": "System shall manage user sessions via JWT access/refresh tokens.",
+        "priority": "P0",
+        "rationale": "Stateless auth for API.",
+        "acceptanceCriteria": "Token issued on login; refresh before expiry; logout invalidates.",
+        "sourceTraceability": ["RAW-011"]
+      },
+      {
+        "id": "FR-042",
+        "category": "Multi-Client Data Isolation",
+        "text": "System shall scope jobs, candidates, and applications to their owning HiringCompany (client).",
+        "priority": "P0",
+        "rationale": "Data isolation between agency clients.",
+        "acceptanceCriteria": "Queries filtered by client_id; cross-client data access denied.",
+        "sourceTraceability": ["RAW-009"]
+      },
+      {
+        "id": "FR-043",
+        "category": "Multi-Client Data Isolation",
+        "text": "System shall allow a recruiter to manage multiple HiringCompanies.",
+        "priority": "P0",
+        "rationale": "Agency operational model.",
+        "acceptanceCriteria": "Recruiter can switch active client context; each client's data isolated.",
+        "sourceTraceability": ["RAW-009"]
+      },
+      {
+        "id": "FR-044",
+        "category": "Multi-Client Data Isolation",
+        "text": "System shall provide a shared candidate pool with deduplication across all clients within an agency.",
+        "priority": "P1",
+        "rationale": "Avoids duplicate outreach to same candidate.",
+        "acceptanceCriteria": "Deduplication runs on candidate creation; matches on email + phone + name similarity.",
+        "sourceTraceability": ["RAW-009"]
+      },
+      {
+        "id": "FR-045",
+        "category": "Multi-Client Data Isolation",
+        "text": "System shall allow each HiringCompany to configure their own pipeline stages and workflows.",
+        "priority": "P0",
+        "rationale": "Client-specific recruitment processes.",
+        "acceptanceCriteria": "Stage customization per client; default template available.",
+        "sourceTraceability": ["RAW-008", "RAW-009"]
+      }
+    ],
+
+    "nonFunctionalRequirements": [
+      {
+        "id": "NFR-001",
+        "category": "Performance",
+        "text": "Dashboard page load shall complete in <2 seconds.",
+        "priority": "P0",
+        "rationale": "Usability threshold.",
+        "acceptanceCriteria": "P95 response time <2s measured by browser DevTools.",
+        "sourceTraceability": ["RAW-012"]
+      },
+      {
+        "id": "NFR-002",
+        "category": "Performance",
+        "text": "CV parsing + AI scoring shall complete in <15 seconds per candidate.",
+        "priority": "P0",
+        "rationale": "Recruiter throughput.",
+        "acceptanceCriteria": "End-to-end latency measured and reported; 95th percentile <15s.",
+        "sourceTraceability": ["RAW-002", "RAW-005"]
+      },
+      {
+        "id": "NFR-003",
+        "category": "Performance",
+        "text": "AI candidate matching score shall compute in <15 seconds per candidate-job pair.",
+        "priority": "P0",
+        "rationale": "Real-time feedback during sourcing.",
+        "acceptanceCriteria": "Latency measured from request to ranked results; P95 <15s.",
+        "sourceTraceability": ["RAW-001"]
+      },
+      {
+        "id": "NFR-004",
+        "category": "Performance",
+        "text": "Interview slot suggestions shall generate in <5 seconds.",
+        "priority": "P0",
+        "rationale": "Responsive scheduling UX.",
+        "acceptanceCriteria": "Suggestions returned ≤5s after availability data submitted.",
+        "sourceTraceability": ["RAW-015"]
+      },
+      {
+        "id": "NFR-005",
+        "category": "Performance",
+        "text": "Translation shall complete in <30 seconds per document.",
+        "priority": "P0",
+        "rationale": "Acceptable wait for user flow.",
+        "acceptanceCriteria": "Document translated and returned ≤30s for up to 10-page CVs.",
+        "sourceTraceability": ["RAW-006"]
+      },
+      {
+        "id": "NFR-006",
+        "category": "Performance",
+        "text": "System shall support 500+ concurrent users across all tenants.",
+        "priority": "P0",
+        "rationale": "Agency scale target.",
+        "acceptanceCriteria": "Load test passes with 500 concurrent sessions; no degradation beyond +200ms latency.",
+        "sourceTraceability": ["RAW-012"]
+      },
+      {
+        "id": "NFR-007",
+        "category": "Scalability",
+        "text": "Architecture shall be multi-tenant with data isolation per agency.",
+        "priority": "P0",
+        "rationale": "SaaS foundation.",
+        "acceptanceCriteria": "Tenants cannot access each other's data; verified via penetration test.",
+        "sourceTraceability": ["RAW-009"]
+      },
+      {
+        "id": "NFR-008",
+        "category": "Scalability",
+        "text": "AI processing workloads shall scale horizontally via message queue.",
+        "priority": "P1",
+        "rationale": "Handle burst AI requests.",
+        "acceptanceCriteria": "Queue absorbs 10x normal load without data loss; auto-scaling triggered.",
+        "sourceTraceability": ["RAW-005"]
+      },
+      {
+        "id": "NFR-009",
+        "category": "Scalability",
+        "text": "Static assets shall be served via CDN.",
+        "priority": "P2",
+        "rationale": "Reduce latency globally.",
+        "acceptanceCriteria": "Assets served from edge nodes; cache hit ratio >90%.",
+        "sourceTraceability": ["RAW-012"]
+      },
+      {
+        "id": "NFR-010",
+        "category": "Scalability",
+        "text": "Database read replicas shall serve analytics queries.",
+        "priority": "P2",
+        "rationale": "Prevent reporting from impacting transactional performance.",
+        "acceptanceCriteria": "Analytics queries routed to replicas; production DB unaffected.",
+        "sourceTraceability": ["RAW-012"]
+      },
+      {
+        "id": "NFR-011",
+        "category": "Reliability",
+        "text": "System shall maintain 99.5% uptime SLA.",
+        "priority": "P0",
+        "rationale": "Business continuity.",
+        "acceptanceCriteria": "Monthly uptime calculated; reported in status dashboard.",
+        "sourceTraceability": ["RAW-012"]
+      },
+      {
+        "id": "NFR-012",
+        "category": "Reliability",
+        "text": "Automated backups shall maintain ≤24-hour Recovery Point Objective.",
+        "priority": "P0",
+        "rationale": "Data loss prevention.",
+        "acceptanceCriteria": "Backup verified daily; restore test passes quarterly.",
+        "sourceTraceability": ["RAW-012"]
+      },
+      {
+        "id": "NFR-013",
+        "category": "Reliability",
+        "text": "System shall fall back to rule-based processing when LLM services are unavailable.",
+        "priority": "P0",
+        "rationale": "Graceful degradation.",
+        "acceptanceCriteria": "When LLM API fails, system detects within 10s and activates rule-based fallback; user notified.",
+        "sourceTraceability": ["RAW-013"]
+      },
+      {
+        "id": "NFR-014",
+        "category": "Reliability",
+        "text": "Health check endpoints shall be available for all critical services.",
+        "priority": "P1",
+        "rationale": "Monitoring and ops.",
+        "acceptanceCriteria": "/health endpoints return 200 for DB, AI API, queue, cache; integrated with alerting.",
+        "sourceTraceability": ["RAW-012"]
+      }
+    ],
+
+    "dataRequirements": [
+      {
+        "id": "DR-001",
+        "category": "Entity Requirements",
+        "text": "System shall store Agency entity with fields: id, name, logo_url, settings, subscription_tier, created_at.",
+        "priority": "P0",
+        "rationale": "Core tenant entity.",
+        "acceptanceCriteria": "Agency record created on registration; all fields persisted.",
+        "sourceTraceability": ["RAW-DataModel-3.2"]
+      },
+      {
+        "id": "DR-002",
+        "category": "Entity Requirements",
+        "text": "System shall store Recruiter entity with fields: id, name, email, role (admin/recruiter/interviewer), agency_id.",
+        "priority": "P0",
+        "rationale": "User management.",
+        "acceptanceCriteria": "Recruiter assigned to agency; role enforced in RBAC.",
+        "sourceTraceability": ["RAW-DataModel-3.2"]
+      },
+      {
+        "id": "DR-003",
+        "category": "Entity Requirements",
+        "text": "System shall store HiringCompany entity with fields: id, name, industry, contact_info, agency_id.",
+        "priority": "P0",
+        "rationale": "Client management.",
+        "acceptanceCriteria": "HiringCompany linked to agency; data isolated per client.",
+        "sourceTraceability": ["RAW-DataModel-3.2"]
+      },
+      {
+        "id": "DR-004",
+        "category": "Entity Requirements",
+        "text": "System shall store Job entity with fields: id, title, description, requirements, salary_range, client_id, status, stages_config.",
+        "priority": "P0",
+        "rationale": "Core job posting entity.",
+        "acceptanceCriteria": "Job created under HiringCompany; stages_config stores custom pipeline config.",
+        "sourceTraceability": ["RAW-DataModel-3.2"]
+      },
+      {
+        "id": "DR-005",
+        "category": "Entity Requirements",
+        "text": "System shall store Candidate entity with fields: id, full_name, email, phone, location, resume_url, languages.",
+        "priority": "P0",
+        "rationale": "Candidate profile storage.",
+        "acceptanceCriteria": "Fields persisted after CV parse or manual entry; searchable.",
+        "sourceTraceability": ["RAW-DataModel-3.2"]
+      },
+      {
+        "id": "DR-006",
+        "category": "Entity Requirements",
+        "text": "System shall store Application entity with fields: id, candidate_id, job_id, status, stage, applied_at, ai_match_score.",
+        "priority": "P0",
+        "rationale": "Central workflow record.",
+        "acceptanceCriteria": "Created on application submission; stage updated on transitions.",
+        "sourceTraceability": ["RAW-DataModel-3.2"]
+      },
+      {
+        "id": "DR-007",
+        "category": "Entity Requirements",
+        "text": "System shall store Interview entity with fields: id, application_id, type (phone/technical/onsite), scheduled_at, interviewer_id, status, recording_url.",
+        "priority": "P0",
+        "rationale": "Interview tracking.",
+        "acceptanceCriteria": "Created on scheduling; recording_url populated post-interview.",
+        "sourceTraceability": ["RAW-DataModel-3.2"]
+      },
+      {
+        "id": "DR-008",
+        "category": "Entity Requirements",
+        "text": "System shall store Assessment entity with fields: id, application_id, type (mcq/predefined_answer), score, breakdown, ai_feedback.",
+        "priority": "P0",
+        "rationale": "Assessment result storage.",
+        "acceptanceCriteria": "Created on assessment completion; score and breakdown persisted within 5s.",
+        "sourceTraceability": ["RAW-DataModel-3.2"]
+      },
+      {
+        "id": "DR-009",
+        "category": "Entity Requirements",
+        "text": "System shall store LocalizedContent entity with fields: id, source_lang, target_lang, source_text, translated_text, entity_type, status, confidence, version.",
+        "priority": "P0",
+        "rationale": "Translation tracking with versioning.",
+        "acceptanceCriteria": "Stores each translation request; supports re-translation via version history.",
+        "sourceTraceability": ["RAW-DataModel-3.2", "RAW-010"]
+      },
+      {
+        "id": "DR-010",
+        "category": "Entity Requirements",
+        "text": "System shall store AIMatch entity with fields: id, application_id, embedding_vector, matching_score, skill_scores, org_preference_score, explanation.",
+        "priority": "P0",
+        "rationale": "AI match record for audit and explainability.",
+        "acceptanceCriteria": "Created after each matching run; vector stored for re-ranking if needed.",
+        "sourceTraceability": ["RAW-DataModel-3.2"]
+      },
+      {
+        "id": "DR-011",
+        "category": "Relationship Requirements",
+        "text": "Agency shall have one-to-many relationships with Recruiters, HiringCompanies, Candidates, and Jobs.",
+        "priority": "P0",
+        "rationale": "Data model integrity.",
+        "acceptanceCriteria": "Foreign key constraints enforced at database level.",
+        "sourceTraceability": ["RAW-DataModel-3.2"]
+      },
+      {
+        "id": "DR-012",
+        "category": "Relationship Requirements",
+        "text": "Recruiter shall have many-to-many relationship with HiringCompanies (managed_by).",
+        "priority": "P0",
+        "rationale": "Agency operational model.",
+        "acceptanceCriteria": "Join table created; recruiter can be assigned to multiple clients.",
+        "sourceTraceability": ["RAW-DataModel-3.2"]
+      },
+      {
+        "id": "DR-013",
+        "category": "Relationship Requirements",
+        "text": "Application shall belong to exactly one Candidate and one Job.",
+        "priority": "P0",
+        "rationale": "Data integrity.",
+        "acceptanceCriteria": "Constraint enforced; an application cannot exist without both.",
+        "sourceTraceability": ["RAW-DataModel-3.2"]
+      },
+      {
+        "id": "DR-014",
+        "category": "Relationship Requirements",
+        "text": "Interview, Assessment, LocalizedContent, and AIMatch shall reference their parent Application.",
+        "priority": "P0",
+        "rationale": "Entity traceability.",
+        "acceptanceCriteria": "All child records have valid application_id FK.",
+        "sourceTraceability": ["RAW-DataModel-3.2"]
+      }
+    ],
+
+    "integrationRequirements": [
+      {
+        "id": "IR-001",
+        "text": "System shall integrate with SendGrid or AWS SES for email delivery.",
+        "priority": "P0",
+        "rationale": "Notification delivery.",
+        "acceptanceCriteria": "Emails sent reliably; delivery tracked via provider API.",
+        "sourceTraceability": ["RAW-007", "RAW-014"]
+      },
+      {
+        "id": "IR-002",
+        "text": "System shall integrate with Google Calendar API for availability and scheduling.",
+        "priority": "P0",
+        "rationale": "Core scheduling dependency.",
+        "acceptanceCriteria": "OAuth2 connection established; events readable/writable.",
+        "sourceTraceability": ["RAW-003"]
+      },
+      {
+        "id": "IR-003",
+        "text": "System shall integrate with Microsoft Outlook Calendar API for availability and scheduling.",
+        "priority": "P0",
+        "rationale": "Core scheduling dependency.",
+        "acceptanceCriteria": "OAuth2 connection established; events readable/writable.",
+        "sourceTraceability": ["RAW-003"]
+      },
+      {
+        "id": "IR-004",
+        "text": "System shall integrate with OpenAI API (GPT-4o, text-embedding-3-large) as primary AI provider.",
+        "priority": "P0",
+        "rationale": "Core AI capabilities.",
+        "acceptanceCriteria": "API key configured; requests succeed with <500ms latency per call.",
+        "sourceTraceability": ["RAW-005"]
+      },
+      {
+        "id": "IR-005",
+        "text": "System shall integrate with Google Gemini API as fallback AI provider.",
+        "priority": "P0",
+        "rationale": "Reliability — failover for AI services.",
+        "acceptanceCriteria": "When OpenAI fails, requests automatically routed to Gemini within 10s.",
+        "sourceTraceability": ["RAW-005"]
+      },
+      {
+        "id": "IR-006",
+        "text": "System shall support future integration with external ATS platforms (Greenhouse, Lever, Workday).",
+        "priority": "P2",
+        "rationale": "Avoid duplication with existing tools.",
+        "acceptanceCriteria": "API contract defined; not implemented in MVP.",
+        "sourceTraceability": ["RAW-004"]
+      },
+      {
+        "id": "IR-007",
+        "text": "System shall support pgvector or Pinecone for vector similarity search.",
+        "priority": "P0",
+        "rationale": "Embedding-based candidate matching.",
+        "acceptanceCriteria": "Embeddings stored; similarity query returns results in <1s for 10K vectors.",
+        "sourceTraceability": ["RAW-005"]
+      },
+      {
+        "id": "IR-008",
+        "text": "System shall integrate with ClamAV or equivalent for malware scanning of uploaded files.",
+        "priority": "P0",
+        "rationale": "Upload security.",
+        "acceptanceCriteria": "All uploaded CVs scanned before storage; infected files rejected.",
+        "sourceTraceability": ["RAW-013"]
+      }
+    ],
+
+    "constraintRequirements": [
+      {
+        "id": "CR-001",
+        "category": "Security",
+        "text": "All user inputs shall be sanitized against XSS, SQL injection, and NoSQL injection.",
+        "priority": "P0",
+        "rationale": "OWASP security baseline.",
+        "acceptanceCriteria": "Penetration test shows no injection vulnerabilities.",
+        "sourceTraceability": ["RAW-013"]
+      },
+      {
+        "id": "CR-002",
+        "category": "Security",
+        "text": "All candidate PII shall be encrypted at rest (AES-256) and in transit (TLS 1.3).",
+        "priority": "P0",
+        "rationale": "GDPR/CCPA compliance.",
+        "acceptanceCriteria": "Encryption verified via security audit.",
+        "sourceTraceability": ["RAW-013"]
+      },
+      {
+        "id": "CR-003",
+        "category": "Security",
+        "text": "System shall enforce file upload validation: only PDF and DOCX, max 25MB, magic bytes verification.",
+        "priority": "P0",
+        "rationale": "Prevent malicious uploads.",
+        "acceptanceCriteria": "Non-PDF/DOCX files rejected; oversized files rejected; magic bytes verified.",
+        "sourceTraceability": ["RAW-013"]
+      },
+      {
+        "id": "CR-004",
+        "category": "Security",
+        "text": "API requests shall be rate-limited to 100 req/min per user; uploads to 10 files/min per user.",
+        "priority": "P1",
+        "rationale": "Prevent abuse and ensure fair usage.",
+        "acceptanceCriteria": "Rate limit enforced; 429 response returned when exceeded.",
+        "sourceTraceability": ["RAW-013"]
+      },
+      {
+        "id": "CR-005",
+        "category": "Security",
+        "text": "System shall comply with GDPR and CCPA requirements (right to erasure, data portability, consent management).",
+        "priority": "P0",
+        "rationale": "Regulatory compliance.",
+        "acceptanceCriteria": "Erasure request deletes all PII; export provides all user data in standard format.",
+        "sourceTraceability": ["RAW-013"]
+      },
+      {
+        "id": "CR-006",
+        "category": "Security",
+        "text": "System shall maintain configurable data retention policy per agency (6, 12, or 24 months).",
+        "priority": "P1",
+        "rationale": "Compliance and operational control.",
+        "acceptanceCriteria": "Admin sets retention period; automatic purge runs on schedule.",
+        "sourceTraceability": ["RAW-013"]
+      },
+      {
+        "id": "CR-007",
+        "category": "Security",
+        "text": "All candidate data access events shall be logged with who, what, when, IP, and device fingerprint.",
+        "priority": "P0",
+        "rationale": "Audit trail for compliance and security.",
+        "acceptanceCriteria": "Logs immutable; queryable via admin audit panel.",
+        "sourceTraceability": ["RAW-013"]
+      },
+      {
+        "id": "CR-008",
+        "category": "Deployment",
+        "text": "System shall deploy on GCP (Cloud Run or GKE).",
+        "priority": "P0",
+        "rationale": "User-confirmed deployment target.",
+        "acceptanceCriteria": "Production environment runs on GCP.",
+        "sourceTraceability": ["RAW-004"]
+      },
+      {
+        "id": "CR-009",
+        "category": "AI Stack",
+        "text": "System shall use OpenAI as primary and Gemini as fallback AI provider.",
+        "priority": "P0",
+        "rationale": "User-confirmed AI stack.",
+        "acceptanceCriteria": "Automatic failover tested and documented.",
+        "sourceTraceability": ["RAW-001"]
+      },
+      {
+        "id": "CR-010",
+        "category": "Budget",
+        "text": "MVP budget shall target $500–1,500/month for AI API usage and infrastructure.",
+        "priority": "P1",
+        "rationale": "Cost constraint.",
+        "acceptanceCriteria": "Monthly cost dashboard tracks actual spend; alerts at 80% threshold.",
+        "sourceTraceability": ["RAW-003"]
+      }
+    ],
+
+    "traceabilityMatrix": {
+      "description": "Maps each original feature (F-XXX) from 01-requirement.md to its decomposed atomic requirements",
+      "mappings": [
+        {
+          "originalFeature": "F-001 (AI Candidate Sourcing)",
+          "atomicRequirements": ["FR-001", "FR-002", "FR-003", "FR-004"]
+        },
+        {
+          "originalFeature": "F-002 (CV Parsing & Screening)",
+          "atomicRequirements": ["FR-005", "FR-006", "FR-007", "FR-008", "FR-009"]
+        },
+        {
+          "originalFeature": "F-003 (Interview Scheduling)",
+          "atomicRequirements": ["FR-010", "FR-011", "FR-012", "FR-013", "FR-014", "FR-015", "FR-016", "FR-017"]
+        },
+        {
+          "originalFeature": "F-004 (Auto Test Scoring)",
+          "atomicRequirements": ["FR-018", "FR-019", "FR-020", "FR-021", "FR-022", "FR-023"]
+        },
+        {
+          "originalFeature": "F-005 (AI Interviewer)",
+          "atomicRequirements": [],
+          "note": "Deferred to Phase 2"
+        },
+        {
+          "originalFeature": "F-006 (Chatbot)",
+          "atomicRequirements": [],
+          "note": "Deferred to Phase 2; replaced by Translation (FR-028–FR-032)"
+        },
+        {
+          "originalFeature": "F-007 (Content Generation)",
+          "atomicRequirements": [],
+          "note": "Deferred to Phase 2; replaced by Email & Notifications (FR-033–FR-036)"
+        },
+        {
+          "originalFeature": "F-008 (Recruitment Design / Pipeline)",
+          "atomicRequirements": ["FR-024", "FR-025", "FR-026", "FR-027"]
+        },
+        {
+          "originalFeature": "F-009 (RBAC — new)",
+          "atomicRequirements": ["FR-037", "FR-038", "FR-039", "FR-040", "FR-041"]
+        },
+        {
+          "originalFeature": "Translation / Localization (new)",
+          "atomicRequirements": ["FR-028", "FR-029", "FR-030", "FR-031", "FR-032"]
+        },
+        {
+          "originalFeature": "Email & Notifications (new)",
+          "atomicRequirements": ["FR-033", "FR-034", "FR-035", "FR-036"]
+        },
+        {
+          "originalFeature": "Multi-Client Data Isolation (new)",
+          "atomicRequirements": ["FR-042", "FR-043", "FR-044", "FR-045"]
+        }
+      ]
+    },
+
+    "crossCategoryTraceability": {
+      "description": "Maps non-functional/data/integration/constraint requirements back to upstream features",
+      "mappings": [
+        { "reqId": "NFR-002", "upstreamFeatures": ["F-002"], "note": "CV parsing + AI scoring latency" },
+        { "reqId": "NFR-003", "upstreamFeatures": ["F-001"], "note": "AI matching score latency" },
+        { "reqId": "NFR-004", "upstreamFeatures": ["F-003", "RAW-015"], "note": "Scheduling suggestion latency" },
+        { "reqId": "NFR-005", "upstreamFeatures": ["F-006"], "note": "Translation latency" },
+        { "reqId": "NFR-007", "upstreamFeatures": ["F-009"], "note": "Multi-tenant data isolation" },
+        { "reqId": "NFR-008", "upstreamFeatures": ["RAW-005"], "note": "AI workload scaling" },
+        { "reqId": "NFR-013", "upstreamFeatures": ["RAW-013"], "note": "LLM fallback to rule-based" },
+        { "reqId": "DR-009", "upstreamFeatures": ["F-006", "RAW-010"], "note": "Translation entity with confidence" },
+        { "reqId": "DR-010", "upstreamFeatures": ["RAW-DataModel-3.2"], "note": "AIMatch with org_preference_score" },
+        { "reqId": "IR-001", "upstreamFeatures": ["F-007", "RAW-014"], "note": "Email delivery integration" },
+        { "reqId": "IR-004", "upstreamFeatures": ["RAW-005"], "note": "Primary AI provider" },
+        { "reqId": "IR-005", "upstreamFeatures": ["RAW-005"], "note": "Fallback AI provider" },
+        { "reqId": "IR-007", "upstreamFeatures": ["RAW-005"], "note": "Vector search integration" },
+        { "reqId": "IR-008", "upstreamFeatures": ["RAW-013"], "note": "Malware scanning" },
+        { "reqId": "CR-008", "upstreamFeatures": ["RAW-004"], "note": "Deployment target — resolved" },
+        { "reqId": "CR-009", "upstreamFeatures": ["RAW-001"], "note": "AI provider — resolved" },
+        { "reqId": "CR-010", "upstreamFeatures": ["RAW-003"], "note": "Budget — resolved" }
+      ]
+    },
+
+    "newOpenQuestions": [
+      {
+        "id": "OQ-006",
+        "question": "Should translation support batch processing (multiple CVs at once) or only one at a time?",
+        "impact": "Affects queue design and UX flow; batch processing more efficient but increases complexity",
+        "category": "Translation"
+      },
+      {
+        "id": "OQ-007",
+        "question": "Should candidate outreach messages be fully AI-generated or template-based with AI personalization?",
+        "impact": "Affects content generation scope; fully AI offers more personalization but requires more guardrails",
+        "category": "Candidate Sourcing"
+      },
+      {
+        "id": "OQ-008",
+        "question": "Should candidate deduplication be automatic (merge) or flag-only for recruiter review?",
+        "impact": "Affects data model and UX; automatic merge is more efficient but risks data loss",
+        "category": "Multi-Client Data Isolation"
+      }
+    ],
+
+    "gateValidation": {
+      "completeness": {
+        "status": "PASS",
+        "checks": [
+          "All RAW-* sources from Phase 1 have ≥1 downstream REQ-*",
+          "All new requirements (translation, email, RBAC, multi-client) have REQ-* coverage",
+          "Non-functional requirements decomposed into measurable atomic statements",
+          "Integration requirements mapped to specific providers",
+          "Security and compliance requirements explicitly stated"
+        ]
+      },
+      "quality": {
+        "status": "PASS",
+        "checks": [
+          "Every REQ-* has measurable acceptance criteria",
+          "Every REQ-* has source traceability (no orphan requirements)",
+          "Priority assigned consistently (P0 = MVP, P1 = next, P2 = future)",
+          "No technical design decisions leak into requirement level",
+          "'Shall' language used consistently for requirements"
+        ]
+      }
+    }
+  }
+}

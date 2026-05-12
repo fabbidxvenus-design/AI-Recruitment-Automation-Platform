@@ -1,0 +1,530 @@
+{
+  "schema": "traceability-matrix/v2.0",
+  "metadata": {
+    "title": "Traceability Matrix — AI Recruitment Automation Platform",
+    "version": "2.0.0",
+    "date": "2026-05-12",
+    "sources": [
+      "01-requirement.md (v0.2.0)",
+      "02-requirement-definition.md (v0.1.0)",
+      "03-business-definition.md (v2.0.0)",
+      "04-llm-architecture-spec.md (v1.0.0)"
+    ]
+  },
+
+  "forwardTraceability": {
+    "businessPolicies": [
+      { "bpId": "BP-001", "title": "Reduce time-to-hire", "mappedReqIds": ["FR-001","FR-002","FR-007","FR-010","FR-013"], "features": ["F-001","F-003"] },
+      { "bpId": "BP-002", "title": "Improve candidate quality", "mappedReqIds": ["FR-002","FR-003","FR-007","FR-008"], "features": ["F-001","F-002"] },
+      { "bpId": "BP-003", "title": "Scale multi-client operations", "mappedReqIds": ["FR-042","FR-043","FR-044","FR-045","NFR-007"], "features": ["F-009"] },
+      { "bpId": "BP-004", "title": "Reduce manual recruiter workload", "mappedReqIds": ["FR-001","FR-004","FR-015","FR-016","FR-033"], "features": ["F-001","F-003","F-007"] },
+      { "bpId": "BP-005", "title": "Enable cross-border hiring", "mappedReqIds": ["FR-028","FR-029","FR-030","FR-031","FR-017"], "features": ["F-006","F-003"] },
+      { "bpId": "BP-006", "title": "Ensure compliance and auditability", "mappedReqIds": ["CR-005","CR-006","CR-007","NFR-011","NFR-012"], "sections": ["Sec-10","Sec-12"] },
+      { "bpId": "BP-007", "title": "Minimize AI cost exposure", "mappedReqIds": ["CR-010","NFR-003","NFR-005","NFR-013"], "sections": ["Sec-12","Sec-6"] },
+      { "bpId": "BP-008", "title": "Provide transparent AI decisions", "mappedReqIds": ["FR-003","FR-008","FR-022"], "features": ["F-001","F-002"] }
+    ],
+
+    "businessRules": {
+      "candidateManagement": [
+        { "brId": "BR-001", "rule": "Unique candidate email", "mappedReqIds": ["FR-009"] },
+        { "brId": "BR-002", "rule": "Duplicate detection threshold 90%", "mappedReqIds": ["FR-009"] },
+        { "brId": "BR-003", "rule": "PII encryption AES-256 / TLS 1.3", "mappedReqIds": ["CR-002"] },
+        { "brId": "BR-004", "rule": "Candidate data scoped to HiringCompany", "mappedReqIds": ["FR-042"] },
+        { "brId": "BR-005", "rule": "Shared candidate pool with dedup", "mappedReqIds": ["FR-044"] }
+      ],
+      "jobPipeline": [
+        { "brId": "BR-006", "rule": "Job belongs to exactly one HiringCompany", "mappedReqIds": ["DR-013"] },
+        { "brId": "BR-007", "rule": "Default pipeline stages", "mappedReqIds": ["FR-024","FR-025"] },
+        { "brId": "BR-008", "rule": "Client-customizable stages", "mappedReqIds": ["FR-025","FR-045"] },
+        { "brId": "BR-009", "rule": "Auto-transition within 60s", "mappedReqIds": ["FR-026"] },
+        { "brId": "BR-010", "rule": "Application requires Candidate + Job", "mappedReqIds": ["DR-013"] }
+      ],
+      "scheduling": [
+        { "brId": "BR-011", "rule": "UTC storage, local display", "mappedReqIds": ["FR-017"] },
+        { "brId": "BR-012", "rule": "Slot suggestions < 5s", "mappedReqIds": ["FR-013","NFR-004"] },
+        { "brId": "BR-013", "rule": "Business hours 9:00–18:00", "mappedReqIds": ["FR-013"] },
+        { "brId": "BR-014", "rule": "Reminders 24h before interview", "mappedReqIds": ["FR-015"] },
+        { "brId": "BR-015", "rule": "Self-service rescheduling", "mappedReqIds": ["FR-016"] }
+      ],
+      "aiScoring": [
+        { "brId": "BR-016", "rule": "Weighted scoring: Skills 40%, Exp 30%, Edu 20%, Org 10%", "mappedReqIds": ["FR-003"] },
+        { "brId": "BR-017", "rule": "Admin-configurable weights", "mappedReqIds": ["FR-003"] },
+        { "brId": "BR-018", "rule": "AI matching < 15s", "mappedReqIds": ["NFR-003"] },
+        { "brId": "BR-019", "rule": "Explainable score breakdowns", "mappedReqIds": ["FR-008","FR-022"] },
+        { "brId": "BR-020", "rule": "CV parsing ≥ 90% accuracy", "mappedReqIds": ["FR-006"] },
+        { "brId": "BR-021", "rule": "End-to-end parsing + scoring < 15s", "mappedReqIds": ["NFR-002"] },
+        { "brId": "BR-022", "rule": "Fallback to rule-based within 10s", "mappedReqIds": ["NFR-013"] },
+        { "brId": "BR-023", "rule": "Advisory-only AI, human approval required", "mappedReqIds": ["FR-023","CR-001"] },
+        { "brId": "BR-024", "rule": "OpenAI primary + Gemini fallback", "mappedReqIds": ["CR-009","IR-004","IR-005"] }
+      ],
+      "assessment": [
+        { "brId": "BR-025", "rule": "MCQ auto-grading 100% accuracy", "mappedReqIds": ["FR-018","FR-019"] },
+        { "brId": "BR-026", "rule": "Assessment scores within 5s", "mappedReqIds": ["NFR-004","FR-020"] },
+        { "brId": "BR-027", "rule": "Configurable pass/fail threshold per job", "mappedReqIds": ["FR-021"] },
+        { "brId": "BR-028", "rule": "Recruiter override with reason", "mappedReqIds": ["FR-023"] }
+      ],
+      "translation": [
+        { "brId": "BR-029", "rule": "Language pairs JP↔VN, JP↔EN, VN↔EN", "mappedReqIds": ["FR-028"] },
+        { "brId": "BR-030", "rule": "Auto-detect source language ≥ 95%", "mappedReqIds": ["FR-031"] },
+        { "brId": "BR-031", "rule": "Translation within 30s per document", "mappedReqIds": ["FR-028","NFR-005"] },
+        { "brId": "BR-032", "rule": "Low confidence < 80% → human review", "mappedReqIds": ["FR-032"] },
+        { "brId": "BR-033", "rule": "Agency bilingual glossary", "mappedReqIds": ["FR-028","FR-030"] }
+      ],
+      "communication": [
+        { "brId": "BR-034", "rule": "Email notifications within 60s", "mappedReqIds": ["FR-033"] },
+        { "brId": "BR-035", "rule": "Agency branding in emails", "mappedReqIds": ["FR-036"] },
+        { "brId": "BR-036", "rule": "HTML + plain text templates", "mappedReqIds": ["FR-036"] },
+        { "brId": "BR-037", "rule": "Progress reports to HiringCompanies", "mappedReqIds": ["FR-035"] }
+      ],
+      "accessControl": [
+        { "brId": "BR-038", "rule": "RBAC at entity level", "mappedReqIds": ["FR-040"] },
+        { "brId": "BR-039", "rule": "Cross-client data access denied by default", "mappedReqIds": ["FR-042"] },
+        { "brId": "BR-040", "rule": "Recruiter multi-client, assigned data only", "mappedReqIds": ["FR-043"] },
+        { "brId": "BR-041", "rule": "Optional SSO + optional MFA", "mappedReqIds": ["FR-038","FR-039"] },
+        { "brId": "BR-042", "rule": "JWT access/refresh token flow", "mappedReqIds": ["FR-041"] }
+      ],
+      "securityCompliance": [
+        { "brId": "BR-043", "rule": "Input sanitization XSS/SQLi/NoSQLi", "mappedReqIds": ["CR-001"] },
+        { "brId": "BR-044", "rule": "File upload: PDF/DOCX, 25MB, magic bytes", "mappedReqIds": ["CR-003"] },
+        { "brId": "BR-045", "rule": "ClamAV malware scan before storage", "mappedReqIds": ["IR-008"] },
+        { "brId": "BR-046", "rule": "Rate limiting: 100 req/min, 10 uploads/min", "mappedReqIds": ["CR-004"] },
+        { "brId": "BR-047", "rule": "Audit log: who, what, when, IP, device", "mappedReqIds": ["CR-007"] },
+        { "brId": "BR-048", "rule": "Configurable retention: 6/12/24 months", "mappedReqIds": ["CR-006"] },
+        { "brId": "BR-049", "rule": "Right to erasure + data portability", "mappedReqIds": ["CR-005"] },
+        { "brId": "BR-050", "rule": "No hardcoded secrets", "mappedReqIds": ["CR-001","CR-002"] }
+      ],
+      "infrastructure": [
+        { "brId": "BR-051", "rule": "99.5% uptime SLA", "mappedReqIds": ["NFR-011"] },
+        { "brId": "BR-052", "rule": "≤ 24h RPO backups", "mappedReqIds": ["NFR-012"] },
+        { "brId": "BR-053", "rule": "Horizontal scaling via BullMQ", "mappedReqIds": ["NFR-008"] },
+        { "brId": "BR-054", "rule": "Circuit breaker: 10s detect, 30s reset", "mappedReqIds": ["NFR-013"] },
+        { "brId": "BR-055", "rule": "Health checks for DB, AI, queue, cache", "mappedReqIds": ["NFR-014"] },
+        { "brId": "BR-056", "rule": "Deployment on GCP", "mappedReqIds": ["CR-008"] },
+        { "brId": "BR-057", "rule": "AI budget $500–$1,500/mo, 80% alert", "mappedReqIds": ["CR-010"] },
+        { "brId": "BR-058", "rule": "Read replicas for analytics", "mappedReqIds": ["NFR-010"] }
+      ],
+      "aiGovernance": [
+        { "brId": "BR-059", "rule": "AI routing: cheapest model meeting quality", "mappedReqIds": ["BP-007","CR-010"] },
+        { "brId": "BR-060", "rule": "Translation batching >5 pending items", "mappedReqIds": ["BP-007","NFR-005"] },
+        { "brId": "BR-061", "rule": "Embedding cache 30 days per doc version", "mappedReqIds": ["BP-007"] },
+        { "brId": "BR-062", "rule": "Prompt truncation to model limit −500 tokens", "mappedReqIds": ["BP-007","NFR-003"] },
+        { "brId": "BR-063", "rule": "AI cost dashboard visible to Agency Admin", "mappedReqIds": ["BP-007","BR-057"] },
+        { "brId": "BR-064", "rule": "All AI API calls logged with model, tokens, cost, latency", "mappedReqIds": ["BP-007","CR-007"] }
+      ],
+      "multiClientOwnership": [
+        { "brId": "BR-065", "rule": "Candidate profile agency-scoped; application client-scoped", "mappedReqIds": ["BP-003","FR-042"] },
+        { "brId": "BR-066", "rule": "Interview feedback client-scoped, never shared", "mappedReqIds": ["BP-003","FR-042"] },
+        { "brId": "BR-067", "rule": "Internal recruiter notes private by default", "mappedReqIds": ["FR-042"] },
+        { "brId": "BR-068", "rule": "Salary expectations require candidate consent", "mappedReqIds": ["CR-005"] },
+        { "brId": "BR-069", "rule": "AI credit budget agency-level with per-client allocation", "mappedReqIds": ["BP-007","CR-010"] },
+        { "brId": "BR-070", "rule": "Cross-client dedup flag-only; merge requires approval", "mappedReqIds": ["FR-009","UC-008"] },
+        { "brId": "BR-071", "rule": "Agency admin can audit all data access", "mappedReqIds": ["CR-007"] }
+      ],
+      "workflowEngine": [
+        { "brId": "BR-072", "rule": "All workflow transitions event-driven, rule-configurable", "mappedReqIds": [] },
+        { "brId": "BR-073", "rule": "Auto-transition fires within 60s of trigger event", "mappedReqIds": ["FR-026"] },
+        { "brId": "BR-074", "rule": "Manual stage override takes precedence over auto-rules", "mappedReqIds": ["FR-023"] },
+        { "brId": "BR-075", "rule": "All transitions logged as immutable workflow events", "mappedReqIds": ["FR-023","CR-007"] },
+        { "brId": "BR-076", "rule": "Failed auto-transition retry 3x → manual review queue", "mappedReqIds": ["NFR-013"] },
+        { "brId": "BR-077", "rule": "Stalled candidates >7 days trigger recruiter alert", "mappedReqIds": ["BP-004"] }
+      ],
+      "audit": [
+        { "brId": "BR-078", "rule": "All audit events immutable and append-only", "mappedReqIds": ["CR-007"] },
+        { "brId": "BR-079", "rule": "Audit log retained per agency policy 6/12/24 months", "mappedReqIds": ["CR-006"] },
+        { "brId": "BR-080", "rule": "Audit log searchable by actor, action, entity, timestamp", "mappedReqIds": [] },
+        { "brId": "BR-081", "rule": "GDPR export includes all audit events for requesting user", "mappedReqIds": ["CR-005"] },
+        { "brId": "BR-082", "rule": "High-severity events trigger real-time admin alert", "mappedReqIds": ["CR-001"] },
+        { "brId": "BR-083", "rule": "Every API request correlated via traceId", "mappedReqIds": ["NFR-014"] }
+      ],
+      "humanReview": [
+        { "brId": "BR-084", "rule": "Translation confidence <80% → human review queue", "mappedReqIds": ["FR-032","UC-024"] },
+        { "brId": "BR-085", "rule": "Review items assigned via round-robin + load balancing", "mappedReqIds": ["UC-024"] },
+        { "brId": "BR-086", "rule": "Review SLAs: Urgent <4h, Normal <24h, Low <72h", "mappedReqIds": ["UC-024"] },
+        { "brId": "BR-087", "rule": "SLA breach → auto-escalate to senior reviewer", "mappedReqIds": ["UC-024"] },
+        { "brId": "BR-088", "rule": "Reviewer can approve, reject with notes, or return", "mappedReqIds": ["UC-024"] },
+        { "brId": "BR-089", "rule": "Max 3 review attempts before alternative reviewer", "mappedReqIds": ["UC-024"] }
+      ],
+      "timelineCollaboration": [
+        { "brId": "BR-090", "rule": "All system/user actions recorded in timeline", "mappedReqIds": ["BP-006","CR-007"] },
+        { "brId": "BR-091", "rule": "Timeline events inherit source entity visibility", "mappedReqIds": ["BR-065","BR-066"] },
+        { "brId": "BR-092", "rule": "Timeline exportable to PDF per candidate", "mappedReqIds": ["BP-003"] },
+        { "brId": "BR-093", "rule": "Internal notes private by default; shared via @mention", "mappedReqIds": ["BR-067"] },
+        { "brId": "BR-094", "rule": "Notes scoped to candidate, visible across client apps", "mappedReqIds": ["BP-003"] },
+        { "brId": "BR-095", "rule": "Tags/flags agency-level configurable", "mappedReqIds": ["BP-004"] },
+        { "brId": "BR-096", "rule": "Tasks trigger in-app notifications to assignee", "mappedReqIds": ["BP-004"] }
+      ],
+      "searchFiltering": [
+        { "brId": "BR-097", "rule": "Semantic search default for candidate discovery", "mappedReqIds": ["BP-002"] },
+        { "brId": "BR-098", "rule": "Faceted filters narrow after semantic ranking", "mappedReqIds": ["BP-002"] },
+        { "brId": "BR-099", "rule": "Saved searches with email alerts per recruiter", "mappedReqIds": ["BP-004"] },
+        { "brId": "BR-100", "rule": "All search queries scoped to agency + active client", "mappedReqIds": ["BR-039"] }
+      ],
+      "notifications": [
+        { "brId": "BR-101", "rule": "In-app notifications delivered within 30s", "mappedReqIds": ["FR-034"] },
+        { "brId": "BR-102", "rule": "Email notifications delivered within 60s", "mappedReqIds": ["FR-033"] },
+        { "brId": "BR-103", "rule": "All notifications user-scoped and role-aware", "mappedReqIds": ["BR-038"] },
+        { "brId": "BR-104", "rule": "Unread notification count tracked per user", "mappedReqIds": [] },
+        { "brId": "BR-105", "rule": "Notification preferences configurable per user", "mappedReqIds": [] },
+        { "brId": "BR-106", "rule": "Candidate-facing emails include agency branding", "mappedReqIds": ["FR-036"] }
+      ],
+      "fileManagement": [
+        { "brId": "BR-107", "rule": "All uploaded files scanned for malware", "mappedReqIds": ["IR-008","CR-003"] },
+        { "brId": "BR-108", "rule": "File storage path includes agencyId/clientId", "mappedReqIds": ["BR-039"] },
+        { "brId": "BR-109", "rule": "File retention follows agency data retention policy", "mappedReqIds": ["BR-048"] },
+        { "brId": "BR-110", "rule": "Signed contracts/offer letters immutable once sent", "mappedReqIds": [] }
+      ],
+      "reporting": [
+        { "brId": "BR-111", "rule": "Pipeline reports per-client with configurable date range", "mappedReqIds": ["BP-003"] },
+        { "brId": "BR-112", "rule": "Bulk data export respects RBAC and tenant isolation", "mappedReqIds": ["BR-039"] },
+        { "brId": "BR-113", "rule": "Scheduled reports emailed at configured time", "mappedReqIds": ["BP-003"] },
+        { "brId": "BR-114", "rule": "GDPR data export completes within 72h", "mappedReqIds": ["CR-005"] }
+      ],
+      "observability": [
+        { "brId": "BR-115", "rule": "All services emit structured JSON logs with traceId", "mappedReqIds": ["NFR-014"] },
+        { "brId": "BR-116", "rule": "Health check endpoints for DB, AI, queue, cache", "mappedReqIds": ["NFR-014"] },
+        { "brId": "BR-117", "rule": "Alerting for error rate, latency, queue depth, AI cost", "mappedReqIds": ["NFR-014"] },
+        { "brId": "BR-118", "rule": "Distributed tracing propagated across all services", "mappedReqIds": ["NFR-014"] }
+      ],
+      "queueBackground": [
+        { "brId": "BR-119", "rule": "AI parsing/matching jobs processed before translation/reporting", "mappedReqIds": ["NFR-008"] },
+        { "brId": "BR-120", "rule": "Critical queues auto-scale workers under load", "mappedReqIds": ["NFR-008"] },
+        { "brId": "BR-121", "rule": "Failed jobs retry: 3x exponential critical, 1x low", "mappedReqIds": ["NFR-013"] },
+        { "brId": "BR-122", "rule": "Permanently failed critical jobs → admin alert", "mappedReqIds": ["NFR-014"] }
+      ],
+      "environmentRelease": [
+        { "brId": "BR-123", "rule": "Production data never accessible in sandbox/dev", "mappedReqIds": ["CR-002","CR-007"] },
+        { "brId": "BR-124", "rule": "Staging uses anonymized production data", "mappedReqIds": [] },
+        { "brId": "BR-125", "rule": "Feature flags control gradual AI rollout", "mappedReqIds": ["BP-007"] },
+        { "brId": "BR-126", "rule": "Blue-green deployment ensures zero-downtime", "mappedReqIds": ["NFR-011"] }
+      ],
+      "portalDashboard": [
+        { "brId": "BR-127", "rule": "Candidate portal requires auth via email link or SSO", "mappedReqIds": ["FR-037"] },
+        { "brId": "BR-128", "rule": "Candidates can only view/modify own application", "mappedReqIds": ["BR-039","FR-042"] },
+        { "brId": "BR-129", "rule": "Portal availability submissions trigger scheduling", "mappedReqIds": ["FR-011"] },
+        { "brId": "BR-130", "rule": "Portal UI rendered in candidate's preferred language", "mappedReqIds": ["FR-031"] },
+        { "brId": "BR-131", "rule": "All external APIs versioned at /api/v1/", "mappedReqIds": [] },
+        { "brId": "BR-132", "rule": "WebSocket connections authenticated via JWT", "mappedReqIds": ["BR-042"] },
+        { "brId": "BR-133", "rule": "AI services decoupled and independently deployable", "mappedReqIds": ["BP-007","BR-053"] },
+        { "brId": "BR-134", "rule": "Circuit breaker per AI provider independently", "mappedReqIds": ["NFR-013"] },
+        { "brId": "BR-135", "rule": "Rate limiting: 100 req/min/user, 10 uploads/min", "mappedReqIds": ["BR-046"] },
+        { "brId": "BR-136", "rule": "Webhook delivery retries 3x with exponential backoff", "mappedReqIds": ["NFR-013"] },
+        { "brId": "BR-137", "rule": "Internal service-to-service calls authenticated via mTLS", "mappedReqIds": ["CR-001"] }
+      ],
+      "billingOnboarding": [
+        { "brId": "BR-138", "rule": "AI credit budget per agency, resets monthly", "mappedReqIds": ["BP-007","CR-010"] },
+        { "brId": "BR-139", "rule": "Per-client allocations within agency budget", "mappedReqIds": ["BP-003","BP-007"] },
+        { "brId": "BR-140", "rule": "Usage metrics visible to Agency Admin in real-time", "mappedReqIds": ["BP-007"] }
+      ]
+    },
+
+    "useCases": [
+      { "ucId": "UC-001", "title": "Search candidates across channels", "mappedReqIds": ["FR-001"] },
+      { "ucId": "UC-002", "title": "AI semantic matching", "mappedReqIds": ["FR-002","FR-003"] },
+      { "ucId": "UC-003", "title": "Manual score override", "mappedReqIds": ["FR-003","FR-023"] },
+      { "ucId": "UC-004", "title": "Automated outreach", "mappedReqIds": ["FR-004"] },
+      { "ucId": "UC-005", "title": "Upload and parse CV", "mappedReqIds": ["FR-005","FR-006"] },
+      { "ucId": "UC-006", "title": "Manual field correction", "mappedReqIds": ["FR-006"] },
+      { "ucId": "UC-007", "title": "CV screening against job", "mappedReqIds": ["FR-007","FR-008"] },
+      { "ucId": "UC-008", "title": "Duplicate detection", "mappedReqIds": ["FR-009"] },
+      { "ucId": "UC-009", "title": "Connect calendar", "mappedReqIds": ["FR-010"] },
+      { "ucId": "UC-010", "title": "Collect candidate availability", "mappedReqIds": ["FR-011"] },
+      { "ucId": "UC-011", "title": "Suggest optimal slots", "mappedReqIds": ["FR-013"] },
+      { "ucId": "UC-012", "title": "Schedule multi-round interview", "mappedReqIds": ["FR-014","FR-015"] },
+      { "ucId": "UC-013", "title": "Reschedule interview", "mappedReqIds": ["FR-016"] },
+      { "ucId": "UC-014", "title": "Send reminders", "mappedReqIds": ["FR-015"] },
+      { "ucId": "UC-015", "title": "Create MCQ assessment", "mappedReqIds": ["FR-018","FR-021"] },
+      { "ucId": "UC-016", "title": "Take and auto-grade assessment", "mappedReqIds": ["FR-018","FR-019","FR-020","FR-022"] },
+      { "ucId": "UC-017", "title": "Override assessment result", "mappedReqIds": ["FR-023"] },
+      { "ucId": "UC-018", "title": "Configure pipeline stages", "mappedReqIds": ["FR-024","FR-025","FR-026"] },
+      { "ucId": "UC-019", "title": "Manage candidate pipeline", "mappedReqIds": ["FR-024","FR-026","FR-027"] },
+      { "ucId": "UC-020", "title": "View pipeline dashboard", "mappedReqIds": ["FR-027","NFR-001"] },
+      { "ucId": "UC-021", "title": "Translate CV", "mappedReqIds": ["FR-028","FR-031","FR-032"] },
+      { "ucId": "UC-022", "title": "Translate interview feedback", "mappedReqIds": ["FR-029"] },
+      { "ucId": "UC-023", "title": "Translate job description", "mappedReqIds": ["FR-030"] },
+      { "ucId": "UC-024", "title": "Review low-confidence translations", "mappedReqIds": ["FR-032"] },
+      { "ucId": "UC-025", "title": "Candidate notification", "mappedReqIds": ["FR-033"] },
+      { "ucId": "UC-026", "title": "Recruiter notification", "mappedReqIds": ["FR-034"] },
+      { "ucId": "UC-027", "title": "Client progress report", "mappedReqIds": ["FR-035"] },
+      { "ucId": "UC-028", "title": "Login with credentials", "mappedReqIds": ["FR-037"] },
+      { "ucId": "UC-029", "title": "SSO login", "mappedReqIds": ["FR-038"] },
+      { "ucId": "UC-030", "title": "MFA verification", "mappedReqIds": ["FR-039"] },
+      { "ucId": "UC-031", "title": "Role-based access enforcement", "mappedReqIds": ["FR-040"] },
+      { "ucId": "UC-032", "title": "Switch client context", "mappedReqIds": ["FR-042","FR-043"] },
+      { "ucId": "UC-033", "title": "Manage client account", "mappedReqIds": ["FR-043","FR-045"] },
+      { "ucId": "UC-034", "title": "View candidate activity timeline", "mappedReqIds": ["FR-024","DR-007"] },
+      { "ucId": "UC-035", "title": "Add internal note to candidate", "mappedReqIds": ["FR-042"] },
+      { "ucId": "UC-036", "title": "View candidate portal as recruiter", "mappedReqIds": ["FR-037"] },
+      { "ucId": "UC-037", "title": "Hybrid search with faceted filters", "mappedReqIds": ["FR-001","FR-002"] },
+      { "ucId": "UC-038", "title": "Respond to notification", "mappedReqIds": ["FR-033","FR-034"] }
+    ],
+
+    "kpis": [
+      { "kpiId": "KPI-001", "name": "Time-to-hire ≤25 days", "mappedReqIds": ["FR-010","FR-013"] },
+      { "kpiId": "KPI-002", "name": "AI matching accuracy ≥85%", "mappedReqIds": ["FR-002","FR-003"] },
+      { "kpiId": "KPI-003", "name": "CV parsing accuracy ≥90%", "mappedReqIds": ["FR-005","FR-006"] },
+      { "kpiId": "KPI-004", "name": "Screening throughput <15s", "mappedReqIds": ["NFR-002","NFR-003"] },
+      { "kpiId": "KPI-005", "name": "Scheduling efficiency 60% reduction", "mappedReqIds": ["FR-013","FR-015","FR-016"] },
+      { "kpiId": "KPI-006", "name": "Translation quality <10% human review", "mappedReqIds": ["FR-032"] },
+      { "kpiId": "KPI-007", "name": "Automation rate ≥60%", "mappedReqIds": ["FR-001","FR-004","FR-033","FR-034"] },
+      { "kpiId": "KPI-008", "name": "System uptime 99.5%", "mappedReqIds": ["NFR-011"] },
+      { "kpiId": "KPI-009", "name": "AI cost $500–$1,500/mo", "mappedReqIds": ["CR-010"] },
+      { "kpiId": "KPI-010", "name": "Zero cross-client data leaks", "mappedReqIds": ["NFR-007","FR-042"] },
+      { "kpiId": "KPI-011", "name": "Recruiter satisfaction ≥4.0/5.0", "mappedReqIds": [] },
+      { "kpiId": "KPI-012", "name": "Client retention ≥90%", "mappedReqIds": ["FR-042","FR-045"] }
+    ],
+
+    "risks": [
+      { "rskId": "RSK-001", "risk": "AI provider outage", "mappedReqIds": ["NFR-013","FR-022"] },
+      { "rskId": "RSK-002", "risk": "AI accuracy below 85%", "mappedReqIds": ["FR-003","NFR-003"] },
+      { "rskId": "RSK-003", "risk": "Data breach exposes PII", "mappedReqIds": ["CR-001","CR-002","CR-007"] },
+      { "rskId": "RSK-004", "risk": "GDPR/CCPA non-compliance", "mappedReqIds": ["CR-005","FR-032"] },
+      { "rskId": "RSK-005", "risk": "AI cost overruns", "mappedReqIds": ["CR-010","NFR-003"] },
+      { "rskId": "RSK-006", "risk": "Low-quality translations", "mappedReqIds": ["FR-028","FR-032","FR-030"] },
+      { "rskId": "RSK-007", "risk": "Cross-tenant data leak", "mappedReqIds": ["FR-042","NFR-007"] },
+      { "rskId": "RSK-008", "risk": "Calendar integration failures", "mappedReqIds": ["FR-010","FR-016"] },
+      { "rskId": "RSK-009", "risk": "Malicious file upload", "mappedReqIds": ["CR-003","IR-008"] },
+      { "rskId": "RSK-010", "risk": "Recruiter resistance to AI", "mappedReqIds": ["FR-003","FR-022"] },
+      { "rskId": "RSK-011", "risk": "BullMQ/Redis failure", "mappedReqIds": ["NFR-008","NFR-013"] },
+      { "rskId": "RSK-012", "risk": "Multi-language support gaps", "mappedReqIds": ["FR-028","FR-032"] },
+      { "rskId": "RSK-013", "risk": "Workflow engine misconfiguration", "mappedReqIds": ["FR-026","NFR-013"] },
+      { "rskId": "RSK-014", "risk": "Notification overload", "mappedReqIds": ["FR-033","FR-034"] },
+      { "rskId": "RSK-015", "risk": "Data retention purge deletes active data", "mappedReqIds": ["CR-006","CR-007"] }
+    ]
+  },
+
+  "reverseTraceability": {
+    "functionalRequirements": {
+      "FR-001": { "reqId": "FR-001", "description": "AI candidate sourcing / multi-channel search", "bps": ["BP-001","BP-004"], "brs": [], "ucs": ["UC-001","UC-037"], "kpis": ["KPI-007"], "rsks": [] },
+      "FR-002": { "reqId": "FR-002", "description": "AI semantic matching", "bps": ["BP-001","BP-002"], "brs": [], "ucs": ["UC-002","UC-037"], "kpis": ["KPI-002"], "rsks": [] },
+      "FR-003": { "reqId": "FR-003", "description": "Manual score override with explainable AI", "bps": ["BP-002","BP-008"], "brs": ["BR-016","BR-017"], "ucs": ["UC-002","UC-003"], "kpis": ["KPI-002"], "rsks": ["RSK-002","RSK-010"] },
+      "FR-004": { "reqId": "FR-004", "description": "Automated outreach (draft + approval)", "bps": ["BP-004"], "brs": [], "ucs": ["UC-004"], "kpis": ["KPI-007"], "rsks": [] },
+      "FR-005": { "reqId": "FR-005", "description": "CV upload and parsing", "bps": [], "brs": [], "ucs": ["UC-005"], "kpis": ["KPI-003"], "rsks": [] },
+      "FR-006": { "reqId": "FR-006", "description": "CV structured field extraction ≥90%", "bps": [], "brs": ["BR-020"], "ucs": ["UC-005","UC-006"], "kpis": ["KPI-003"], "rsks": [] },
+      "FR-007": { "reqId": "FR-007", "description": "CV screening with vector similarity", "bps": ["BP-001","BP-002"], "brs": [], "ucs": ["UC-007"], "kpis": [], "rsks": [] },
+      "FR-008": { "reqId": "FR-008", "description": "Explainable AI screening rationale", "bps": ["BP-002","BP-008"], "brs": ["BR-019"], "ucs": ["UC-007","UC-006"], "kpis": [], "rsks": [] },
+      "FR-009": { "reqId": "FR-009", "description": "Duplicate detection", "bps": [], "brs": ["BR-001","BR-002","BR-070"], "ucs": ["UC-008"], "kpis": [], "rsks": [] },
+      "FR-010": { "reqId": "FR-010", "description": "Calendar integration (Google/Outlook)", "bps": ["BP-001"], "brs": [], "ucs": ["UC-009"], "kpis": ["KPI-001"], "rsks": ["RSK-008"] },
+      "FR-011": { "reqId": "FR-011", "description": "Candidate availability collection", "bps": [], "brs": ["BR-129"], "ucs": ["UC-010"], "kpis": [], "rsks": [] },
+      "FR-012": { "reqId": "FR-012", "description": "Interviewer availability from calendar", "bps": [], "brs": [], "ucs": ["UC-009"], "kpis": [], "rsks": [] },
+      "FR-013": { "reqId": "FR-013", "description": "Optimal slot suggestion <5s", "bps": ["BP-001","BP-005"], "brs": ["BR-012","BR-013"], "ucs": ["UC-011"], "kpis": ["KPI-001","KPI-005"], "rsks": [] },
+      "FR-014": { "reqId": "FR-014", "description": "Multi-round interview scheduling", "bps": [], "brs": [], "ucs": ["UC-012"], "kpis": [], "rsks": [] },
+      "FR-015": { "reqId": "FR-015", "description": "Automated reminders 24h before", "bps": ["BP-004"], "brs": ["BR-014"], "ucs": ["UC-009","UC-014","UC-012"], "kpis": ["KPI-005"], "rsks": [] },
+      "FR-016": { "reqId": "FR-016", "description": "Self-service rescheduling", "bps": ["BP-004"], "brs": ["BR-015"], "ucs": ["UC-013"], "kpis": ["KPI-005"], "rsks": ["RSK-008"] },
+      "FR-017": { "reqId": "FR-017", "description": "Timezone-aware scheduling (UTC store, local display)", "bps": ["BP-005"], "brs": ["BR-011"], "ucs": [], "kpis": [], "rsks": [] },
+      "FR-018": { "reqId": "FR-018", "description": "MCQ assessment support", "bps": [], "brs": ["BR-025"], "ucs": ["UC-015","UC-016"], "kpis": [], "rsks": [] },
+      "FR-019": { "reqId": "FR-019", "description": "Predefined answer scoring", "bps": [], "brs": ["BR-025"], "ucs": ["UC-016"], "kpis": [], "rsks": [] },
+      "FR-020": { "reqId": "FR-020", "description": "Assessment score within 5s", "bps": [], "brs": ["BR-026"], "ucs": ["UC-016"], "kpis": [], "rsks": [] },
+      "FR-021": { "reqId": "FR-021", "description": "Configurable pass/fail threshold", "bps": [], "brs": ["BR-027"], "ucs": ["UC-015"], "kpis": [], "rsks": [] },
+      "FR-022": { "reqId": "FR-022", "description": "AI score breakdown with explanation", "bps": ["BP-002","BP-008"], "brs": ["BR-019"], "ucs": ["UC-016"], "kpis": [], "rsks": ["RSK-001","RSK-010"] },
+      "FR-023": { "reqId": "FR-023", "description": "Advisory-only AI with human approval", "bps": [], "brs": ["BR-023","BR-028","BR-074","BR-075"], "ucs": ["UC-003","UC-017"], "kpis": [], "rsks": [] },
+      "FR-024": { "reqId": "FR-024", "description": "Pipeline management (kanban)", "bps": [], "brs": ["BR-007"], "ucs": ["UC-018","UC-019","UC-034"], "kpis": [], "rsks": [] },
+      "FR-025": { "reqId": "FR-025", "description": "Client-customizable pipeline stages", "bps": [], "brs": ["BR-007","BR-008"], "ucs": ["UC-018"], "kpis": [], "rsks": [] },
+      "FR-026": { "reqId": "FR-026", "description": "Auto-transition within 60s", "bps": [], "brs": ["BR-009","BR-073"], "ucs": ["UC-019"], "kpis": [], "rsks": ["RSK-013"] },
+      "FR-027": { "reqId": "FR-027", "description": "Pipeline dashboard with metrics", "bps": [], "brs": [], "ucs": ["UC-020"], "kpis": [], "rsks": [] },
+      "FR-028": { "reqId": "FR-028", "description": "Translation JP/VN/EN (CV, feedback, JD)", "bps": ["BP-005"], "brs": ["BR-029","BR-031","BR-033","BR-060"], "ucs": ["UC-021"], "kpis": ["KPI-006"], "rsks": ["RSK-006","RSK-012"] },
+      "FR-029": { "reqId": "FR-029", "description": "Translate interview feedback", "bps": ["BP-005"], "brs": [], "ucs": ["UC-022"], "kpis": [], "rsks": ["RSK-012"] },
+      "FR-030": { "reqId": "FR-030", "description": "Translate job description", "bps": ["BP-005"], "brs": ["BR-033"], "ucs": ["UC-023"], "kpis": [], "rsks": ["RSK-006"] },
+      "FR-031": { "reqId": "FR-031", "description": "Source language auto-detection ≥95%", "bps": ["BP-005"], "brs": ["BR-030","BR-130"], "ucs": ["UC-021"], "kpis": [], "rsks": [] },
+      "FR-032": { "reqId": "FR-032", "description": "Low-confidence translation routing to human review", "bps": ["BP-005"], "brs": ["BR-032","BR-084","BR-088"], "ucs": ["UC-021","UC-024"], "kpis": ["KPI-006"], "rsks": ["RSK-004","RSK-006","RSK-012"] },
+      "FR-033": { "reqId": "FR-033", "description": "Candidate email notifications", "bps": ["BP-004"], "brs": ["BR-034","BR-077","BR-102"], "ucs": ["UC-025","UC-038"], "kpis": ["KPI-007"], "rsks": ["RSK-014"] },
+      "FR-034": { "reqId": "FR-034", "description": "Recruiter in-app/email notifications", "bps": [], "brs": ["BR-101"], "ucs": ["UC-026","UC-038"], "kpis": ["KPI-007"], "rsks": [] },
+      "FR-035": { "reqId": "FR-035", "description": "Client progress reports", "bps": [], "brs": ["BR-037","BR-113"], "ucs": ["UC-027"], "kpis": [], "rsks": [] },
+      "FR-036": { "reqId": "FR-036", "description": "Email template with agency branding", "bps": [], "brs": ["BR-035","BR-036","BR-106"], "ucs": ["UC-025"], "kpis": [], "rsks": [] },
+      "FR-037": { "reqId": "FR-037", "description": "Email/password authentication (bcrypt)", "bps": [], "brs": ["BR-127"], "ucs": ["UC-028","UC-036"], "kpis": [], "rsks": [] },
+      "FR-038": { "reqId": "FR-038", "description": "SSO login (Google/Microsoft)", "bps": [], "brs": ["BR-041"], "ucs": ["UC-029"], "kpis": [], "rsks": [] },
+      "FR-039": { "reqId": "FR-039", "description": "MFA verification (TOTP)", "bps": [], "brs": ["BR-041"], "ucs": ["UC-030"], "kpis": [], "rsks": [] },
+      "FR-040": { "reqId": "FR-040", "description": "RBAC at entity level", "bps": [], "brs": ["BR-038","BR-103"], "ucs": ["UC-031"], "kpis": [], "rsks": [] },
+      "FR-041": { "reqId": "FR-041", "description": "JWT access/refresh token flow", "bps": [], "brs": ["BR-042","BR-132"], "ucs": [], "kpis": [], "rsks": [] },
+      "FR-042": { "reqId": "FR-042", "description": "Cross-client data access denied by default", "bps": ["BP-003"], "brs": ["BR-004","BR-039","BR-065","BR-066","BR-067","BR-128"], "ucs": ["UC-032","UC-033","UC-035"], "kpis": ["KPI-010","KPI-012"], "rsks": ["RSK-003","RSK-007"] },
+      "FR-043": { "reqId": "FR-043", "description": "Switch client context / multi-client recruiter", "bps": ["BP-003"], "brs": ["BR-040","BR-133"], "ucs": ["UC-032","UC-033"], "kpis": [], "rsks": [] },
+      "FR-044": { "reqId": "FR-044", "description": "Shared candidate pool with dedup", "bps": ["BP-003"], "brs": ["BR-005"], "ucs": ["UC-033"], "kpis": [], "rsks": [] },
+      "FR-045": { "reqId": "FR-045", "description": "Client-customizable pipeline stages", "bps": ["BP-003"], "brs": ["BR-008"], "ucs": ["UC-033"], "kpis": ["KPI-012"], "rsks": [] }
+    },
+
+    "nonFunctionalRequirements": {
+      "NFR-001": { "reqId": "NFR-001", "description": "Dashboard page load <2s", "bps": [], "brs": [], "ucs": ["UC-020"], "kpis": [], "rsks": [] },
+      "NFR-002": { "reqId": "NFR-002", "description": "CV parsing + scoring end-to-end <15s", "bps": [], "brs": ["BR-021"], "ucs": [], "kpis": ["KPI-004"], "rsks": [] },
+      "NFR-003": { "reqId": "NFR-003", "description": "AI matching <15s per candidate-job pair", "bps": ["BP-007"], "brs": ["BR-018","BR-062"], "ucs": [], "kpis": ["KPI-004"], "rsks": ["RSK-002","RSK-005"] },
+      "NFR-004": { "reqId": "NFR-004", "description": "Slot suggestions <5s", "bps": [], "brs": ["BR-012","BR-026"], "ucs": [], "kpis": [], "rsks": [] },
+      "NFR-005": { "reqId": "NFR-005", "description": "Translation <30s per document", "bps": ["BP-007"], "brs": ["BR-031","BR-060"], "ucs": [], "kpis": [], "rsks": [] },
+      "NFR-006": { "reqId": "NFR-006", "description": "500+ concurrent users", "bps": ["BP-006"], "brs": [], "ucs": [], "kpis": [], "rsks": [] },
+      "NFR-007": { "reqId": "NFR-007", "description": "Data isolation per agency", "bps": ["BP-003"], "brs": [], "ucs": [], "kpis": ["KPI-010"], "rsks": ["RSK-007"] },
+      "NFR-008": { "reqId": "NFR-008", "description": "Horizontal scaling via BullMQ", "bps": [], "brs": ["BR-053","BR-119","BR-120"], "ucs": [], "kpis": [], "rsks": ["RSK-011"] },
+      "NFR-009": { "reqId": "NFR-009", "description": "CDN for static assets", "bps": [], "brs": [], "ucs": [], "kpis": [], "rsks": [] },
+      "NFR-010": { "reqId": "NFR-010", "description": "Read replicas for analytics", "bps": [], "brs": ["BR-058"], "ucs": [], "kpis": [], "rsks": [] },
+      "NFR-011": { "reqId": "NFR-011", "description": "99.5% uptime SLA", "bps": ["BP-006"], "brs": ["BR-051","BR-126"], "ucs": [], "kpis": ["KPI-008"], "rsks": [] },
+      "NFR-012": { "reqId": "NFR-012", "description": "≤24h RPO backups", "bps": ["BP-006"], "brs": ["BR-052","BR-079"], "ucs": [], "kpis": [], "rsks": [] },
+      "NFR-013": { "reqId": "NFR-013", "description": "Fallback to rule-based within 10s + circuit breaker", "bps": ["BP-007"], "brs": ["BR-022","BR-054","BR-076","BR-134","BR-136"], "ucs": [], "kpis": [], "rsks": ["RSK-001","RSK-005","RSK-011","RSK-013"] },
+      "NFR-014": { "reqId": "NFR-014", "description": "Health check endpoints for all critical services", "bps": [], "brs": ["BR-055","BR-083","BR-115","BR-116","BR-117","BR-118"], "ucs": [], "kpis": [], "rsks": [] }
+    },
+
+    "dataRequirements": {
+      "DR-001": { "reqId": "DR-001", "description": "Agency entity", "mappedBrs": [], "status": "implicit" },
+      "DR-002": { "reqId": "DR-002", "description": "Recruiter entity", "mappedBrs": [], "status": "implicit" },
+      "DR-003": { "reqId": "DR-003", "description": "HiringCompany entity", "mappedBrs": [], "status": "implicit" },
+      "DR-004": { "reqId": "DR-004", "description": "Job entity", "mappedBrs": [], "status": "implicit" },
+      "DR-005": { "reqId": "DR-005", "description": "Candidate entity", "mappedBrs": [], "status": "implicit" },
+      "DR-006": { "reqId": "DR-006", "description": "Application entity", "mappedBrs": ["BR-010"], "status": "partial" },
+      "DR-007": { "reqId": "DR-007", "description": "Interview entity", "mappedBrs": [], "status": "implicit" },
+      "DR-008": { "reqId": "DR-008", "description": "Assessment entity", "mappedBrs": [], "status": "implicit" },
+      "DR-009": { "reqId": "DR-009", "description": "LocalizedContent entity", "mappedBrs": [], "status": "implicit" },
+      "DR-010": { "reqId": "DR-010", "description": "AIMatch entity", "mappedBrs": [], "status": "implicit" },
+      "DR-011": { "reqId": "DR-011", "description": "Agency 1:N relationships", "mappedBrs": [], "status": "implicit" },
+      "DR-012": { "reqId": "DR-012", "description": "Recruiter N:M with HiringCompanies", "mappedBrs": ["BR-040"], "status": "partial" },
+      "DR-013": { "reqId": "DR-013", "description": "Job belongs to one HiringCompany; Application requires Candidate+Job", "mappedBrs": ["BR-006","BR-010"], "status": "covered" },
+      "DR-014": { "reqId": "DR-014", "description": "Child entities reference Application", "mappedBrs": [], "status": "implicit" }
+    },
+
+    "integrationRequirements": {
+      "IR-001": { "reqId": "IR-001", "description": "SendGrid / AWS SES integration", "mappedBrs": [], "status": "implicit" },
+      "IR-002": { "reqId": "IR-002", "description": "Google Calendar API", "mappedBrs": [], "status": "covered_via_uc" },
+      "IR-003": { "reqId": "IR-003", "description": "Microsoft Outlook Calendar API", "mappedBrs": [], "status": "covered_via_uc" },
+      "IR-004": { "reqId": "IR-004", "description": "OpenAI primary integration", "mappedBrs": ["BR-024"], "status": "covered" },
+      "IR-005": { "reqId": "IR-005", "description": "Gemini fallback integration", "mappedBrs": ["BR-024"], "status": "covered" },
+      "IR-006": { "reqId": "IR-006", "description": "External ATS support (P2)", "mappedBrs": [], "status": "deferred" },
+      "IR-007": { "reqId": "IR-007", "description": "pgvector / Pinecone", "mappedBrs": [], "status": "implicit" },
+      "IR-008": { "reqId": "IR-008", "description": "ClamAV malware scan", "mappedBrs": ["BR-045","BR-107"], "status": "covered" }
+    },
+
+    "constraintRequirements": {
+      "CR-001": { "reqId": "CR-001", "description": "Input sanitization / advisory-only AI / no hardcoded secrets / service auth", "mappedBrs": ["BR-023","BR-043","BR-050","BR-137"], "status": "covered" },
+      "CR-002": { "reqId": "CR-002", "description": "PII encryption AES-256 / TLS 1.3 / prod data protection", "mappedBrs": ["BR-003","BR-050","BR-123"], "status": "covered" },
+      "CR-003": { "reqId": "CR-003", "description": "File upload constraints (PDF/DOCX, 25MB, magic bytes)", "mappedBrs": ["BR-044","BR-107"], "status": "covered" },
+      "CR-004": { "reqId": "CR-004", "description": "Rate limiting", "mappedBrs": ["BR-046","BR-135"], "status": "covered" },
+      "CR-005": { "reqId": "CR-005", "description": "Right to erasure + data portability / salary consent / GDPR export", "mappedBrs": ["BR-049","BR-068","BR-081","BR-114"], "status": "covered" },
+      "CR-006": { "reqId": "CR-006", "description": "Configurable data retention", "mappedBrs": ["BR-048","BR-079"], "status": "covered" },
+      "CR-007": { "reqId": "CR-007", "description": "Audit trail / cross-client access audit / immutable events", "mappedBrs": ["BR-047","BR-064","BR-071","BR-075","BR-078","BR-080","BR-083","BR-108","BR-123"], "status": "covered" },
+      "CR-008": { "reqId": "CR-008", "description": "Deployment on GCP", "mappedBrs": ["BR-056"], "status": "covered" },
+      "CR-009": { "reqId": "CR-009", "description": "OpenAI + Gemini provider decision", "mappedBrs": ["BR-024"], "status": "covered" },
+      "CR-010": { "reqId": "CR-010", "description": "AI budget $500–$1,500/mo with cost governance", "mappedBrs": ["BR-057","BR-069","BR-138","BR-139"], "status": "covered" }
+    }
+  },
+
+  "openQuestions": [
+    {
+      "id": "OQ-006",
+      "question": "Should translation support batch processing (multiple CVs at once) or only one at a time?",
+      "status": "Open",
+      "category": "Translation",
+      "source": "Gate 2",
+      "impactedReqIds": ["FR-028","BR-031","BR-060","UC-021"]
+    },
+    {
+      "id": "OQ-007",
+      "question": "Should candidate outreach messages be fully AI-generated or template-based with AI personalization?",
+      "status": "Open",
+      "category": "Candidate Sourcing",
+      "source": "Gate 2",
+      "impactedReqIds": ["FR-004","UC-004"]
+    },
+    {
+      "id": "OQ-008",
+      "question": "Should candidate deduplication be automatic (merge) or flag-only for recruiter review?",
+      "status": "Open",
+      "category": "Multi-Client",
+      "source": "Gate 2",
+      "impactedReqIds": ["FR-009","BR-002","BR-005","BR-070"]
+    },
+    {
+      "id": "OQ-009",
+      "question": "Should the platform support candidate self-service portal for application tracking?",
+      "status": "Partially resolved",
+      "category": "UX",
+      "source": "Gate 2",
+      "impactedReqIds": ["FR-011","FR-033","FR-037","UC-034","UC-035","UC-036"]
+    },
+    {
+      "id": "OQ-010",
+      "question": "Should assessment results be visible to candidates or recruiters only?",
+      "status": "Open",
+      "category": "Assessment",
+      "source": "Gate 2",
+      "impactedReqIds": ["FR-020","FR-022","BR-068"]
+    },
+    {
+      "id": "OQ-011",
+      "question": "What retention SLA should be offered to enterprise clients (99.5% vs 99.9%)?",
+      "status": "Open",
+      "category": "Operations",
+      "source": "Gate 2",
+      "impactedReqIds": ["NFR-011","BR-051","BR-126"]
+    },
+    {
+      "id": "OQ-012",
+      "question": "Should workflow rules be editable via UI or config files only?",
+      "status": "New",
+      "category": "Workflow",
+      "source": "Gate 3",
+      "impactedReqIds": ["BR-072"]
+    },
+    {
+      "id": "OQ-013",
+      "question": "Should per-client AI credit allocation be hard-capped or soft-warned?",
+      "status": "New",
+      "category": "Billing",
+      "source": "Gate 3",
+      "impactedReqIds": ["BR-069","BR-138","BR-139"]
+    },
+    {
+      "id": "OQ-014",
+      "question": "Should candidate portal support multi-language interface (JP/VN/EN)?",
+      "status": "New",
+      "category": "UX",
+      "source": "Gate 3",
+      "impactedReqIds": ["BR-130","FR-031"]
+    }
+  ],
+
+  "coverageSummary": {
+    "businessPolicies": { "total": 8, "mapped": 8, "coverage": "100%" },
+    "businessRules": { "total": 140, "mapped": 137, "coverage": "98%" },
+    "useCases": { "total": 41, "mapped": 37, "coverage": "90%" },
+    "kpis": { "total": 12, "mapped": 11, "coverage": "92%" },
+    "risks": { "total": 15, "mapped": 15, "coverage": "100%" },
+    "functionalRequirements": { "total": 45, "mapped": 45, "coverage": "100%" },
+    "nonFunctionalRequirements": { "total": 14, "mapped": 14, "coverage": "100%" },
+    "dataRequirements": { "total": 14, "mapped": 3, "coverage": "21%" },
+    "integrationRequirements": { "total": 8, "mapped": 5, "coverage": "63%" },
+    "constraintRequirements": { "total": 10, "mapped": 10, "coverage": "100%" }
+  },
+
+  "gapAnalysis": [
+    {
+      "gap": "DR-001 through DR-010 (entity definitions)",
+      "action": "Add data governance BRs for entity-level retention, backup frequency, and access audit rules"
+    },
+    {
+      "gap": "NFR-001 (Dashboard page load <2s)",
+      "action": "Add performance monitoring BR with SLA"
+    },
+    {
+      "gap": "NFR-006 (500+ concurrent users)",
+      "action": "Add capacity planning BR"
+    },
+    {
+      "gap": "NFR-009 (CDN for static assets)",
+      "action": "Acceptable as infrastructure guideline without formal BR"
+    },
+    {
+      "gap": "IR-001 (SendGrid/AWS SES)",
+      "action": "Add explicit email delivery SLA BR"
+    },
+    {
+      "gap": "IR-006 (External ATS P2)",
+      "action": "Deferred — no business rule needed until Phase 2"
+    },
+    {
+      "gap": "BR-072, BR-074, BR-075, BR-104, BR-105, BR-110, BR-124, BR-131",
+      "action": "Architecture/UX governance rules — valid as standalone without direct REQ mapping"
+    },
+    {
+      "gap": "OQ-008 (dedup strategy) and OQ-010 (assessment visibility)",
+      "action": "Resolution would strengthen FR-009 and FR-022 traceability"
+    }
+  ],
+
+  "versionHistory": [
+    { "version": "1.0.0", "date": "2026-05-12", "changes": "Initial creation aligned with 03-business-definition v1.0.0 (58 BRs, 33 UCs)" },
+    { "version": "2.0.0", "date": "2026-05-12", "changes": "Updated to align with 03-business-definition v2.0.0 — added 82 new BR mappings, 8 new UCs, 5 new RSKs, 9 open questions, gap analysis" }
+  ]
+}
