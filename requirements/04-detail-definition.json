@@ -1,0 +1,7009 @@
+{
+  "metadata": {
+    "productName": "RecruitAI",
+    "projectType": "data-ai",
+    "language": "bilingual",
+    "version": "1.0.0",
+    "generatedAt": "2026-05-12T00:00:00Z",
+    "upstream": "03-business-definition.md/json",
+    "gate": "Gate 4 Detail Definition",
+    "status": "CONDITIONAL_PASS",
+    "inputSources": [
+      {
+        "type": "existing-artifact",
+        "path": "requirements/03-business-definition.json",
+        "description": "Gate 3 Business Definition"
+      },
+      {
+        "type": "existing-artifact",
+        "path": "requirements/02-requirement-definition.json",
+        "description": "Gate 2 Requirement Definition"
+      }
+    ]
+  },
+  "detailSummary": {
+    "implementationSurface": [
+      "Internal HR web/admin application",
+      "Candidate-facing async interview web link",
+      "Backend APIs/RPC services",
+      "Google Workspace integrations",
+      "AI evaluation interfaces",
+      "Operational monitoring and audit trail"
+    ],
+    "primaryWorkflowsCovered": [
+      "Candidate sourcing/import",
+      "CV screening approval",
+      "Interview scheduling approval",
+      "Async AI interview",
+      "Test grading",
+      "Final candidate decision",
+      "Notifications/reminders",
+      "Withdrawal",
+      "Error remediation",
+      "Monitoring/governance"
+    ],
+    "criticalBusinessRulesImplemented": [
+      "BR-001",
+      "BR-002",
+      "BR-004",
+      "BR-005",
+      "BR-006",
+      "BR-007",
+      "BR-011",
+      "BR-012",
+      "BR-014",
+      "BR-015",
+      "BR-017",
+      "BR-020",
+      "BR-021",
+      "BR-022",
+      "BR-023",
+      "BR-024"
+    ],
+    "majorAssumptions": [
+      "System is an internal single-organization web application plus candidate interview link.",
+      "No external ATS/CRM or native mobile app in MVP.",
+      "OCR, final scoring policy, retention, backup approver, Drive folder policy, coding sandbox, and Calendar reschedule/cancel remain unresolved and are not assumed."
+    ]
+  },
+  "screens": [
+    {
+      "id": "SCREEN-001",
+      "name": "Recruitment Pipeline Dashboard",
+      "purpose": "Give HR users a consolidated view of jobs, candidate pipeline states, pending approvals, errors, and operational KPIs.",
+      "primaryUser": "HR Recruiter / HR Manager",
+      "entryPoint": "Authenticated internal HR workspace",
+      "primaryAction": "Open candidate/job work queue by status or required action",
+      "secondaryActions": [
+        "Filter by job, candidate state, owner, error status, pending approval",
+        "Open candidate detail",
+        "Export or review audit trail summary"
+      ],
+      "states": {
+        "empty": "Show no active candidates/jobs and CTA to import/create source.",
+        "loading": "Show skeleton table and preserve filters.",
+        "error": "Show recoverable dashboard loading error and retry action.",
+        "success": "Show queues, KPI cards, and pending action counts."
+      },
+      "accessibilityRequirements": "Keyboard accessible filters, tables, row actions, and skip navigation to main content; visible focus states; status changes announced via polite aria-live region; status badges exposed as text, not color-only; data tables use caption, th, and scope; interactive targets are at least 44x44px; page landmarks and heading hierarchy.",
+      "uiElements": [
+        {
+          "id": "UI-001",
+          "element": "Pipeline state summary cards",
+          "type": "card",
+          "required": true,
+          "validationOrBehavior": "Counts candidates by canonical business state.",
+          "sourceIds": [
+            "BP-001",
+            "BP-002",
+            "BP-003",
+            "BP-004",
+            "BP-005",
+            "BP-006"
+          ]
+        },
+        {
+          "id": "UI-002",
+          "element": "Pending approvals queue",
+          "type": "table",
+          "required": true,
+          "validationOrBehavior": "Shows screening, scheduling, and final review actions requiring explicit HR Manager decision.",
+          "sourceIds": [
+            "BR-001",
+            "UC-003",
+            "UC-004",
+            "UC-007"
+          ]
+        },
+        {
+          "id": "UI-003",
+          "element": "Error remediation queue",
+          "type": "table",
+          "required": true,
+          "validationOrBehavior": "Shows ERROR items with owner, reason, previous valid state, and retry/manual review actions.",
+          "sourceIds": [
+            "BP-010",
+            "UC-010"
+          ]
+        },
+        {
+          "id": "UI-004",
+          "element": "KPI and monitoring panel",
+          "type": "card",
+          "required": true,
+          "validationOrBehavior": "Shows processing, scheduling, AI quality, integration failure, and cost indicators.",
+          "sourceIds": [
+            "BP-008",
+            "BR-015",
+            "BR-020"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-008",
+        "BP-010",
+        "BR-001",
+        "BR-015",
+        "BR-020"
+      ]
+    },
+    {
+      "id": "SCREEN-002",
+      "name": "Candidate Sourcing and Import",
+      "purpose": "Allow HR Recruiter to create candidates/jobs manually, import Excel batches, and review Google Drive import results.",
+      "primaryUser": "HR Recruiter",
+      "entryPoint": "Dashboard import CTA or Drive import notification",
+      "primaryAction": "Submit candidate/job data or upload Excel import file",
+      "secondaryActions": [
+        "Download import template",
+        "Review duplicate candidates",
+        "Correct invalid rows",
+        "Retry failed Drive import"
+      ],
+      "states": {
+        "empty": "Show import options and accepted formats.",
+        "loading": "Show upload/import progress.",
+        "error": "Show row-level validation/import failures.",
+        "success": "Show imported records and duplicate/exception summary."
+      },
+      "accessibilityRequirements": "File input has explicit label and accepted formats; row errors are announced and linked to fields with aria-describedby and aria-invalid; duplicate resolution modal is keyboard accessible; redundant manual entry remains available when upload is blocked; interactive targets are at least 44x44px.",
+      "uiElements": [
+        {
+          "id": "UI-005",
+          "element": "Manual candidate/job form",
+          "type": "input",
+          "required": true,
+          "validationOrBehavior": "Required fields must pass validation before creating NEW/IMPORTED record.",
+          "sourceIds": [
+            "UC-001",
+            "BP-001"
+          ]
+        },
+        {
+          "id": "UI-006",
+          "element": "Excel upload control",
+          "type": "input",
+          "required": true,
+          "validationOrBehavior": "Accept .xlsx only; reject unsupported formats before import.",
+          "sourceIds": [
+            "UC-001",
+            "BR-004"
+          ]
+        },
+        {
+          "id": "UI-007",
+          "element": "Duplicate review table",
+          "type": "table",
+          "required": true,
+          "validationOrBehavior": "Requires HR decision to merge, skip, or create new candidate.",
+          "sourceIds": [
+            "BR-003"
+          ]
+        },
+        {
+          "id": "UI-008",
+          "element": "Drive import exception list",
+          "type": "table",
+          "required": true,
+          "validationOrBehavior": "Displays folder/file/import error and retry/assign actions.",
+          "sourceIds": [
+            "UC-002",
+            "BP-010"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-001",
+        "BP-010",
+        "BR-003",
+        "BR-004",
+        "UC-001",
+        "UC-002"
+      ]
+    },
+    {
+      "id": "SCREEN-003",
+      "name": "Screening Review and Approval",
+      "purpose": "Let HR Manager review AI CV screening outputs and approve, reject, or request re-screening.",
+      "primaryUser": "HR Manager",
+      "entryPoint": "Pending screening approval queue",
+      "primaryAction": "Approve, reject, or request re-screening for one or many candidates",
+      "secondaryActions": [
+        "Review score explanation",
+        "Review missing skills and risk flags",
+        "Open CV/JD evidence",
+        "Route low-confidence items to manual review"
+      ],
+      "states": {
+        "empty": "Show no pending screening approvals.",
+        "loading": "Show screening result skeleton.",
+        "error": "Show screening output unavailable or low-confidence warning.",
+        "success": "Show explainable score, recommendation, and approval actions."
+      },
+      "accessibilityRequirements": "Approval buttons have clear labels and confirmations; risk flags are text-based and screen-reader readable; bulk selection supports keyboard range/toggle interaction, visible selected count, and polite aria-live updates; tables use caption, th, and scope; interactive targets are at least 44x44px.",
+      "uiElements": [
+        {
+          "id": "UI-009",
+          "element": "Screening score panel",
+          "type": "card",
+          "required": true,
+          "validationOrBehavior": "Displays score 0-100, sub-scores, confidence, recommendation, and prompt/model/rubric version.",
+          "sourceIds": [
+            "BR-006",
+            "UC-003"
+          ]
+        },
+        {
+          "id": "UI-010",
+          "element": "Evidence and explainability section",
+          "type": "card",
+          "required": true,
+          "validationOrBehavior": "Shows strengths, weaknesses, missing skills, risk flags, and evidence spans.",
+          "sourceIds": [
+            "BR-006",
+            "BR-005"
+          ]
+        },
+        {
+          "id": "UI-011",
+          "element": "Screening approval actions",
+          "type": "button",
+          "required": true,
+          "validationOrBehavior": "Requires explicit HR Manager action; no timeout auto-action.",
+          "sourceIds": [
+            "BR-001",
+            "BR-002",
+            "UC-003"
+          ]
+        },
+        {
+          "id": "UI-012",
+          "element": "Bulk screening approval controls",
+          "type": "table",
+          "required": true,
+          "validationOrBehavior": "Bulk action available only for selected candidates with complete review data.",
+          "sourceIds": [
+            "UC-003",
+            "BR-001"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-002",
+        "BR-001",
+        "BR-002",
+        "BR-005",
+        "BR-006",
+        "UC-003"
+      ]
+    },
+    {
+      "id": "SCREEN-004",
+      "name": "Interview Scheduling Approval",
+      "purpose": "Let HR Manager review suggested interview slots before calendar event creation and confirmation email.",
+      "primaryUser": "HR Manager",
+      "entryPoint": "Candidate state SCREENED_IN / scheduling queue",
+      "primaryAction": "Approve suggested slot or request alternatives",
+      "secondaryActions": [
+        "Review candidate availability",
+        "Review interviewer free/busy",
+        "Check timezone and working hours",
+        "Send availability reminder"
+      ],
+      "states": {
+        "empty": "Show no candidates awaiting scheduling.",
+        "loading": "Show slot calculation progress.",
+        "error": "Show no slot, Calendar unavailable, or availability missing.",
+        "success": "Show ranked suggested slots and approval actions."
+      },
+      "accessibilityRequirements": [
+        "Timezones displayed with labels",
+        "Slot options selectable by keyboard",
+        "Conflict warnings not color-only"
+      ],
+      "uiElements": [
+        {
+          "id": "UI-013",
+          "element": "Availability and free/busy summary",
+          "type": "card",
+          "required": true,
+          "validationOrBehavior": "Displays candidate availability and interviewer free/busy source status.",
+          "sourceIds": [
+            "BP-003",
+            "UC-004"
+          ]
+        },
+        {
+          "id": "UI-014",
+          "element": "Suggested slot list",
+          "type": "table",
+          "required": true,
+          "validationOrBehavior": "Ranks earliest valid slots within working hours/timezone policy.",
+          "sourceIds": [
+            "BR-008",
+            "UC-004"
+          ]
+        },
+        {
+          "id": "UI-015",
+          "element": "Schedule approval actions",
+          "type": "button",
+          "required": true,
+          "validationOrBehavior": "Creates calendar event only after explicit approval.",
+          "sourceIds": [
+            "BR-001",
+            "BR-007"
+          ]
+        },
+        {
+          "id": "UI-016",
+          "element": "Reschedule/cancel placeholder notice",
+          "type": "card",
+          "required": true,
+          "validationOrBehavior": "Indicates post-creation policy is unresolved and must not assume automated behavior.",
+          "sourceIds": [
+            "BR-024",
+            "BQ-007"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-003",
+        "BR-001",
+        "BR-007",
+        "BR-008",
+        "BR-024",
+        "UC-004"
+      ]
+    },
+    {
+      "id": "SCREEN-005",
+      "name": "Async AI Interview Workspace",
+      "purpose": "Allow candidates to complete text-based asynchronous interview with fixed and follow-up questions.",
+      "primaryUser": "Candidate",
+      "entryPoint": "Secure interview link sent by email",
+      "primaryAction": "Answer interview questions before deadline",
+      "secondaryActions": [
+        "Save progress",
+        "Change supported language if permitted",
+        "Submit final answers"
+      ],
+      "states": {
+        "empty": "Show interview instructions before start.",
+        "loading": "Show question loading state.",
+        "error": "Show expired link, unavailable interview, or submission failure.",
+        "success": "Show submission confirmation and next-step message."
+      },
+      "accessibilityRequirements": "Questions and inputs are keyboard accessible; focus moves to each new fixed/follow-up question heading; errors tied to fields with aria-describedby and aria-invalid; language is declared for screen readers; timeout/deadline info available in text and assertive aria-live only when urgent; progress uses role=progressbar with aria-valuenow/min/max; prefers-reduced-motion respected; redundant save/submit paths available; interactive targets are at least 44x44px.",
+      "uiElements": [
+        {
+          "id": "UI-017",
+          "element": "Interview instruction panel",
+          "type": "card",
+          "required": true,
+          "validationOrBehavior": "Shows async text format, deadline, reminder behavior, and privacy notice.",
+          "sourceIds": [
+            "BP-004",
+            "UC-005"
+          ]
+        },
+        {
+          "id": "UI-018",
+          "element": "Question and answer thread",
+          "type": "input",
+          "required": true,
+          "validationOrBehavior": "Shows fixed questions and AI follow-ups based on prior answers.",
+          "sourceIds": [
+            "UC-005"
+          ]
+        },
+        {
+          "id": "UI-019",
+          "element": "Submit interview button",
+          "type": "button",
+          "required": true,
+          "validationOrBehavior": "Requires all required answers; creates transcript and evaluation trigger.",
+          "sourceIds": [
+            "UC-005",
+            "BR-012"
+          ]
+        },
+        {
+          "id": "UI-020",
+          "element": "Expired/incomplete interview state",
+          "type": "card",
+          "required": true,
+          "validationOrBehavior": "Routes to reopen/manual review/withdraw/error according to business policy.",
+          "sourceIds": [
+            "BP-004",
+            "BP-009",
+            "BP-010"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-004",
+        "BP-009",
+        "BP-010",
+        "UC-005"
+      ]
+    },
+    {
+      "id": "SCREEN-006",
+      "name": "Test Setup, Submission, and Grading Review",
+      "purpose": "Support assignment and grading review for MCQ, essay, and coding tests.",
+      "primaryUser": "HR Recruiter / Candidate / HR Manager (test); HR Manager (no-test path)",
+      "entryPoint": "Candidate reaches AI_INTERVIEW_COMPLETED with testRequired=true, or TEST_PENDING state",
+      "primaryAction": "Assign, submit, grade, and review candidate test result",
+      "secondaryActions": [
+        "Import test definition",
+        "Review section scores",
+        "Handle grading failure",
+        "Record manual override reason"
+      ],
+      "states": {
+        "empty": "Show no assigned test or test setup CTA.",
+        "loading": "Show grading in progress.",
+        "error": "Show timeout, grading failure, sandbox error, or plagiarism flag.",
+        "success": "Show score report and readiness for final review."
+      },
+      "accessibilityRequirements": "Form controls labelled; code/test feedback readable as text; score tables use caption, th, and scope; grading progress uses role=progressbar with aria-valuenow/min/max; errors include recovery instructions; interactive targets are at least 44x44px.",
+      "uiElements": [
+        {
+          "id": "UI-021",
+          "element": "Test definition import",
+          "type": "input",
+          "required": true,
+          "validationOrBehavior": "Accept configured Excel/JSON test definition with answer key/rubric/test cases.",
+          "sourceIds": [
+            "BP-005",
+            "UC-006"
+          ]
+        },
+        {
+          "id": "UI-022",
+          "element": "Candidate submission form",
+          "type": "input",
+          "required": true,
+          "validationOrBehavior": "Captures MCQ/essay/coding submission and deadline status.",
+          "sourceIds": [
+            "UC-006"
+          ]
+        },
+        {
+          "id": "UI-023",
+          "element": "Grading report",
+          "type": "card",
+          "required": true,
+          "validationOrBehavior": "MCQ deterministic; essay/coding rubric-backed with score and feedback.",
+          "sourceIds": [
+            "BR-009",
+            "BR-010",
+            "UC-006"
+          ]
+        },
+        {
+          "id": "UI-024",
+          "element": "Manual review/override action",
+          "type": "button",
+          "required": true,
+          "validationOrBehavior": "Requires HR Manager reason and audit record for override.",
+          "sourceIds": [
+            "BR-012",
+            "UC-006"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-005",
+        "BR-009",
+        "BR-010",
+        "BR-012",
+        "UC-006"
+      ]
+    },
+    {
+      "id": "SCREEN-007",
+      "name": "Final Review and Decision",
+      "purpose": "Let HR Manager review complete evidence package and record final pass/fail outcome.",
+      "primaryUser": "HR Manager",
+      "entryPoint": "Candidate state FINAL_REVIEW",
+      "primaryAction": "Record PASS or FAIL decision",
+      "secondaryActions": [
+        "Review screening/interview/test evidence",
+        "Defer pending missing evidence",
+        "Withdraw candidate",
+        "Record override reason"
+      ],
+      "states": {
+        "empty": "Show no candidates in final review.",
+        "loading": "Show evidence package loading.",
+        "error": "Show incomplete or conflicting evidence warning.",
+        "success": "Show final decision confirmation and audit event."
+      },
+      "accessibilityRequirements": [
+        "Decision controls require clear confirmation",
+        "Evidence sections have headings",
+        "Conflict warnings are text-based"
+      ],
+      "uiElements": [
+        {
+          "id": "UI-025",
+          "element": "Evidence package summary",
+          "type": "card",
+          "required": true,
+          "validationOrBehavior": "Aggregates screening, interview, and test reports.",
+          "sourceIds": [
+            "BP-006",
+            "UC-007"
+          ]
+        },
+        {
+          "id": "UI-026",
+          "element": "Final decision actions",
+          "type": "button",
+          "required": true,
+          "validationOrBehavior": "Requires explicit HR Manager pass/fail decision; combined policy unresolved until BQ-006.",
+          "sourceIds": [
+            "BR-001",
+            "BR-022",
+            "UC-007"
+          ]
+        },
+        {
+          "id": "UI-027",
+          "element": "Decision audit reason input",
+          "type": "input",
+          "required": true,
+          "validationOrBehavior": "Required for override/defer/exception decisions.",
+          "sourceIds": [
+            "BR-012",
+            "UC-007"
+          ]
+        },
+        {
+          "id": "UI-028",
+          "element": "Withdrawal action",
+          "type": "button",
+          "required": true,
+          "validationOrBehavior": "Moves candidate to WITHDRAWN and closes pending actions.",
+          "sourceIds": [
+            "BP-009",
+            "UC-009"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-006",
+        "BP-009",
+        "BR-001",
+        "BR-012",
+        "BR-022",
+        "UC-007",
+        "UC-009"
+      ]
+    },
+    {
+      "id": "SCREEN-008",
+      "name": "Admin Configuration and Monitoring",
+      "purpose": "Let Admin/IT configure Google integrations, templates, operational thresholds, and monitor failures/costs.",
+      "primaryUser": "Admin / IT Admin",
+      "entryPoint": "Admin navigation",
+      "primaryAction": "Configure integration and operational governance settings",
+      "secondaryActions": [
+        "Manage Drive watch configuration",
+        "Manage Gmail templates",
+        "View Calendar integration health",
+        "View AI errors and token cost",
+        "Assign error remediation owner"
+      ],
+      "states": {
+        "empty": "Show missing configuration checklist.",
+        "loading": "Show configuration loading.",
+        "error": "Show integration config validation errors.",
+        "success": "Show active configuration and health status."
+      },
+      "accessibilityRequirements": "Settings forms have labels and inline errors linked by aria-describedby and aria-invalid; health charts include complete tabular fallback with same metrics and status text; admin actions have confirmations; interactive targets are at least 44x44px.",
+      "uiElements": [
+        {
+          "id": "UI-029",
+          "element": "Google Workspace configuration",
+          "type": "input",
+          "required": true,
+          "validationOrBehavior": "Captures OAuth status, Drive folder, Gmail mailbox/templates, Calendar access.",
+          "sourceIds": [
+            "BR-017",
+            "BQ-005"
+          ]
+        },
+        {
+          "id": "UI-030",
+          "element": "Reminder and escalation policy settings",
+          "type": "input",
+          "required": true,
+          "validationOrBehavior": "Reminder-only behavior enforced; escalation cannot approve automatically.",
+          "sourceIds": [
+            "BR-002",
+            "BR-021",
+            "BQ-002"
+          ]
+        },
+        {
+          "id": "UI-031",
+          "element": "Retention policy settings placeholder",
+          "type": "input",
+          "required": true,
+          "validationOrBehavior": "Blocks implementation sign-off until retention/deletion periods are defined.",
+          "sourceIds": [
+            "BR-023",
+            "BQ-003"
+          ]
+        },
+        {
+          "id": "UI-032",
+          "element": "Monitoring dashboard",
+          "type": "card",
+          "required": true,
+          "validationOrBehavior": "Shows uptime, AI errors, API failures, token cost, queue stalls.",
+          "sourceIds": [
+            "BP-008",
+            "BR-015",
+            "BR-020"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-008",
+        "BP-010",
+        "BR-002",
+        "BR-015",
+        "BR-017",
+        "BR-020",
+        "BR-021",
+        "BR-023",
+        "BQ-002",
+        "BQ-003",
+        "BQ-005"
+      ]
+    }
+  ],
+  "interfaces": [
+    {
+      "id": "API-001",
+      "name": "Candidate and Job Import Interface",
+      "interfaceType": "File/REST",
+      "methodOrEvent": "POST import or Drive file-created event",
+      "pathOrTopicOrCommand": "/imports/candidates or google.drive.file.created",
+      "purpose": "Create candidate/job records from manual, Excel, or Drive input and return row-level outcomes.",
+      "authRequired": true,
+      "permissionRuleId": "BR-011",
+      "request": {
+        "source": "manual|excel|google_drive",
+        "job": {
+          "title": "string",
+          "jdTextOrFileRef": "string"
+        },
+        "candidates": [
+          {
+            "name": "string",
+            "email": "string",
+            "cvFileRef": "string"
+          }
+        ]
+      },
+      "response": {
+        "importId": "string",
+        "createdCount": "number",
+        "duplicateCount": "number",
+        "errorRows": [
+          {
+            "row": "number",
+            "code": "string",
+            "message": "string"
+          }
+        ]
+      },
+      "errors": [
+        {
+          "code": "ERR_IMPORT_FORMAT",
+          "condition": "Unsupported file type or invalid template",
+          "message": "Only configured MVP formats are accepted.",
+          "recovery": "Use template or supported file format."
+        },
+        {
+          "code": "ERR_DUPLICATE_CANDIDATE",
+          "condition": "Possible duplicate candidate detected",
+          "message": "Duplicate review is required.",
+          "recovery": "HR chooses merge, skip, or create new."
+        },
+        {
+          "code": "ERR_DRIVE_CONFIG",
+          "condition": "Drive folder/webhook unavailable",
+          "message": "Drive import is not configured or unavailable.",
+          "recovery": "Admin remediates configuration or retries."
+        }
+      ],
+      "sourceIds": [
+        "BP-001",
+        "BP-010",
+        "BR-003",
+        "BR-004",
+        "BR-011",
+        "UC-001",
+        "UC-002"
+      ]
+    },
+    {
+      "id": "API-002",
+      "name": "CV/JD Text Extraction Interface",
+      "interfaceType": "RPC",
+      "methodOrEvent": "extract_text",
+      "pathOrTopicOrCommand": "document.extract_text",
+      "purpose": "Extract text from supported CV/JD files and return parse confidence.",
+      "authRequired": true,
+      "permissionRuleId": "BR-011",
+      "request": {
+        "documentRef": "string",
+        "documentType": "cv|jd",
+        "fileType": "pdf|docx"
+      },
+      "response": {
+        "text": "string",
+        "parseConfidence": "number",
+        "unsupportedOcrRequired": "boolean",
+        "evidenceMetadata": {}
+      },
+      "errors": [
+        {
+          "code": "ERR_UNSUPPORTED_OCR",
+          "condition": "Scanned/image-only file",
+          "message": "OCR is outside MVP scope.",
+          "recovery": "Ask HR to upload text-native PDF/DOCX or route to Phase 2."
+        },
+        {
+          "code": "ERR_PARSE_LOW_CONFIDENCE",
+          "condition": "Extraction confidence below threshold",
+          "message": "Manual review required.",
+          "recovery": "Route to manual review."
+        }
+      ],
+      "sourceIds": [
+        "BP-002",
+        "BR-004",
+        "BR-005"
+      ]
+    },
+    {
+      "id": "API-003",
+      "name": "AI Screening Evaluation Interface",
+      "interfaceType": "RPC",
+      "methodOrEvent": "evaluate_screening",
+      "pathOrTopicOrCommand": "ai.screening.evaluate",
+      "purpose": "Generate explainable CV-to-JD screening result for HR Manager review.",
+      "authRequired": true,
+      "permissionRuleId": "BR-011",
+      "request": {
+        "candidateId": "string",
+        "jobId": "string",
+        "cvText": "string",
+        "jdText": "string",
+        "weights": {
+          "skills": "number (default 0.4, range 0.0-1.0, required: no)",
+          "experience": "number (default 0.3, range 0.0-1.0, required: no)",
+          "language": "number (default 0.2, range 0.0-1.0, required: no)",
+          "education": "number (default 0.1, range 0.0-1.0, required: no)"
+        }
+      },
+      "weightsBehavior": "Weights are optional in the request. If omitted, active job configuration defaults apply. If provided, all four weights are required and must sum to 1.0 with tolerance 0.001; partial override is rejected.",
+      "response": {
+        "score": "number 0-100",
+        "weightsUsed": {
+          "skills": "number",
+          "experience": "number",
+          "language": "number",
+          "education": "number"
+        },
+        "recommendation": "screen_in|screen_out|manual_review",
+        "summary": {
+          "strengths": [
+            "string"
+          ],
+          "weaknesses": [
+            "string"
+          ]
+        },
+        "riskFlags": [
+          "string"
+        ],
+        "missingSkills": [
+          "string"
+        ],
+        "subScores": {},
+        "confidence": "number",
+        "evidenceSpans": [
+          {
+            "source": "cv|jd",
+            "text": "string"
+          }
+        ],
+        "modelVersion": "string",
+        "promptVersion": "string"
+      },
+      "errors": [
+        {
+          "code": "ERR_AI_UNAVAILABLE",
+          "condition": "LLM request fails",
+          "message": "Screening could not be completed.",
+          "recovery": "Retry or route to ERROR remediation."
+        },
+        {
+          "code": "ERR_LOW_CONFIDENCE",
+          "condition": "AI confidence below threshold",
+          "message": "Manual review required.",
+          "recovery": "HR Manager reviews manually."
+        }
+      ],
+      "sourceIds": [
+        "BP-002",
+        "BR-005",
+        "BR-006",
+        "UC-003",
+        "BP-010",
+        "BR-015"
+      ],
+      "timeoutSeconds": 30,
+      "timeoutBehavior": "If screening exceeds 30 seconds, transition candidate to ERROR with reason SCREENING_TIMEOUT, assign owner, and create audit event; no silent retry or advancement."
+    },
+    {
+      "id": "API-004",
+      "name": "Approval Decision Interface",
+      "interfaceType": "REST/Event",
+      "methodOrEvent": "POST decision / approval.recorded",
+      "pathOrTopicOrCommand": "/approvals/{approvalId}/decision",
+      "purpose": "Record explicit human approval/rejection/request rework for screening, scheduling, or final review.",
+      "authRequired": true,
+      "permissionRuleId": "BR-001",
+      "request": {
+        "approvalId": "string",
+        "decision": "approve|reject|request_rework|defer",
+        "reason": "string",
+        "bulkCandidateIds": [
+          "string"
+        ]
+      },
+      "response": {
+        "decisionId": "string",
+        "newCandidateStates": [
+          "string"
+        ],
+        "auditEventId": "string"
+      },
+      "errors": [
+        {
+          "code": "ERR_APPROVER_REQUIRED",
+          "condition": "Actor lacks approval permission",
+          "message": "Only authorized approver can decide.",
+          "recovery": "Route to HR Manager or backup approver."
+        },
+        {
+          "code": "ERR_DECISION_INCOMPLETE",
+          "condition": "Required reason/evidence missing",
+          "message": "Decision requires complete evidence or reason.",
+          "recovery": "Provide missing information."
+        }
+      ],
+      "sourceIds": [
+        "BR-001",
+        "BR-002",
+        "BR-012",
+        "BR-021",
+        "UC-003",
+        "UC-004",
+        "UC-007"
+      ]
+    },
+    {
+      "id": "API-005",
+      "name": "Scheduling Suggestion and Calendar Interface",
+      "interfaceType": "REST/RPC",
+      "methodOrEvent": "suggest_slots / create_event",
+      "pathOrTopicOrCommand": "calendar.freebusy + calendar.events.create",
+      "purpose": "Read availability/free-busy, suggest valid slots, and create event only after approval.",
+      "authRequired": true,
+      "permissionRuleId": "BR-017",
+      "request": {
+        "candidateId": "string",
+        "interviewerIds": [
+          "string"
+        ],
+        "candidateAvailability": [
+          "datetime range"
+        ],
+        "timezone": "IANA timezone",
+        "approvedSlot": "datetime range optional"
+      },
+      "response": {
+        "suggestedSlots": [
+          {
+            "start": "datetime",
+            "end": "datetime",
+            "timezone": "string",
+            "rank": "number"
+          }
+        ],
+        "calendarEventId": "string optional"
+      },
+      "errors": [
+        {
+          "code": "ERR_NO_VALID_SLOT",
+          "condition": "No slot satisfies rules",
+          "message": "No valid interview slots found.",
+          "recovery": "Request alternative availability."
+        },
+        {
+          "code": "ERR_CALENDAR_UNAVAILABLE",
+          "condition": "Google Calendar unavailable",
+          "message": "Calendar integration unavailable.",
+          "recovery": "Retry or manual scheduling fallback."
+        },
+        {
+          "code": "ERR_EVENT_REQUIRES_APPROVAL",
+          "condition": "Create event before approval",
+          "message": "Calendar event requires HR Manager approval.",
+          "recovery": "Record approval first."
+        }
+      ],
+      "sourceIds": [
+        "BP-003",
+        "BR-007",
+        "BR-008",
+        "BR-017",
+        "BR-024",
+        "UC-004",
+        "BP-010",
+        "BR-015"
+      ],
+      "calendarAvailabilityRetryPolicy": {
+        "maxRetries": 3,
+        "backoffSeconds": [
+          60,
+          180,
+          300
+        ],
+        "onExhausted": "Route candidate to ERROR with owner assignment and alert HR/Admin; do not create Calendar event."
+      }
+    },
+    {
+      "id": "API-006",
+      "name": "Notification and Gmail Interface",
+      "interfaceType": "REST/Event",
+      "methodOrEvent": "send_email / reminder.due",
+      "pathOrTopicOrCommand": "gmail.messages.send + notification events",
+      "purpose": "Send approved templates from shared HR mailbox for invitations, confirmations, reminders, and results.",
+      "authRequired": true,
+      "permissionRuleId": "BR-014",
+      "request": {
+        "templateId": "string",
+        "recipient": "email",
+        "candidateId": "string",
+        "context": {},
+        "sendFrom": "shared_hr_mailbox"
+      },
+      "response": {
+        "messageId": "string",
+        "sentAt": "datetime",
+        "auditEventId": "string"
+      },
+      "errors": [
+        {
+          "code": "ERR_TEMPLATE_MISSING",
+          "condition": "Template unavailable",
+          "message": "Email template is missing.",
+          "recovery": "Admin/HR configures template."
+        },
+        {
+          "code": "ERR_GMAIL_UNAVAILABLE",
+          "condition": "Gmail API failure",
+          "message": "Email could not be sent.",
+          "recovery": "Retry or remediate integration."
+        }
+      ],
+      "sourceIds": [
+        "BP-007",
+        "BR-014",
+        "BR-017",
+        "UC-008",
+        "BP-010",
+        "BR-015"
+      ],
+      "emailDeliveryRetryPolicy": {
+        "maxEmailDeliveryRetries": 3,
+        "emailDeliveryBackoffSeconds": [
+          60,
+          300,
+          900
+        ],
+        "onExhausted": "Route notification to ERROR, assign owner, alert configured channel, and keep candidate state unchanged."
+      }
+    },
+    {
+      "id": "API-007",
+      "name": "Async Interview Interface",
+      "interfaceType": "REST/RPC",
+      "methodOrEvent": "GET/POST interview session",
+      "pathOrTopicOrCommand": "/candidate-interviews/{token}",
+      "purpose": "Deliver fixed and follow-up text interview questions and capture candidate answers.",
+      "authRequired": true,
+      "permissionRuleId": "BR-011",
+      "tokenSecurity": {
+        "required": true,
+        "generation": "CSPRNG (cryptographically secure pseudo-random number generator). Tokens must use at least 256 bits of entropy and be generated using a cryptographically secure method (e.g., secrets.token_urlsafe(32) in Python, crypto.randomBytes in Node.js).",
+        "binding": "Token bound to candidateId and interviewId at generation time. Token lookup joins candidate to verify token-candidate-interview relationship before returning questions or accepting answers. Tokens are single-use per answer submission slot (each answer submission is a separate request).",
+        "expiry": "Interview tokens expire after the configured deadline (default 7 days, subject to job-level configuration). Expired tokens return ERR_LINK_EXPIRED and do not expose candidate data.",
+        "revocation": "HR Recruiter or HR Manager may manually revoke a token at any time before expiry. Revoked tokens immediately return ERR_LINK_EXPIRED. Revocation creates an audit event.",
+        "storage": "Tokens stored as one-way hashed value (SHA-256 or better) in the database. Raw token never stored or logged. Only the hash is compared at lookup time.",
+        "transmission": "Token transmitted only via the interview invitation email sent to the candidate's registered email address. Token never transmitted over insecure channels. No token in URL query strings for GET operations that return sensitive content; path parameter is acceptable when HTTPS is enforced."
+      },
+      "notes": "Interview token ({token} in path) is a stateless bearer credential used to identify and authenticate the candidate session without requiring candidate login. It is not an OAuth or session token. The token is validated against the hashed store, binds to candidateId and interviewId, and is revoked or expires before re-use.",
+      "request": {
+        "sessionToken": "string",
+        "answer": "string",
+        "questionId": "string"
+      },
+      "response": {
+        "nextQuestion": {
+          "id": "string",
+          "text": "string",
+          "type": "fixed|follow_up"
+        },
+        "isComplete": "boolean",
+        "transcriptId": "string optional",
+        "evaluationId": "string optional"
+      },
+      "errors": [
+        {
+          "code": "ERR_LINK_EXPIRED",
+          "condition": "Interview token expired or revoked",
+          "message": "Interview link has expired.",
+          "recovery": "HR may reopen or mark withdrawn/error."
+        },
+        {
+          "code": "ERR_INCOMPLETE_SUBMISSION",
+          "condition": "Required answers missing",
+          "message": "Please complete required answers.",
+          "recovery": "Candidate completes missing answers."
+        }
+      ],
+      "sourceIds": [
+        "BP-004",
+        "UC-005"
+      ]
+    },
+    {
+      "id": "API-008",
+      "name": "Test Grading Interface",
+      "interfaceType": "RPC",
+      "methodOrEvent": "grade_test",
+      "pathOrTopicOrCommand": "test.grade",
+      "purpose": "Grade MCQ deterministically and essay/coding with rubric/test-case supported evaluation.",
+      "authRequired": true,
+      "permissionRuleId": "BR-011",
+      "request": {
+        "candidateId": "string",
+        "testDefinitionId": "string",
+        "submission": {
+          "mcq": {},
+          "essay": {},
+          "coding": {}
+        }
+      },
+      "response": {
+        "sectionScores": {},
+        "totalScore": "number",
+        "passFailRecommendation": "pass|fail|manual_review",
+        "feedback": "string",
+        "gradingConfidence": "number",
+        "rubricVersion": "string"
+      },
+      "errors": [
+        {
+          "code": "ERR_GRADING_FAILURE",
+          "condition": "AI or deterministic grader fails",
+          "message": "Test grading failed.",
+          "recovery": "Retry or manual review."
+        },
+        {
+          "code": "ERR_SANDBOX_UNDEFINED",
+          "condition": "Coding runtime policy missing",
+          "message": "Coding sandbox/runtime must be defined.",
+          "recovery": "Resolve BQ-004 before coding grading implementation."
+        }
+      ],
+      "sourceIds": [
+        "BP-005",
+        "BR-009",
+        "BR-010",
+        "UC-006",
+        "BQ-004",
+        "BP-010",
+        "BR-015"
+      ],
+      "gradingRetryPolicy": {
+        "maxGradingRetries": 2,
+        "gradingRetryBackoffSeconds": [
+          120,
+          600
+        ],
+        "onExhausted": "Route to ERROR with manual grading/remediation owner and audit event."
+      }
+    },
+    {
+      "id": "API-009",
+      "name": "Withdrawal Interface",
+      "interfaceType": "REST/Event",
+      "methodOrEvent": "POST withdraw / candidate.withdrawn",
+      "pathOrTopicOrCommand": "/candidates/{candidateId}/withdraw",
+      "purpose": "Move candidate to WITHDRAWN and close pending workflow actions.",
+      "authRequired": true,
+      "permissionRuleId": "BR-011",
+      "request": {
+        "candidateId": "string",
+        "reason": "string optional",
+        "source": "candidate|hr_recruiter|hr_manager"
+      },
+      "response": {
+        "candidateId": "string",
+        "state": "WITHDRAWN",
+        "closedActionIds": [
+          "string"
+        ],
+        "auditEventId": "string"
+      },
+      "errors": [
+        {
+          "code": "ERR_WITHDRAWAL_AMBIGUOUS",
+          "condition": "Withdrawal source unclear",
+          "message": "Withdrawal request must be confirmed.",
+          "recovery": "HR confirms source before state change."
+        }
+      ],
+      "sourceIds": [
+        "BP-009",
+        "UC-009",
+        "BR-024",
+        "BQ-007"
+      ],
+      "calendarCleanupPolicy": "Calendar cleanup after withdrawal remains blocked by Q4-007. Until resolved, HR must manually review/cancel related Calendar events and document the action in audit trail."
+    },
+    {
+      "id": "API-010",
+      "name": "Error Remediation Interface",
+      "interfaceType": "REST/Event",
+      "methodOrEvent": "POST remediate / error.assigned",
+      "pathOrTopicOrCommand": "/errors/{errorId}/remediation",
+      "purpose": "Assign owner, classify, retry, route to manual review, or return candidate to previous valid state.",
+      "authRequired": true,
+      "permissionRuleId": "BR-011",
+      "request": {
+        "errorId": "string",
+        "classification": "import|parse|ai|google|grading|unknown",
+        "ownerId": "string",
+        "action": "retry|manual_review|return_previous_state|withdraw"
+      },
+      "response": {
+        "errorId": "string",
+        "status": "assigned|resolved|escalated",
+        "candidateState": "string",
+        "auditEventId": "string"
+      },
+      "errors": [
+        {
+          "code": "ERR_OWNER_REQUIRED",
+          "condition": "No remediation owner assigned",
+          "message": "Error remediation requires an owner.",
+          "recovery": "Assign HR Recruiter or IT Admin."
+        },
+        {
+          "code": "ERR_RETRY_FAILED",
+          "condition": "Retry failed repeatedly",
+          "message": "Retry failed; escalation/manual fallback required.",
+          "recovery": "Escalate or use manual process."
+        }
+      ],
+      "sourceIds": [
+        "BP-010",
+        "UC-010",
+        "BR-012",
+        "BR-021",
+        "BQ-002"
+      ],
+      "remediationRetryPolicy": {
+        "remediationAttemptCount": "tracked per error item",
+        "maxRemediationAttempts": 3,
+        "onExhausted": "Escalate to backup owner/Admin alert channel and keep item in ERROR; no automatic approval/rejection."
+      },
+      "ownerFallbackPolicy": "If assigned owner is inactive/unavailable, reassign to configured backup owner from Q4-002; if no backup exists, alert Admin and HR Manager after 4 business hours unassigned.",
+      "escalationAlertPolicy": "Escalation threshold creates notification to configured HR/Admin alert channels and audit event; escalation never changes candidate decision state."
+    }
+  ],
+  "dataObjects": [
+    {
+      "id": "DATA-001",
+      "name": "Candidate",
+      "businessMeaning": "Person moving through recruitment pipeline.",
+      "lifecycle": "NEW through terminal PASSED/FAILED/SCREENED_OUT/WITHDRAWN or remediation ERROR.",
+      "sensitivity": "sensitive",
+      "retention": "BLOCKED: define in BQ-003 before implementation sign-off.",
+      "fields": [
+        {
+          "field": "candidateId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "unique",
+          "default": "generated",
+          "notes": "Primary candidate identifier",
+          "sourceIds": [
+            "BP-001",
+            "BP-009",
+            "BR-011",
+            "BR-019"
+          ]
+        },
+        {
+          "field": "fullName",
+          "type": "string",
+          "required": "yes",
+          "validation": "non-empty",
+          "default": "",
+          "notes": "Candidate legal/display name",
+          "sourceIds": [
+            "BP-001",
+            "BP-009",
+            "BR-011",
+            "BR-019"
+          ]
+        },
+        {
+          "field": "email",
+          "type": "email",
+          "required": "yes",
+          "validation": "valid email",
+          "default": "",
+          "notes": "Candidate contact",
+          "sourceIds": [
+            "BP-001",
+            "BP-009",
+            "BR-011",
+            "BR-019"
+          ]
+        },
+        {
+          "field": "currentState",
+          "type": "enum",
+          "required": "yes",
+          "validation": "one canonical candidate state",
+          "default": "NEW",
+          "notes": "Business state machine state",
+          "sourceIds": [
+            "BP-001",
+            "BP-009",
+            "BR-011",
+            "BR-019"
+          ]
+        },
+        {
+          "field": "jobId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing job",
+          "default": "",
+          "notes": "Applied job",
+          "sourceIds": [
+            "BP-001",
+            "BP-009",
+            "BR-011",
+            "BR-019"
+          ]
+        },
+        {
+          "field": "source",
+          "type": "enum",
+          "required": "yes",
+          "validation": "manual|excel|google_drive",
+          "default": "",
+          "notes": "Sourcing origin",
+          "sourceIds": [
+            "BP-001",
+            "BP-009",
+            "BR-011",
+            "BR-019"
+          ]
+        },
+        {
+          "field": "withdrawalReason",
+          "type": "string",
+          "required": "no",
+          "validation": "required when state WITHDRAWN if available",
+          "default": "",
+          "notes": "Audit context",
+          "sourceIds": [
+            "BP-001",
+            "BP-009",
+            "BR-011",
+            "BR-019"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-001",
+        "BP-009",
+        "BR-011",
+        "BR-019"
+      ]
+    },
+    {
+      "id": "DATA-002",
+      "name": "Job and JD",
+      "businessMeaning": "Recruitment opening and job description used for screening/interview/test context.",
+      "lifecycle": "Created/imported before screening; referenced throughout candidate evaluation.",
+      "sensitivity": "internal",
+      "retention": "BLOCKED: align with BQ-003 if JD contains confidential data.",
+      "fields": [
+        {
+          "field": "jobId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "unique",
+          "default": "generated",
+          "notes": "Job identifier",
+          "sourceIds": [
+            "BP-001",
+            "BP-002",
+            "BR-019"
+          ]
+        },
+        {
+          "field": "title",
+          "type": "string",
+          "required": "yes",
+          "validation": "non-empty",
+          "default": "",
+          "notes": "Job title",
+          "sourceIds": [
+            "BP-001",
+            "BP-002",
+            "BR-019"
+          ]
+        },
+        {
+          "field": "jdText",
+          "type": "string",
+          "required": "yes",
+          "validation": "non-empty or extracted text",
+          "default": "",
+          "notes": "JD criteria",
+          "sourceIds": [
+            "BP-001",
+            "BP-002",
+            "BR-019"
+          ]
+        },
+        {
+          "field": "language",
+          "type": "enum",
+          "required": "yes",
+          "validation": "vi|ja|en",
+          "default": "",
+          "notes": "Primary JD/interview language",
+          "sourceIds": [
+            "BP-001",
+            "BP-002",
+            "BR-019"
+          ]
+        },
+        {
+          "field": "status",
+          "type": "enum",
+          "required": "yes",
+          "validation": "open|closed|paused",
+          "default": "open",
+          "notes": "Recruitment status",
+          "sourceIds": [
+            "BP-001",
+            "BP-002",
+            "BR-019"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BR-019"
+      ]
+    },
+    {
+      "id": "DATA-003",
+      "name": "Document File",
+      "businessMeaning": "CV/JD/test import file metadata and extracted text.",
+      "lifecycle": "Uploaded/imported, parsed, retained per policy.",
+      "sensitivity": "sensitive",
+      "retention": "BLOCKED: BQ-003.",
+      "fields": [
+        {
+          "field": "documentId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "unique",
+          "default": "generated",
+          "notes": "Document identifier",
+          "sourceIds": [
+            "BR-004",
+            "BR-005",
+            "BP-002"
+          ]
+        },
+        {
+          "field": "ownerEntityId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing candidate/job/test",
+          "default": "",
+          "notes": "Owning entity",
+          "sourceIds": [
+            "BR-004",
+            "BR-005",
+            "BP-002"
+          ]
+        },
+        {
+          "field": "fileType",
+          "type": "enum",
+          "required": "yes",
+          "validation": "pdf|docx|xlsx|json",
+          "default": "",
+          "notes": "Supported MVP formats by context",
+          "sourceIds": [
+            "BR-004",
+            "BR-005",
+            "BP-002"
+          ]
+        },
+        {
+          "field": "extractedText",
+          "type": "string",
+          "required": "no",
+          "validation": "required after successful parse",
+          "default": "",
+          "notes": "Text used by AI",
+          "sourceIds": [
+            "BR-004",
+            "BR-005",
+            "BP-002"
+          ]
+        },
+        {
+          "field": "parseConfidence",
+          "type": "number",
+          "required": "no",
+          "validation": "0-1",
+          "default": "",
+          "notes": "Manual review threshold governed by BQ-001",
+          "sourceIds": [
+            "BR-004",
+            "BR-005",
+            "BP-002"
+          ]
+        },
+        {
+          "field": "isScannedOrImageOnly",
+          "type": "boolean",
+          "required": "yes",
+          "validation": "true|false",
+          "default": "false",
+          "notes": "Rejected in MVP if true",
+          "sourceIds": [
+            "BR-004",
+            "BR-005",
+            "BP-002"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BR-004",
+        "BR-005",
+        "BP-002"
+      ]
+    },
+    {
+      "id": "DATA-004",
+      "name": "Screening Result",
+      "businessMeaning": "Explainable AI assessment of candidate CV against JD.",
+      "lifecycle": "Generated in SCREENING_RUNNING, reviewed in SCREENING_PENDING_APPROVAL, retained for final review/audit.",
+      "sensitivity": "sensitive",
+      "retention": "BLOCKED: BQ-003.",
+      "fields": [
+        {
+          "field": "screeningResultId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "unique",
+          "default": "generated",
+          "notes": "Result identifier",
+          "sourceIds": [
+            "BP-002",
+            "BR-005",
+            "BR-006",
+            "UC-003"
+          ]
+        },
+        {
+          "field": "candidateId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing candidate",
+          "default": "",
+          "notes": "Candidate reference",
+          "sourceIds": [
+            "BP-002",
+            "BR-005",
+            "BR-006",
+            "UC-003"
+          ]
+        },
+        {
+          "field": "score",
+          "type": "number",
+          "required": "yes",
+          "validation": "0-100",
+          "default": "",
+          "notes": "Overall matching score",
+          "sourceIds": [
+            "BP-002",
+            "BR-005",
+            "BR-006",
+            "UC-003"
+          ]
+        },
+        {
+          "field": "recommendation",
+          "type": "enum",
+          "required": "yes",
+          "validation": "screen_in|screen_out|manual_review",
+          "default": "",
+          "notes": "AI recommendation only",
+          "sourceIds": [
+            "BP-002",
+            "BR-005",
+            "BR-006",
+            "UC-003"
+          ]
+        },
+        {
+          "field": "confidence",
+          "type": "number",
+          "required": "yes",
+          "validation": "0-1",
+          "default": "",
+          "notes": "Low confidence routes to manual review",
+          "sourceIds": [
+            "BP-002",
+            "BR-005",
+            "BR-006",
+            "UC-003"
+          ]
+        },
+        {
+          "field": "summary",
+          "type": "object",
+          "required": "yes",
+          "validation": "strengths and weaknesses",
+          "default": "",
+          "notes": "Explainability summary",
+          "sourceIds": [
+            "BP-002",
+            "BR-005",
+            "BR-006",
+            "UC-003"
+          ]
+        },
+        {
+          "field": "riskFlags",
+          "type": "array",
+          "required": "yes",
+          "validation": "strings",
+          "default": "[]",
+          "notes": "Critical mismatch flags",
+          "sourceIds": [
+            "BP-002",
+            "BR-005",
+            "BR-006",
+            "UC-003"
+          ]
+        },
+        {
+          "field": "missingSkills",
+          "type": "array",
+          "required": "yes",
+          "validation": "strings",
+          "default": "[]",
+          "notes": "Skill gaps",
+          "sourceIds": [
+            "BP-002",
+            "BR-005",
+            "BR-006",
+            "UC-003"
+          ]
+        },
+        {
+          "field": "evidenceSpans",
+          "type": "array",
+          "required": "yes",
+          "validation": "source/text entries",
+          "default": "[]",
+          "notes": "Evidence for review",
+          "sourceIds": [
+            "BP-002",
+            "BR-005",
+            "BR-006",
+            "UC-003"
+          ]
+        },
+        {
+          "field": "modelVersion",
+          "type": "string",
+          "required": "yes",
+          "validation": "non-empty",
+          "default": "",
+          "notes": "AI governance",
+          "sourceIds": [
+            "BP-002",
+            "BR-005",
+            "BR-006",
+            "UC-003"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-002",
+        "BR-005",
+        "BR-006",
+        "UC-003"
+      ]
+    },
+    {
+      "id": "DATA-005",
+      "name": "Approval Decision",
+      "businessMeaning": "Explicit human business decision at screening, scheduling, or final review gate.",
+      "lifecycle": "Created only by authorized human action; immutable audit event.",
+      "sensitivity": "confidential",
+      "retention": "Audit retention BLOCKED by BQ-003.",
+      "fields": [
+        {
+          "field": "decisionId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "unique",
+          "default": "generated",
+          "notes": "Decision identifier",
+          "sourceIds": [
+            "BR-001",
+            "BR-002",
+            "BR-012",
+            "BR-021",
+            "UC-003",
+            "UC-004",
+            "UC-007"
+          ]
+        },
+        {
+          "field": "approvalType",
+          "type": "enum",
+          "required": "yes",
+          "validation": "screening|scheduling|final_review",
+          "default": "",
+          "notes": "Gate type",
+          "sourceIds": [
+            "BR-001",
+            "BR-002",
+            "BR-012",
+            "BR-021",
+            "UC-003",
+            "UC-004",
+            "UC-007"
+          ]
+        },
+        {
+          "field": "decision",
+          "type": "enum",
+          "required": "yes",
+          "validation": "approve|reject|request_rework|defer|pass|fail",
+          "default": "",
+          "notes": "Human decision",
+          "sourceIds": [
+            "BR-001",
+            "BR-002",
+            "BR-012",
+            "BR-021",
+            "UC-003",
+            "UC-004",
+            "UC-007"
+          ]
+        },
+        {
+          "field": "actorId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "authorized approver",
+          "default": "",
+          "notes": "Decision maker",
+          "sourceIds": [
+            "BR-001",
+            "BR-002",
+            "BR-012",
+            "BR-021",
+            "UC-003",
+            "UC-004",
+            "UC-007"
+          ]
+        },
+        {
+          "field": "reason",
+          "type": "string",
+          "required": "conditional",
+          "validation": "required for reject/rework/defer/override",
+          "default": "",
+          "notes": "Decision rationale",
+          "sourceIds": [
+            "BR-001",
+            "BR-002",
+            "BR-012",
+            "BR-021",
+            "UC-003",
+            "UC-004",
+            "UC-007"
+          ]
+        },
+        {
+          "field": "createdAt",
+          "type": "datetime",
+          "required": "yes",
+          "validation": "ISO-8601",
+          "default": "now",
+          "notes": "Decision timestamp",
+          "sourceIds": [
+            "BR-001",
+            "BR-002",
+            "BR-012",
+            "BR-021",
+            "UC-003",
+            "UC-004",
+            "UC-007"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BR-001",
+        "BR-002",
+        "BR-012",
+        "BR-021",
+        "UC-003",
+        "UC-004",
+        "UC-007"
+      ]
+    },
+    {
+      "id": "DATA-006",
+      "name": "Interview Schedule",
+      "businessMeaning": "Approved interview slot and associated Calendar event/communication.",
+      "lifecycle": "Suggested, approved, event created, then proceeds to interview stage.",
+      "sensitivity": "confidential",
+      "retention": "BLOCKED: BQ-003.",
+      "fields": [
+        {
+          "field": "scheduleId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "unique",
+          "default": "generated",
+          "notes": "Schedule identifier",
+          "sourceIds": [
+            "BP-003",
+            "BR-007",
+            "BR-008",
+            "BR-024",
+            "UC-004"
+          ]
+        },
+        {
+          "field": "candidateId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing candidate",
+          "default": "",
+          "notes": "Candidate reference",
+          "sourceIds": [
+            "BP-003",
+            "BR-007",
+            "BR-008",
+            "BR-024",
+            "UC-004"
+          ]
+        },
+        {
+          "field": "interviewerIds",
+          "type": "array",
+          "required": "yes",
+          "validation": "non-empty",
+          "default": "",
+          "notes": "Interviewers",
+          "sourceIds": [
+            "BP-003",
+            "BR-007",
+            "BR-008",
+            "BR-024",
+            "UC-004"
+          ]
+        },
+        {
+          "field": "startAt",
+          "type": "datetime",
+          "required": "yes",
+          "validation": "future with advance notice",
+          "default": "",
+          "notes": "Approved start",
+          "sourceIds": [
+            "BP-003",
+            "BR-007",
+            "BR-008",
+            "BR-024",
+            "UC-004"
+          ]
+        },
+        {
+          "field": "endAt",
+          "type": "datetime",
+          "required": "yes",
+          "validation": "after start",
+          "default": "",
+          "notes": "Approved end",
+          "sourceIds": [
+            "BP-003",
+            "BR-007",
+            "BR-008",
+            "BR-024",
+            "UC-004"
+          ]
+        },
+        {
+          "field": "timezone",
+          "type": "string",
+          "required": "yes",
+          "validation": "IANA timezone",
+          "default": "",
+          "notes": "Timezone",
+          "sourceIds": [
+            "BP-003",
+            "BR-007",
+            "BR-008",
+            "BR-024",
+            "UC-004"
+          ]
+        },
+        {
+          "field": "calendarEventId",
+          "type": "string",
+          "required": "conditional",
+          "validation": "required after approval",
+          "default": "",
+          "notes": "Google event",
+          "sourceIds": [
+            "BP-003",
+            "BR-007",
+            "BR-008",
+            "BR-024",
+            "UC-004"
+          ]
+        },
+        {
+          "field": "status",
+          "type": "enum",
+          "required": "yes",
+          "validation": "suggested|approved|created|cancelled|reschedule_pending",
+          "default": "suggested",
+          "notes": "Reschedule/cancel governed by BQ-007",
+          "sourceIds": [
+            "BP-003",
+            "BR-007",
+            "BR-008",
+            "BR-024",
+            "UC-004"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-003",
+        "BR-007",
+        "BR-008",
+        "BR-024",
+        "UC-004"
+      ]
+    },
+    {
+      "id": "DATA-007",
+      "name": "Async Interview Transcript and Evaluation",
+      "businessMeaning": "Candidate interview answers and AI evaluation report.",
+      "lifecycle": "Created during interview, evaluated, then used for final review/test handoff.",
+      "sensitivity": "sensitive",
+      "retention": "BLOCKED: BQ-003.",
+      "fields": [
+        {
+          "field": "transcriptId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "unique",
+          "default": "generated",
+          "notes": "Transcript identifier",
+          "sourceIds": [
+            "BP-004",
+            "UC-005"
+          ]
+        },
+        {
+          "field": "candidateId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing candidate",
+          "default": "",
+          "notes": "Candidate reference",
+          "sourceIds": [
+            "BP-004",
+            "UC-005"
+          ]
+        },
+        {
+          "field": "answers",
+          "type": "array",
+          "required": "yes",
+          "validation": "question/answer pairs",
+          "default": "[]",
+          "notes": "Submitted text answers",
+          "sourceIds": [
+            "BP-004",
+            "UC-005"
+          ]
+        },
+        {
+          "field": "followUpQuestions",
+          "type": "array",
+          "required": "no",
+          "validation": "generated question entries",
+          "default": "[]",
+          "notes": "Dynamic follow-ups",
+          "sourceIds": [
+            "BP-004",
+            "UC-005"
+          ]
+        },
+        {
+          "field": "evaluationReport",
+          "type": "object",
+          "required": "conditional",
+          "validation": "required after completion and within SLA",
+          "default": "",
+          "notes": "AI evaluation required after interview completion and within configured SLA. Transcript is complete at submission. Evaluation is generated asynchronously; if evaluation SLA is missed, candidate transitions to ERROR with owner assignment and audit event. Missing evaluation after SLA expiry is treated as ERROR.",
+          "sourceIds": [
+            "BP-004",
+            "UC-005"
+          ]
+        },
+        {
+          "field": "evaluationSlaDeadline",
+          "type": "datetime",
+          "required": "no",
+          "validation": "ISO-8601",
+          "default": "submittedAt + 30 minutes",
+          "notes": "Default evaluation SLA deadline. If missed, mark evaluation stale, alert owner, and route to ERROR/manual review without advancing candidate.",
+          "sourceIds": [
+            "BP-004",
+            "UC-005",
+            "BP-008",
+            "BP-010",
+            "BR-015"
+          ]
+        },
+        {
+          "field": "completionStatus",
+          "type": "enum",
+          "required": "yes",
+          "validation": "pending|completed|expired|incomplete|in_progress",
+          "default": "pending",
+          "notes": "Interview completion state. in_progress used during active session.",
+          "sourceIds": [
+            "BP-004",
+            "UC-005"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-004",
+        "UC-005"
+      ]
+    },
+    {
+      "id": "DATA-008",
+      "name": "Test Definition and Submission",
+      "businessMeaning": "Assessment content, answer/rubric/test cases, candidate submission, and grading report.",
+      "lifecycle": "Imported/assigned/submitted/graded/final review.",
+      "sensitivity": "sensitive",
+      "retention": "BLOCKED: BQ-003.",
+      "fields": [
+        {
+          "field": "testDefinitionId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "unique",
+          "default": "generated",
+          "notes": "Test definition",
+          "sourceIds": [
+            "BP-005",
+            "BR-009",
+            "BR-010",
+            "UC-006",
+            "BQ-004"
+          ]
+        },
+        {
+          "field": "testType",
+          "type": "enum",
+          "required": "yes",
+          "validation": "mcq|essay|coding|mixed",
+          "default": "",
+          "notes": "Supported test type",
+          "sourceIds": [
+            "BP-005",
+            "BR-009",
+            "BR-010",
+            "UC-006",
+            "BQ-004"
+          ]
+        },
+        {
+          "field": "answerKeyOrRubric",
+          "type": "object",
+          "required": "yes",
+          "validation": "required by type",
+          "default": "",
+          "notes": "Grading source",
+          "sourceIds": [
+            "BP-005",
+            "BR-009",
+            "BR-010",
+            "UC-006",
+            "BQ-004"
+          ]
+        },
+        {
+          "field": "submissionId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "unique",
+          "default": "generated",
+          "notes": "Candidate submission",
+          "sourceIds": [
+            "BP-005",
+            "BR-009",
+            "BR-010",
+            "UC-006",
+            "BQ-004"
+          ]
+        },
+        {
+          "field": "sectionScores",
+          "type": "object",
+          "required": "conditional",
+          "validation": "required after grading",
+          "default": "",
+          "notes": "Score breakdown by section (e.g. mcq, essay, coding). Only populated when testRequired=true; coding section remains blocked until BQ-004 is resolved.",
+          "sourceIds": [
+            "BP-005",
+            "BR-009",
+            "BR-010",
+            "UC-006"
+          ]
+        },
+        {
+          "field": "totalScore",
+          "type": "number",
+          "required": "conditional",
+          "validation": "0-100 after grading",
+          "default": "",
+          "notes": "Total score",
+          "sourceIds": [
+            "BP-005",
+            "BR-009",
+            "BR-010",
+            "UC-006",
+            "BQ-004"
+          ]
+        },
+        {
+          "field": "gradingConfidence",
+          "type": "number",
+          "required": "conditional",
+          "validation": "0-1",
+          "default": "",
+          "notes": "Manual review trigger",
+          "sourceIds": [
+            "BP-005",
+            "BR-009",
+            "BR-010",
+            "UC-006",
+            "BQ-004"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-005",
+        "BR-009",
+        "BR-010",
+        "UC-006",
+        "BQ-004"
+      ]
+    },
+    {
+      "id": "DATA-009",
+      "name": "Audit Event",
+      "businessMeaning": "Immutable record of business, security, and workflow actions.",
+      "lifecycle": "Created for all significant actions and retained by policy.",
+      "sensitivity": "confidential",
+      "retention": "BLOCKED: BQ-003.",
+      "fields": [
+        {
+          "field": "auditEventId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "unique",
+          "default": "generated",
+          "notes": "Audit identifier",
+          "sourceIds": [
+            "BR-012",
+            "BAC-002",
+            "BAC-004"
+          ]
+        },
+        {
+          "field": "actorId",
+          "type": "uuid",
+          "required": "conditional",
+          "validation": "required for user action",
+          "default": "",
+          "notes": "Actor",
+          "sourceIds": [
+            "BR-012",
+            "BAC-002",
+            "BAC-004"
+          ]
+        },
+        {
+          "field": "action",
+          "type": "string",
+          "required": "yes",
+          "validation": "non-empty",
+          "default": "",
+          "notes": "Action name",
+          "sourceIds": [
+            "BR-012",
+            "BAC-002",
+            "BAC-004"
+          ]
+        },
+        {
+          "field": "entityType",
+          "type": "string",
+          "required": "yes",
+          "validation": "non-empty",
+          "default": "",
+          "notes": "Entity type",
+          "sourceIds": [
+            "BR-012",
+            "BAC-002",
+            "BAC-004"
+          ]
+        },
+        {
+          "field": "entityId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "non-empty",
+          "default": "",
+          "notes": "Entity id",
+          "sourceIds": [
+            "BR-012",
+            "BAC-002",
+            "BAC-004"
+          ]
+        },
+        {
+          "field": "beforeState",
+          "type": "string",
+          "required": "no",
+          "validation": "valid state",
+          "default": "",
+          "notes": "Before state",
+          "sourceIds": [
+            "BR-012",
+            "BAC-002",
+            "BAC-004"
+          ]
+        },
+        {
+          "field": "afterState",
+          "type": "string",
+          "required": "no",
+          "validation": "valid state",
+          "default": "",
+          "notes": "After state",
+          "sourceIds": [
+            "BR-012",
+            "BAC-002",
+            "BAC-004"
+          ]
+        },
+        {
+          "field": "createdAt",
+          "type": "datetime",
+          "required": "yes",
+          "validation": "ISO-8601",
+          "default": "now",
+          "notes": "Timestamp",
+          "sourceIds": [
+            "BR-012",
+            "BAC-002",
+            "BAC-004"
+          ]
+        },
+        {
+          "field": "actorType",
+          "type": "enum",
+          "required": "yes",
+          "validation": "user|system|api_key|background_job|candidate",
+          "default": "",
+          "notes": "Distinguishes human users, automated systems, API keys, background jobs, and candidates. Enables audit filtering by actor type and correct attribution of system vs human actions.",
+          "sourceIds": [
+            "BR-012",
+            "BAC-002",
+            "BAC-004",
+            "BP-008"
+          ]
+        },
+        {
+          "field": "systemActor",
+          "type": "string",
+          "required": "no",
+          "validation": "non-empty when actorType is system|api_key|background_job",
+          "default": "",
+          "notes": "Identifies which automated system generated the event: ai_screening, ai_interview_evaluation, test_grading, drive_import, calendar_sync, notification_job, error_remediation_job, etc.",
+          "sourceIds": [
+            "BR-012",
+            "BAC-002",
+            "BP-008",
+            "BP-010"
+          ]
+        },
+        {
+          "field": "ipAddress",
+          "type": "string",
+          "required": "no",
+          "validation": "valid IPv4/IPv6 or null",
+          "default": "null",
+          "notes": "Client IP address for user-initiated actions; null for system/background events. Used for security audit and GeoIP tracking.",
+          "sourceIds": [
+            "BR-012",
+            "BAC-002",
+            "BAC-004"
+          ]
+        },
+        {
+          "field": "metadata",
+          "type": "object",
+          "required": "no",
+          "validation": "arbitrary key-value pairs",
+          "default": "{}",
+          "notes": "Additional context: jobId, candidateId, approvalId, errorId, retryCount, previousRetryState, notificationChannel, etc. Allows audit queries to filter by specific workflow context.",
+          "sourceIds": [
+            "BR-012",
+            "BP-008",
+            "BP-010"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BR-012",
+        "BAC-002",
+        "BAC-004"
+      ]
+    },
+    {
+      "id": "DATA-010",
+      "name": "Integration Configuration and Health",
+      "businessMeaning": "Google Workspace, AI service, notification, and monitoring configuration/status.",
+      "lifecycle": "Configured by Admin, monitored continuously, used for remediation.",
+      "sensitivity": "confidential",
+      "retention": "Operational retention BLOCKED by BQ-003 where logs contain personal data.",
+      "fields": [
+        {
+          "field": "configId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "unique",
+          "default": "generated",
+          "notes": "Config identifier",
+          "sourceIds": [
+            "BP-008",
+            "BP-010",
+            "BR-015",
+            "BR-017",
+            "BR-020"
+          ]
+        },
+        {
+          "field": "integrationType",
+          "type": "enum",
+          "required": "yes",
+          "validation": "google_drive|google_calendar|gmail|ai|monitoring",
+          "default": "",
+          "notes": "Integration type",
+          "sourceIds": [
+            "BP-008",
+            "BP-010",
+            "BR-015",
+            "BR-017",
+            "BR-020"
+          ]
+        },
+        {
+          "field": "status",
+          "type": "enum",
+          "required": "yes",
+          "validation": "configured|missing|degraded|failed",
+          "default": "missing",
+          "notes": "Health status",
+          "sourceIds": [
+            "BP-008",
+            "BP-010",
+            "BR-015",
+            "BR-017",
+            "BR-020"
+          ]
+        },
+        {
+          "field": "ownerId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "admin/it admin",
+          "default": "",
+          "notes": "Owner",
+          "sourceIds": [
+            "BP-008",
+            "BP-010",
+            "BR-015",
+            "BR-017",
+            "BR-020"
+          ]
+        },
+        {
+          "field": "lastCheckedAt",
+          "type": "datetime",
+          "required": "no",
+          "validation": "ISO-8601",
+          "default": "",
+          "notes": "Health check time",
+          "sourceIds": [
+            "BP-008",
+            "BP-010",
+            "BR-015",
+            "BR-017",
+            "BR-020"
+          ]
+        },
+        {
+          "field": "failureReason",
+          "type": "string",
+          "required": "no",
+          "validation": "required when failed",
+          "default": "",
+          "notes": "Failure context",
+          "sourceIds": [
+            "BP-008",
+            "BP-010",
+            "BR-015",
+            "BR-017",
+            "BR-020"
+          ]
+        },
+        {
+          "field": "maxRetries",
+          "type": "number",
+          "required": "no",
+          "validation": "non-negative integer, default 3",
+          "default": "3",
+          "notes": "Maximum retry attempts before integration transitions to degraded/failed and ERROR is assigned. Default 3 for AI and Google integrations.",
+          "sourceIds": [
+            "BP-008",
+            "BP-010",
+            "BR-015",
+            "BR-017"
+          ]
+        },
+        {
+          "field": "backoffStrategy",
+          "type": "enum",
+          "required": "no",
+          "validation": "fixed|linear|exponential",
+          "default": "exponential",
+          "notes": "Retry backoff strategy. fixed: constant delay; linear: increasing by fixed step; exponential: doubling delay (cap at configurable max interval, default 5 min). Backoff resets on successful call.",
+          "sourceIds": [
+            "BP-008",
+            "BP-010",
+            "BR-015"
+          ]
+        },
+        {
+          "field": "stalenessThresholdSeconds",
+          "type": "number",
+          "required": "no",
+          "validation": "positive integer, defaults vary by integration type",
+          "default": "",
+          "notes": "Maximum allowed time since last successful call before integration is considered stale and alert fires. Defaults: AI screening 300s (5 min), Google Drive 3600s (1 hr), Google Calendar 1800s (30 min), Gmail 900s (15 min), monitoring heartbeat 300s (5 min). Stale but not failed integrations show as degraded.",
+          "sourceIds": [
+            "BP-008",
+            "BP-010",
+            "BR-015",
+            "NFD-006"
+          ]
+        },
+        {
+          "field": "lastSuccessfulCallAt",
+          "type": "datetime",
+          "required": "no",
+          "validation": "ISO-8601",
+          "default": "null",
+          "notes": "Timestamp of last successful API call or event processing. Compared against stalenessThresholdSeconds to determine degraded/failed status.",
+          "sourceIds": [
+            "BP-008",
+            "BP-010",
+            "BR-015",
+            "NFD-006"
+          ]
+        },
+        {
+          "field": "maxEmailDeliveryRetries",
+          "type": "integer",
+          "required": "yes",
+          "validation": "positive integer",
+          "default": "3",
+          "notes": "Per-message Gmail retry cap before ERROR routing.",
+          "sourceIds": [
+            "BP-010",
+            "BR-015"
+          ]
+        },
+        {
+          "field": "emailDeliveryBackoffSeconds",
+          "type": "array<number>",
+          "required": "yes",
+          "validation": "ascending seconds",
+          "default": "[60,300,900]",
+          "notes": "Per-message Gmail retry backoff schedule.",
+          "sourceIds": [
+            "BP-010",
+            "BR-015"
+          ]
+        },
+        {
+          "field": "maxGradingRetries",
+          "type": "integer",
+          "required": "yes",
+          "validation": "positive integer",
+          "default": "2",
+          "notes": "Test grading retry cap before manual remediation.",
+          "sourceIds": [
+            "BP-010",
+            "BR-015"
+          ]
+        },
+        {
+          "field": "gradingRetryCount",
+          "type": "integer",
+          "required": "yes",
+          "validation": "0..maxGradingRetries",
+          "default": "0",
+          "notes": "Current grading retry attempt count.",
+          "sourceIds": [
+            "BP-010",
+            "BR-015"
+          ]
+        },
+        {
+          "field": "remediationAttemptCount",
+          "type": "integer",
+          "required": "yes",
+          "validation": "0..maxRemediationAttempts",
+          "default": "0",
+          "notes": "Current remediation attempt count per ERROR item.",
+          "sourceIds": [
+            "BP-010",
+            "BR-021"
+          ]
+        },
+        {
+          "field": "maxRemediationAttempts",
+          "type": "integer",
+          "required": "yes",
+          "validation": "positive integer",
+          "default": "3",
+          "notes": "Maximum remediation attempts before escalation to backup owner/Admin alert channel.",
+          "sourceIds": [
+            "BP-010",
+            "BR-021",
+            "BQ-002"
+          ]
+        },
+        {
+          "field": "ownerFallbackPolicy",
+          "type": "string",
+          "required": "yes",
+          "validation": "configured backup or admin alert",
+          "default": "backup owner from Q4-002, else Admin + HR Manager alert after 4 business hours",
+          "notes": "Fallback when assigned owner is inactive/unavailable or error remains unassigned.",
+          "sourceIds": [
+            "BP-010",
+            "BR-021",
+            "BQ-002"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-008",
+        "BP-010",
+        "BR-015",
+        "BR-017",
+        "BR-020"
+      ]
+    }
+  ],
+  "states": [
+    {
+      "id": "STATE-001",
+      "objectOrWorkflow": "Candidate Pipeline",
+      "state": "NEW",
+      "entryCondition": "Candidate creation started",
+      "exitCondition": "Allowed next states: IMPORTED, WITHDRAWN",
+      "allowedActions": [
+        "IMPORTED",
+        "WITHDRAWN"
+      ],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ]
+    },
+    {
+      "id": "STATE-002",
+      "objectOrWorkflow": "Candidate Pipeline",
+      "state": "IMPORTED",
+      "entryCondition": "Valid candidate/job input imported",
+      "exitCondition": "Allowed next states: SCREENING_RUNNING, ERROR, WITHDRAWN",
+      "allowedActions": [
+        "SCREENING_RUNNING",
+        "ERROR",
+        "WITHDRAWN"
+      ],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ]
+    },
+    {
+      "id": "STATE-003",
+      "objectOrWorkflow": "Candidate Pipeline",
+      "state": "SCREENING_RUNNING",
+      "entryCondition": "JD and CV available",
+      "exitCondition": "Allowed next states: SCREENING_PENDING_APPROVAL, ERROR, WITHDRAWN",
+      "allowedActions": [
+        "SCREENING_PENDING_APPROVAL",
+        "ERROR",
+        "WITHDRAWN"
+      ],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ]
+    },
+    {
+      "id": "STATE-004",
+      "objectOrWorkflow": "Candidate Pipeline",
+      "state": "SCREENING_PENDING_APPROVAL",
+      "entryCondition": "Screening result generated",
+      "exitCondition": "Allowed next states: SCREENED_IN, SCREENED_OUT, SCREENING_RUNNING, WITHDRAWN",
+      "allowedActions": [
+        "SCREENED_IN",
+        "SCREENED_OUT",
+        "SCREENING_RUNNING",
+        "WITHDRAWN"
+      ],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ]
+    },
+    {
+      "id": "STATE-005",
+      "objectOrWorkflow": "Candidate Pipeline",
+      "state": "SCREENED_IN",
+      "entryCondition": "HR Manager approves screening",
+      "exitCondition": "Allowed next states: AVAILABILITY_PENDING, WITHDRAWN",
+      "allowedActions": [
+        "AVAILABILITY_PENDING",
+        "WITHDRAWN"
+      ],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ]
+    },
+    {
+      "id": "STATE-006",
+      "objectOrWorkflow": "Candidate Pipeline",
+      "state": "SCREENED_OUT",
+      "entryCondition": "HR Manager rejects screening",
+      "exitCondition": "Terminal state",
+      "allowedActions": [],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ]
+    },
+    {
+      "id": "STATE-007",
+      "objectOrWorkflow": "Candidate Pipeline",
+      "state": "AVAILABILITY_PENDING",
+      "entryCondition": "Candidate screened in",
+      "exitCondition": "Allowed next states: SCHEDULING_PENDING_APPROVAL, ERROR, WITHDRAWN",
+      "allowedActions": [
+        "SCHEDULING_PENDING_APPROVAL",
+        "ERROR",
+        "WITHDRAWN"
+      ],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ]
+    },
+    {
+      "id": "STATE-008",
+      "objectOrWorkflow": "Candidate Pipeline",
+      "state": "SCHEDULING_PENDING_APPROVAL",
+      "entryCondition": "Valid interview slots generated",
+      "exitCondition": "Allowed next states: INTERVIEW_SCHEDULED, AVAILABILITY_PENDING, WITHDRAWN",
+      "allowedActions": [
+        "INTERVIEW_SCHEDULED",
+        "AVAILABILITY_PENDING",
+        "WITHDRAWN"
+      ],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ]
+    },
+    {
+      "id": "STATE-009",
+      "objectOrWorkflow": "Candidate Pipeline",
+      "state": "INTERVIEW_SCHEDULED",
+      "entryCondition": "HR Manager approves slot",
+      "exitCondition": "Allowed next states: AI_INTERVIEW_PENDING, WITHDRAWN, ERROR",
+      "allowedActions": [
+        "AI_INTERVIEW_PENDING",
+        "WITHDRAWN",
+        "ERROR"
+      ],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ]
+    },
+    {
+      "id": "STATE-010",
+      "objectOrWorkflow": "Candidate Pipeline",
+      "state": "AI_INTERVIEW_PENDING",
+      "entryCondition": "Interview link sent",
+      "exitCondition": "Allowed next states: AI_INTERVIEW_COMPLETED, WITHDRAWN, ERROR",
+      "allowedActions": [
+        "AI_INTERVIEW_COMPLETED",
+        "WITHDRAWN",
+        "ERROR"
+      ],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ]
+    },
+    {
+      "id": "STATE-011",
+      "objectOrWorkflow": "Candidate Pipeline",
+      "state": "AI_INTERVIEW_COMPLETED",
+      "entryCondition": "Candidate submits async interview",
+      "exitCondition": "Allowed next states: TEST_PENDING, FINAL_REVIEW, ERROR",
+      "allowedActions": [
+        "TEST_PENDING",
+        "FINAL_REVIEW",
+        "ERROR"
+      ],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ]
+    },
+    {
+      "id": "STATE-012",
+      "objectOrWorkflow": "Candidate Pipeline",
+      "state": "TEST_PENDING",
+      "entryCondition": "Test assigned",
+      "exitCondition": "Allowed next states: TEST_GRADED, WITHDRAWN, ERROR",
+      "allowedActions": [
+        "TEST_GRADED",
+        "WITHDRAWN",
+        "ERROR"
+      ],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ]
+    },
+    {
+      "id": "STATE-013",
+      "objectOrWorkflow": "Candidate Pipeline",
+      "state": "TEST_GRADED",
+      "entryCondition": "Test sections graded",
+      "exitCondition": "Allowed next states: FINAL_REVIEW, ERROR",
+      "allowedActions": [
+        "FINAL_REVIEW",
+        "ERROR"
+      ],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ]
+    },
+    {
+      "id": "STATE-014",
+      "objectOrWorkflow": "Candidate Pipeline",
+      "state": "FINAL_REVIEW",
+      "entryCondition": "Evidence package ready",
+      "exitCondition": "Allowed next states: PASSED, FAILED, WITHDRAWN",
+      "allowedActions": [
+        "PASSED",
+        "FAILED",
+        "WITHDRAWN"
+      ],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ]
+    },
+    {
+      "id": "STATE-015",
+      "objectOrWorkflow": "Candidate Pipeline",
+      "state": "PASSED",
+      "entryCondition": "Final pass decision recorded",
+      "exitCondition": "Terminal state",
+      "allowedActions": [],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ]
+    },
+    {
+      "id": "STATE-016",
+      "objectOrWorkflow": "Candidate Pipeline",
+      "state": "FAILED",
+      "entryCondition": "Final fail decision recorded",
+      "exitCondition": "Terminal state",
+      "allowedActions": [],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ]
+    },
+    {
+      "id": "STATE-017",
+      "objectOrWorkflow": "Candidate Pipeline",
+      "state": "WITHDRAWN",
+      "entryCondition": "Candidate withdraws or HR marks withdrawn",
+      "exitCondition": "Terminal state",
+      "allowedActions": [],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ]
+    },
+    {
+      "id": "STATE-018",
+      "objectOrWorkflow": "Candidate Pipeline",
+      "state": "ERROR",
+      "entryCondition": "Blocking technical or data issue",
+      "exitCondition": "Allowed next states: previous_valid_state, WITHDRAWN",
+      "allowedActions": [
+        "previous_valid_state",
+        "WITHDRAWN"
+      ],
+      "sourceIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ]
+    }
+  ],
+  "validationRules": [
+    {
+      "id": "VAL-001",
+      "inputOrObject": "Candidate/job import",
+      "validation": "Manual and Excel inputs require required candidate, job, and supported file fields before import.",
+      "errorMessage": "Missing or invalid import data.",
+      "sourceIds": [
+        "BP-001",
+        "UC-001"
+      ]
+    },
+    {
+      "id": "VAL-002",
+      "inputOrObject": "File upload",
+      "validation": "CV and JD files must be text-native PDF/DOCX; Excel import must be .xlsx; test import must be Excel/JSON.",
+      "errorMessage": "Unsupported file format for MVP.",
+      "sourceIds": [
+        "BR-004",
+        "UC-001"
+      ]
+    },
+    {
+      "id": "VAL-003",
+      "inputOrObject": "Duplicate candidate",
+      "validation": "Potential duplicate requires HR Recruiter merge/skip/create-new decision before pipeline proceeds.",
+      "errorMessage": "Duplicate candidate requires review.",
+      "sourceIds": [
+        "BR-003"
+      ]
+    },
+    {
+      "id": "VAL-004",
+      "inputOrObject": "Screening score",
+      "validation": "AI screening score must be numeric 0-100 with summary, flags, missing skills, confidence, and evidence spans.",
+      "errorMessage": "Screening result is incomplete.",
+      "sourceIds": [
+        "BR-006",
+        "UC-003"
+      ]
+    },
+    {
+      "id": "VAL-005",
+      "inputOrObject": "Low confidence",
+      "validation": "Low parse/AI confidence must route to manual review and cannot silently advance.",
+      "errorMessage": "Manual review required due to low confidence.",
+      "sourceIds": [
+        "BR-005"
+      ]
+    },
+    {
+      "id": "VAL-006",
+      "inputOrObject": "Approval decision",
+      "validation": "Screening, scheduling, and final decisions require authorized human actor and explicit action.",
+      "errorMessage": "Human approval is required.",
+      "sourceIds": [
+        "BR-001",
+        "BR-021"
+      ]
+    },
+    {
+      "id": "VAL-007",
+      "inputOrObject": "Approval timeout",
+      "validation": "Elapsed approval time may trigger reminders/escalation but cannot auto-approve/reject/skip.",
+      "errorMessage": "Approval timeout cannot create a decision.",
+      "sourceIds": [
+        "BR-002",
+        "BR-021"
+      ]
+    },
+    {
+      "id": "VAL-008",
+      "inputOrObject": "Calendar event creation",
+      "validation": "Calendar event creation requires approved slot, valid timezone, and valid participants.",
+      "errorMessage": "Approved slot required before event creation.",
+      "sourceIds": [
+        "BR-007",
+        "BR-008"
+      ]
+    },
+    {
+      "id": "VAL-009",
+      "inputOrObject": "Notification sending",
+      "validation": "Workflow emails must use shared HR mailbox and configured templates.",
+      "errorMessage": "Configured HR mailbox/template required.",
+      "sourceIds": [
+        "BR-014"
+      ]
+    },
+    {
+      "id": "VAL-010",
+      "inputOrObject": "MCQ grading",
+      "validation": "MCQ score must be computed against answer key deterministically.",
+      "errorMessage": "MCQ answer key required.",
+      "sourceIds": [
+        "BR-009"
+      ]
+    },
+    {
+      "id": "VAL-011",
+      "inputOrObject": "Essay/coding grading",
+      "validation": "Essay/coding grading requires rubric/test cases and records AI confidence/version.",
+      "errorMessage": "Rubric/test cases required.",
+      "sourceIds": [
+        "BR-010"
+      ]
+    },
+    {
+      "id": "VAL-012",
+      "inputOrObject": "Final decision",
+      "validation": "Final pass/fail must be explicit HR Manager decision; combined policy remains blocked by BQ-006.",
+      "errorMessage": "Final HR decision required.",
+      "sourceIds": [
+        "BR-022",
+        "UC-007"
+      ]
+    },
+    {
+      "id": "VAL-013",
+      "inputOrObject": "Withdrawal",
+      "validation": "Withdrawal closes pending actions and moves candidate to terminal WITHDRAWN.",
+      "errorMessage": "Withdrawal must close pending actions.",
+      "sourceIds": [
+        "BP-009",
+        "UC-009"
+      ]
+    },
+    {
+      "id": "VAL-014",
+      "inputOrObject": "Error remediation",
+      "validation": "ERROR state requires owner, reason, prior state, and resolution action.",
+      "errorMessage": "Error remediation owner and reason required.",
+      "sourceIds": [
+        "BP-010",
+        "UC-010"
+      ]
+    },
+    {
+      "id": "VAL-015",
+      "inputOrObject": "Audit trail",
+      "validation": "All approvals, state changes, AI evaluations, imports, notifications, and remediation actions create audit events.",
+      "errorMessage": "Audit event required.",
+      "sourceIds": [
+        "BR-012"
+      ]
+    }
+  ],
+  "securityPrivacyCompliance": [
+    {
+      "id": "SEC-001",
+      "concern": "authentication",
+      "requirement": "All internal HR/Admin screens and APIs require authenticated user identity.",
+      "implementationExpectation": "Enforce login/session validation before access.",
+      "verification": "Access unauthenticated request is rejected.",
+      "sourceIds": [
+        "BR-011"
+      ]
+    },
+    {
+      "id": "SEC-002",
+      "concern": "authorization",
+      "requirement": "Candidate data and decision actions are role-bound to HR Recruiter, HR Manager, Interviewer, and Admin/IT permissions.",
+      "implementationExpectation": "Role checks on screens/API actions.",
+      "verification": "Unauthorized role cannot access/action candidate data.",
+      "sourceIds": [
+        "BR-011",
+        "ROLE-001",
+        "ROLE-002",
+        "ROLE-003",
+        "ROLE-004"
+      ]
+    },
+    {
+      "id": "SEC-003",
+      "concern": "privacy",
+      "requirement": "CVs, transcripts, test submissions, and evaluations are sensitive candidate data.",
+      "implementationExpectation": "Encrypt in transit/at rest; restrict access; avoid unnecessary exposure.",
+      "verification": "Security review plus access-control tests.",
+      "sourceIds": [
+        "BR-011",
+        "BR-023",
+        "BAC-004"
+      ]
+    },
+    {
+      "id": "SEC-004",
+      "concern": "audit",
+      "requirement": "All business decisions and sensitive workflow actions require immutable audit event.",
+      "implementationExpectation": "Write Audit Event for state/approval/import/AI/notification/error actions.",
+      "verification": "Audit coverage tests for each core workflow.",
+      "sourceIds": [
+        "BR-012"
+      ]
+    },
+    {
+      "id": "SEC-005",
+      "concern": "external integration secrets",
+      "requirement": "Google OAuth tokens and AI provider credentials must not be hardcoded.",
+      "implementationExpectation": "Use environment variables or secret manager; validate presence at startup.",
+      "verification": "Secret scan and config validation.",
+      "sourceIds": [
+        "BR-017"
+      ]
+    },
+    {
+      "id": "SEC-006",
+      "concern": "input validation",
+      "requirement": "Uploaded files, forms, Drive events, and candidate answers are untrusted input.",
+      "implementationExpectation": "Validate format, size, schema, and expected enum values.",
+      "verification": "Boundary validation tests.",
+      "sourceIds": [
+        "BR-004",
+        "VAL-001",
+        "VAL-002"
+      ]
+    },
+    {
+      "id": "SEC-007",
+      "concern": "error disclosure",
+      "requirement": "Errors must not leak OAuth tokens, prompts, model internals, or private candidate data.",
+      "implementationExpectation": "Map internal errors to safe user messages.",
+      "verification": "Error response tests.",
+      "sourceIds": [
+        "BP-010"
+      ]
+    },
+    {
+      "id": "SEC-008",
+      "concern": "accessibility",
+      "requirement": "Internal and candidate-facing screens must be keyboard accessible and not rely on color alone.",
+      "implementationExpectation": "Semantic controls, focus states, labels, text alternatives.",
+      "verification": "Automated and manual accessibility checks.",
+      "sourceIds": [
+        "UC-005",
+        "SCREEN-001"
+      ]
+    },
+    {
+      "id": "SEC-009",
+      "concern": "rbac",
+      "requirement": "All screens and API actions enforce role-based access for HR Recruiter, HR Manager, Interviewer, Admin/IT, and Candidate.",
+      "implementationExpectation": "Role-based checks on every screen navigation and API action. HR Recruiter: import, view pipeline, retry errors. HR Manager: approve, reject, defer, final decision, configure. Interviewer: view schedule and feedback. Admin/IT: configure integrations, monitor, manage users. Candidate: access own interview link, submit answers, withdraw.",
+      "verification": "Unauthorized role attempt returns 403/redirect; authorized role can perform action.",
+      "sourceIds": [
+        "BR-011",
+        "ROLE-001",
+        "ROLE-002",
+        "ROLE-003",
+        "ROLE-004",
+        "BP-008",
+        "BAC-004"
+      ]
+    },
+    {
+      "id": "SEC-010",
+      "concern": "rate limiting",
+      "requirement": "All public-facing and internal APIs enforce rate limits to prevent abuse.",
+      "implementationExpectation": "Rate limit headers (X-RateLimit-Limit/Remaining/Reset). Default internal API: 1000 req/min per user. Candidate interview API: 60 req/min per token. AI screening/grading: 30 req/min per job. Exceeding returns 429.",
+      "verification": "Load test exceeding limit returns 429; headers present.",
+      "sourceIds": [
+        "BR-011",
+        "REQ-NF-006"
+      ]
+    },
+    {
+      "id": "SEC-011",
+      "concern": "file upload security",
+      "requirement": "Uploaded files are size-limited and scanned for malware before storage.",
+      "implementationExpectation": "Max 10 MB per CV/JD, 5 MB per test definition. Rejected files return 413 Payload Too Large. Malware scan before processing; infected files quarantined and logged.",
+      "verification": "Upload >10 MB returns 413; scan of infected file is quarantined.",
+      "sourceIds": [
+        "BR-004"
+      ]
+    },
+    {
+      "id": "SEC-012",
+      "concern": "webhook verification",
+      "requirement": "Google Drive push notifications and webhook events must be verified before processing.",
+      "implementationExpectation": "Drive webhook signature verified using channel token from admin configuration (BQ-005). Channel token stored in secret manager. Invalid signature or missing token returns 401 Unauthorized.",
+      "verification": "Invalid signature webhook returns 401; event not processed.",
+      "sourceIds": [
+        "BR-017",
+        "BQ-005"
+      ]
+    },
+    {
+      "id": "SEC-013",
+      "concern": "idempotency",
+      "requirement": "All state-changing API calls accept optional idempotency key to prevent duplicate execution.",
+      "implementationExpectation": "Header: Idempotency-Key (UUID). Server stores key + result for 24h; replays result for duplicate key. Applies to: approval decisions, withdrawal, error remediation, email send.",
+      "verification": "Duplicate request with same idempotency key returns same response without re-execution.",
+      "sourceIds": [
+        "BR-012",
+        "REQ-NF-007"
+      ]
+    },
+    {
+      "id": "SEC-014",
+      "concern": "oauth scopes",
+      "requirement": "Google OAuth integration uses minimum required scopes per integration type.",
+      "implementationExpectation": "Drive: readonly folder access + watch scope only. Calendar: read free/busy and create events scope only. Gmail: compose and send from specific alias only. No broad @dangerous scopes.",
+      "verification": "OAuth token inspection shows only required scopes; excessive scope request rejected.",
+      "sourceIds": [
+        "BR-017"
+      ]
+    },
+    {
+      "id": "SEC-015",
+      "concern": "csrf protection",
+      "requirement": "All browser-initiated state-changing API requests require CSRF token validation.",
+      "implementationExpectation": "SameSite=Strict/Lax cookie + X-CSRF-Token header double-submit. All POST/PUT/DELETE/PATCH endpoints protected. Invalid/missing token returns 403.",
+      "verification": "Request without CSRF token from browser context returns 403.",
+      "sourceIds": [
+        "BR-011"
+      ]
+    },
+    {
+      "id": "SEC-016",
+      "concern": "security headers",
+      "requirement": "All HTTP responses include recommended security headers.",
+      "implementationExpectation": "Strict-Transport-Security, X-Content-Type-Options: nosniff, X-Frame-Options: DENY, Referrer-Policy: strict-origin-when-cross-origin, Content-Security-Policy (per domain), Permissions-Policy: camera=(), microphone=(), geolocation=().",
+      "verification": "Security scan of all responses includes required headers.",
+      "sourceIds": [
+        "BR-011",
+        "REQ-NF-006"
+      ]
+    },
+    {
+      "id": "SEC-017",
+      "concern": "prompt injection",
+      "requirement": "Candidate answers are validated and content-length limited to prevent prompt injection and abuse.",
+      "implementationExpectation": "Max answer length: 4000 characters per answer. Oversized answers truncated at limit and flagged for review. Known prompt injection patterns sanitized or rejected; suspicious content logged. Prompt injection detected transitions to ERROR with manual review.",
+      "verification": "Answer >4000 chars truncated; known injection patterns sanitized or rejected.",
+      "sourceIds": [
+        "BP-004",
+        "UC-005",
+        "BR-011"
+      ]
+    },
+    {
+      "id": "SEC-018",
+      "concern": "privacy notice",
+      "requirement": "Candidate-facing interview and test screens display required privacy notice.",
+      "implementationExpectation": "Privacy notice shown before interview start and test submission. Notice includes: data controller identity, purpose of processing, retention period (BQ-003), data subject rights, contact for complaints. Must be acknowledged before proceeding; acknowledgement logged.",
+      "verification": "Privacy notice displayed and acknowledged before first answer submission; acknowledgement logged.",
+      "sourceIds": [
+        "BAC-004",
+        "BR-023",
+        "BQ-003"
+      ]
+    },
+    {
+      "id": "SEC-019",
+      "concern": "mfa",
+      "requirement": "HR Manager and Admin/IT roles must authenticate with MFA for sensitive actions.",
+      "implementationExpectation": "MFA enforced for exact sensitive actions: final pass/fail decision, integration configuration create/update/delete, audit log export, and bulk screening/scheduling approval actions. TOTP or hardware token accepted. Session invalidation after 30 minutes inactivity.",
+      "verification": "Sensitive action without MFA rejected with MFA required prompt.",
+      "sourceIds": [
+        "BR-011",
+        "BR-012",
+        "BR-017",
+        "BR-022",
+        "ROLE-002",
+        "ROLE-004",
+        "UC-007",
+        "BP-008"
+      ]
+    },
+    {
+      "id": "SEC-A11Y",
+      "concern": "wcag compliance",
+      "requirement": "All candidate-facing and internal HR screens meet WCAG 2.2 Level AA.",
+      "implementationExpectation": "WCAG 2.2 AA: 1.4.3 Contrast (4.5:1 text, 3:1 UI); 2.1.1 Keyboard; 2.4.7 Focus visible (2px outline min); 2.4.11 Focus not obscured; 2.5.3 Label in name; 4.1.2 Name/role/value. Candidate-facing: ARIA live regions (polite for queues, assertive for timer); focus management on question transitions; 44x44px min touch target; prefers-reduced-motion respected; table semantics (th/caption/scope); progress bars role=progressbar with aria-valuenow/min/max; field errors via aria-describedby; health charts tabular fallback; skip navigation link on all pages.",
+      "verification": "Automated WCAG 2.2 scan passes; manual keyboard/screen reader testing passes for key workflows.",
+      "sourceIds": [
+        "UC-005",
+        "BP-004",
+        "SCREEN-001",
+        "SCREEN-003",
+        "SCREEN-005",
+        "SCREEN-006",
+        "SCREEN-008"
+      ]
+    }
+  ],
+  "nonFunctionalDetails": [
+    {
+      "id": "NFD-001",
+      "category": "performance",
+      "target": "Single CV screening completes under 30 seconds where AI provider is available.",
+      "measurement": "Measure p95 screening duration by candidate.",
+      "verificationMethod": "Performance test and production monitoring",
+      "sourceReqIds": [
+        "REQ-NF-001",
+        "BP-002",
+        "BP-008"
+      ]
+    },
+    {
+      "id": "NFD-002",
+      "category": "performance",
+      "target": "Non-AI API responses meet p95 <2s.",
+      "measurement": "Measure API p95 by route excluding AI calls.",
+      "verificationMethod": "Load test/API telemetry",
+      "sourceReqIds": [
+        "REQ-NF-004",
+        "BP-008"
+      ]
+    },
+    {
+      "id": "NFD-003",
+      "category": "scalability",
+      "target": "Support >200 jobs/month and ~10,000 CV/month planning volume.",
+      "measurement": "Monthly throughput and queue capacity metrics.",
+      "verificationMethod": "Capacity test and monitoring",
+      "sourceReqIds": [
+        "REQ-NF-002",
+        "REQ-NF-003",
+        "BP-001",
+        "BP-008"
+      ]
+    },
+    {
+      "id": "NFD-004",
+      "category": "concurrency",
+      "target": "Support 50+ concurrent internal users.",
+      "measurement": "Concurrent authenticated session/API test.",
+      "verificationMethod": "Load test",
+      "sourceReqIds": [
+        "REQ-NF-005",
+        "BP-008"
+      ]
+    },
+    {
+      "id": "NFD-005",
+      "category": "availability",
+      "target": "Target 99% uptime for core internal workflow.",
+      "measurement": "Monthly uptime.",
+      "verificationMethod": "Monitoring report",
+      "sourceReqIds": [
+        "REQ-NF-009",
+        "BP-008"
+      ],
+      "notes": "Target 99% uptime for core internal workflow. Excludes planned maintenance windows (BFD-005) and external Google Workspace outages beyond system control. Uptime measured excluding maintenance exclusion periods."
+    },
+    {
+      "id": "NFD-006",
+      "category": "observability",
+      "target": "Track AI errors, API failures, queue stalls, and Google integration failures.",
+      "measurement": "Dashboard/alert coverage.",
+      "verificationMethod": "Alert simulation tests",
+      "sourceReqIds": [
+        "REQ-NF-010",
+        "REQ-NF-011",
+        "BP-008",
+        "BP-010",
+        "BR-015"
+      ]
+    },
+    {
+      "id": "NFD-007",
+      "category": "cost monitoring",
+      "target": "Track LLM token usage/cost by module.",
+      "measurement": "Cost per candidate/job/module.",
+      "verificationMethod": "Cost report validation",
+      "sourceReqIds": [
+        "REQ-NF-012",
+        "BP-008",
+        "BR-015"
+      ]
+    },
+    {
+      "id": "NFD-008",
+      "category": "AI quality",
+      "target": "Track reviewer agreement, precision@shortlist, false reject review, prompt/rubric drift.",
+      "measurement": "AI governance metrics.",
+      "verificationMethod": "Evaluation dataset/review workflow",
+      "sourceReqIds": [
+        "REQ-NF-AI-002",
+        "REQ-NF-AI-004",
+        "BP-002",
+        "BP-008",
+        "BR-020"
+      ]
+    },
+    {
+      "id": "NFD-009",
+      "category": "security",
+      "target": "Candidate data encrypted at rest and in transit.",
+      "measurement": "TLS and storage encryption verification.",
+      "verificationMethod": "Security review/config check",
+      "sourceReqIds": [
+        "REQ-NF-005",
+        "BR-011",
+        "BR-023"
+      ]
+    },
+    {
+      "id": "NFD-010",
+      "category": "auditability",
+      "target": "All decisions and state transitions are auditable.",
+      "measurement": "Audit event completeness.",
+      "verificationMethod": "Workflow audit tests",
+      "sourceReqIds": [
+        "REQ-NF-007",
+        "BR-012",
+        "BP-008"
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "id": "TEST-001",
+      "type": "e2e",
+      "scenario": "Excel candidate import with valid and invalid rows",
+      "steps": [
+        "Upload .xlsx template with mixed rows",
+        "Submit import",
+        "Review result summary"
+      ],
+      "expectedResult": "Valid rows imported; invalid rows shown with row-level errors; audit event created.",
+      "sourceIds": [
+        "UC-001",
+        "BP-001",
+        "VAL-001"
+      ]
+    },
+    {
+      "id": "TEST-002",
+      "type": "integration",
+      "scenario": "Google Drive file-created import event",
+      "steps": [
+        "Simulate Drive event for configured folder",
+        "Process supported file"
+      ],
+      "expectedResult": "Candidate/job import created or error assigned to remediation with safe message.",
+      "sourceIds": [
+        "UC-002",
+        "BP-010",
+        "API-001"
+      ]
+    },
+    {
+      "id": "TEST-003",
+      "type": "contract",
+      "scenario": "Unsupported OCR file rejection",
+      "steps": [
+        "Submit scanned/image-only CV",
+        "Run extraction"
+      ],
+      "expectedResult": "File rejected or routed to manual review; no OCR assumed in MVP.",
+      "sourceIds": [
+        "BR-004",
+        "API-002"
+      ]
+    },
+    {
+      "id": "TEST-004",
+      "type": "integration",
+      "scenario": "AI screening result schema",
+      "steps": [
+        "Run screening with valid CV/JD",
+        "Inspect response"
+      ],
+      "expectedResult": "Response includes score, summary, risk flags, missing skills, confidence, evidence, version fields.",
+      "sourceIds": [
+        "BR-006",
+        "API-003"
+      ]
+    },
+    {
+      "id": "TEST-005",
+      "type": "e2e",
+      "scenario": "HR Manager approves screening",
+      "steps": [
+        "Open pending screening",
+        "Approve candidate"
+      ],
+      "expectedResult": "Candidate moves to SCREENED_IN/next workflow; approval audit event created.",
+      "sourceIds": [
+        "UC-003",
+        "BR-001"
+      ]
+    },
+    {
+      "id": "TEST-006",
+      "type": "e2e",
+      "scenario": "Approval reminder does not auto-decide",
+      "steps": [
+        "Create pending approval older than reminder SLA",
+        "Trigger reminder job"
+      ],
+      "expectedResult": "Reminder sent; candidate remains pending approval until human action.",
+      "sourceIds": [
+        "BR-002",
+        "BR-021"
+      ]
+    },
+    {
+      "id": "TEST-007",
+      "type": "integration",
+      "scenario": "Scheduling approval creates Calendar event",
+      "steps": [
+        "Generate valid slots",
+        "Approve slot",
+        "Create event"
+      ],
+      "expectedResult": "Google Calendar event created only after approval and confirmation email queued.",
+      "sourceIds": [
+        "UC-004",
+        "BR-007",
+        "API-005"
+      ]
+    },
+    {
+      "id": "TEST-008",
+      "type": "e2e",
+      "scenario": "No valid schedule slots",
+      "steps": [
+        "Provide unavailable candidate/interviewer calendars",
+        "Request suggestions"
+      ],
+      "expectedResult": "No event created; alternative availability/manual fallback path shown.",
+      "sourceIds": [
+        "BP-003",
+        "EDGE-004"
+      ]
+    },
+    {
+      "id": "TEST-009",
+      "type": "e2e",
+      "scenario": "Candidate completes async interview",
+      "steps": [
+        "Open secure link",
+        "Answer fixed and follow-up questions",
+        "Submit"
+      ],
+      "expectedResult": "Transcript and evaluation generated; candidate advances according to state rules.",
+      "sourceIds": [
+        "UC-005",
+        "API-007"
+      ]
+    },
+    {
+      "id": "TEST-010",
+      "type": "e2e",
+      "scenario": "Expired interview link",
+      "steps": [
+        "Open expired token"
+      ],
+      "expectedResult": "Candidate sees expired state; HR can reopen/withdraw/remediate.",
+      "sourceIds": [
+        "UC-005",
+        "EDGE-005"
+      ]
+    },
+    {
+      "id": "TEST-011",
+      "type": "unit",
+      "scenario": "MCQ deterministic grading",
+      "steps": [
+        "Grade known answer key/submission"
+      ],
+      "expectedResult": "Score exactly matches answer key.",
+      "sourceIds": [
+        "BR-009",
+        "UC-006"
+      ]
+    },
+    {
+      "id": "TEST-012",
+      "type": "integration",
+      "scenario": "Essay/coding rubric-backed grading",
+      "steps": [
+        "Submit essay/coding test with rubric/test cases",
+        "Run grading"
+      ],
+      "expectedResult": "Scores, feedback, confidence, and rubric version are recorded.",
+      "sourceIds": [
+        "BR-010",
+        "UC-006"
+      ]
+    },
+    {
+      "id": "TEST-013",
+      "type": "e2e",
+      "scenario": "Final HR decision",
+      "steps": [
+        "Open final review evidence package",
+        "Record pass/fail with reason when needed"
+      ],
+      "expectedResult": "Candidate reaches PASSED or FAILED; audit event created.",
+      "sourceIds": [
+        "UC-007",
+        "BR-022"
+      ]
+    },
+    {
+      "id": "TEST-014",
+      "type": "e2e",
+      "scenario": "Candidate withdrawal closes pending actions",
+      "steps": [
+        "Withdraw candidate with pending approval",
+        "Confirm withdrawal"
+      ],
+      "expectedResult": "Candidate moves to WITHDRAWN and pending actions close/cancel.",
+      "sourceIds": [
+        "UC-009",
+        "BP-009"
+      ]
+    },
+    {
+      "id": "TEST-015",
+      "type": "e2e",
+      "scenario": "Error remediation returns to previous state",
+      "steps": [
+        "Create ERROR with prior state",
+        "Assign owner",
+        "Retry successfully"
+      ],
+      "expectedResult": "Candidate returns to previous valid state; error audit trail complete.",
+      "sourceIds": [
+        "UC-010",
+        "BP-010"
+      ]
+    },
+    {
+      "id": "TEST-016",
+      "type": "security",
+      "scenario": "Unauthorized user cannot approve",
+      "steps": [
+        "Login as HR Recruiter",
+        "Attempt HR Manager approval API"
+      ],
+      "expectedResult": "Request denied; no state change.",
+      "sourceIds": [
+        "BR-011",
+        "BR-001",
+        "SEC-002"
+      ]
+    },
+    {
+      "id": "TEST-017",
+      "type": "accessibility",
+      "scenario": "Core screens keyboard navigation",
+      "steps": [
+        "Navigate dashboard, approvals, candidate interview with keyboard only"
+      ],
+      "expectedResult": "All actionable controls reachable and operable with visible focus; skip navigation, ARIA live regions, field error association, progressbar semantics, and keyboard bulk selection pass checks.",
+      "sourceIds": [
+        "SCREEN-001",
+        "SCREEN-003",
+        "SCREEN-005",
+        "SCREEN-006",
+        "SCREEN-008",
+        "SEC-A11Y",
+        "UC-005",
+        "BR-011"
+      ]
+    },
+    {
+      "id": "TEST-018",
+      "type": "performance",
+      "scenario": "CV screening latency target",
+      "steps": [
+        "Run representative screening batch",
+        "Measure p95/single request latency"
+      ],
+      "expectedResult": "Single screening target under 30s where provider available; failures observable.",
+      "sourceIds": [
+        "NFD-001",
+        "BP-002",
+        "BP-008"
+      ]
+    },
+    {
+      "id": "TEST-019",
+      "type": "observability",
+      "scenario": "AI/API failure alerting",
+      "steps": [
+        "Inject AI and Google API failures",
+        "Observe monitoring outputs"
+      ],
+      "expectedResult": "Failures tracked and remediation items created/alerted.",
+      "sourceIds": [
+        "BP-008",
+        "BP-010",
+        "NFD-006"
+      ]
+    },
+    {
+      "id": "TEST-020",
+      "type": "contract",
+      "scenario": "Safe error messages",
+      "steps": [
+        "Trigger integration failure with sensitive internal details",
+        "Inspect UI/API message"
+      ],
+      "expectedResult": "User message is safe and tokens/private details are not exposed.",
+      "sourceIds": [
+        "SEC-007",
+        "BP-010",
+        "BR-011"
+      ]
+    }
+  ],
+  "edgeCases": [
+    {
+      "id": "EDGE-001",
+      "edgeCase": "Excel import contains valid rows plus invalid rows",
+      "expectedBehavior": "Valid rows can proceed; invalid rows reported and assigned for correction without blocking whole batch unless policy requires.",
+      "sourceIds": [
+        "BP-001",
+        "UC-001"
+      ]
+    },
+    {
+      "id": "EDGE-002",
+      "edgeCase": "Duplicate candidate detected across jobs",
+      "expectedBehavior": "HR reviews duplicate and chooses merge/skip/create-new.",
+      "sourceIds": [
+        "BR-003"
+      ]
+    },
+    {
+      "id": "EDGE-003",
+      "edgeCase": "Low AI confidence in screening",
+      "expectedBehavior": "Candidate routes to manual review and cannot silently advance.",
+      "sourceIds": [
+        "BR-005"
+      ]
+    },
+    {
+      "id": "EDGE-004",
+      "edgeCase": "No interview slot satisfies timezone/working-hour policy",
+      "expectedBehavior": "No event created; HR requests alternatives or manual scheduling fallback.",
+      "sourceIds": [
+        "BP-003",
+        "BR-008"
+      ]
+    },
+    {
+      "id": "EDGE-005",
+      "edgeCase": "Candidate interview link expires or submission incomplete",
+      "expectedBehavior": "HR may reopen, manual review, withdraw, or route ERROR according to policy.",
+      "sourceIds": [
+        "BP-004",
+        "UC-005"
+      ]
+    },
+    {
+      "id": "EDGE-006",
+      "edgeCase": "Coding sandbox/runtime not defined",
+      "expectedBehavior": "Coding grading implementation blocked until BQ-004 is resolved.",
+      "sourceIds": [
+        "BQ-004",
+        "UC-006"
+      ]
+    },
+    {
+      "id": "EDGE-007",
+      "edgeCase": "Final evidence package incomplete or conflicting",
+      "expectedBehavior": "Final decision is deferred/manual reviewed with reason; no automatic pass/fail.",
+      "sourceIds": [
+        "BP-006",
+        "BR-022"
+      ]
+    },
+    {
+      "id": "EDGE-008",
+      "edgeCase": "Candidate withdraws after scheduled interview",
+      "expectedBehavior": "Close pending actions, notify stakeholders, move to WITHDRAWN, and require manual HR Calendar cleanup until Q4-007 is resolved.",
+      "sourceIds": [
+        "BP-009",
+        "UC-009",
+        "BR-024",
+        "BQ-007"
+      ]
+    },
+    {
+      "id": "EDGE-009",
+      "edgeCase": "Repeated integration retry failure",
+      "expectedBehavior": "Assign/remediate/escalate and keep ERROR owner/reason visible.",
+      "sourceIds": [
+        "BP-010",
+        "UC-010"
+      ]
+    },
+    {
+      "id": "EDGE-010",
+      "edgeCase": "Post-approval reschedule/cancel requested",
+      "expectedBehavior": "Implementation remains blocked by BQ-007; do not assume automated Calendar update behavior.",
+      "sourceIds": [
+        "BR-024",
+        "BQ-007"
+      ]
+    }
+  ],
+  "traceabilitySummary": [
+    {
+      "detailId": "SCREEN-001",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-008",
+        "BP-010",
+        "BR-001",
+        "BR-015",
+        "BR-020"
+      ],
+      "requirementIds": [
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-054",
+        "REQ-F-055",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-001",
+        "REQ-NF-002",
+        "REQ-NF-003",
+        "REQ-NF-004",
+        "REQ-NF-007",
+        "REQ-NF-009",
+        "REQ-NF-010",
+        "REQ-NF-011",
+        "REQ-NF-012",
+        "REQ-NF-AI-002",
+        "REQ-NF-AI-004"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SCREEN-002",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-010",
+        "BR-003",
+        "BR-004",
+        "UC-001",
+        "UC-002"
+      ],
+      "requirementIds": [
+        "REQ-C-002",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-018",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SCREEN-003",
+      "upstreamBusinessIds": [
+        "BP-002",
+        "BR-001",
+        "BR-002",
+        "BR-005",
+        "BR-006",
+        "UC-003"
+      ],
+      "requirementIds": [
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-023",
+        "REQ-F-051",
+        "REQ-F-052",
+        "REQ-F-053",
+        "REQ-F-054",
+        "REQ-NF-AI-005"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SCREEN-004",
+      "upstreamBusinessIds": [
+        "BP-003",
+        "BR-001",
+        "BR-007",
+        "BR-008",
+        "BR-024",
+        "UC-004"
+      ],
+      "requirementIds": [
+        "REQ-F-017",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-051",
+        "REQ-F-054",
+        "REQ-I-002",
+        "REQ-I-003"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SCREEN-005",
+      "upstreamBusinessIds": [
+        "BP-004",
+        "BP-009",
+        "BP-010",
+        "UC-005"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-018",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SCREEN-006",
+      "upstreamBusinessIds": [
+        "BP-005",
+        "BR-009",
+        "BR-010",
+        "BR-012",
+        "UC-006"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-D-008",
+        "REQ-D-009",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-NF-007"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SCREEN-007",
+      "upstreamBusinessIds": [
+        "BP-006",
+        "BP-009",
+        "BR-001",
+        "BR-012",
+        "BR-022",
+        "UC-007",
+        "UC-009"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-D-008",
+        "REQ-D-009",
+        "REQ-F-017",
+        "REQ-F-023",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-054",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-NF-007"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SCREEN-008",
+      "upstreamBusinessIds": [
+        "BP-008",
+        "BP-010",
+        "BR-002",
+        "BR-015",
+        "BR-017",
+        "BR-020",
+        "BR-021",
+        "BR-023",
+        "BQ-002",
+        "BQ-003",
+        "BQ-005"
+      ],
+      "requirementIds": [
+        "REQ-C-003",
+        "REQ-D-001",
+        "REQ-D-002",
+        "REQ-D-005",
+        "REQ-D-006",
+        "REQ-F-018",
+        "REQ-F-053",
+        "REQ-F-054",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-001",
+        "REQ-NF-002",
+        "REQ-NF-003",
+        "REQ-NF-004",
+        "REQ-NF-005",
+        "REQ-NF-007",
+        "REQ-NF-008",
+        "REQ-NF-009",
+        "REQ-NF-010",
+        "REQ-NF-011",
+        "REQ-NF-012",
+        "REQ-NF-AI-002",
+        "REQ-NF-AI-004"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "API-001",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-010",
+        "BR-003",
+        "BR-004",
+        "BR-011",
+        "UC-001",
+        "UC-002"
+      ],
+      "requirementIds": [
+        "REQ-C-002",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-018",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-006",
+        "REQ-NF-007",
+        "REQ-NF-008",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "API-002",
+      "upstreamBusinessIds": [
+        "BP-002",
+        "BR-004",
+        "BR-005"
+      ],
+      "requirementIds": [
+        "REQ-C-002",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-051",
+        "REQ-NF-AI-005"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "API-003",
+      "upstreamBusinessIds": [
+        "BP-002",
+        "BR-005",
+        "BR-006",
+        "UC-003"
+      ],
+      "requirementIds": [
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-051",
+        "REQ-F-052",
+        "REQ-F-054",
+        "REQ-NF-AI-005"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "API-004",
+      "upstreamBusinessIds": [
+        "BR-001",
+        "BR-002",
+        "BR-012",
+        "BR-021",
+        "UC-003",
+        "UC-004",
+        "UC-007"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-D-008",
+        "REQ-D-009",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-017",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-045",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-052",
+        "REQ-F-053",
+        "REQ-F-054",
+        "REQ-F-055",
+        "REQ-NF-007"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "API-005",
+      "upstreamBusinessIds": [
+        "BP-003",
+        "BR-007",
+        "BR-008",
+        "BR-017",
+        "BR-024",
+        "UC-004"
+      ],
+      "requirementIds": [
+        "REQ-C-003",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "API-006",
+      "upstreamBusinessIds": [
+        "BP-007",
+        "BR-014",
+        "BR-017",
+        "UC-008"
+      ],
+      "requirementIds": [
+        "REQ-C-003",
+        "REQ-F-026",
+        "REQ-F-060",
+        "REQ-F-061",
+        "REQ-F-062",
+        "REQ-I-003",
+        "REQ-I-004"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "API-007",
+      "upstreamBusinessIds": [
+        "BP-004",
+        "UC-005"
+      ],
+      "requirementIds": [
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "API-008",
+      "upstreamBusinessIds": [
+        "BP-005",
+        "BR-009",
+        "BR-010",
+        "UC-006",
+        "BQ-004"
+      ],
+      "requirementIds": [
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "API-009",
+      "upstreamBusinessIds": [
+        "BP-009",
+        "UC-009"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-NF-007"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "API-010",
+      "upstreamBusinessIds": [
+        "BP-010",
+        "UC-010",
+        "BR-012"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-D-008",
+        "REQ-D-009",
+        "REQ-F-018",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "DATA-001",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-009",
+        "BR-011",
+        "BR-019"
+      ],
+      "requirementIds": [
+        "REQ-D-001",
+        "REQ-D-002",
+        "REQ-D-003",
+        "REQ-D-004",
+        "REQ-D-005",
+        "REQ-D-006",
+        "REQ-D-007",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-NF-006",
+        "REQ-NF-007",
+        "REQ-NF-008"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "DATA-002",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BR-019"
+      ],
+      "requirementIds": [
+        "REQ-D-001",
+        "REQ-D-002",
+        "REQ-D-003",
+        "REQ-D-004",
+        "REQ-D-005",
+        "REQ-D-006",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-051",
+        "REQ-I-001"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "DATA-003",
+      "upstreamBusinessIds": [
+        "BR-004",
+        "BR-005",
+        "BP-002"
+      ],
+      "requirementIds": [
+        "REQ-C-002",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-051",
+        "REQ-NF-AI-005"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "DATA-004",
+      "upstreamBusinessIds": [
+        "BP-002",
+        "BR-005",
+        "BR-006",
+        "UC-003"
+      ],
+      "requirementIds": [
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-051",
+        "REQ-F-052",
+        "REQ-F-054",
+        "REQ-NF-AI-005"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "DATA-005",
+      "upstreamBusinessIds": [
+        "BR-001",
+        "BR-002",
+        "BR-012",
+        "BR-021",
+        "UC-003",
+        "UC-004",
+        "UC-007"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-D-008",
+        "REQ-D-009",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-017",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-045",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-052",
+        "REQ-F-053",
+        "REQ-F-054",
+        "REQ-F-055",
+        "REQ-NF-007"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "DATA-006",
+      "upstreamBusinessIds": [
+        "BP-003",
+        "BR-007",
+        "BR-008",
+        "BR-024",
+        "UC-004"
+      ],
+      "requirementIds": [
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-I-002",
+        "REQ-I-003"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "DATA-007",
+      "upstreamBusinessIds": [
+        "BP-004",
+        "UC-005"
+      ],
+      "requirementIds": [
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "DATA-008",
+      "upstreamBusinessIds": [
+        "BP-005",
+        "BR-009",
+        "BR-010",
+        "UC-006",
+        "BQ-004"
+      ],
+      "requirementIds": [
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "DATA-009",
+      "upstreamBusinessIds": [
+        "BR-012",
+        "BAC-002",
+        "BAC-004"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-D-008",
+        "REQ-D-009",
+        "REQ-NF-007"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "DATA-010",
+      "upstreamBusinessIds": [
+        "BP-008",
+        "BP-010",
+        "BR-015",
+        "BR-017",
+        "BR-020"
+      ],
+      "requirementIds": [
+        "REQ-C-003",
+        "REQ-F-018",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-001",
+        "REQ-NF-002",
+        "REQ-NF-003",
+        "REQ-NF-004",
+        "REQ-NF-007",
+        "REQ-NF-009",
+        "REQ-NF-010",
+        "REQ-NF-011",
+        "REQ-NF-012",
+        "REQ-NF-AI-002",
+        "REQ-NF-AI-004"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "STATE-001",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "STATE-002",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "STATE-003",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "STATE-004",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "STATE-005",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "STATE-006",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "STATE-007",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "STATE-008",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "STATE-009",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "STATE-010",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "STATE-011",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "STATE-012",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "STATE-013",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "STATE-014",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "STATE-015",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "STATE-016",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "STATE-017",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "STATE-018",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-002",
+        "BP-003",
+        "BP-004",
+        "BP-005",
+        "BP-006",
+        "BP-009",
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-051",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-001",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "UC-001"
+      ],
+      "requirementIds": [
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-I-001"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-002",
+      "upstreamBusinessIds": [
+        "BR-004",
+        "UC-001"
+      ],
+      "requirementIds": [
+        "REQ-C-002",
+        "REQ-F-001",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-F-010",
+        "REQ-F-018"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-003",
+      "upstreamBusinessIds": [
+        "BR-003"
+      ],
+      "requirementIds": [
+        "REQ-F-006"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-004",
+      "upstreamBusinessIds": [
+        "BR-006",
+        "UC-003"
+      ],
+      "requirementIds": [
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-017",
+        "REQ-F-052",
+        "REQ-F-054"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-005",
+      "upstreamBusinessIds": [
+        "BR-005"
+      ],
+      "requirementIds": [
+        "REQ-F-018",
+        "REQ-NF-AI-005"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-006",
+      "upstreamBusinessIds": [
+        "BR-001",
+        "BR-021"
+      ],
+      "requirementIds": [
+        "REQ-F-017",
+        "REQ-F-023",
+        "REQ-F-051",
+        "REQ-F-053",
+        "REQ-F-054"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-007",
+      "upstreamBusinessIds": [
+        "BR-002",
+        "BR-021"
+      ],
+      "requirementIds": [
+        "REQ-F-053",
+        "REQ-F-054"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-008",
+      "upstreamBusinessIds": [
+        "BR-007",
+        "BR-008"
+      ],
+      "requirementIds": [
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-009",
+      "upstreamBusinessIds": [
+        "BR-014"
+      ],
+      "requirementIds": [
+        "REQ-F-026",
+        "REQ-F-060",
+        "REQ-F-061",
+        "REQ-F-062"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-010",
+      "upstreamBusinessIds": [
+        "BR-009"
+      ],
+      "requirementIds": [
+        "REQ-F-042"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-011",
+      "upstreamBusinessIds": [
+        "BR-010"
+      ],
+      "requirementIds": [
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-012",
+      "upstreamBusinessIds": [
+        "BR-022",
+        "UC-007"
+      ],
+      "requirementIds": [
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-055",
+        "REQ-NF-007"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-013",
+      "upstreamBusinessIds": [
+        "BP-009",
+        "UC-009"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-NF-007"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-014",
+      "upstreamBusinessIds": [
+        "BP-010",
+        "UC-010"
+      ],
+      "requirementIds": [
+        "REQ-F-018",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-015",
+      "upstreamBusinessIds": [
+        "BR-012"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-D-008",
+        "REQ-D-009",
+        "REQ-NF-007"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SEC-001",
+      "upstreamBusinessIds": [
+        "BR-011"
+      ],
+      "requirementIds": [
+        "REQ-NF-006",
+        "REQ-NF-008"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SEC-002",
+      "upstreamBusinessIds": [
+        "BR-011",
+        "ROLE-001",
+        "ROLE-002",
+        "ROLE-003",
+        "ROLE-004"
+      ],
+      "requirementIds": [
+        "REQ-NF-006",
+        "REQ-NF-008"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SEC-003",
+      "upstreamBusinessIds": [
+        "BR-011",
+        "BR-023",
+        "BAC-004"
+      ],
+      "requirementIds": [
+        "REQ-D-001",
+        "REQ-D-002",
+        "REQ-D-005",
+        "REQ-D-006",
+        "REQ-NF-005",
+        "REQ-NF-006",
+        "REQ-NF-008"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SEC-004",
+      "upstreamBusinessIds": [
+        "BR-012"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-D-008",
+        "REQ-D-009",
+        "REQ-NF-007"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SEC-005",
+      "upstreamBusinessIds": [
+        "BR-017"
+      ],
+      "requirementIds": [
+        "REQ-C-003",
+        "REQ-I-004"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SEC-006",
+      "upstreamBusinessIds": [
+        "BR-004",
+        "VAL-001",
+        "VAL-002"
+      ],
+      "requirementIds": [
+        "REQ-C-002",
+        "REQ-F-010",
+        "REQ-F-018"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SEC-007",
+      "upstreamBusinessIds": [
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-F-018",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SEC-008",
+      "upstreamBusinessIds": [
+        "UC-005",
+        "SCREEN-001"
+      ],
+      "requirementIds": [
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "NFD-001",
+      "upstreamBusinessIds": [
+        "BP-002",
+        "BP-008"
+      ],
+      "requirementIds": [
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-051",
+        "REQ-NF-001",
+        "REQ-NF-002",
+        "REQ-NF-003",
+        "REQ-NF-004",
+        "REQ-NF-009",
+        "REQ-NF-010",
+        "REQ-NF-011",
+        "REQ-NF-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "NFD-002",
+      "upstreamBusinessIds": [
+        "BP-008"
+      ],
+      "requirementIds": [
+        "REQ-NF-001",
+        "REQ-NF-002",
+        "REQ-NF-003",
+        "REQ-NF-004",
+        "REQ-NF-009",
+        "REQ-NF-010",
+        "REQ-NF-011",
+        "REQ-NF-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "NFD-003",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "BP-008"
+      ],
+      "requirementIds": [
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-I-001",
+        "REQ-NF-001",
+        "REQ-NF-002",
+        "REQ-NF-003",
+        "REQ-NF-004",
+        "REQ-NF-009",
+        "REQ-NF-010",
+        "REQ-NF-011",
+        "REQ-NF-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "NFD-004",
+      "upstreamBusinessIds": [
+        "BP-008"
+      ],
+      "requirementIds": [
+        "REQ-NF-001",
+        "REQ-NF-002",
+        "REQ-NF-003",
+        "REQ-NF-004",
+        "REQ-NF-005",
+        "REQ-NF-009",
+        "REQ-NF-010",
+        "REQ-NF-011",
+        "REQ-NF-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "NFD-005",
+      "upstreamBusinessIds": [
+        "BP-008"
+      ],
+      "requirementIds": [
+        "REQ-NF-001",
+        "REQ-NF-002",
+        "REQ-NF-003",
+        "REQ-NF-004",
+        "REQ-NF-009",
+        "REQ-NF-010",
+        "REQ-NF-011",
+        "REQ-NF-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "NFD-006",
+      "upstreamBusinessIds": [
+        "BP-008",
+        "BP-010",
+        "BR-015"
+      ],
+      "requirementIds": [
+        "REQ-F-018",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-001",
+        "REQ-NF-002",
+        "REQ-NF-003",
+        "REQ-NF-004",
+        "REQ-NF-007",
+        "REQ-NF-009",
+        "REQ-NF-010",
+        "REQ-NF-011",
+        "REQ-NF-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "NFD-007",
+      "upstreamBusinessIds": [
+        "BP-008",
+        "BR-015"
+      ],
+      "requirementIds": [
+        "REQ-NF-001",
+        "REQ-NF-002",
+        "REQ-NF-003",
+        "REQ-NF-004",
+        "REQ-NF-009",
+        "REQ-NF-010",
+        "REQ-NF-011",
+        "REQ-NF-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "NFD-008",
+      "upstreamBusinessIds": [
+        "BP-002",
+        "BP-008",
+        "BR-020"
+      ],
+      "requirementIds": [
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-016",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-051",
+        "REQ-NF-001",
+        "REQ-NF-002",
+        "REQ-NF-003",
+        "REQ-NF-004",
+        "REQ-NF-009",
+        "REQ-NF-010",
+        "REQ-NF-011",
+        "REQ-NF-012",
+        "REQ-NF-AI-002",
+        "REQ-NF-AI-004"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "NFD-009",
+      "upstreamBusinessIds": [
+        "BR-011",
+        "BR-023"
+      ],
+      "requirementIds": [
+        "REQ-D-001",
+        "REQ-D-002",
+        "REQ-D-005",
+        "REQ-D-006",
+        "REQ-NF-005",
+        "REQ-NF-006",
+        "REQ-NF-008"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "NFD-010",
+      "upstreamBusinessIds": [
+        "BR-012",
+        "BP-008"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-D-008",
+        "REQ-D-009",
+        "REQ-NF-001",
+        "REQ-NF-002",
+        "REQ-NF-003",
+        "REQ-NF-004",
+        "REQ-NF-007",
+        "REQ-NF-009",
+        "REQ-NF-010",
+        "REQ-NF-011",
+        "REQ-NF-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-001",
+      "upstreamBusinessIds": [
+        "UC-001",
+        "BP-001",
+        "VAL-001"
+      ],
+      "requirementIds": [
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-I-001"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-002",
+      "upstreamBusinessIds": [
+        "UC-002",
+        "BP-010",
+        "API-001"
+      ],
+      "requirementIds": [
+        "REQ-F-003",
+        "REQ-F-018",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-003",
+      "upstreamBusinessIds": [
+        "BR-004",
+        "API-002"
+      ],
+      "requirementIds": [
+        "REQ-C-002",
+        "REQ-F-010",
+        "REQ-F-018"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-004",
+      "upstreamBusinessIds": [
+        "BR-006",
+        "API-003"
+      ],
+      "requirementIds": [
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-005",
+      "upstreamBusinessIds": [
+        "UC-003",
+        "BR-001"
+      ],
+      "requirementIds": [
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-017",
+        "REQ-F-023",
+        "REQ-F-051",
+        "REQ-F-052",
+        "REQ-F-054"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-006",
+      "upstreamBusinessIds": [
+        "BR-002",
+        "BR-021"
+      ],
+      "requirementIds": [
+        "REQ-F-053",
+        "REQ-F-054"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-007",
+      "upstreamBusinessIds": [
+        "UC-004",
+        "BR-007",
+        "API-005"
+      ],
+      "requirementIds": [
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-008",
+      "upstreamBusinessIds": [
+        "BP-003",
+        "EDGE-004"
+      ],
+      "requirementIds": [
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-I-002",
+        "REQ-I-003"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-009",
+      "upstreamBusinessIds": [
+        "UC-005",
+        "API-007"
+      ],
+      "requirementIds": [
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-010",
+      "upstreamBusinessIds": [
+        "UC-005",
+        "EDGE-005"
+      ],
+      "requirementIds": [
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-011",
+      "upstreamBusinessIds": [
+        "BR-009",
+        "UC-006"
+      ],
+      "requirementIds": [
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-012",
+      "upstreamBusinessIds": [
+        "BR-010",
+        "UC-006"
+      ],
+      "requirementIds": [
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-013",
+      "upstreamBusinessIds": [
+        "UC-007",
+        "BR-022"
+      ],
+      "requirementIds": [
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-055",
+        "REQ-NF-007"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-014",
+      "upstreamBusinessIds": [
+        "UC-009",
+        "BP-009"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-NF-007"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-015",
+      "upstreamBusinessIds": [
+        "UC-010",
+        "BP-010"
+      ],
+      "requirementIds": [
+        "REQ-F-018",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-016",
+      "upstreamBusinessIds": [
+        "BR-011",
+        "BR-001",
+        "SEC-002"
+      ],
+      "requirementIds": [
+        "REQ-F-017",
+        "REQ-F-023",
+        "REQ-F-051",
+        "REQ-F-054",
+        "REQ-NF-006",
+        "REQ-NF-008"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-017",
+      "upstreamBusinessIds": [
+        "SCREEN-001",
+        "SCREEN-003",
+        "SCREEN-005",
+        "SCREEN-006",
+        "SCREEN-008",
+        "SEC-A11Y",
+        "UC-005",
+        "BR-011"
+      ],
+      "requirementIds": [
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037",
+        "REQ-NF-006",
+        "REQ-NF-008"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-018",
+      "upstreamBusinessIds": [
+        "NFD-001",
+        "BP-002",
+        "BP-008"
+      ],
+      "requirementIds": [
+        "REQ-NF-001",
+        "REQ-NF-002",
+        "REQ-NF-003",
+        "REQ-NF-004",
+        "REQ-NF-009",
+        "REQ-NF-010",
+        "REQ-NF-011",
+        "REQ-NF-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-019",
+      "upstreamBusinessIds": [
+        "BP-008",
+        "BP-010",
+        "NFD-006"
+      ],
+      "requirementIds": [
+        "REQ-F-018",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-001",
+        "REQ-NF-002",
+        "REQ-NF-003",
+        "REQ-NF-004",
+        "REQ-NF-007",
+        "REQ-NF-009",
+        "REQ-NF-010",
+        "REQ-NF-011",
+        "REQ-NF-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-020",
+      "upstreamBusinessIds": [
+        "SEC-007",
+        "BP-010",
+        "BR-011"
+      ],
+      "requirementIds": [
+        "REQ-F-018",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "EDGE-001",
+      "upstreamBusinessIds": [
+        "BP-001",
+        "UC-001"
+      ],
+      "requirementIds": [
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-004",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-I-001"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "EDGE-002",
+      "upstreamBusinessIds": [
+        "BR-003"
+      ],
+      "requirementIds": [
+        "REQ-F-006"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "EDGE-003",
+      "upstreamBusinessIds": [
+        "BR-005"
+      ],
+      "requirementIds": [
+        "REQ-F-018",
+        "REQ-NF-AI-005"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "EDGE-004",
+      "upstreamBusinessIds": [
+        "BP-003",
+        "BR-008"
+      ],
+      "requirementIds": [
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-I-002",
+        "REQ-I-003"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "EDGE-005",
+      "upstreamBusinessIds": [
+        "BP-004",
+        "UC-005"
+      ],
+      "requirementIds": [
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "EDGE-006",
+      "upstreamBusinessIds": [
+        "BQ-004",
+        "UC-006"
+      ],
+      "requirementIds": [
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "EDGE-007",
+      "upstreamBusinessIds": [
+        "BP-006",
+        "BR-022"
+      ],
+      "requirementIds": [
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050",
+        "REQ-F-055",
+        "REQ-NF-007"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "EDGE-008",
+      "upstreamBusinessIds": [
+        "BP-009",
+        "UC-009"
+      ],
+      "requirementIds": [
+        "REQ-D-007",
+        "REQ-F-055",
+        "REQ-F-056",
+        "REQ-NF-007"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "EDGE-009",
+      "upstreamBusinessIds": [
+        "BP-010",
+        "UC-010"
+      ],
+      "requirementIds": [
+        "REQ-F-018",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "EDGE-010",
+      "upstreamBusinessIds": [
+        "BR-024",
+        "BQ-007"
+      ],
+      "requirementIds": [
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-I-002"
+      ],
+      "rawIds": []
+    }
+  ],
+  "validation": {
+    "gate": "Gate 4 Detail Definition",
+    "status": "CONDITIONAL_PASS",
+    "decision": "Implementation-ready for non-blocked contracts; affected details require answers to Q4-001 through Q4-007 before build sign-off.",
+    "checks": [
+      {
+        "check": "UI/screen details defined where applicable",
+        "status": "PASS",
+        "notes": "Internal HR/admin and candidate-facing screens defined."
+      },
+      {
+        "check": "API/interface details defined where applicable",
+        "status": "PASS",
+        "notes": "File, REST/RPC, event, and Google/AI interfaces specified at contract level."
+      },
+      {
+        "check": "Data details defined where applicable",
+        "status": "PASS",
+        "notes": "Schema-like data objects and field validations defined."
+      },
+      {
+        "check": "Validation, state, errors covered",
+        "status": "PASS",
+        "notes": "Canonical state machine, validations, interface errors, edge cases covered."
+      },
+      {
+        "check": "Non-functional targets measurable",
+        "status": "PASS",
+        "notes": "Performance, availability, observability, AI quality, cost, and audit targets included."
+      },
+      {
+        "check": "Security/privacy/accessibility included where relevant",
+        "status": "PASS",
+        "notes": "RBAC, audit, privacy, secrets, input validation, accessibility covered."
+      },
+      {
+        "check": "Test cases map to requirements/use cases",
+        "status": "PASS",
+        "notes": "20 tests map to UC/BP/BR/detail items."
+      },
+      {
+        "check": "Traceability to business definition exists",
+        "status": "PASS",
+        "notes": "Every detail item has BP/BR/UC/BQ/ROLE/BAC source IDs."
+      },
+      {
+        "check": "No contradiction with business rules",
+        "status": "PASS",
+        "notes": "Unresolved policies are marked as blocking instead of assumed."
+      },
+      {
+        "check": "Blocking Gate 4 questions resolved",
+        "status": "CONDITIONAL",
+        "notes": "Seven business policy/configuration questions remain open and block implementation sign-off for affected details."
+      }
+    ]
+  },
+  "openQuestions": [
+    {
+      "id": "Q4-001",
+      "question": "What exact AI confidence threshold requires manual review?",
+      "affectedDetailIds": [
+        "API-003",
+        "DATA-004",
+        "SCREEN-003",
+        "TEST-004"
+      ],
+      "owner": "HR Manager / AI Owner",
+      "blocksImplementation": true,
+      "sourceIds": [
+        "BQ-001"
+      ]
+    },
+    {
+      "id": "Q4-002",
+      "question": "Who is backup approver and what escalation timing applies?",
+      "affectedDetailIds": [
+        "API-010",
+        "RETRY-005",
+        "RETRY-006"
+      ],
+      "owner": "HR Manager",
+      "blocksImplementation": true,
+      "sourceIds": [
+        "BQ-002"
+      ]
+    },
+    {
+      "id": "Q4-003",
+      "question": "What retention/deletion policy applies to CVs, transcripts, test submissions, audit logs, and integration logs?",
+      "affectedDetailIds": [
+        "DATA-001",
+        "DATA-003",
+        "DATA-007",
+        "DATA-008",
+        "DATA-009",
+        "SEC-018"
+      ],
+      "owner": "HR Manager / IT Admin / Legal",
+      "blocksImplementation": true,
+      "sourceIds": [
+        "BQ-003"
+      ]
+    },
+    {
+      "id": "Q4-004",
+      "question": "What coding sandbox/runtime is approved for coding challenge grading?",
+      "affectedDetailIds": [
+        "API-008",
+        "DATA-008",
+        "TEST-012",
+        "EDGE-006"
+      ],
+      "owner": "IT Admin",
+      "blocksImplementation": true,
+      "sourceIds": [
+        "BQ-004"
+      ]
+    },
+    {
+      "id": "Q4-005",
+      "question": "What exact Drive folder, ownership, webhook renewal, and naming convention should be used for MVP?",
+      "affectedDetailIds": [
+        "API-001",
+        "DATA-010",
+        "SEC-012"
+      ],
+      "owner": "IT Admin",
+      "blocksImplementation": true,
+      "sourceIds": [
+        "BQ-005"
+      ]
+    },
+    {
+      "id": "Q4-006",
+      "question": "What final combined pass/fail policy should be applied across screening, interview, and test evidence?",
+      "affectedDetailIds": [
+        "SCREEN-007",
+        "DATA-008",
+        "STATE-014",
+        "TEST-013"
+      ],
+      "owner": "HR Manager",
+      "blocksImplementation": true,
+      "sourceIds": [
+        "BQ-006"
+      ]
+    },
+    {
+      "id": "Q4-007",
+      "question": "What is the Calendar reschedule/cancel policy after event creation?",
+      "affectedDetailIds": [
+        "API-005",
+        "API-009",
+        "EDGE-010"
+      ],
+      "owner": "HR Manager / IT Admin",
+      "blocksImplementation": true,
+      "sourceIds": [
+        "BQ-007"
+      ]
+    }
+  ]
+}

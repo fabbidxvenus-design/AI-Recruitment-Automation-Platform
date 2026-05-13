@@ -1,0 +1,441 @@
+.finalReviewPage {
+  padding: var(--space-6);
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-6);
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-on-surface);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.description {
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.mainContent {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: var(--space-6);
+}
+
+@media (max-width: 1024px) {
+  .mainContent {
+    grid-template-columns: 1fr;
+  }
+}
+
+.candidatePanel {
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
+}
+
+.candidateList {
+  display: flex;
+  flex-direction: column;
+}
+
+.candidateItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-outline-variant);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.candidateItem:hover {
+  background: var(--color-surface-container-low);
+}
+
+.candidateItem.selected {
+  background: var(--color-primary-fixed);
+  border-left: 3px solid var(--color-primary);
+}
+
+.candidateInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.candidateName {
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.jobTitle {
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+}
+
+.candidateScore {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.scoreValue {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.detailPanel {
+  position: sticky;
+  top: 0;
+}
+
+.overallScore {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.scoreLabel {
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+}
+
+.scoreValue {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.reviewSections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.reviewSection {
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+
+.reviewSection:last-child {
+  border-bottom: none;
+}
+
+.sectionTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 var(--space-3) 0;
+}
+
+.summaryText {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+.testScoreDisplay {
+  margin-top: var(--space-4);
+}
+
+.compensationGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.compItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  background: var(--color-surface-container-low);
+  border-radius: 8px;
+}
+
+.compLabel {
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+}
+
+.compValue {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.documentList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.documentItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface-container-low);
+  border-radius: 8px;
+}
+
+.docIcon {
+  font-size: 16px;
+}
+
+.docName {
+  flex: 1;
+  font-size: 14px;
+  color: var(--color-on-surface);
+}
+
+.approverList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.approverItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  background: var(--color-surface-container-low);
+  border-radius: 8px;
+}
+
+.approverInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.approverName {
+  font-weight: 500;
+  color: var(--color-on-surface);
+}
+
+.approverRole {
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+}
+
+.approverTime {
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+}
+
+.recommendation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.recBadge {
+  display: inline-block;
+  padding: var(--space-2) var(--space-4);
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.recBadge.strong_hire {
+  background: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.recBadge.hire {
+  background: var(--color-info-light);
+  color: var(--color-info);
+}
+
+.recBadge.no_hire {
+  background: var(--color-warning-light);
+  color: var(--color-warning);
+}
+
+.recBadge.strong_no_hire {
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.recText {
+  font-size: 14px;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+.actionButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-top: 1px solid var(--color-outline-variant);
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modalContent {
+  background: var(--color-surface);
+  border-radius: 16px;
+  max-width: 500px;
+  width: 90%;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+
+.modalHeader h2 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--color-on-surface);
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--color-on-surface-variant);
+  cursor: pointer;
+}
+
+.modalBody {
+  padding: var(--space-5);
+}
+
+.decisionInfo {
+  margin-bottom: var(--space-4);
+}
+
+.decisionInfo p {
+  margin: 0 0 var(--space-2) 0;
+  font-size: 14px;
+  color: var(--color-on-surface);
+}
+
+.decisionWarning {
+  color: var(--color-warning);
+  font-size: 13px;
+}
+
+.mfaSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.mfaLabel {
+  font-size: 14px;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+.reasonSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.mfaVerified {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-success-light);
+  border-radius: 8px;
+  color: var(--color-success);
+  font-weight: 500;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.formGroup label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-on-surface);
+}
+
+.textarea {
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--color-outline);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-outline-variant);
+}
+
+/* Field error styles */
+.fieldError {
+  display: block;
+  font-size: 12px;
+  color: var(--color-danger);
+  margin-top: var(--space-1);
+}
+
+.textarea[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+
+/* Field error styles */
+.fieldError {
+  display: block;
+  font-size: 12px;
+  color: var(--color-danger);
+  margin-top: var(--space-1);
+}
+
+.textarea[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}

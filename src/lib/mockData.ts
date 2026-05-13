@@ -1,0 +1,463 @@
+// Mock data fixtures for RecruitAI prototype
+import type {
+  Candidate,
+  Job,
+  ScreeningEvaluation,
+  ScheduleSlot,
+  InterviewSession,
+  TestResult,
+  FinalReviewPackage,
+  IntegrationHealth,
+  ErrorRemediationItem,
+  BQBlocker,
+} from '@/types';
+
+// BQ Blockers for blocked requirements
+export const bqBlockers: BQBlocker[] = [
+  {
+    id: 'bq-002',
+    code: 'BQ-002',
+    title: 'Google Sheets API Integration for Candidate Import',
+    description: 'Requires Google API credentials and Sheets API setup. Integration not implemented in current slice.',
+    screenIds: ['SCREEN-002'],
+    requiresAction: 'Configure Google OAuth and Sheets API credentials',
+    priority: 'high',
+  },
+  {
+    id: 'bq-003',
+    code: 'BQ-003',
+    title: 'AI Candidate Matching Engine',
+    description: 'AI matching algorithm requires backend processing and Google Gemini API integration.',
+    screenIds: ['SCREEN-002'],
+    requiresAction: 'Implement AI matching service with Gemini API',
+    priority: 'high',
+  },
+  {
+    id: 'bq-004',
+    code: 'BQ-004',
+    title: 'AI Video Interview Analysis',
+    description: 'Video analysis requires Google Cloud AI services and storage setup.',
+    screenIds: ['SCREEN-005'],
+    requiresAction: 'Configure Vertex AI and video processing pipeline',
+    priority: 'critical',
+  },
+  {
+    id: 'bq-005',
+    code: 'BQ-005',
+    title: 'Test Evaluation AI Service',
+    description: 'AI grading requires integration with Gemini for answer evaluation.',
+    screenIds: ['SCREEN-006'],
+    requiresAction: 'Implement AI test grading service',
+    priority: 'high',
+  },
+  {
+    id: 'bq-006',
+    code: 'BQ-006',
+    title: 'Compensation Analysis AI',
+    description: 'Market rate analysis requires external data source integration.',
+    screenIds: ['SCREEN-007'],
+    requiresAction: 'Integrate compensation data service',
+    priority: 'medium',
+  },
+  {
+    id: 'bq-007',
+    code: 'BQ-007',
+    title: 'Real-time Analytics Pipeline',
+    description: 'Dashboard analytics require data warehouse integration.',
+    screenIds: ['SCREEN-001', 'SCREEN-008'],
+    requiresAction: 'Set up analytics data pipeline',
+    priority: 'high',
+  },
+];
+
+// Mock candidates
+export const mockCandidates: Candidate[] = [
+  {
+    id: 'cand-001',
+    firstName: 'Sarah',
+    lastName: 'Chen',
+    email: 'sarah.chen@email.com',
+    phone: '+1 555-0101',
+    status: 'interviewing',
+    source: 'LinkedIn',
+    appliedAt: '2024-03-15',
+    updatedAt: '2024-04-20',
+    jobId: 'job-001',
+    skills: ['React', 'TypeScript', 'Node.js', 'AWS'],
+    experience: 6,
+    location: 'San Francisco, CA',
+  },
+  {
+    id: 'cand-002',
+    firstName: 'Michael',
+    lastName: 'Johnson',
+    email: 'm.johnson@email.com',
+    phone: '+1 555-0102',
+    status: 'screening',
+    source: 'Indeed',
+    appliedAt: '2024-04-01',
+    updatedAt: '2024-04-18',
+    jobId: 'job-001',
+    skills: ['Python', 'Django', 'PostgreSQL', 'Docker'],
+    experience: 4,
+    location: 'Austin, TX',
+  },
+  {
+    id: 'cand-003',
+    firstName: 'Emily',
+    lastName: 'Williams',
+    email: 'emily.w@email.com',
+    phone: '+1 555-0103',
+    status: 'final_review',
+    source: 'Referral',
+    appliedAt: '2024-02-28',
+    updatedAt: '2024-04-22',
+    jobId: 'job-002',
+    skills: ['Product Management', 'Agile', 'SQL', 'Analytics'],
+    experience: 8,
+    location: 'New York, NY',
+  },
+  {
+    id: 'cand-004',
+    firstName: 'David',
+    lastName: 'Park',
+    email: 'd.park@email.com',
+    phone: '+1 555-0104',
+    status: 'new',
+    source: 'LinkedIn',
+    appliedAt: '2024-04-22',
+    updatedAt: '2024-04-22',
+    jobId: 'job-003',
+    skills: ['Java', 'Spring Boot', 'Kubernetes', 'Microservices'],
+    experience: 5,
+    location: 'Seattle, WA',
+  },
+  {
+    id: 'cand-005',
+    firstName: 'Jessica',
+    lastName: 'Martinez',
+    email: 'j.martinez@email.com',
+    phone: '+1 555-0105',
+    status: 'assessment',
+    source: 'Career Fair',
+    appliedAt: '2024-04-10',
+    updatedAt: '2024-04-21',
+    jobId: 'job-001',
+    skills: ['React', 'Vue.js', 'GraphQL', 'Figma'],
+    experience: 3,
+    location: 'Los Angeles, CA',
+  },
+];
+
+// Mock jobs
+export const mockJobs: Job[] = [
+  {
+    id: 'job-001',
+    title: 'Senior Frontend Engineer',
+    department: 'Engineering',
+    location: 'San Francisco, CA',
+    status: 'open',
+    postedAt: '2024-03-01',
+    candidateCount: 47,
+    pipelineSummary: [
+      { stage: 'Applied', count: 18, color: '#64748b' },
+      { stage: 'Screening', count: 12, color: '#0891b2' },
+      { stage: 'Interview', count: 9, color: '#7c3aed' },
+      { stage: 'Assessment', count: 5, color: '#0d9488' },
+      { stage: 'Offer', count: 3, color: '#059669' },
+    ],
+  },
+  {
+    id: 'job-002',
+    title: 'Product Manager',
+    department: 'Product',
+    location: 'New York, NY',
+    status: 'open',
+    postedAt: '2024-02-15',
+    candidateCount: 32,
+    pipelineSummary: [
+      { stage: 'Applied', count: 14, color: '#64748b' },
+      { stage: 'Screening', count: 8, color: '#0891b2' },
+      { stage: 'Interview', count: 6, color: '#7c3aed' },
+      { stage: 'Assessment', count: 3, color: '#0d9488' },
+      { stage: 'Offer', count: 1, color: '#059669' },
+    ],
+  },
+  {
+    id: 'job-003',
+    title: 'Backend Engineer',
+    department: 'Engineering',
+    location: 'Remote',
+    status: 'open',
+    postedAt: '2024-04-01',
+    candidateCount: 28,
+    pipelineSummary: [
+      { stage: 'Applied', count: 15, color: '#64748b' },
+      { stage: 'Screening', count: 7, color: '#0891b2' },
+      { stage: 'Interview', count: 4, color: '#7c3aed' },
+      { stage: 'Assessment', count: 2, color: '#0d9488' },
+    ],
+  },
+];
+
+// Mock screening evaluations
+export const mockScreeningEvaluations: ScreeningEvaluation[] = [
+  {
+    id: 'screen-001',
+    candidateId: 'cand-001',
+    candidateName: 'Sarah Chen',
+    jobTitle: 'Senior Frontend Engineer',
+    overallScore: 85,
+    decision: 'approve',
+    aiSummary: 'Strong technical background with 6 years of experience in React and TypeScript. Demonstrated expertise in building scalable web applications.',
+    keyStrengths: [
+      'Excellent React and TypeScript skills',
+      'Experience with AWS and cloud infrastructure',
+      'Strong problem-solving abilities',
+    ],
+    concerns: [
+      'Limited experience with large team collaboration',
+    ],
+    evaluatedAt: '2024-04-19T14:30:00Z',
+    status: 'pending',
+  },
+  {
+    id: 'screen-002',
+    candidateId: 'cand-002',
+    candidateName: 'Michael Johnson',
+    jobTitle: 'Senior Frontend Engineer',
+    overallScore: 72,
+    decision: 'needs_review',
+    aiSummary: 'Solid Python background with 4 years of experience. Has relevant skills but may need additional training for frontend specialization.',
+    keyStrengths: [
+      'Good Python and Django skills',
+      'Familiar with PostgreSQL',
+      'Docker containerization experience',
+    ],
+    concerns: [
+      'No frontend-specific framework experience',
+      'Limited TypeScript knowledge',
+    ],
+    evaluatedAt: '2024-04-18T10:15:00Z',
+    status: 'pending',
+  },
+];
+
+// Mock schedule slots
+export const mockScheduleSlots: ScheduleSlot[] = [
+  {
+    id: 'slot-001',
+    candidateId: 'cand-001',
+    candidateName: 'Sarah Chen',
+    interviewerName: 'John Smith',
+    interviewType: 'Technical Interview',
+    scheduledAt: '2024-04-25T14:00:00Z',
+    duration: 60,
+    status: 'pending',
+    meetingLink: 'https://meet.google.com/abc-defg-hij',
+  },
+  {
+    id: 'slot-002',
+    candidateId: 'cand-003',
+    candidateName: 'Emily Williams',
+    interviewerName: 'Lisa Wang',
+    interviewType: 'Final Interview',
+    scheduledAt: '2024-04-26T10:00:00Z',
+    duration: 45,
+    status: 'approved',
+    meetingLink: 'https://meet.google.com/xyz-uvwx-yz',
+  },
+  {
+    id: 'slot-003',
+    candidateId: 'cand-005',
+    candidateName: 'Jessica Martinez',
+    interviewerName: 'Mike Brown',
+    interviewType: 'Panel Interview',
+    scheduledAt: '2024-04-27T15:30:00Z',
+    duration: 90,
+    status: 'pending',
+  },
+];
+
+// Mock interview sessions
+export const mockInterviewSessions: InterviewSession[] = [
+  {
+    id: 'int-001',
+    candidateId: 'cand-001',
+    candidateName: 'Sarah Chen',
+    status: 'in_progress',
+    startedAt: '2024-04-23T09:00:00Z',
+    questions: [
+      { id: 'q1', text: 'Tell me about your experience with React Hooks.', category: 'Technical', expectedDuration: 3, difficulty: 'medium' },
+      { id: 'q2', text: 'Describe a challenging bug you debugged recently.', category: 'Problem Solving', expectedDuration: 4, difficulty: 'medium' },
+      { id: 'q3', text: 'How do you handle state management in large applications?', category: 'Technical', expectedDuration: 5, difficulty: 'hard' },
+    ],
+    responses: [
+      {
+        questionId: 'q1',
+        answer: 'I have extensive experience with React Hooks including useState, useEffect, and custom hooks...',
+        score: 85,
+        aiFeedback: 'Good explanation of hooks usage with practical examples.',
+      },
+      {
+        questionId: 'q2',
+        answer: 'Recently I debugged a memory leak in a production React application...',
+        score: 78,
+        aiFeedback: 'Good problem-solving approach, could elaborate more on the solution.',
+      },
+    ],
+    overallScore: 81,
+    aiAnalysis: 'Strong candidate with solid React fundamentals. Shows good problem-solving skills.',
+  },
+];
+
+// Mock test results
+export const mockTestResults: TestResult[] = [
+  {
+    id: 'test-001',
+    candidateId: 'cand-001',
+    candidateName: 'Sarah Chen',
+    testName: 'JavaScript Fundamentals',
+    score: 88,
+    maxScore: 100,
+    gradedAt: '2024-04-20T16:30:00Z',
+    gradedBy: 'ai',
+    status: 'approved',
+    aiGrade: 'Excellent performance with strong understanding of JavaScript concepts.',
+  },
+  {
+    id: 'test-002',
+    candidateId: 'cand-002',
+    candidateName: 'Michael Johnson',
+    testName: 'Frontend Coding Challenge',
+    score: 65,
+    maxScore: 100,
+    gradedAt: '2024-04-19T11:00:00Z',
+    gradedBy: 'ai',
+    status: 'flagged',
+    aiGrade: 'Average performance. Shows basic understanding but needs improvement in modern frontend patterns.',
+  },
+  {
+    id: 'test-003',
+    candidateId: 'cand-003',
+    candidateName: 'Emily Williams',
+    testName: 'System Design',
+    score: 92,
+    maxScore: 100,
+    gradedAt: '2024-04-18T09:45:00Z',
+    gradedBy: 'override',
+    status: 'overridden',
+    humanGrade: 'Outstanding system design skills. Strong recommendation for hire.',
+    overrideReason: 'AI underweighted architectural experience. Human review confirms exceptional capabilities.',
+  },
+];
+
+// Mock final review packages
+export const mockFinalReviewPackages: FinalReviewPackage[] = [
+  {
+    id: 'final-001',
+    candidateId: 'cand-003',
+    candidateName: 'Emily Williams',
+    jobTitle: 'Product Manager',
+    overallScore: 91,
+    recommendation: 'strong_hire',
+    interviewSummary: 'Emily demonstrated exceptional product sense and leadership abilities. She has led multiple successful product launches and has deep expertise in data-driven decision making.',
+    testResultsSummary: 'Strong performance across all assessments. System design scored 92/100 with particularly strong architectural thinking.',
+    compensation: {
+      requested: 165000,
+      recommended: 160000,
+      approved: true,
+    },
+    documents: [
+      { id: 'doc-1', name: 'Resume', type: 'application/pdf', url: '#' },
+      { id: 'doc-2', name: 'Portfolio', type: 'application/pdf', url: '#' },
+    ],
+    approvers: [
+      { name: 'John Director', role: 'Hiring Manager', status: 'approved', timestamp: '2024-04-21T10:00:00Z' },
+      { name: 'Lisa VP', role: 'VP Product', status: 'pending' },
+    ],
+    decision: 'pending',
+  },
+];
+
+// Mock integration health
+export const mockIntegrationHealth: IntegrationHealth[] = [
+  {
+    id: 'int-hlth-001',
+    name: 'Google Sheets API',
+    status: 'healthy',
+    lastSync: '2024-04-23T08:00:00Z',
+    errorCount: 0,
+    endpoint: 'sheets.googleapis.com',
+  },
+  {
+    id: 'int-hlth-002',
+    name: 'Gemini AI Service',
+    status: 'degraded',
+    lastSync: '2024-04-23T07:55:00Z',
+    errorCount: 3,
+    endpoint: 'generativelanguage.googleapis.com',
+  },
+  {
+    id: 'int-hlth-003',
+    name: 'Video Processing',
+    status: 'down',
+    lastSync: '2024-04-22T22:00:00Z',
+    errorCount: 12,
+    endpoint: 'videoprocessing.googleapis.com',
+  },
+  {
+    id: 'int-hlth-004',
+    name: 'Calendar Integration',
+    status: 'healthy',
+    lastSync: '2024-04-23T08:05:00Z',
+    errorCount: 0,
+    endpoint: 'calendar.google.com',
+  },
+];
+
+// Mock error remediation items
+export const mockErrorRemediationItems: ErrorRemediationItem[] = [
+  {
+    id: 'err-001',
+    errorCode: 'ERR-2024-0892',
+    title: 'Video Interview Processing Failure',
+    description: 'Videos from 5 candidates failed to process. Error occurred in the video analysis pipeline.',
+    severity: 'high',
+    status: 'open',
+    createdAt: '2024-04-22T14:30:00Z',
+    affectedEntities: ['int-001', 'int-003', 'int-004', 'int-005', 'int-006'],
+    resolutionSteps: [
+      'Check video processing service logs',
+      'Verify Google Cloud storage permissions',
+      'Review failed video file formats',
+      'Retry processing with diagnostic flag',
+    ],
+    assignee: 'Engineering Team',
+  },
+  {
+    id: 'err-002',
+    errorCode: 'ERR-2024-0891',
+    title: 'Calendar Sync Timeout',
+    description: 'Occasional timeouts when syncing with Google Calendar during peak hours.',
+    severity: 'medium',
+    status: 'resolved',
+    createdAt: '2024-04-20T09:15:00Z',
+    resolvedAt: '2024-04-21T16:00:00Z',
+    affectedEntities: ['schedule-001', 'schedule-002'],
+    resolutionSteps: [
+      'Increased timeout threshold',
+      'Added retry logic with exponential backoff',
+    ],
+  },
+];
+
+// Dashboard metrics for quick access
+export const dashboardMetrics = {
+  totalCandidates: 107,
+  activeJobs: 3,
+  pendingScreening: 12,
+  interviewsThisWeek: 8,
+  offersPending: 3,
+  avgTimeToHire: 24,
+};

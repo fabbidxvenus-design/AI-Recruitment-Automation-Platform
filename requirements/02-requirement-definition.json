@@ -1,966 +1,1539 @@
 {
-  "$schema": "https://raw.githubusercontent.com/David-Init-Institute/requirements-hierarchy/main/schema/v1.0/requirement.schema.json",
-  "requirement": {
-    "id": "REQ-GATE2",
-    "title": "AI Recruitment Automation Platform — Atomic Requirements",
-    "version": "0.1.0",
-    "status": "DRAFT",
-    "date": "2026-05-12",
-    "author": "DuyMT",
-    "reviewStatus": "GATE_2_DEFINITION",
-    "type": "SOFTWARE_SYSTEM",
-    "domain": "HR-Tech / Recruitment Automation",
-    "upstream": "01-requirement.md (v0.2.0)",
-    "summary": "Decomposition of all upstream requirements into 91 atomic REQ-* statements across 5 categories: Functional (45), Non-Functional (14), Data (14), Integration (8), Constraint (10). Each requirement includes priority, rationale, acceptance criteria, and source traceability.",
-
-    "functionalRequirements": [
+  "metadata": {
+    "productName": "RecruitAI",
+    "projectType": "data-ai",
+    "language": "bilingual",
+    "generatedAt": "2026-05-12T14:25:00Z",
+    "upstream": "01-requirement.md/json v2.0",
+    "inputSources": [
       {
-        "id": "FR-001",
-        "category": "Candidate Sourcing",
-        "text": "System shall search candidates across multiple external channels (job boards, LinkedIn, internal databases).",
-        "priority": "P0",
-        "rationale": "Reduces manual sourcing effort.",
-        "acceptanceCriteria": "System supports ≥3 channel connectors; search query returns results from each within 30s.",
-        "sourceTraceability": ["RAW-001"]
-      },
-      {
-        "id": "FR-002",
-        "category": "Candidate Sourcing",
-        "text": "System shall match candidates to job descriptions using semantic search (embedding similarity).",
-        "priority": "P0",
-        "rationale": "Core AI value proposition.",
-        "acceptanceCriteria": "Cosine similarity computed for each candidate-job pair; results ranked by score.",
-        "sourceTraceability": ["RAW-001"]
-      },
-      {
-        "id": "FR-003",
-        "category": "Candidate Sourcing",
-        "text": "System shall rank candidates using weighted scoring (skills 40%, experience 30%, education 20%, organizational preference 10%).",
-        "priority": "P0",
-        "rationale": "Transparent, configurable ranking.",
-        "acceptanceCriteria": "Composite score computed and displayed per candidate; weight values are admin-configurable.",
-        "sourceTraceability": ["RAW-001"]
-      },
-      {
-        "id": "FR-004",
-        "category": "Candidate Sourcing",
-        "text": "System shall send automated outreach messages to top-ranked candidates.",
-        "priority": "P1",
-        "rationale": "Reduces recruiter manual work.",
-        "acceptanceCriteria": "Message dispatched within 5 min of match; recruiter can review before send.",
-        "sourceTraceability": ["RAW-001"]
-      },
-      {
-        "id": "FR-005",
-        "category": "CV Parsing & Screening",
-        "text": "System shall parse resume files in PDF and DOCX formats.",
-        "priority": "P0",
-        "rationale": "Primary input format for candidates.",
-        "acceptanceCriteria": "Parsing succeeds for ≥95% of valid PDF/DOCX files; structured fields extracted.",
-        "sourceTraceability": ["RAW-002"]
-      },
-      {
-        "id": "FR-006",
-        "category": "CV Parsing & Screening",
-        "text": "System shall extract structured fields from parsed CVs: full name, email, phone, location, skills, work experience, education.",
-        "priority": "P0",
-        "rationale": "Enables downstream matching and screening.",
-        "acceptanceCriteria": "Each field extracted with ≥90% accuracy on test corpus.",
-        "sourceTraceability": ["RAW-002"]
-      },
-      {
-        "id": "FR-007",
-        "category": "CV Parsing & Screening",
-        "text": "System shall screen parsed CVs against job requirements using weighted scoring and vector similarity.",
-        "priority": "P0",
-        "rationale": "Core screening automation.",
-        "acceptanceCriteria": "Screening score generated within 15 seconds; score includes explainable breakdown.",
-        "sourceTraceability": ["RAW-002"]
-      },
-      {
-        "id": "FR-008",
-        "category": "CV Parsing & Screening",
-        "text": "System shall score and rank candidates with explainable rationale per score factor.",
-        "priority": "P0",
-        "rationale": "Trust and transparency for recruiter decisions.",
-        "acceptanceCriteria": "Each score component shows contributing factors (e.g., 'Skills match: 8/10').",
-        "sourceTraceability": ["RAW-002"]
-      },
-      {
-        "id": "FR-009",
-        "category": "CV Parsing & Screening",
-        "text": "System shall detect duplicate candidates across all client pools.",
-        "priority": "P1",
-        "rationale": "Prevents duplicate applications in multi-client environment.",
-        "acceptanceCriteria": "Duplicate detected when similarity > 90% on name + email + phone combination.",
-        "sourceTraceability": ["RAW-002", "RAW-009"]
-      },
-      {
-        "id": "FR-010",
-        "category": "Interview Scheduling",
-        "text": "System shall integrate with Google Calendar and Microsoft Outlook for availability sync.",
-        "priority": "P0",
-        "rationale": "Core scheduling dependency.",
-        "acceptanceCriteria": "Calendar events readable/writeable; sync latency <60s.",
-        "sourceTraceability": ["RAW-003"]
-      },
-      {
-        "id": "FR-011",
-        "category": "Interview Scheduling",
-        "text": "System shall collect candidate availability via portal or email link.",
-        "priority": "P0",
-        "rationale": "Required for slot matching.",
-        "acceptanceCriteria": "Candidate submits ≥1 preferred slot; data stored and available for matching.",
-        "sourceTraceability": ["RAW-003", "RAW-015"]
-      },
-      {
-        "id": "FR-012",
-        "category": "Interview Scheduling",
-        "text": "System shall collect interviewer availability from connected calendars.",
-        "priority": "P0",
-        "rationale": "Required for slot matching.",
-        "acceptanceCriteria": "Interviewer availability windows read automatically from calendar.",
-        "sourceTraceability": ["RAW-003", "RAW-015"]
-      },
-      {
-        "id": "FR-013",
-        "category": "Interview Scheduling",
-        "text": "System shall suggest top 3 optimal interview slots based on overlapping availability.",
-        "priority": "P0",
-        "rationale": "Reduces back-and-forth scheduling.",
-        "acceptanceCriteria": "Suggestions generated within 5 seconds; respects business hours and timezones.",
-        "sourceTraceability": ["RAW-003", "RAW-015"]
-      },
-      {
-        "id": "FR-014",
-        "category": "Interview Scheduling",
-        "text": "System shall support multi-round scheduling (phone screen → technical → onsite).",
-        "priority": "P0",
-        "rationale": "Reflects real recruitment workflows.",
-        "acceptanceCriteria": "Each round type configurable; sequential and parallel round flows supported.",
-        "sourceTraceability": ["RAW-003"]
-      },
-      {
-        "id": "FR-015",
-        "category": "Interview Scheduling",
-        "text": "System shall send automated reminders to participants 24 hours before scheduled interviews.",
-        "priority": "P0",
-        "rationale": "Reduces no-show rate.",
-        "acceptanceCriteria": "Reminder sent via email and in-app notification 24h before interview.",
-        "sourceTraceability": ["RAW-003", "RAW-014"]
-      },
-      {
-        "id": "FR-016",
-        "category": "Interview Scheduling",
-        "text": "System shall support rescheduling via self-service links in notifications.",
-        "priority": "P1",
-        "rationale": "Improves candidate experience.",
-        "acceptanceCriteria": "Candidate/interviewer can reschedule from link without recruiter intervention.",
-        "sourceTraceability": ["RAW-003"]
-      },
-      {
-        "id": "FR-017",
-        "category": "Interview Scheduling",
-        "text": "System shall handle timezone-aware scheduling for JP (JST), VN (ICT), and EN (US/EU) timezones.",
-        "priority": "P0",
-        "rationale": "Core market requirement.",
-        "acceptanceCriteria": "All times stored in UTC; displayed in participant-local timezone; auto-detect from location/IP.",
-        "sourceTraceability": ["RAW-003", "RAW-015"]
-      },
-      {
-        "id": "FR-018",
-        "category": "Assessment Scoring",
-        "text": "System shall support configurable MCQ assessments (single and multiple correct answers).",
-        "priority": "P0",
-        "rationale": "Foundational assessment type.",
-        "acceptanceCriteria": "MCQ rendered and graded correctly; supports ≥10 questions per assessment.",
-        "sourceTraceability": ["RAW-004"]
-      },
-      {
-        "id": "FR-019",
-        "category": "Assessment Scoring",
-        "text": "System shall support predefined answer scoring (exact match, regex).",
-        "priority": "P0",
-        "rationale": "Enables short-answer auto-grading.",
-        "acceptanceCriteria": "Scoring engine matches answers with 100% accuracy for predefined patterns.",
-        "sourceTraceability": ["RAW-004"]
-      },
-      {
-        "id": "FR-020",
-        "category": "Assessment Scoring",
-        "text": "System shall evaluate assessments instantly and return scores within 5 seconds.",
-        "priority": "P0",
-        "rationale": "Candidate experience — immediate feedback.",
-        "acceptanceCriteria": "Score returned ≤5s after submission.",
-        "sourceTraceability": ["RAW-004"]
-      },
-      {
-        "id": "FR-021",
-        "category": "Assessment Scoring",
-        "text": "System shall allow recruiters to configure pass/fail thresholds per job.",
-        "priority": "P0",
-        "rationale": "Different roles require different bars.",
-        "acceptanceCriteria": "Threshold configurable from 0–100 per job; default 60.",
-        "sourceTraceability": ["RAW-004"]
-      },
-      {
-        "id": "FR-022",
-        "category": "Assessment Scoring",
-        "text": "System shall generate AI-driven score breakdowns with strengths and weaknesses.",
-        "priority": "P0",
-        "rationale": "Adds value beyond simple pass/fail.",
-        "acceptanceCriteria": "Breakdown generated within 15s; includes per-question or per-skill analysis.",
-        "sourceTraceability": ["RAW-004"]
-      },
-      {
-        "id": "FR-023",
-        "category": "Assessment Scoring",
-        "text": "System shall allow recruiters to override auto-pass/fail decisions.",
-        "priority": "P0",
-        "rationale": "Human-in-the-loop for edge cases.",
-        "acceptanceCriteria": "Override recorded with reason; audit trail maintained.",
-        "sourceTraceability": ["RAW-004"]
-      },
-      {
-        "id": "FR-024",
-        "category": "Pipeline Management",
-        "text": "System shall provide a visual kanban board for candidate pipeline stages.",
-        "priority": "P0",
-        "rationale": "Core ATS functionality.",
-        "acceptanceCriteria": "Board renders all candidates by stage; drag-and-drop supported.",
-        "sourceTraceability": ["RAW-008"]
-      },
-      {
-        "id": "FR-025",
-        "category": "Pipeline Management",
-        "text": "System shall support configurable pipeline stages per client (default: Applied → Screening → Interview → Technical → Offer → Hired/Rejected).",
-        "priority": "P0",
-        "rationale": "Client-specific workflows.",
-        "acceptanceCriteria": "Admin can add, rename, reorder stages; defaults applied on client creation.",
-        "sourceTraceability": ["RAW-008"]
-      },
-      {
-        "id": "FR-026",
-        "category": "Pipeline Management",
-        "text": "System shall trigger automatic stage transitions based on configurable rules (pass/fail/timeout).",
-        "priority": "P0",
-        "rationale": "Reduces manual stage management.",
-        "acceptanceCriteria": "Auto-transition fires within 60s of trigger event (e.g., assessment pass).",
-        "sourceTraceability": ["RAW-008"]
-      },
-      {
-        "id": "FR-027",
-        "category": "Pipeline Management",
-        "text": "System shall display a real-time dashboard with candidate counts and pipeline metrics per stage.",
-        "priority": "P0",
-        "rationale": "At-a-glance visibility for recruiters and clients.",
-        "acceptanceCriteria": "Dashboard updates within 10s of stage changes; shows counts, conversion rates.",
-        "sourceTraceability": ["RAW-008"]
-      },
-      {
-        "id": "FR-028",
-        "category": "Translation & Localization",
-        "text": "System shall translate CVs/resumes between JP, VN, and EN using LLM-based translation.",
-        "priority": "P0",
-        "rationale": "Core market need (Japan-Vietnam hiring).",
-        "acceptanceCriteria": "Translation delivered within 30 seconds; covers full document.",
-        "sourceTraceability": ["RAW-006"]
-      },
-      {
-        "id": "FR-029",
-        "category": "Translation & Localization",
-        "text": "System shall translate interview feedback between JP, VN, and EN.",
-        "priority": "P0",
-        "rationale": "Enables cross-language interviewer panels.",
-        "acceptanceCriteria": "Feedback translated preserving context; delivered within 15s.",
-        "sourceTraceability": ["RAW-006"]
-      },
-      {
-        "id": "FR-030",
-        "category": "Translation & Localization",
-        "text": "System shall translate job descriptions between JP, VN, and EN.",
-        "priority": "P1",
-        "rationale": "Content localization for multi-market job postings.",
-        "acceptanceCriteria": "JD translated within 30s; industry terminology preserved.",
-        "sourceTraceability": ["RAW-006"]
-      },
-      {
-        "id": "FR-031",
-        "category": "Translation & Localization",
-        "text": "System shall auto-detect source language of input content.",
-        "priority": "P0",
-        "rationale": "Removes manual language selection step.",
-        "acceptanceCriteria": "Language detected with ≥95% confidence before translation.",
-        "sourceTraceability": ["RAW-006"]
-      },
-      {
-        "id": "FR-032",
-        "category": "Translation & Localization",
-        "text": "System shall route low-confidence translations (<80%) to a human review queue.",
-        "priority": "P0",
-        "rationale": "Quality control for critical content.",
-        "acceptanceCriteria": "Items with confidence <80% flagged; visible in reviewer queue.",
-        "sourceTraceability": ["RAW-006"]
-      },
-      {
-        "id": "FR-033",
-        "category": "Email & Notifications",
-        "text": "System shall send automated email notifications to candidates (application received, interview scheduled, stage updates, rejection/offer).",
-        "priority": "P0",
-        "rationale": "Candidate communication is mandatory.",
-        "acceptanceCriteria": "Email sent within 60s of trigger event; delivered to valid addresses.",
-        "sourceTraceability": ["RAW-007", "RAW-014"]
-      },
-      {
-        "id": "FR-034",
-        "category": "Email & Notifications",
-        "text": "System shall send automated notifications to recruiters (new application, AI match ready, scheduling conflicts).",
-        "priority": "P0",
-        "rationale": "Keeps recruiters informed in real time.",
-        "acceptanceCriteria": "In-app notification within 30s; email within 60s.",
-        "sourceTraceability": ["RAW-007", "RAW-014"]
-      },
-      {
-        "id": "FR-035",
-        "category": "Email & Notifications",
-        "text": "System shall send pipeline progress reports to HiringCompanies.",
-        "priority": "P1",
-        "rationale": "Client retention and satisfaction.",
-        "acceptanceCriteria": "Configurable frequency (daily/weekly); email delivery.",
-        "sourceTraceability": ["RAW-007"]
-      },
-      {
-        "id": "FR-036",
-        "category": "Email & Notifications",
-        "text": "System shall support email templates with agency branding customization.",
-        "priority": "P0",
-        "rationale": "Professional communication brand consistency.",
-        "acceptanceCriteria": "Templates editable per agency; HTML + plain text formats.",
-        "sourceTraceability": ["RAW-007"]
-      },
-      {
-        "id": "FR-037",
-        "category": "Authentication & Access Control",
-        "text": "System shall authenticate users via email and password (bcrypt hashing).",
-        "priority": "P0",
-        "rationale": "Foundational security.",
-        "acceptanceCriteria": "Login flow succeeds for valid credentials; rejects invalid.",
-        "sourceTraceability": ["RAW-011"]
-      },
-      {
-        "id": "FR-038",
-        "category": "Authentication & Access Control",
-        "text": "System shall support optional SSO via Google and Microsoft accounts.",
-        "priority": "P1",
-        "rationale": "Reduces friction for enterprise users.",
-        "acceptanceCriteria": "OAuth2 flow completes; user mapped to agency account.",
-        "sourceTraceability": ["RAW-011"]
-      },
-      {
-        "id": "FR-039",
-        "category": "Authentication & Access Control",
-        "text": "System shall support optional multi-factor authentication.",
-        "priority": "P1",
-        "rationale": "Enhanced security for agency admins.",
-        "acceptanceCriteria": "MFA setup and verification flow works; bypassable for non-admin roles.",
-        "sourceTraceability": ["RAW-011"]
-      },
-      {
-        "id": "FR-040",
-        "category": "Authentication & Access Control",
-        "text": "System shall enforce role-based access control at entity level (not just route level).",
-        "priority": "P0",
-        "rationale": "Data isolation between roles and clients.",
-        "acceptanceCriteria": "Each API call validated against RBAC matrix; unauthorized access rejected with 403.",
-        "sourceTraceability": ["RAW-009", "RAW-011"]
-      },
-      {
-        "id": "FR-041",
-        "category": "Authentication & Access Control",
-        "text": "System shall manage user sessions via JWT access/refresh tokens.",
-        "priority": "P0",
-        "rationale": "Stateless auth for API.",
-        "acceptanceCriteria": "Token issued on login; refresh before expiry; logout invalidates.",
-        "sourceTraceability": ["RAW-011"]
-      },
-      {
-        "id": "FR-042",
-        "category": "Multi-Client Data Isolation",
-        "text": "System shall scope jobs, candidates, and applications to their owning HiringCompany (client).",
-        "priority": "P0",
-        "rationale": "Data isolation between agency clients.",
-        "acceptanceCriteria": "Queries filtered by client_id; cross-client data access denied.",
-        "sourceTraceability": ["RAW-009"]
-      },
-      {
-        "id": "FR-043",
-        "category": "Multi-Client Data Isolation",
-        "text": "System shall allow a recruiter to manage multiple HiringCompanies.",
-        "priority": "P0",
-        "rationale": "Agency operational model.",
-        "acceptanceCriteria": "Recruiter can switch active client context; each client's data isolated.",
-        "sourceTraceability": ["RAW-009"]
-      },
-      {
-        "id": "FR-044",
-        "category": "Multi-Client Data Isolation",
-        "text": "System shall provide a shared candidate pool with deduplication across all clients within an agency.",
-        "priority": "P1",
-        "rationale": "Avoids duplicate outreach to same candidate.",
-        "acceptanceCriteria": "Deduplication runs on candidate creation; matches on email + phone + name similarity.",
-        "sourceTraceability": ["RAW-009"]
-      },
-      {
-        "id": "FR-045",
-        "category": "Multi-Client Data Isolation",
-        "text": "System shall allow each HiringCompany to configure their own pipeline stages and workflows.",
-        "priority": "P0",
-        "rationale": "Client-specific recruitment processes.",
-        "acceptanceCriteria": "Stage customization per client; default template available.",
-        "sourceTraceability": ["RAW-008", "RAW-009"]
+        "type": "existing-artifact",
+        "path": "requirements/01-requirement.json",
+        "description": "Raw requirements v2.0"
       }
     ],
-
-    "nonFunctionalRequirements": [
+    "reviewStatus": "CONDITIONAL_PASS",
+    "reviewedAt": "2026-05-12T00:00:00Z"
+  },
+  "summary": {
+    "productGoal": "Automate end-to-end recruitment pipeline with AI-powered screening, scheduling, interview, and grading under HR Manager oversight",
+    "primaryUsers": [
+      "HR Recruiter",
+      "HR Manager",
+      "Interviewer"
+    ],
+    "coreProblem": "Manual recruitment process does not scale at >200 jobs/month",
+    "mustHaveScope": [
+      "Candidate Sourcing",
+      "CV Screening",
+      "Interview Scheduling",
+      "AI Interview",
+      "Test Grading",
+      "Approval Workflow",
+      "Google Integration"
+    ],
+    "outOfScope": [
+      "Multi-tenant",
+      "Realtime voice/video",
+      "Third-party ATS/CRM",
+      "Mobile native",
+      "Post-hire onboarding",
+      "Content/Design/Translation (Phase 2)"
+    ]
+  },
+  "scope": {
+    "in": [
       {
-        "id": "NFR-001",
-        "category": "Performance",
-        "text": "Dashboard page load shall complete in <2 seconds.",
-        "priority": "P0",
-        "rationale": "Usability threshold.",
-        "acceptanceCriteria": "P95 response time <2s measured by browser DevTools.",
-        "sourceTraceability": ["RAW-012"]
+        "id": "SCOPE-IN-001",
+        "item": "Candidate/Job data import (Excel batch, manual, Google Drive trigger)",
+        "source": "RAW-001, RAW-002, RAW-003"
       },
       {
-        "id": "NFR-002",
-        "category": "Performance",
-        "text": "CV parsing + AI scoring shall complete in <15 seconds per candidate.",
-        "priority": "P0",
-        "rationale": "Recruiter throughput.",
-        "acceptanceCriteria": "End-to-end latency measured and reported; 95th percentile <15s.",
-        "sourceTraceability": ["RAW-002", "RAW-005"]
+        "id": "SCOPE-IN-002",
+        "item": "JD management (text input + PDF/DOCX upload)",
+        "source": "RAW-004"
       },
       {
-        "id": "NFR-003",
-        "category": "Performance",
-        "text": "AI candidate matching score shall compute in <15 seconds per candidate-job pair.",
-        "priority": "P0",
-        "rationale": "Real-time feedback during sourcing.",
-        "acceptanceCriteria": "Latency measured from request to ranked results; P95 <15s.",
-        "sourceTraceability": ["RAW-001"]
+        "id": "SCOPE-IN-003",
+        "item": "AI-powered CV screening with scoring and explainability",
+        "source": "RAW-005 to RAW-009"
       },
       {
-        "id": "NFR-004",
-        "category": "Performance",
-        "text": "Interview slot suggestions shall generate in <5 seconds.",
-        "priority": "P0",
-        "rationale": "Responsive scheduling UX.",
-        "acceptanceCriteria": "Suggestions returned ≤5s after availability data submitted.",
-        "sourceTraceability": ["RAW-015"]
+        "id": "SCOPE-IN-004",
+        "item": "Human approval workflow (screening + scheduling)",
+        "source": "RAW-010, RAW-013, RAW-031, RAW-033"
       },
       {
-        "id": "NFR-005",
-        "category": "Performance",
-        "text": "Translation shall complete in <30 seconds per document.",
-        "priority": "P0",
-        "rationale": "Acceptable wait for user flow.",
-        "acceptanceCriteria": "Document translated and returned ≤30s for up to 10-page CVs.",
-        "sourceTraceability": ["RAW-006"]
+        "id": "SCOPE-IN-005",
+        "item": "Automated interview scheduling via Google Calendar",
+        "source": "RAW-012 to RAW-017"
       },
       {
-        "id": "NFR-006",
-        "category": "Performance",
-        "text": "System shall support 500+ concurrent users across all tenants.",
-        "priority": "P0",
-        "rationale": "Agency scale target.",
-        "acceptanceCriteria": "Load test passes with 500 concurrent sessions; no degradation beyond +200ms latency.",
-        "sourceTraceability": ["RAW-012"]
+        "id": "SCOPE-IN-006",
+        "item": "AI async interview (text chat, hybrid questions)",
+        "source": "RAW-018 to RAW-021"
       },
       {
-        "id": "NFR-007",
-        "category": "Scalability",
-        "text": "Architecture shall be multi-tenant with data isolation per agency.",
-        "priority": "P0",
-        "rationale": "SaaS foundation.",
-        "acceptanceCriteria": "Tenants cannot access each other's data; verified via penetration test.",
-        "sourceTraceability": ["RAW-009"]
+        "id": "SCOPE-IN-007",
+        "item": "Automated test grading (MCQ, essay, coding)",
+        "source": "RAW-022 to RAW-025"
       },
       {
-        "id": "NFR-008",
-        "category": "Scalability",
-        "text": "AI processing workloads shall scale horizontally via message queue.",
-        "priority": "P1",
-        "rationale": "Handle burst AI requests.",
-        "acceptanceCriteria": "Queue absorbs 10x normal load without data loss; auto-scaling triggered.",
-        "sourceTraceability": ["RAW-005"]
+        "id": "SCOPE-IN-008",
+        "item": "Google Workspace integration (Gmail, Calendar, Drive)",
+        "source": "RAW-039"
       },
       {
-        "id": "NFR-009",
-        "category": "Scalability",
-        "text": "Static assets shall be served via CDN.",
-        "priority": "P2",
-        "rationale": "Reduce latency globally.",
-        "acceptanceCriteria": "Assets served from edge nodes; cache hit ratio >90%.",
-        "sourceTraceability": ["RAW-012"]
+        "id": "SCOPE-IN-009",
+        "item": "Candidate state machine and pipeline automation",
+        "source": "RAW-030, RAW-031"
       },
       {
-        "id": "NFR-010",
-        "category": "Scalability",
-        "text": "Database read replicas shall serve analytics queries.",
-        "priority": "P2",
-        "rationale": "Prevent reporting from impacting transactional performance.",
-        "acceptanceCriteria": "Analytics queries routed to replicas; production DB unaffected.",
-        "sourceTraceability": ["RAW-012"]
+        "id": "SCOPE-IN-010",
+        "item": "Multi-language support (Vi, Ja, En)",
+        "source": "RAW-021, RAW-036"
       },
       {
-        "id": "NFR-011",
-        "category": "Reliability",
-        "text": "System shall maintain 99.5% uptime SLA.",
-        "priority": "P0",
-        "rationale": "Business continuity.",
-        "acceptanceCriteria": "Monthly uptime calculated; reported in status dashboard.",
-        "sourceTraceability": ["RAW-012"]
-      },
-      {
-        "id": "NFR-012",
-        "category": "Reliability",
-        "text": "Automated backups shall maintain ≤24-hour Recovery Point Objective.",
-        "priority": "P0",
-        "rationale": "Data loss prevention.",
-        "acceptanceCriteria": "Backup verified daily; restore test passes quarterly.",
-        "sourceTraceability": ["RAW-012"]
-      },
-      {
-        "id": "NFR-013",
-        "category": "Reliability",
-        "text": "System shall fall back to rule-based processing when LLM services are unavailable.",
-        "priority": "P0",
-        "rationale": "Graceful degradation.",
-        "acceptanceCriteria": "When LLM API fails, system detects within 10s and activates rule-based fallback; user notified.",
-        "sourceTraceability": ["RAW-013"]
-      },
-      {
-        "id": "NFR-014",
-        "category": "Reliability",
-        "text": "Health check endpoints shall be available for all critical services.",
-        "priority": "P1",
-        "rationale": "Monitoring and ops.",
-        "acceptanceCriteria": "/health endpoints return 200 for DB, AI API, queue, cache; integrated with alerting.",
-        "sourceTraceability": ["RAW-012"]
+        "id": "SCOPE-IN-011",
+        "item": "Role-based access control",
+        "source": "RAW-038"
       }
     ],
-
-    "dataRequirements": [
+    "out": [
       {
-        "id": "DR-001",
-        "category": "Entity Requirements",
-        "text": "System shall store Agency entity with fields: id, name, logo_url, settings, subscription_tier, created_at.",
-        "priority": "P0",
-        "rationale": "Core tenant entity.",
-        "acceptanceCriteria": "Agency record created on registration; all fields persisted.",
-        "sourceTraceability": ["RAW-DataModel-3.2"]
+        "id": "SCOPE-OUT-001",
+        "item": "Multi-tenant / agency mode",
+        "reason": "Internal HR only",
+        "source": "RAW-040"
       },
       {
-        "id": "DR-002",
-        "category": "Entity Requirements",
-        "text": "System shall store Recruiter entity with fields: id, name, email, role (admin/recruiter/interviewer), agency_id.",
-        "priority": "P0",
-        "rationale": "User management.",
-        "acceptanceCriteria": "Recruiter assigned to agency; role enforced in RBAC.",
-        "sourceTraceability": ["RAW-DataModel-3.2"]
+        "id": "SCOPE-OUT-002",
+        "item": "Realtime voice/video interview",
+        "reason": "Async text only for MVP",
+        "source": "RAW-018"
       },
       {
-        "id": "DR-003",
-        "category": "Entity Requirements",
-        "text": "System shall store HiringCompany entity with fields: id, name, industry, contact_info, agency_id.",
-        "priority": "P0",
-        "rationale": "Client management.",
-        "acceptanceCriteria": "HiringCompany linked to agency; data isolated per client.",
-        "sourceTraceability": ["RAW-DataModel-3.2"]
+        "id": "SCOPE-OUT-003",
+        "item": "Third-party ATS/CRM integration",
+        "reason": "No constraint",
+        "source": "RAW-037"
       },
       {
-        "id": "DR-004",
-        "category": "Entity Requirements",
-        "text": "System shall store Job entity with fields: id, title, description, requirements, salary_range, client_id, status, stages_config.",
-        "priority": "P0",
-        "rationale": "Core job posting entity.",
-        "acceptanceCriteria": "Job created under HiringCompany; stages_config stores custom pipeline config.",
-        "sourceTraceability": ["RAW-DataModel-3.2"]
+        "id": "SCOPE-OUT-004",
+        "item": "Mobile native app",
+        "reason": "Web responsive sufficient",
+        "source": ""
       },
       {
-        "id": "DR-005",
-        "category": "Entity Requirements",
-        "text": "System shall store Candidate entity with fields: id, full_name, email, phone, location, resume_url, languages.",
-        "priority": "P0",
-        "rationale": "Candidate profile storage.",
-        "acceptanceCriteria": "Fields persisted after CV parse or manual entry; searchable.",
-        "sourceTraceability": ["RAW-DataModel-3.2"]
+        "id": "SCOPE-OUT-005",
+        "item": "Post-hire onboarding",
+        "reason": "Beyond scope",
+        "source": ""
       },
       {
-        "id": "DR-006",
-        "category": "Entity Requirements",
-        "text": "System shall store Application entity with fields: id, candidate_id, job_id, status, stage, applied_at, ai_match_score.",
-        "priority": "P0",
-        "rationale": "Central workflow record.",
-        "acceptanceCriteria": "Created on application submission; stage updated on transitions.",
-        "sourceTraceability": ["RAW-DataModel-3.2"]
-      },
-      {
-        "id": "DR-007",
-        "category": "Entity Requirements",
-        "text": "System shall store Interview entity with fields: id, application_id, type (phone/technical/onsite), scheduled_at, interviewer_id, status, recording_url.",
-        "priority": "P0",
-        "rationale": "Interview tracking.",
-        "acceptanceCriteria": "Created on scheduling; recording_url populated post-interview.",
-        "sourceTraceability": ["RAW-DataModel-3.2"]
-      },
-      {
-        "id": "DR-008",
-        "category": "Entity Requirements",
-        "text": "System shall store Assessment entity with fields: id, application_id, type (mcq/predefined_answer), score, breakdown, ai_feedback.",
-        "priority": "P0",
-        "rationale": "Assessment result storage.",
-        "acceptanceCriteria": "Created on assessment completion; score and breakdown persisted within 5s.",
-        "sourceTraceability": ["RAW-DataModel-3.2"]
-      },
-      {
-        "id": "DR-009",
-        "category": "Entity Requirements",
-        "text": "System shall store LocalizedContent entity with fields: id, source_lang, target_lang, source_text, translated_text, entity_type, status, confidence, version.",
-        "priority": "P0",
-        "rationale": "Translation tracking with versioning.",
-        "acceptanceCriteria": "Stores each translation request; supports re-translation via version history.",
-        "sourceTraceability": ["RAW-DataModel-3.2", "RAW-010"]
-      },
-      {
-        "id": "DR-010",
-        "category": "Entity Requirements",
-        "text": "System shall store AIMatch entity with fields: id, application_id, embedding_vector, matching_score, skill_scores, org_preference_score, explanation.",
-        "priority": "P0",
-        "rationale": "AI match record for audit and explainability.",
-        "acceptanceCriteria": "Created after each matching run; vector stored for re-ranking if needed.",
-        "sourceTraceability": ["RAW-DataModel-3.2"]
-      },
-      {
-        "id": "DR-011",
-        "category": "Relationship Requirements",
-        "text": "Agency shall have one-to-many relationships with Recruiters, HiringCompanies, Candidates, and Jobs.",
-        "priority": "P0",
-        "rationale": "Data model integrity.",
-        "acceptanceCriteria": "Foreign key constraints enforced at database level.",
-        "sourceTraceability": ["RAW-DataModel-3.2"]
-      },
-      {
-        "id": "DR-012",
-        "category": "Relationship Requirements",
-        "text": "Recruiter shall have many-to-many relationship with HiringCompanies (managed_by).",
-        "priority": "P0",
-        "rationale": "Agency operational model.",
-        "acceptanceCriteria": "Join table created; recruiter can be assigned to multiple clients.",
-        "sourceTraceability": ["RAW-DataModel-3.2"]
-      },
-      {
-        "id": "DR-013",
-        "category": "Relationship Requirements",
-        "text": "Application shall belong to exactly one Candidate and one Job.",
-        "priority": "P0",
-        "rationale": "Data integrity.",
-        "acceptanceCriteria": "Constraint enforced; an application cannot exist without both.",
-        "sourceTraceability": ["RAW-DataModel-3.2"]
-      },
-      {
-        "id": "DR-014",
-        "category": "Relationship Requirements",
-        "text": "Interview, Assessment, LocalizedContent, and AIMatch shall reference their parent Application.",
-        "priority": "P0",
-        "rationale": "Entity traceability.",
-        "acceptanceCriteria": "All child records have valid application_id FK.",
-        "sourceTraceability": ["RAW-DataModel-3.2"]
+        "id": "SCOPE-OUT-006",
+        "item": "Content/Design/Translation",
+        "reason": "Phase 2",
+        "source": "RAW-032, RAW-034"
       }
-    ],
-
-    "integrationRequirements": [
-      {
-        "id": "IR-001",
-        "text": "System shall integrate with SendGrid or AWS SES for email delivery.",
-        "priority": "P0",
-        "rationale": "Notification delivery.",
-        "acceptanceCriteria": "Emails sent reliably; delivery tracked via provider API.",
-        "sourceTraceability": ["RAW-007", "RAW-014"]
-      },
-      {
-        "id": "IR-002",
-        "text": "System shall integrate with Google Calendar API for availability and scheduling.",
-        "priority": "P0",
-        "rationale": "Core scheduling dependency.",
-        "acceptanceCriteria": "OAuth2 connection established; events readable/writable.",
-        "sourceTraceability": ["RAW-003"]
-      },
-      {
-        "id": "IR-003",
-        "text": "System shall integrate with Microsoft Outlook Calendar API for availability and scheduling.",
-        "priority": "P0",
-        "rationale": "Core scheduling dependency.",
-        "acceptanceCriteria": "OAuth2 connection established; events readable/writable.",
-        "sourceTraceability": ["RAW-003"]
-      },
-      {
-        "id": "IR-004",
-        "text": "System shall integrate with OpenAI API (GPT-4o, text-embedding-3-large) as primary AI provider.",
-        "priority": "P0",
-        "rationale": "Core AI capabilities.",
-        "acceptanceCriteria": "API key configured; requests succeed with <500ms latency per call.",
-        "sourceTraceability": ["RAW-005"]
-      },
-      {
-        "id": "IR-005",
-        "text": "System shall integrate with Google Gemini API as fallback AI provider.",
-        "priority": "P0",
-        "rationale": "Reliability — failover for AI services.",
-        "acceptanceCriteria": "When OpenAI fails, requests automatically routed to Gemini within 10s.",
-        "sourceTraceability": ["RAW-005"]
-      },
-      {
-        "id": "IR-006",
-        "text": "System shall support future integration with external ATS platforms (Greenhouse, Lever, Workday).",
-        "priority": "P2",
-        "rationale": "Avoid duplication with existing tools.",
-        "acceptanceCriteria": "API contract defined; not implemented in MVP.",
-        "sourceTraceability": ["RAW-004"]
-      },
-      {
-        "id": "IR-007",
-        "text": "System shall support pgvector or Pinecone for vector similarity search.",
-        "priority": "P0",
-        "rationale": "Embedding-based candidate matching.",
-        "acceptanceCriteria": "Embeddings stored; similarity query returns results in <1s for 10K vectors.",
-        "sourceTraceability": ["RAW-005"]
-      },
-      {
-        "id": "IR-008",
-        "text": "System shall integrate with ClamAV or equivalent for malware scanning of uploaded files.",
-        "priority": "P0",
-        "rationale": "Upload security.",
-        "acceptanceCriteria": "All uploaded CVs scanned before storage; infected files rejected.",
-        "sourceTraceability": ["RAW-013"]
-      }
-    ],
-
-    "constraintRequirements": [
-      {
-        "id": "CR-001",
-        "category": "Security",
-        "text": "All user inputs shall be sanitized against XSS, SQL injection, and NoSQL injection.",
-        "priority": "P0",
-        "rationale": "OWASP security baseline.",
-        "acceptanceCriteria": "Penetration test shows no injection vulnerabilities.",
-        "sourceTraceability": ["RAW-013"]
-      },
-      {
-        "id": "CR-002",
-        "category": "Security",
-        "text": "All candidate PII shall be encrypted at rest (AES-256) and in transit (TLS 1.3).",
-        "priority": "P0",
-        "rationale": "GDPR/CCPA compliance.",
-        "acceptanceCriteria": "Encryption verified via security audit.",
-        "sourceTraceability": ["RAW-013"]
-      },
-      {
-        "id": "CR-003",
-        "category": "Security",
-        "text": "System shall enforce file upload validation: only PDF and DOCX, max 25MB, magic bytes verification.",
-        "priority": "P0",
-        "rationale": "Prevent malicious uploads.",
-        "acceptanceCriteria": "Non-PDF/DOCX files rejected; oversized files rejected; magic bytes verified.",
-        "sourceTraceability": ["RAW-013"]
-      },
-      {
-        "id": "CR-004",
-        "category": "Security",
-        "text": "API requests shall be rate-limited to 100 req/min per user; uploads to 10 files/min per user.",
-        "priority": "P1",
-        "rationale": "Prevent abuse and ensure fair usage.",
-        "acceptanceCriteria": "Rate limit enforced; 429 response returned when exceeded.",
-        "sourceTraceability": ["RAW-013"]
-      },
-      {
-        "id": "CR-005",
-        "category": "Security",
-        "text": "System shall comply with GDPR and CCPA requirements (right to erasure, data portability, consent management).",
-        "priority": "P0",
-        "rationale": "Regulatory compliance.",
-        "acceptanceCriteria": "Erasure request deletes all PII; export provides all user data in standard format.",
-        "sourceTraceability": ["RAW-013"]
-      },
-      {
-        "id": "CR-006",
-        "category": "Security",
-        "text": "System shall maintain configurable data retention policy per agency (6, 12, or 24 months).",
-        "priority": "P1",
-        "rationale": "Compliance and operational control.",
-        "acceptanceCriteria": "Admin sets retention period; automatic purge runs on schedule.",
-        "sourceTraceability": ["RAW-013"]
-      },
-      {
-        "id": "CR-007",
-        "category": "Security",
-        "text": "All candidate data access events shall be logged with who, what, when, IP, and device fingerprint.",
-        "priority": "P0",
-        "rationale": "Audit trail for compliance and security.",
-        "acceptanceCriteria": "Logs immutable; queryable via admin audit panel.",
-        "sourceTraceability": ["RAW-013"]
-      },
-      {
-        "id": "CR-008",
-        "category": "Deployment",
-        "text": "System shall deploy on GCP (Cloud Run or GKE).",
-        "priority": "P0",
-        "rationale": "User-confirmed deployment target.",
-        "acceptanceCriteria": "Production environment runs on GCP.",
-        "sourceTraceability": ["RAW-004"]
-      },
-      {
-        "id": "CR-009",
-        "category": "AI Stack",
-        "text": "System shall use OpenAI as primary and Gemini as fallback AI provider.",
-        "priority": "P0",
-        "rationale": "User-confirmed AI stack.",
-        "acceptanceCriteria": "Automatic failover tested and documented.",
-        "sourceTraceability": ["RAW-001"]
-      },
-      {
-        "id": "CR-010",
-        "category": "Budget",
-        "text": "MVP budget shall target $500–1,500/month for AI API usage and infrastructure.",
-        "priority": "P1",
-        "rationale": "Cost constraint.",
-        "acceptanceCriteria": "Monthly cost dashboard tracks actual spend; alerts at 80% threshold.",
-        "sourceTraceability": ["RAW-003"]
-      }
-    ],
-
-    "traceabilityMatrix": {
-      "description": "Maps each original feature (F-XXX) from 01-requirement.md to its decomposed atomic requirements",
-      "mappings": [
-        {
-          "originalFeature": "F-001 (AI Candidate Sourcing)",
-          "atomicRequirements": ["FR-001", "FR-002", "FR-003", "FR-004"]
-        },
-        {
-          "originalFeature": "F-002 (CV Parsing & Screening)",
-          "atomicRequirements": ["FR-005", "FR-006", "FR-007", "FR-008", "FR-009"]
-        },
-        {
-          "originalFeature": "F-003 (Interview Scheduling)",
-          "atomicRequirements": ["FR-010", "FR-011", "FR-012", "FR-013", "FR-014", "FR-015", "FR-016", "FR-017"]
-        },
-        {
-          "originalFeature": "F-004 (Auto Test Scoring)",
-          "atomicRequirements": ["FR-018", "FR-019", "FR-020", "FR-021", "FR-022", "FR-023"]
-        },
-        {
-          "originalFeature": "F-005 (AI Interviewer)",
-          "atomicRequirements": [],
-          "note": "Deferred to Phase 2"
-        },
-        {
-          "originalFeature": "F-006 (Chatbot)",
-          "atomicRequirements": [],
-          "note": "Deferred to Phase 2; replaced by Translation (FR-028–FR-032)"
-        },
-        {
-          "originalFeature": "F-007 (Content Generation)",
-          "atomicRequirements": [],
-          "note": "Deferred to Phase 2; replaced by Email & Notifications (FR-033–FR-036)"
-        },
-        {
-          "originalFeature": "F-008 (Recruitment Design / Pipeline)",
-          "atomicRequirements": ["FR-024", "FR-025", "FR-026", "FR-027"]
-        },
-        {
-          "originalFeature": "F-009 (RBAC — new)",
-          "atomicRequirements": ["FR-037", "FR-038", "FR-039", "FR-040", "FR-041"]
-        },
-        {
-          "originalFeature": "Translation / Localization (new)",
-          "atomicRequirements": ["FR-028", "FR-029", "FR-030", "FR-031", "FR-032"]
-        },
-        {
-          "originalFeature": "Email & Notifications (new)",
-          "atomicRequirements": ["FR-033", "FR-034", "FR-035", "FR-036"]
-        },
-        {
-          "originalFeature": "Multi-Client Data Isolation (new)",
-          "atomicRequirements": ["FR-042", "FR-043", "FR-044", "FR-045"]
-        }
+    ]
+  },
+  "functionalRequirements": [
+    {
+      "id": "REQ-F-001",
+      "statement": "The system shall allow HR Recruiter to import candidate data in batch from Excel (.xlsx) files",
+      "priority": "P0",
+      "rationale": "Scale >200 jobs/month needs batch processing",
+      "acceptanceCriteria": [
+        "Given valid Excel file, When HR uploads, Then all valid rows imported as IMPORTED within 60s"
+      ],
+      "sourceRawIds": [
+        "RAW-001"
       ]
     },
-
-    "crossCategoryTraceability": {
-      "description": "Maps non-functional/data/integration/constraint requirements back to upstream features",
-      "mappings": [
-        { "reqId": "NFR-002", "upstreamFeatures": ["F-002"], "note": "CV parsing + AI scoring latency" },
-        { "reqId": "NFR-003", "upstreamFeatures": ["F-001"], "note": "AI matching score latency" },
-        { "reqId": "NFR-004", "upstreamFeatures": ["F-003", "RAW-015"], "note": "Scheduling suggestion latency" },
-        { "reqId": "NFR-005", "upstreamFeatures": ["F-006"], "note": "Translation latency" },
-        { "reqId": "NFR-007", "upstreamFeatures": ["F-009"], "note": "Multi-tenant data isolation" },
-        { "reqId": "NFR-008", "upstreamFeatures": ["RAW-005"], "note": "AI workload scaling" },
-        { "reqId": "NFR-013", "upstreamFeatures": ["RAW-013"], "note": "LLM fallback to rule-based" },
-        { "reqId": "DR-009", "upstreamFeatures": ["F-006", "RAW-010"], "note": "Translation entity with confidence" },
-        { "reqId": "DR-010", "upstreamFeatures": ["RAW-DataModel-3.2"], "note": "AIMatch with org_preference_score" },
-        { "reqId": "IR-001", "upstreamFeatures": ["F-007", "RAW-014"], "note": "Email delivery integration" },
-        { "reqId": "IR-004", "upstreamFeatures": ["RAW-005"], "note": "Primary AI provider" },
-        { "reqId": "IR-005", "upstreamFeatures": ["RAW-005"], "note": "Fallback AI provider" },
-        { "reqId": "IR-007", "upstreamFeatures": ["RAW-005"], "note": "Vector search integration" },
-        { "reqId": "IR-008", "upstreamFeatures": ["RAW-013"], "note": "Malware scanning" },
-        { "reqId": "CR-008", "upstreamFeatures": ["RAW-004"], "note": "Deployment target — resolved" },
-        { "reqId": "CR-009", "upstreamFeatures": ["RAW-001"], "note": "AI provider — resolved" },
-        { "reqId": "CR-010", "upstreamFeatures": ["RAW-003"], "note": "Budget — resolved" }
+    {
+      "id": "REQ-F-002",
+      "statement": "The system shall allow HR Recruiter to manually create job and candidate records via form input",
+      "priority": "P0",
+      "rationale": "Basic CRUD for ad-hoc entries",
+      "acceptanceCriteria": [
+        "Given HR fills required fields, When submitted, Then record created and visible"
+      ],
+      "sourceRawIds": [
+        "RAW-002"
       ]
     },
-
-    "newOpenQuestions": [
+    {
+      "id": "REQ-F-003",
+      "statement": "The system shall automatically import files from configured Google Drive folder when new files detected",
+      "priority": "P0",
+      "rationale": "Reduce manual upload effort",
+      "acceptanceCriteria": [
+        "Given watch folder configured, When new file appears, Then imported within 5 min and HR notified"
+      ],
+      "sourceRawIds": [
+        "RAW-003"
+      ]
+    },
+    {
+      "id": "REQ-F-004",
+      "statement": "The system shall support JD input as direct text entry or PDF/DOCX file upload",
+      "priority": "P0",
+      "rationale": "JD is core input for screening",
+      "acceptanceCriteria": [
+        "Given JD provided, When saved, Then parseable and available for screening"
+      ],
+      "sourceRawIds": [
+        "RAW-004"
+      ]
+    },
+    {
+      "id": "REQ-F-005",
+      "statement": "The system shall validate imported files and report errors without blocking valid entries",
+      "priority": "P1",
+      "rationale": "Graceful error handling",
+      "acceptanceCriteria": [
+        "Given Excel with invalid rows, When imported, Then valid rows succeed, invalid listed with reasons"
+      ],
+      "sourceRawIds": [
+        "RAW-001",
+        "RAW-003"
+      ]
+    },
+    {
+      "id": "REQ-F-006",
+      "statement": "The system shall detect and flag duplicate candidates during import",
+      "priority": "P1",
+      "rationale": "Data quality",
+      "acceptanceCriteria": [
+        "Given duplicate email/phone, When importing, Then flag for HR review"
+      ],
+      "sourceRawIds": [
+        "RAW-001"
+      ]
+    },
+    {
+      "id": "REQ-F-010",
+      "statement": "The system shall extract text content from CV files (PDF, DOCX)",
+      "priority": "P0",
+      "rationale": "Prerequisite for AI analysis",
+      "acceptanceCriteria": [
+        "Given valid CV, When processing, Then full text extracted within 5s"
+      ],
+      "sourceRawIds": [
+        "RAW-005",
+        "RAW-011"
+      ]
+    },
+    {
+      "id": "REQ-F-011",
+      "statement": "The system shall use AI to match CV against JD and produce matching score (0-100)",
+      "priority": "P0",
+      "rationale": "Core screening automation",
+      "acceptanceCriteria": [
+        "Given CV and JD, When screening, Then score 0-100 within 30s"
+      ],
+      "sourceRawIds": [
+        "RAW-005",
+        "RAW-006"
+      ]
+    },
+    {
+      "id": "REQ-F-012",
+      "statement": "The system shall generate summary of candidate strengths and weaknesses relative to JD",
+      "priority": "P0",
+      "rationale": "Explainability",
+      "acceptanceCriteria": [
+        "Given screening done, Then 3-5 strengths and 3-5 weaknesses listed"
+      ],
+      "sourceRawIds": [
+        "RAW-007"
+      ]
+    },
+    {
+      "id": "REQ-F-013",
+      "statement": "The system shall identify and flag critical risk factors in candidate profile",
+      "priority": "P0",
+      "rationale": "Risk awareness",
+      "acceptanceCriteria": [
+        "Given screening done, Then risk flags listed"
+      ],
+      "sourceRawIds": [
+        "RAW-008"
+      ]
+    },
+    {
+      "id": "REQ-F-014",
+      "statement": "The system shall list JD-required skills missing from CV",
+      "priority": "P0",
+      "rationale": "Gap analysis",
+      "acceptanceCriteria": [
+        "Given screening done, Then missing skills enumerated with importance"
+      ],
+      "sourceRawIds": [
+        "RAW-009"
+      ]
+    },
+    {
+      "id": "REQ-F-015",
+      "statement": "The system shall apply configurable matching weights (default: Skills 40%, Experience 30%, Language 20%, Education 10%)",
+      "priority": "P1",
+      "rationale": "Different jobs have different priorities",
+      "acceptanceCriteria": [
+        "Given custom weights, When screening, Then scoring uses those weights"
+      ],
+      "sourceRawIds": [
+        "RAW-005"
+      ]
+    },
+    {
+      "id": "REQ-F-016",
+      "statement": "The system shall support bulk screening of multiple CVs against one JD",
+      "priority": "P0",
+      "rationale": "Scale",
+      "acceptanceCriteria": [
+        "Given 50 CVs, When bulk screen, Then all processed"
+      ],
+      "sourceRawIds": [
+        "RAW-005",
+        "RAW-035"
+      ]
+    },
+    {
+      "id": "REQ-F-017",
+      "statement": "The system shall present screening results to HR Manager for approval",
+      "priority": "P0",
+      "rationale": "Human-in-the-loop",
+      "acceptanceCriteria": [
+        "Given results ready, When HR Manager views, Then can approve/reject individually or bulk"
+      ],
+      "sourceRawIds": [
+        "RAW-010"
+      ]
+    },
+    {
+      "id": "REQ-F-018",
+      "statement": "The system shall handle unreadable/corrupted CV files gracefully",
+      "priority": "P1",
+      "rationale": "Error resilience",
+      "acceptanceCriteria": [
+        "Given corrupted file, Then mark ERROR, do not block others"
+      ],
+      "sourceRawIds": [
+        "RAW-005"
+      ]
+    },
+    {
+      "id": "REQ-F-020",
+      "statement": "The system shall collect candidate availability via email form/link",
+      "priority": "P0",
+      "rationale": "Need candidate input",
+      "acceptanceCriteria": [
+        "Given approved candidate, When request sent, Then candidate can select slots"
+      ],
+      "sourceRawIds": [
+        "RAW-012"
+      ]
+    },
+    {
+      "id": "REQ-F-021",
+      "statement": "The system shall read interviewer free/busy from Google Calendar",
+      "priority": "P0",
+      "rationale": "Avoid conflicts",
+      "acceptanceCriteria": [
+        "Given GCal connected, When checking, Then free/busy read accurately"
+      ],
+      "sourceRawIds": [
+        "RAW-012",
+        "RAW-014"
+      ]
+    },
+    {
+      "id": "REQ-F-022",
+      "statement": "The system shall suggest optimal interview slots based on availability",
+      "priority": "P0",
+      "rationale": "Core scheduling",
+      "acceptanceCriteria": "Given availability data, Then suggest top 3 slots (earliest first, 30min buffer, within working hours 9-18 local timezone)",
+      "sourceRawIds": [
+        "RAW-012",
+        "RAW-013"
+      ]
+    },
+    {
+      "id": "REQ-F-023",
+      "statement": "The system shall require HR Manager approval before confirming schedule",
+      "priority": "P0",
+      "rationale": "Human oversight",
+      "acceptanceCriteria": [
+        "Given suggested slots, When approved, Then proceed; if rejected, re-suggest"
+      ],
+      "sourceRawIds": [
+        "RAW-013",
+        "RAW-031"
+      ]
+    },
+    {
+      "id": "REQ-F-024",
+      "statement": "The system shall create Google Calendar events upon schedule approval",
+      "priority": "P0",
+      "rationale": "Calendar integration",
+      "acceptanceCriteria": [
+        "Given approved slot, Then GCal event created with all participants"
+      ],
+      "sourceRawIds": [
+        "RAW-014"
+      ]
+    },
+    {
+      "id": "REQ-F-025",
+      "statement": "The system shall send confirmation emails via shared HR mailbox",
+      "priority": "P0",
+      "rationale": "Communication",
+      "acceptanceCriteria": [
+        "Given confirmed, Then emails sent from hr@company.com"
+      ],
+      "sourceRawIds": [
+        "RAW-015"
+      ]
+    },
+    {
+      "id": "REQ-F-026",
+      "statement": "The system shall send interview reminder emails",
+      "priority": "P1",
+      "rationale": "Reduce no-shows",
+      "acceptanceCriteria": [
+        "Given confirmed interview, When reminder time, Then email sent"
+      ],
+      "sourceRawIds": [
+        "RAW-016"
+      ]
+    },
+    {
+      "id": "REQ-F-027",
+      "statement": "The system shall support multi-timezone scheduling",
+      "priority": "P1",
+      "rationale": "International candidates",
+      "acceptanceCriteria": [
+        "Given different TZs, Then correct local time shown"
+      ],
+      "sourceRawIds": [
+        "RAW-017"
+      ]
+    },
+    {
+      "id": "REQ-F-030",
+      "statement": "The system shall generate unique interview link per candidate",
+      "priority": "P0",
+      "rationale": "Async delivery",
+      "acceptanceCriteria": [
+        "Given candidate ready, Then unique URL generated"
+      ],
+      "sourceRawIds": [
+        "RAW-018"
+      ]
+    },
+    {
+      "id": "REQ-F-031",
+      "statement": "The system shall send interview invitation with link and 72h deadline",
+      "priority": "P0",
+      "rationale": "Delivery",
+      "acceptanceCriteria": [
+        "Given link generated, Then email sent with instructions"
+      ],
+      "sourceRawIds": [
+        "RAW-018",
+        "RAW-015"
+      ]
+    },
+    {
+      "id": "REQ-F-032",
+      "statement": "The system shall present 5-7 fixed interview questions per job",
+      "priority": "P0",
+      "rationale": "Structured assessment",
+      "acceptanceCriteria": [
+        "Given interview started, Then fixed questions shown sequentially"
+      ],
+      "sourceRawIds": [
+        "RAW-019"
+      ]
+    },
+    {
+      "id": "REQ-F-033",
+      "statement": "The system shall generate 2-3 AI follow-up questions based on answers",
+      "priority": "P0",
+      "rationale": "Deeper assessment",
+      "acceptanceCriteria": [
+        "Given answer submitted, Then contextual follow-up generated"
+      ],
+      "sourceRawIds": [
+        "RAW-019"
+      ]
+    },
+    {
+      "id": "REQ-F-034",
+      "statement": "The system shall support interview in Vietnamese, Japanese, and English",
+      "priority": "P0",
+      "rationale": "Multi-language",
+      "acceptanceCriteria": [
+        "Given JD language, Then interview in matching language"
+      ],
+      "sourceRawIds": [
+        "RAW-021"
+      ]
+    },
+    {
+      "id": "REQ-F-035",
+      "statement": "The system shall allow async text answers within 72h deadline",
+      "priority": "P0",
+      "rationale": "Async nature",
+      "acceptanceCriteria": [
+        "Given link, Then progress saved across sessions, deadline enforced"
+      ],
+      "sourceRawIds": [
+        "RAW-018"
+      ]
+    },
+    {
+      "id": "REQ-F-036",
+      "statement": "The system shall use AI to evaluate responses and generate assessment report",
+      "priority": "P0",
+      "rationale": "Automated evaluation",
+      "acceptanceCriteria": [
+        "Given all answers, Then report with score, strengths, concerns, recommendation"
+      ],
+      "sourceRawIds": [
+        "RAW-020"
+      ]
+    },
+    {
+      "id": "REQ-F-037",
+      "statement": "The system shall send reminder if interview not completed within 48h",
+      "priority": "P1",
+      "rationale": "Completion rate",
+      "acceptanceCriteria": [
+        "Given 48h passed, Then reminder email sent"
+      ],
+      "sourceRawIds": [
+        "RAW-018"
+      ]
+    },
+    {
+      "id": "REQ-F-040",
+      "statement": "The system shall allow test import from Excel/JSON with questions and answer keys",
+      "priority": "P0",
+      "rationale": "Test setup",
+      "acceptanceCriteria": [
+        "Given valid file, Then test available for assignment"
+      ],
+      "sourceRawIds": [
+        "RAW-022"
+      ]
+    },
+    {
+      "id": "REQ-F-041",
+      "statement": "The system shall send test assignment to candidate via email with link",
+      "priority": "P0",
+      "rationale": "Test delivery",
+      "acceptanceCriteria": [
+        "Given TEST_PENDING, Then email sent with link and deadline"
+      ],
+      "sourceRawIds": [
+        "RAW-022"
+      ]
+    },
+    {
+      "id": "REQ-F-042",
+      "statement": "The system shall auto-grade MCQ against answer key with 100% accuracy",
+      "priority": "P0",
+      "rationale": "Deterministic grading",
+      "acceptanceCriteria": [
+        "Given MCQ submission, Then score matches key exactly"
+      ],
+      "sourceRawIds": [
+        "RAW-023"
+      ]
+    },
+    {
+      "id": "REQ-F-043",
+      "statement": "The system shall use AI to grade essays based on rubric (0-100)",
+      "priority": "P0",
+      "rationale": "AI grading",
+      "acceptanceCriteria": [
+        "Given essay + rubric, Then score 0-100 with justification"
+      ],
+      "sourceRawIds": [
+        "RAW-024"
+      ]
+    },
+    {
+      "id": "REQ-F-044",
+      "statement": "The system shall grade coding challenges via test cases and AI code quality review",
+      "priority": "P0",
+      "rationale": "Technical assessment",
+      "acceptanceCriteria": [
+        "Given code submission, Then test pass rate + quality score + feedback"
+      ],
+      "sourceRawIds": [
+        "RAW-025"
+      ]
+    },
+    {
+      "id": "REQ-F-045",
+      "statement": "The system shall generate consolidated test report with scores and pass/fail",
+      "priority": "P0",
+      "rationale": "Decision support",
+      "acceptanceCriteria": [
+        "Given all graded, Then report with section scores, total, pass/fail"
+      ],
+      "sourceRawIds": [
+        "RAW-022"
+      ]
+    },
+    {
+      "id": "REQ-F-046",
+      "statement": "The system shall support configurable pass threshold per job (default 60%)",
+      "priority": "P1",
+      "rationale": "Flexibility",
+      "acceptanceCriteria": [
+        "Given threshold set, Then pass/fail determined accordingly"
+      ],
+      "sourceRawIds": [
+        "RAW-022"
+      ]
+    },
+    {
+      "id": "REQ-F-050",
+      "statement": "The system shall auto-transition candidate state except at approval points",
+      "priority": "P0",
+      "rationale": "Automation core",
+      "acceptanceCriteria": [
+        "Given auto-transition state, When condition met, Then advances automatically"
+      ],
+      "sourceRawIds": [
+        "RAW-030"
+      ]
+    },
+    {
+      "id": "REQ-F-051",
+      "statement": "The system shall require HR Manager approval at screening and scheduling stages",
+      "priority": "P0",
+      "rationale": "Human oversight",
+      "acceptanceCriteria": [
+        "Given approval point reached, Then pipeline pauses, notification sent"
+      ],
+      "sourceRawIds": [
+        "RAW-031"
+      ]
+    },
+    {
+      "id": "REQ-F-052",
+      "statement": "The system shall support bulk approval",
+      "priority": "P0",
+      "rationale": "Efficiency at scale",
+      "acceptanceCriteria": [
+        "Given multiple pending, Then batch approve/reject in one action"
+      ],
+      "sourceRawIds": [
+        "RAW-010",
+        "RAW-013"
+      ]
+    },
+    {
+      "id": "REQ-F-053",
+      "statement": "The system shall send reminder after 24h if approval pending",
+      "priority": "P1",
+      "rationale": "Prevent stalling",
+      "acceptanceCriteria": [
+        "Given >24h pending, Then reminder sent"
+      ],
+      "sourceRawIds": [
+        "RAW-033"
+      ]
+    },
+    {
+      "id": "REQ-F-054",
+      "statement": "The system shall never auto-cancel or auto-skip pending approvals",
+      "priority": "P0",
+      "rationale": "Business rule",
+      "acceptanceCriteria": [
+        "Given indefinite pending, Then only reminders, no auto-action"
+      ],
+      "sourceRawIds": [
+        "RAW-033"
+      ]
+    },
+    {
+      "id": "REQ-F-055",
+      "statement": "The system shall track and display candidate state throughout pipeline",
+      "priority": "P0",
+      "rationale": "Visibility",
+      "acceptanceCriteria": [
+        "Given any candidate, Then current state and history visible on dashboard"
+      ],
+      "sourceRawIds": [
+        "RAW-030"
+      ]
+    },
+    {
+      "id": "REQ-F-056",
+      "statement": "The system shall support candidate withdrawal at any stage",
+      "priority": "P1",
+      "rationale": "Real-world scenario",
+      "acceptanceCriteria": [
+        "Given withdrawal, Then state=WITHDRAWN, pipeline stops, stakeholders notified"
+      ],
+      "sourceRawIds": [
+        "RAW-030"
+      ]
+    },
+    {
+      "id": "REQ-F-060",
+      "statement": "The system shall send all candidate emails from shared HR mailbox",
+      "priority": "P0",
+      "rationale": "Professional communication",
+      "acceptanceCriteria": [
+        "Given any candidate email, Then from=shared HR mailbox"
+      ],
+      "sourceRawIds": [
+        "RAW-015"
+      ]
+    },
+    {
+      "id": "REQ-F-061",
+      "statement": "The system shall support configurable email templates",
+      "priority": "P1",
+      "rationale": "Customization",
+      "acceptanceCriteria": [
+        "Given template configured, Then used with dynamic fields"
+      ],
+      "sourceRawIds": [
+        "RAW-015"
+      ]
+    },
+    {
+      "id": "REQ-F-062",
+      "statement": "The system shall notify HR Manager of pending actions",
+      "priority": "P0",
+      "rationale": "Workflow awareness",
+      "acceptanceCriteria": [
+        "Given action required, Then notification within 1 min"
+      ],
+      "sourceRawIds": [
+        "RAW-010",
+        "RAW-013",
+        "RAW-031",
+        "RAW-033"
+      ]
+    }
+  ],
+  "nonFunctionalRequirements": [
+    {
+      "id": "REQ-NF-001",
+      "category": "performance",
+      "requirement": "Single CV screening time",
+      "targetMetric": "<30 seconds",
+      "verificationMethod": "Load test with 100 CVs",
+      "priority": "P0",
+      "sourceRawIds": [
+        "RAW-035"
+      ]
+    },
+    {
+      "id": "REQ-NF-002",
+      "category": "performance",
+      "requirement": "Monthly throughput",
+      "targetMetric": ">200 jobs, ~10000 CVs/month",
+      "verificationMethod": "30-day simulation",
+      "priority": "P0",
+      "sourceRawIds": [
+        "RAW-035"
+      ]
+    },
+    {
+      "id": "REQ-NF-003",
+      "category": "performance",
+      "requirement": "API response time (non-AI)",
+      "targetMetric": "<2s p95",
+      "verificationMethod": "Performance test",
+      "priority": "P1",
+      "sourceRawIds": [
+        "RAW-035"
+      ]
+    },
+    {
+      "id": "REQ-NF-004",
+      "category": "performance",
+      "requirement": "Concurrent users",
+      "targetMetric": "50+",
+      "verificationMethod": "Load test",
+      "priority": "P1",
+      "sourceRawIds": [
+        "RAW-035"
+      ]
+    },
+    {
+      "id": "REQ-NF-005",
+      "category": "security",
+      "requirement": "Data encryption",
+      "targetMetric": "TLS 1.2+ transit, AES-256 rest",
+      "verificationMethod": "Security audit",
+      "priority": "P0",
+      "sourceRawIds": [
+        "RAW-038"
+      ]
+    },
+    {
+      "id": "REQ-NF-006",
+      "category": "security",
+      "requirement": "Role-based access control",
+      "targetMetric": "4 roles enforced",
+      "verificationMethod": "Access matrix test",
+      "priority": "P0",
+      "sourceRawIds": [
+        "RAW-038"
+      ]
+    },
+    {
+      "id": "REQ-NF-007",
+      "category": "security",
+      "requirement": "Audit trail",
+      "targetMetric": "All actions logged",
+      "verificationMethod": "Audit log review",
+      "priority": "P0",
+      "sourceRawIds": [
+        "RAW-038"
+      ]
+    },
+    {
+      "id": "REQ-NF-008",
+      "category": "security",
+      "requirement": "CV file access control",
+      "targetMetric": "Authorized roles only",
+      "verificationMethod": "Permission test",
+      "priority": "P0",
+      "sourceRawIds": [
+        "RAW-038"
+      ]
+    },
+    {
+      "id": "REQ-NF-009",
+      "category": "reliability",
+      "requirement": "System uptime",
+      "targetMetric": "99% monthly",
+      "verificationMethod": "Monitoring",
+      "priority": "P1",
+      "sourceRawIds": [
+        "RAW-035"
+      ]
+    },
+    {
+      "id": "REQ-NF-010",
+      "category": "observability",
+      "requirement": "AI error tracking",
+      "targetMetric": "Alert within 5 min",
+      "verificationMethod": "Alert test",
+      "priority": "P1",
+      "sourceRawIds": [
+        "RAW-035"
+      ]
+    },
+    {
+      "id": "REQ-NF-011",
+      "category": "observability",
+      "requirement": "LLM cost tracking",
+      "targetMetric": "Per job/month dashboard",
+      "verificationMethod": "Cost report",
+      "priority": "P1",
+      "sourceRawIds": [
+        "RAW-035"
+      ]
+    },
+    {
+      "id": "REQ-NF-012",
+      "category": "scalability",
+      "requirement": "Horizontal scaling support",
+      "targetMetric": "Add capacity without downtime",
+      "verificationMethod": "Architecture review",
+      "priority": "P2",
+      "sourceRawIds": [
+        "RAW-035"
+      ]
+    }
+  ],
+  "dataRequirements": [
+    {
+      "id": "REQ-D-001",
+      "dataNeed": "Candidate profile",
+      "businessMeaning": "Core entity",
+      "owner": "HR Recruiter",
+      "sensitivity": "confidential",
+      "sourceRawIds": [
+        "RAW-001",
+        "RAW-002"
+      ]
+    },
+    {
+      "id": "REQ-D-002",
+      "dataNeed": "CV file storage",
+      "businessMeaning": "Original documents",
+      "owner": "HR Recruiter",
+      "sensitivity": "confidential",
+      "sourceRawIds": [
+        "RAW-001",
+        "RAW-011"
+      ]
+    },
+    {
+      "id": "REQ-D-003",
+      "dataNeed": "Job description",
+      "businessMeaning": "Matching criteria",
+      "owner": "HR Recruiter",
+      "sensitivity": "internal",
+      "sourceRawIds": [
+        "RAW-004"
+      ]
+    },
+    {
+      "id": "REQ-D-004",
+      "dataNeed": "Screening results",
+      "businessMeaning": "AI assessment output",
+      "owner": "System",
+      "sensitivity": "internal",
+      "sourceRawIds": [
+        "RAW-006",
+        "RAW-007",
+        "RAW-008",
+        "RAW-009"
+      ]
+    },
+    {
+      "id": "REQ-D-005",
+      "dataNeed": "Interview transcript and evaluation",
+      "businessMeaning": "Async interview records",
+      "owner": "System",
+      "sensitivity": "confidential",
+      "sourceRawIds": [
+        "RAW-018",
+        "RAW-020"
+      ]
+    },
+    {
+      "id": "REQ-D-006",
+      "dataNeed": "Test submissions and grades",
+      "businessMeaning": "Test performance",
+      "owner": "System",
+      "sensitivity": "confidential",
+      "sourceRawIds": [
+        "RAW-022",
+        "RAW-023",
+        "RAW-024",
+        "RAW-025"
+      ]
+    },
+    {
+      "id": "REQ-D-007",
+      "dataNeed": "Candidate state history",
+      "businessMeaning": "Pipeline audit trail",
+      "owner": "System",
+      "sensitivity": "internal",
+      "sourceRawIds": [
+        "RAW-030"
+      ]
+    },
+    {
+      "id": "REQ-D-008",
+      "dataNeed": "Approval decisions",
+      "businessMeaning": "Compliance record",
+      "owner": "HR Manager",
+      "sensitivity": "internal",
+      "sourceRawIds": [
+        "RAW-031"
+      ]
+    },
+    {
+      "id": "REQ-D-009",
+      "dataNeed": "Email communication log",
+      "businessMeaning": "Sent emails record",
+      "owner": "System",
+      "sensitivity": "internal",
+      "sourceRawIds": [
+        "RAW-015"
+      ]
+    }
+  ],
+  "integrationRequirements": [
+    {
+      "id": "REQ-I-001",
+      "system": "Google Drive API",
+      "purpose": "Watch folder, auto-import",
+      "dataExchanged": "File metadata + content",
+      "failureExpectation": "Retry with backoff; alert after 3 failures",
+      "sourceRawIds": [
+        "RAW-003",
+        "RAW-039"
+      ]
+    },
+    {
+      "id": "REQ-I-002",
+      "system": "Google Calendar API",
+      "purpose": "Read free/busy, create events",
+      "dataExchanged": "Slots, event details",
+      "failureExpectation": "Fallback to manual scheduling",
+      "sourceRawIds": [
+        "RAW-014",
+        "RAW-039"
+      ]
+    },
+    {
+      "id": "REQ-I-003",
+      "system": "Gmail API",
+      "purpose": "Send emails from shared mailbox",
+      "dataExchanged": "Email content",
+      "failureExpectation": "Queue and retry; alert on failure",
+      "sourceRawIds": [
+        "RAW-015",
+        "RAW-039"
+      ]
+    },
+    {
+      "id": "REQ-I-004",
+      "system": "LLM API",
+      "purpose": "CV screening, interview evaluation, test grading; content generation only in Phase 2",
+      "dataExchanged": "Prompts + text -> AI responses",
+      "failureExpectation": "Retry with backoff; queue if rate limited; route sustained failures or schema-invalid outputs to manual review",
+      "sourceRawIds": [
+        "RAW-005",
+        "RAW-020",
+        "RAW-022"
+      ]
+    }
+  ],
+  "constraints": [
+    {
+      "id": "REQ-C-001",
+      "constraint": "Internal HR only, no multi-tenant",
+      "type": "business",
+      "impact": "Single-org data model",
+      "sourceRawIds": [
+        "RAW-040"
+      ]
+    },
+    {
+      "id": "REQ-C-002",
+      "constraint": "CV format: PDF and DOCX only",
+      "type": "technical",
+      "impact": "No OCR needed",
+      "sourceRawIds": [
+        "RAW-011"
+      ]
+    },
+    {
+      "id": "REQ-C-003",
+      "constraint": "Depends on Google Workspace",
+      "type": "platform",
+      "impact": "All scheduling/email requires Google APIs",
+      "sourceRawIds": [
+        "RAW-039"
+      ]
+    },
+    {
+      "id": "REQ-C-004",
+      "constraint": "Approval no timeout, only reminders",
+      "type": "business",
+      "impact": "Pipeline can stall at approval points",
+      "sourceRawIds": [
+        "RAW-033"
+      ]
+    },
+    {
+      "id": "REQ-C-005",
+      "constraint": "MVP = full pipeline",
+      "type": "business",
+      "impact": "All 5 stages must work at launch",
+      "sourceRawIds": [
+        "RAW-034"
+      ]
+    },
+    {
+      "id": "REQ-C-006",
+      "constraint": "Content/Design/Translation = Phase 2",
+      "type": "business",
+      "impact": "Not in first release",
+      "sourceRawIds": [
+        "RAW-032",
+        "RAW-034"
+      ]
+    }
+  ],
+  "conflicts": [
+    {
+      "id": "CONF-001",
+      "requirementIds": [
+        "REQ-F-054",
+        "REQ-NF-002"
+      ],
+      "conflict": "No timeout may stall pipeline at scale",
+      "decision": "Accepted: reminder-only is business decision. Monitor queue depth."
+    }
+  ],
+  "validation": {
+    "gate": "Gate 2 Requirement Definition",
+    "status": "CONDITIONAL_PASS",
+    "checks": [
       {
-        "id": "OQ-006",
-        "question": "Should translation support batch processing (multiple CVs at once) or only one at a time?",
-        "impact": "Affects queue design and UX flow; batch processing more efficient but increases complexity",
-        "category": "Translation"
+        "check": "Each requirement clear and atomic",
+        "status": "PASS"
       },
       {
-        "id": "OQ-007",
-        "question": "Should candidate outreach messages be fully AI-generated or template-based with AI personalization?",
-        "impact": "Affects content generation scope; fully AI offers more personalization but requires more guardrails",
-        "category": "Candidate Sourcing"
+        "check": "Each requirement has priority",
+        "status": "PASS"
       },
       {
-        "id": "OQ-008",
-        "question": "Should candidate deduplication be automatic (merge) or flag-only for recruiter review?",
-        "impact": "Affects data model and UX; automatic merge is more efficient but risks data loss",
-        "category": "Multi-Client Data Isolation"
+        "check": "Each requirement has rationale",
+        "status": "PASS"
+      },
+      {
+        "check": "Each requirement has acceptance criteria",
+        "status": "PASS"
+      },
+      {
+        "check": "Functional and non-functional separated",
+        "status": "PASS"
+      },
+      {
+        "check": "Scope in/out stated",
+        "status": "PASS"
+      },
+      {
+        "check": "Traceability to RAW IDs exists",
+        "status": "PASS"
+      },
+      {
+        "check": "P0 deployable contracts defined",
+        "status": "CONDITIONAL",
+        "notes": "Use-case, state machine, approval, AI result, integration, and file/OCR contracts added as handoff prerequisites"
       }
     ],
-
-    "gateValidation": {
-      "completeness": {
-        "status": "PASS",
-        "checks": [
-          "All RAW-* sources from Phase 1 have ≥1 downstream REQ-*",
-          "All new requirements (translation, email, RBAC, multi-client) have REQ-* coverage",
-          "Non-functional requirements decomposed into measurable atomic statements",
-          "Integration requirements mapped to specific providers",
-          "Security and compliance requirements explicitly stated"
+    "decision": "Accepted for discovery and BA refinement; hold for solution design sign-off and development handoff until P0 contract gaps are resolved."
+  },
+  "openQuestions": [
+    {
+      "id": "Q-001",
+      "question": "AI matching weights confirmed by business?",
+      "affectedIds": [
+        "REQ-F-015"
+      ],
+      "owner": "HR Manager",
+      "blocksBusinessDefinition": false
+    },
+    {
+      "id": "Q-002",
+      "question": "Interview reminder timing: 24h? 1h? Both?",
+      "affectedIds": [
+        "REQ-F-026"
+      ],
+      "owner": "HR Manager",
+      "blocksBusinessDefinition": false
+    },
+    {
+      "id": "Q-003",
+      "question": "Coding test sandbox: in-browser or external?",
+      "affectedIds": [
+        "REQ-F-044"
+      ],
+      "owner": "IT Admin",
+      "blocksBusinessDefinition": false
+    },
+    {
+      "id": "Q-004",
+      "question": "Exact fixed interview question count (5 or 7)?",
+      "affectedIds": [
+        "REQ-F-032"
+      ],
+      "owner": "HR Manager",
+      "blocksBusinessDefinition": false
+    },
+    {
+      "id": "Q-005",
+      "question": "Google Drive watch folder path and naming convention?",
+      "affectedIds": [
+        "REQ-F-003",
+        "REQ-I-001"
+      ],
+      "owner": "IT Admin",
+      "blocksBusinessDefinition": false
+    },
+    {
+      "id": "Q-006",
+      "question": "Email templates: who creates/manages?",
+      "affectedIds": [
+        "REQ-F-061"
+      ],
+      "owner": "HR Manager",
+      "blocksBusinessDefinition": false
+    },
+    {
+      "id": "Q-007",
+      "question": "Pass threshold: combined or per-stage?",
+      "affectedIds": [
+        "REQ-F-046"
+      ],
+      "owner": "HR Manager",
+      "blocksBusinessDefinition": false
+    },
+    {
+      "id": "DQ-001",
+      "question": "What exact confidence threshold routes AI results to manual review?",
+      "owner": "HR Manager",
+      "blocksNextStep": true
+    },
+    {
+      "id": "DQ-002",
+      "question": "Who is backup approver for escalation?",
+      "owner": "HR Manager",
+      "blocksNextStep": true
+    },
+    {
+      "id": "DQ-003",
+      "question": "What is the Google Drive folder ownership and webhook renewal responsibility?",
+      "owner": "IT Admin",
+      "blocksNextStep": true
+    },
+    {
+      "id": "DQ-004",
+      "question": "What is the Calendar reschedule/cancel policy after event creation?",
+      "owner": "HR Manager",
+      "blocksNextStep": true
+    },
+    {
+      "id": "DQ-005",
+      "question": "What coding sandbox/runtime is approved for code execution?",
+      "owner": "IT Admin",
+      "blocksNextStep": true
+    },
+    {
+      "id": "DQ-006",
+      "question": "What retention/deletion period applies to CVs, transcripts, and test submissions?",
+      "owner": "HR Manager/IT Admin",
+      "blocksNextStep": true
+    }
+  ],
+  "p0ContractClosure": {
+    "status": "required_before_solution_design_or_dev_handoff",
+    "useCaseContracts": [
+      {
+        "id": "UC-SRC",
+        "name": "Candidate Sourcing",
+        "actors": [
+          "HR Recruiter",
+          "System",
+          "Admin"
+        ],
+        "trigger": "Manual form, Excel upload, or Google Drive watch file",
+        "outputs": [
+          "job records",
+          "candidate records",
+          "import result",
+          "duplicate/error report"
+        ],
+        "approvalStateContract": "Successful import sets state IMPORTED; invalid/duplicate records require review or ERROR"
+      },
+      {
+        "id": "UC-SCR",
+        "name": "CV Screening",
+        "actors": [
+          "HR Recruiter",
+          "System",
+          "HR Manager"
+        ],
+        "trigger": "Candidate imported and JD available",
+        "outputs": [
+          "total score",
+          "sub-scores",
+          "strengths/weaknesses",
+          "missing skills",
+          "red flags",
+          "recommendation",
+          "confidence",
+          "evidence spans"
+        ],
+        "approvalStateContract": "SCREENING_RUNNING -> SCREENING_PENDING_APPROVAL -> SCREENED_IN/SCREENED_OUT/re-screen"
+      },
+      {
+        "id": "UC-SCH",
+        "name": "Interview Scheduling",
+        "actors": [
+          "System",
+          "HR Manager",
+          "Candidate",
+          "Interviewer"
+        ],
+        "trigger": "Candidate reaches SCREENED_IN",
+        "outputs": [
+          "suggested slots",
+          "approved event",
+          "confirmation emails"
+        ],
+        "approvalStateContract": "AVAILABILITY_PENDING -> SCHEDULING_PENDING_APPROVAL -> INTERVIEW_SCHEDULED only after approval"
+      },
+      {
+        "id": "UC-INT",
+        "name": "AI Interview",
+        "actors": [
+          "System",
+          "Candidate",
+          "HR Manager"
+        ],
+        "trigger": "Interview scheduled or AI interview stage reached",
+        "outputs": [
+          "transcript",
+          "AI evaluation report",
+          "score",
+          "recommendation",
+          "confidence",
+          "evidence"
+        ],
+        "approvalStateContract": "AI_INTERVIEW_PENDING -> AI_INTERVIEW_COMPLETED; incomplete/expired sessions require reopen or manual decision"
+      },
+      {
+        "id": "UC-TST",
+        "name": "Test Grading",
+        "actors": [
+          "HR Recruiter",
+          "System",
+          "Candidate",
+          "HR Manager"
+        ],
+        "trigger": "Candidate completes interview and test is assigned",
+        "outputs": [
+          "section scores",
+          "total score",
+          "pass/fail recommendation",
+          "feedback"
+        ],
+        "approvalStateContract": "TEST_PENDING -> TEST_GRADED -> FINAL_REVIEW; HR Manager can override with reason"
+      }
+    ],
+    "candidateStates": [
+      "NEW",
+      "IMPORTED",
+      "SCREENING_RUNNING",
+      "SCREENING_PENDING_APPROVAL",
+      "SCREENED_IN",
+      "SCREENED_OUT",
+      "AVAILABILITY_PENDING",
+      "SCHEDULING_PENDING_APPROVAL",
+      "INTERVIEW_SCHEDULED",
+      "AI_INTERVIEW_PENDING",
+      "AI_INTERVIEW_COMPLETED",
+      "TEST_PENDING",
+      "TEST_GRADED",
+      "FINAL_REVIEW",
+      "PASSED",
+      "FAILED",
+      "WITHDRAWN",
+      "ERROR"
+    ],
+    "approvalMatrix": [
+      {
+        "point": "Screening shortlist",
+        "approver": "HR Manager",
+        "type": "single + bulk",
+        "sla": "24h",
+        "reminder": "24h",
+        "escalation": "48h to backup HR Manager if configured",
+        "automationRule": "Never auto-approve/reject/skip"
+      },
+      {
+        "point": "Scheduling slot",
+        "approver": "HR Manager",
+        "type": "single + bulk by requisition",
+        "sla": "8 working hours",
+        "reminder": "8 working hours",
+        "escalation": "24h to backup HR Manager if configured",
+        "automationRule": "Never create Calendar event before approval"
+      },
+      {
+        "point": "Final candidate decision",
+        "approver": "HR Manager",
+        "type": "single",
+        "sla": "48h after test graded",
+        "reminder": "48h",
+        "escalation": "72h to backup HR Manager if configured",
+        "automationRule": "Never mark PASSED/FAILED solely from AI"
+      },
+      {
+        "point": "Test grading override",
+        "approver": "HR Manager",
+        "type": "single",
+        "sla": "48h after grading issue",
+        "reminder": "48h",
+        "escalation": "Admin review for persistent technical failure",
+        "automationRule": "Override requires reason and actor"
+      }
+    ],
+    "aiResultSchema": [
+      {
+        "field": "total_score",
+        "required": true,
+        "appliesTo": [
+          "screening",
+          "interview",
+          "test"
         ]
       },
-      "quality": {
-        "status": "PASS",
-        "checks": [
-          "Every REQ-* has measurable acceptance criteria",
-          "Every REQ-* has source traceability (no orphan requirements)",
-          "Priority assigned consistently (P0 = MVP, P1 = next, P2 = future)",
-          "No technical design decisions leak into requirement level",
-          "'Shall' language used consistently for requirements"
+      {
+        "field": "sub_scores",
+        "required": true,
+        "appliesTo": [
+          "screening",
+          "interview",
+          "test"
+        ]
+      },
+      {
+        "field": "strengths",
+        "required": true,
+        "appliesTo": [
+          "screening",
+          "interview"
+        ]
+      },
+      {
+        "field": "weaknesses",
+        "required": true,
+        "appliesTo": [
+          "screening",
+          "interview"
+        ]
+      },
+      {
+        "field": "missing_critical_skills",
+        "required": true,
+        "appliesTo": [
+          "screening"
+        ]
+      },
+      {
+        "field": "red_flags",
+        "required": true,
+        "appliesTo": [
+          "screening",
+          "interview",
+          "test"
+        ]
+      },
+      {
+        "field": "recommendation",
+        "required": true,
+        "appliesTo": [
+          "screening",
+          "interview",
+          "test"
+        ]
+      },
+      {
+        "field": "confidence",
+        "required": true,
+        "appliesTo": [
+          "screening",
+          "interview",
+          "test"
+        ]
+      },
+      {
+        "field": "evidence_spans",
+        "required": true,
+        "appliesTo": [
+          "screening",
+          "interview",
+          "essay_grading"
+        ]
+      },
+      {
+        "field": "model_provider",
+        "required": true,
+        "appliesTo": [
+          "screening",
+          "interview",
+          "test"
+        ]
+      },
+      {
+        "field": "model_name",
+        "required": true,
+        "appliesTo": [
+          "screening",
+          "interview",
+          "test"
+        ]
+      },
+      {
+        "field": "prompt_version",
+        "required": true,
+        "appliesTo": [
+          "screening",
+          "interview",
+          "test"
+        ]
+      },
+      {
+        "field": "rubric_version",
+        "required": false,
+        "appliesTo": [
+          "interview",
+          "test"
+        ]
+      },
+      {
+        "field": "human_override",
+        "required": false,
+        "appliesTo": [
+          "approval",
+          "final_review"
+        ]
+      },
+      {
+        "field": "final_business_decision",
+        "required": false,
+        "appliesTo": [
+          "final_review"
         ]
       }
+    ],
+    "aiQualityMetrics": [
+      {
+        "id": "REQ-NF-AI-001",
+        "target": "Human reviewer agreement >= 80% on validation dataset",
+        "priority": "P0"
+      },
+      {
+        "id": "REQ-NF-AI-002",
+        "target": "Precision@shortlist reported per job family/month",
+        "priority": "P1"
+      },
+      {
+        "id": "REQ-NF-AI-003",
+        "target": "False reject sample review performed monthly",
+        "priority": "P1"
+      },
+      {
+        "id": "REQ-NF-AI-004",
+        "target": "No release if prompt/rubric score drift exceeds agreed threshold",
+        "priority": "P1"
+      },
+      {
+        "id": "REQ-NF-AI-005",
+        "target": "100% low-confidence outputs route to manual review",
+        "priority": "P0"
+      }
+    ],
+    "fileOcrBoundary": {
+      "cv": "Text-native PDF and DOCX only; scanned/image-only files rejected in MVP",
+      "jd": "Direct text, text-native PDF, and DOCX only; scanned/image-only files rejected in MVP",
+      "batchImport": "Excel .xlsx only",
+      "testImport": "Excel .xlsx and JSON only",
+      "parseConfidence": "Low-confidence extraction routes to manual review"
     }
   }
 }

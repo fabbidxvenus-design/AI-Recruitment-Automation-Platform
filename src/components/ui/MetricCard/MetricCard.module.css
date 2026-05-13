@@ -1,0 +1,87 @@
+.metricCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background-color: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+}
+
+.metricHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.metricLabel {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-medium);
+}
+
+.metricIcon {
+  font-size: var(--text-xl);
+}
+
+.metricValue {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text);
+  line-height: 1;
+}
+
+.metricFooter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+}
+
+.metricTrend {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-weight: var(--font-medium);
+}
+
+.trendUp {
+  color: var(--color-success);
+}
+
+.trendDown {
+  color: var(--color-danger);
+}
+
+.metricChange {
+  color: var(--color-text-muted);
+}
+
+/* Color variants */
+.primary .metricValue {
+  color: var(--color-primary);
+}
+
+.success .metricValue {
+  color: var(--color-success);
+}
+
+.warning .metricValue {
+  color: var(--color-warning);
+}
+
+.danger .metricValue {
+  color: var(--color-danger);
+}
+
+.info .metricValue {
+  color: var(--color-info);
+}
+
+.purple .metricValue {
+  color: var(--color-ai-purple);
+}
+
+.teal .metricValue {
+  color: var(--color-scheduling-teal);
+}

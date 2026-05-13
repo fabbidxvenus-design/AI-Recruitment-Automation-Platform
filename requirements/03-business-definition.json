@@ -1,977 +1,1489 @@
 {
-  "$schema": "https://raw.githubusercontent.com/David-Init-Institute/requirements-hierarchy/main/schema/v1.0/business.schema.json",
-  "businessDefinition": {
-    "id": "REQ-GATE3",
-    "title": "AI Recruitment Automation Platform — Business Definition",
-    "version": "2.0.0",
-    "status": "DRAFT",
-    "date": "2026-05-12",
-    "author": "DuyMT (with AI assistant)",
-    "reviewStatus": "GATE_3_BUSINESS_DEFINITION",
-    "upstream": "02-requirement-definition.md (v0.1.0) → 01-requirement.md (v0.2.0)",
-    "summary": "Business objectives, KPIs, stakeholder roles, 140 business rules, 41 use cases covering candidate sourcing, CV processing, scheduling, assessment, pipeline management, translation, notifications, auth, multi-client operations, workflow engine, audit, human review, candidate portal, dashboard, AI governance, billing, and onboarding. Every BP, BR, and UC traces to REQ-* from Gate 2.",
-
-    "businessObjectives": [
-      {
-        "id": "BP-001",
-        "title": "Reduce time-to-hire",
-        "description": "Cut average hiring cycle from 45 days to 25 days by automating sourcing, screening, and scheduling",
-        "mappedReqIds": ["FR-001", "FR-002", "FR-010", "FR-013"],
-        "priority": "P0"
-      },
-      {
-        "id": "BP-002",
-        "title": "Improve candidate quality",
-        "description": "AI-powered matching ensures top-ranked candidates meet ≥85% of job criteria",
-        "mappedReqIds": ["FR-002", "FR-003", "FR-007", "FR-008"],
-        "priority": "P0"
-      },
-      {
-        "id": "BP-003",
-        "title": "Scale multi-client operations",
-        "description": "Single agency platform serves multiple employer clients with strict data isolation",
-        "mappedReqIds": ["FR-042", "FR-043", "FR-044", "FR-045", "NFR-007"],
-        "priority": "P0"
-      },
-      {
-        "id": "BP-004",
-        "title": "Reduce manual recruiter workload",
-        "description": "Automate ≥60% of repetitive tasks (sourcing, outreach, scheduling, reminders)",
-        "mappedReqIds": ["FR-001", "FR-004", "FR-015", "FR-016", "FR-033"],
-        "priority": "P0"
-      },
-      {
-        "id": "BP-005",
-        "title": "Enable cross-border hiring",
-        "description": "JP/VN/EN translation and timezone-aware scheduling support international recruitment",
-        "mappedReqIds": ["FR-028", "FR-029", "FR-030", "FR-031", "FR-017"],
-        "priority": "P0"
-      },
-      {
-        "id": "BP-006",
-        "title": "Ensure compliance and auditability",
-        "description": "Full audit trail, GDPR/CCPA compliance, configurable data retention",
-        "mappedReqIds": ["CR-005", "CR-006", "CR-007", "NFR-011", "NFR-012"],
-        "priority": "P0"
-      },
-      {
-        "id": "BP-007",
-        "title": "Minimize AI cost exposure",
-        "description": "Stay within $500–$1,500/month AI budget with cost monitoring and circuit-breaker fallback",
-        "mappedReqIds": ["CR-010", "NFR-003", "NFR-005", "NFR-013"],
-        "priority": "P0"
-      },
-      {
-        "id": "BP-008",
-        "title": "Provide transparent AI decisions",
-        "description": "Every AI-generated score and recommendation includes human-readable explanation",
-        "mappedReqIds": ["FR-003", "FR-008", "FR-022"],
-        "priority": "P0"
-      }
-    ],
-
-    "stakeholders": {
-      "registry": [
-        { "id": "ST-001", "name": "Agency Admin", "type": "Internal", "interest": "Full platform control, billing, compliance", "influence": "High" },
-        { "id": "ST-002", "name": "Recruiter", "type": "Internal", "interest": "Daily ATS operations, candidate management", "influence": "High" },
-        { "id": "ST-003", "name": "Interviewer", "type": "Internal", "interest": "Interview execution, score review", "influence": "Medium" },
-        { "id": "ST-004", "name": "HiringCompany (Client)", "type": "External", "interest": "Pipeline visibility, candidate quality, reporting", "influence": "High" },
-        { "id": "ST-005", "name": "Candidate (Job Seeker)", "type": "External", "interest": "Application experience, communication quality", "influence": "Medium" },
-        { "id": "ST-006", "name": "Translator / Reviewer", "type": "Internal/External", "interest": "Translation quality assurance", "influence": "Low" },
-        { "id": "ST-007", "name": "Platform Engineering", "type": "Internal", "interest": "System reliability, security, performance", "influence": "Medium" }
+  "metadata": {
+    "productName": "RecruitAI",
+    "projectType": "data-ai",
+    "language": "bilingual",
+    "version": "0.1.0",
+    "generatedAt": "2026-05-12T00:00:00Z",
+    "upstream": "02-requirement-definition.md/json",
+    "gate": "Gate 3 Business Definition",
+    "status": "CONDITIONAL_PASS",
+    "reviewNote": "Gate 3 remains conditional until blocking business policy questions are answered in Gate 4."
+  },
+  "businessObjectives": [
+    {
+      "id": "BO-001",
+      "objective": "Scale recruitment operations without proportional HR headcount growth",
+      "kpis": [
+        ">200 jobs/month",
+        "~10,000 CV/month",
+        "non-AI API p95 <2s"
       ],
-      "systemRoles": [
-        {
-          "roleId": "R-001",
-          "name": "Agency Admin",
-          "description": "Full system control: settings, users, billing, compliance",
-          "permissions": ["P-001","P-002","P-003","P-004","P-005","P-006","P-007","P-008","P-009","P-010","P-011"]
-        },
-        {
-          "roleId": "R-002",
-          "name": "Recruiter",
-          "description": "Core ATS operations: manage jobs, candidates, schedule interviews for assigned clients",
-          "permissions": ["P-001","P-002","P-003","P-004","P-005","P-007","P-008","P-009","P-011"]
-        },
-        {
-          "roleId": "R-003",
-          "name": "Interviewer",
-          "description": "Conduct interviews, review AI scores, provide feedback",
-          "permissions": ["P-002","P-005","P-010"]
-        },
-        {
-          "roleId": "R-004",
-          "name": "Client",
-          "description": "View pipeline, review candidates, approve offers (own jobs only)",
-          "permissions": ["P-002","P-005","P-006","P-010"]
-        },
-        {
-          "roleId": "R-005",
-          "name": "Candidate",
-          "description": "Submit application, respond to scheduling, view status",
-          "permissions": ["P-011"]
-        }
-      ],
-      "permissions": [
-        { "id": "P-001", "name": "Create/Edit/Archive Jobs", "description": "Create and modify job postings for assigned clients" },
-        { "id": "P-002", "name": "View & Manage Candidates", "description": "Access candidate profiles, screening results, and applications" },
-        { "id": "P-003", "name": "Reject Candidates", "description": "Mark candidates as rejected at any pipeline stage" },
-        { "id": "P-004", "name": "Approve Offers", "description": "Authorize formal job offers to candidates" },
-        { "id": "P-005", "name": "View Salary Information", "description": "Access compensation data in job postings and offers" },
-        { "id": "P-006", "name": "Export CVs", "description": "Download candidate resumes and profiles" },
-        { "id": "P-007", "name": "Manage Users & Roles", "description": "Add/remove users, assign roles within the agency" },
-        { "id": "P-008", "name": "View Analytics & Dashboard", "description": "Access pipeline metrics, conversion rates, and performance reports" },
-        { "id": "P-009", "name": "Configure Client Pipeline", "description": "Customize stage names, order, and auto-transition rules per client" },
-        { "id": "P-010", "name": "Provide Interview Feedback", "description": "Submit evaluation scores and comments post-interview" },
-        { "id": "P-011", "name": "Submit Application / Self-Service", "description": "Candidate application submission and status checking" }
+      "tracesTo": [
+        "REQ-NF-002",
+        "REQ-NF-003",
+        "REQ-F-016"
       ]
     },
-
-    "productBoundary": {
-      "capabilityMatrix": [
-        { "capability": "LinkedIn sourcing", "mvpScope": "Manual import + recruiter paste URL", "outOfScope": "Automated scraping, browser extension, webhook, official API integration" },
-        { "capability": "External ATS sync", "mvpScope": "CSV import only", "outOfScope": "Real-time bidirectional sync (Greenhouse/Lever/Workday) — deferred to P2" },
-        { "capability": "AI candidate outreach", "mvpScope": "Draft generation only; recruiter MUST approve before send", "outOfScope": "Fully autonomous sending" },
-        { "capability": "AI interview", "mvpScope": "Not supported", "outOfScope": "Phase 2 — real-time AI-powered video/text interviews" },
-        { "capability": "Candidate portal", "mvpScope": "Basic status tracking (view application status, upload new CV, manage availability)", "outOfScope": "Full career portal with job recommendations, social features" },
-        { "capability": "Content generation", "mvpScope": "Not supported", "outOfScope": "Phase 2 — AI-generated JD, offer/rejection letters, social posts" },
-        { "capability": "Chatbot", "mvpScope": "Not supported", "outOfScope": "Phase 2 — candidate-facing FAQ, internal recruiter assistant" },
-        { "capability": "Coding assessment", "mvpScope": "Not supported", "outOfScope": "Phase 2 — sandbox execution, AI essay scoring, behavioral analysis" },
-        { "capability": "White-label SaaS", "mvpScope": "Not supported", "outOfScope": "Phase 2 — custom branding per agency, white-label portal for clients" },
-        { "capability": "Event sourcing", "mvpScope": "Not supported", "outOfScope": "Phase 2 — full audit trail with event sourcing architecture" },
-        { "capability": "Real-time AI interviewer", "mvpScope": "Not supported", "outOfScope": "Phase 2" },
-        { "capability": "Agentic AI workflows", "mvpScope": "Not supported", "outOfScope": "Phase 2 — AI-to-AI chains" },
-        { "capability": "Image generation", "mvpScope": "Not supported", "outOfScope": "Phase 2 — branded recruitment graphics" }
+    {
+      "id": "BO-002",
+      "objective": "Reduce manual screening effort while preserving HR Manager decision ownership",
+      "kpis": [
+        "Single CV screening <30s",
+        "HR reviewer agreement >=80%",
+        "100% shortlist decisions approved by HR Manager"
       ],
-      "ownershipMatrix": [
-        { "domain": "Candidate data lifecycle", "owns": "CRUD, dedup, matching", "integrates": "CV parser (OpenAI/Gemini), storage (S3)", "manual": "Recruiter review of parse results" },
-        { "domain": "Job management", "owns": "CRUD, stages, config", "integrates": "—", "manual": "Client provides JD content" },
-        { "domain": "Pipeline workflow", "owns": "Kanban board, auto-transitions, stage config", "integrates": "—", "manual": "Recruiter drag-and-drop overrides" },
-        { "domain": "Scheduling", "owns": "Slot computation, calendar sync", "integrates": "Google Calendar API, Outlook API", "manual": "Candidate self-input of availability" },
-        { "domain": "Assessment", "owns": "MCQ config, auto-grading, scoring", "integrates": "—", "manual": "Recruiter override, subjective grading deferred" },
-        { "domain": "Translation", "owns": "Orchestration, quality routing", "integrates": "OpenAI GPT-4o / Gemini for translation", "manual": "Human review of low-confidence outputs" },
-        { "domain": "Email/Notifications", "owns": "Template management, trigger logic", "integrates": "SendGrid / AWS SES", "manual": "Template content authored by agency" },
-        { "domain": "AI matching", "owns": "Embedding, vector search, scoring", "integrates": "pgvector / Pinecone, OpenAI embeddings", "manual": "Recruiter review and override of scores" },
-        { "domain": "Analytics & Reporting", "owns": "Dashboard, KPI metrics", "integrates": "—", "manual": "CSV/PDF export by user" },
-        { "domain": "File storage", "owns": "Metadata, access control", "integrates": "S3-compatible (MinIO / AWS S3)", "manual": "Manual upload/download" },
-        { "domain": "Authentication", "owns": "Session management, RBAC", "integrates": "NextAuth.js, Google OAuth, Microsoft OAuth", "manual": "MFA TOTP (user device)" }
+      "tracesTo": [
+        "REQ-F-011",
+        "REQ-F-017",
+        "REQ-F-051",
+        "REQ-NF-AI-001"
       ]
     },
-
-    "aiArchitecture": {
-      "modelRouting": [
-        { "task": "CV parsing", "model": "GPT-4o-mini", "rationale": "Fast, cheap, sufficient for structured extraction", "estCostPer1KCalls": "$0.15" },
-        { "task": "Embedding generation", "model": "text-embedding-3-large (OpenAI)", "rationale": "Best-in-class for semantic search", "estCostPer1KCalls": "$0.008/1K tokens" },
-        { "task": "Semantic matching", "model": "GPT-4o-mini", "rationale": "Lightweight scoring + explanation", "estCostPer1KCalls": "$0.15" },
-        { "task": "Score breakdown generation", "model": "GPT-4o", "rationale": "Needs reasoning for explainable output", "estCostPer1KCalls": "$1.25" },
-        { "task": "Translation (JP/VN/EN)", "model": "Gemini Flash (fallback: GPT-4o-mini)", "rationale": "Fast, cheap, strong multilingual", "estCostPer1KCalls": "$0.04" },
-        { "task": "High-quality translation (client-facing JD)", "model": "GPT-4o", "rationale": "Best quality for external content", "estCostPer1KCalls": "$1.25" },
-        { "task": "Outreach message draft", "model": "GPT-4o-mini", "rationale": "Template personalization, low cost", "estCostPer1KCalls": "$0.15" },
-        { "task": "Notification summarization", "model": "GPT-4o-mini", "rationale": "Lightweight content generation", "estCostPer1KCalls": "$0.05" }
+    {
+      "id": "BO-003",
+      "objective": "Shorten time from screening approval to confirmed interview",
+      "kpis": [
+        "At least 3 valid slots suggested when availability exists",
+        "Conflict rate <1%",
+        "Schedule approval SLA monitored"
       ],
-      "tokenBudgeting": [
-        { "category": "Max tokens per CV parse", "limit": 8000, "enforcement": "Truncate input; reject files requiring >4K tokens input" },
-        { "category": "Max tokens per job description", "limit": 4000, "enforcement": "Truncate embeddings to top 4K tokens" },
-        { "category": "Max tokens per agency per day", "limit": 500000, "enforcement": "Queue throttling + alert at 80%" },
-        { "category": "Max embedding batch size", "limit": "50 candidates/batch", "enforcement": "Batch API calls for cost efficiency" },
-        { "category": "Prompt truncation strategy", "limit": "Last N tokens kept", "enforcement": "Drop early content, keep conclusion/summary sections" },
-        { "category": "Embedding caching TTL", "limit": "30 days", "enforcement": "Re-embed only on CV update" }
-      ],
-      "cacheStrategy": [
-        { "type": "Semantic cache (prompt→response)", "key": "SHA256(prompt + model)", "ttl": "7 days", "invalidation": "Model version change" },
-        { "type": "Embedding reuse", "key": "SHA256(file_content)", "ttl": "30 days", "invalidation": "File update / re-upload" },
-        { "type": "Translation cache", "key": "SHA256(source_text + target_lang)", "ttl": "30 days", "invalidation": "Glossary update" },
-        { "type": "Score breakdown cache", "key": "SHA256(candidate_id + job_id)", "ttl": "1 day", "invalidation": "Re-scoring trigger" },
-        { "type": "Prompt cache (prefix)", "key": "Model-specific", "ttl": "Session-level", "invalidation": "API version change" }
-      ],
-      "expectedCacheSavings": "30–50% reduction in API calls for repeat CVs, same-locale translations, and re-scoring",
-      "costMonitoring": [
-        { "metric": "Daily AI spend > 80% of daily budget ($16–40/day)", "threshold": "80%", "action": "Slack/email to agency admin" },
-        { "metric": "Daily AI spend > 100% of daily budget", "threshold": "100%", "action": "Auto-pause non-critical queues (analytics, batch translation)" },
-        { "metric": "Monthly cumulative > $1,200", "threshold": "Early warning", "action": "Notify agency admin + platform ops" },
-        { "metric": "Monthly cumulative > $1,500", "threshold": "Hard limit", "action": "Suspend all non-essential AI processing; critical queues only" },
-        { "metric": "Single request cost > $0.50", "threshold": "Anomaly detection", "action": "Log + alert for investigation" }
-      ],
-      "availabilityAndFallback": [
-        { "layer": "Primary (OpenAI)", "strategy": "GPT-4o for critical; GPT-4o-mini for bulk", "detection": "Health check every 30s", "recovery": "Circuit breaker trips after 3 failures" },
-        { "layer": "Fallback (Gemini)", "strategy": "Gemini 1.5 Flash as drop-in", "detection": "Auto-switch on primary failure", "recovery": "Auto-revert every 30s" },
-        { "layer": "Rule-based fallback", "strategy": "Regex/keyword matching", "detection": "Activated when both AI providers fail", "recovery": "Manual review queue" },
-        { "layer": "Circuit breaker reset timeout", "strategy": "30 seconds", "detection": "Continuous health probes", "recovery": "Re-enable primary when healthy" }
-      ],
-      "aiGovernanceRules": [
-        { "id": "BR-059", "rule": "AI routing policy assigns cheapest model that meets quality requirements", "rationale": "Cost optimization", "mappedTo": ["BP-007", "CR-010"] },
-        { "id": "BR-060", "rule": "Translation jobs are batched (up to 20 documents/batch) when processing >5 pending items", "rationale": "Cost reduction", "mappedTo": ["BP-007", "NFR-005"] },
-        { "id": "BR-061", "rule": "Embedding results are cached for 30 days per document version", "rationale": "Prevent redundant compute", "mappedTo": ["BP-007"] },
-        { "id": "BR-062", "rule": "Prompt input is truncated to model's context limit minus 500 tokens for response", "rationale": "Prevent cost blowout", "mappedTo": ["BP-007", "NFR-003"] },
-        { "id": "BR-063", "rule": "AI cost dashboard is visible to Agency Admin in real time", "rationale": "Transparency", "mappedTo": ["BP-007", "BR-057"] },
-        { "id": "BR-064", "rule": "All AI API calls are logged with model, token count, cost, and latency", "rationale": "Audit and optimization", "mappedTo": ["BP-007", "CR-007"] }
-      ],
-      "decoupledServices": [
-        {
-          "name": "ai-parser-service",
-          "responsibility": "CV/DOCX parsing, field extraction, confidence scoring",
-          "endpoints": ["POST /internal/ai/parse"]
-        },
-        {
-          "name": "ai-embedding-service",
-          "responsibility": "Text embedding, vector upsert, similarity search",
-          "endpoints": ["POST /internal/ai/embed", "POST /internal/ai/search"]
-        },
-        {
-          "name": "ai-scoring-service",
-          "responsibility": "Weighted scoring, score breakdown generation",
-          "endpoints": ["POST /internal/ai/score"]
-        },
-        {
-          "name": "ai-translation-service",
-          "responsibility": "Language detection, translation, confidence scoring",
-          "endpoints": ["POST /internal/ai/translate"]
-        },
-        {
-          "name": "ai-outreach-service",
-          "responsibility": "Outreach message generation, template personalization",
-          "endpoints": ["POST /internal/ai/outreach"]
-        }
-      ],
-      "serviceProperties": [
-        "Its own circuit breaker",
-        "Its own token budget tracking",
-        "Its own caching layer",
-        "Health check endpoint",
-        "Structured logging with shared traceId"
-      ],
-      "webhookStrategy": [
-        { "pattern": "Synchronous (<10s)", "flow": "Client → API → AI call → Response (used for single CV parse, scoring)" },
-        { "pattern": "Async with polling (10–60s)", "flow": "Client → API → Queue job → Return jobId → Client polls /jobs/{id}" },
-        { "pattern": "Async with webhook (>60s)", "flow": "Client → API → Queue job → Callback URL notified on completion" }
+      "tracesTo": [
+        "REQ-F-020",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024"
       ]
     },
-
-    "workflowEngine": {
-      "description": "Event-driven + rule-based workflow execution engine for all auto-transitions",
-      "architecture": {
-        "components": [
-          { "name": "Event Bus (BullMQ)", "role": "Receives and routes events" },
-          { "name": "Rule Evaluator", "role": "Evaluates conditions → actions from JSON rules" },
-          { "name": "Event Store (PostgreSQL)", "role": "Immutable append-only event log" },
-          { "name": "Action Executor", "actions": ["Stage transition", "Notification send", "Email dispatch", "AI task queue"] }
-        ]
-      },
-      "events": [
-        { "id": "EVT-001", "name": "application.created", "trigger": "Candidate submits application or recruiter creates manually", "payload": "{applicationId, candidateId, jobId, timestamp}" },
-        { "id": "EVT-002", "name": "cv.parsed", "trigger": "CV parsing completes (success or failure)", "payload": "{applicationId, parseResult, confidence, fields}" },
-        { "id": "EVT-003", "name": "ai.match.completed", "trigger": "AI matching score computed", "payload": "{applicationId, jobId, matchScore, skillScores, explanation}" },
-        { "id": "EVT-004", "name": "assessment.passed", "trigger": "Candidate passes MCQ assessment", "payload": "{applicationId, assessmentId, score, threshold}" },
-        { "id": "EVT-005", "name": "assessment.failed", "trigger": "Candidate fails MCQ assessment", "payload": "{applicationId, assessmentId, score, threshold}" },
-        { "id": "EVT-006", "name": "assessment.overridden", "trigger": "Recruiter overrides assessment result", "payload": "{applicationId, newStatus, reason, overriddenBy}" },
-        { "id": "EVT-007", "name": "interview.scheduled", "trigger": "Interview slot confirmed", "payload": "{interviewId, applicationId, type, scheduledAt, participants}" },
-        { "id": "EVT-008", "name": "interview.completed", "trigger": "Interview status marked complete", "payload": "{interviewId, applicationId, outcome, feedback}" },
-        { "id": "EVT-009", "name": "stage.transitioned", "trigger": "Candidate moved between pipeline stages", "payload": "{applicationId, fromStage, toStage, trigger, timestamp}" },
-        { "id": "EVT-010", "name": "translation.completed", "trigger": "Translation job finished", "payload": "{contentId, sourceLang, targetLang, confidence, status}" },
-        { "id": "EVT-011", "name": "outreach.approved", "trigger": "Recruiter approves outreach message", "payload": "{applicationId, messageId, channel}" },
-        { "id": "EVT-012", "name": "manual.stage.set", "trigger": "Recruiter manually drags candidate in kanban", "payload": "{applicationId, toStage, performedBy}" }
+    {
+      "id": "BO-004",
+      "objective": "Standardize interview and test evaluation",
+      "kpis": [
+        "AI interview completion >70%",
+        "MCQ accuracy 100%",
+        "Essay/coding feedback includes justification"
       ],
-      "sampleRules": [
-        {
-          "ruleId": "RULE-001",
-          "name": "Auto-screen after CV parse",
-          "priority": 1,
-          "enabled": true,
-          "trigger": { "event": "cv.parsed", "condition": "cv.confidence >= 0.7" },
-          "actions": [
-            { "type": "queue_job", "job": "ai-screen-candidate", "queue": "ai-match-score", "priority": "P0" },
-            { "type": "transition_stage", "toStage": "screening" }
-          ]
-        },
-        {
-          "ruleId": "RULE-002",
-          "name": "Auto-move to interview after passing score",
-          "priority": 2,
-          "enabled": true,
-          "trigger": { "event": "ai.match.completed", "condition": "matchScore >= 0.7" },
-          "actions": [
-            { "type": "transition_stage", "toStage": "interview" },
-            { "type": "notify", "channel": "email", "template": "candidate_advance_interview" },
-            { "type": "notify", "channel": "in-app", "recipients": ["assignedRecruiter"] }
-          ]
-        },
-        {
-          "ruleId": "RULE-003",
-          "name": "Auto-fail on assessment below threshold",
-          "priority": 3,
-          "enabled": true,
-          "trigger": { "event": "assessment.failed", "condition": "always" },
-          "actions": [
-            { "type": "transition_stage", "toStage": "rejected" },
-            { "type": "notify", "channel": "email", "template": "candidate_rejected_assessment" }
-          ]
-        },
-        {
-          "ruleId": "RULE-004",
-          "name": "Timeout screening after 7 days",
-          "priority": 4,
-          "enabled": true,
-          "trigger": { "event": "timer", "condition": "stage == 'screening' AND daysInStage >= 7" },
-          "actions": [
-            { "type": "notify", "channel": "email", "template": "recruiter_stalled_alert" },
-            { "type": "notify", "channel": "in-app", "recipients": ["assignedRecruiter"] }
-          ]
-        }
-      ],
-      "ruleEvaluation": {
-        "engine": "Custom NestJS service evaluating JSON rules against events",
-        "eventStorage": "PostgreSQL workflow_events table (immutable append-only)",
-        "ruleStorage": "PostgreSQL workflow_rules table (per-client configuration)",
-        "executionGuarantee": "At-least-once via BullMQ; idempotent via event ID dedup",
-        "ordering": "Rules evaluated by priority (lower = higher priority); first match wins per action type",
-        "conflictResolution": "Manual stage override (EVT-012) takes precedence over auto-transition"
-      }
-    },
-
-    "auditStrategy": {
-      "eventCategories": [
-        { "category": "Data Access", "examples": "Candidate profile viewed, Resume downloaded, Salary info viewed", "severity": "High", "complianceRelevant": true },
-        { "category": "Data Modification", "examples": "Candidate updated, Stage transition, Score overridden", "severity": "High", "complianceRelevant": true },
-        { "category": "AI Operations", "examples": "CV parsed, AI score computed, Translation generated, Model failover", "severity": "Medium", "complianceRelevant": false },
-        { "category": "Authentication", "examples": "Login success/failure, SSO login, MFA verification, Token refresh", "severity": "High", "complianceRelevant": true },
-        { "category": "Authorization", "examples": "RBAC denial (403), Permission change, Role assignment", "severity": "High", "complianceRelevant": true },
-        { "category": "Configuration", "examples": "Pipeline stage changed, Template updated, Threshold modified", "severity": "Medium", "complianceRelevant": false },
-        { "category": "Data Export", "examples": "CSV export, PDF report generated, GDPR data export request", "severity": "High", "complianceRelevant": true },
-        { "category": "System Operations", "examples": "Health check status, Queue metrics, Backup completed", "severity": "Low", "complianceRelevant": false }
-      ],
-      "eventSchema": {
-        "eventId": "UUID v4",
-        "timestamp": "ISO 8601, UTC",
-        "category": "Category enum",
-        "severity": "low | medium | high | critical",
-        "actor": { "userId": "string", "role": "string", "clientId": "string?", "ip": "string", "deviceFingerprint": "string" },
-        "action": "string (e.g., candidate.view, stage.transition)",
-        "target": { "entityType": "string", "entityId": "string", "fieldName": "string?" },
-        "before": "object? (Previous state for modifications)",
-        "after": "object? (New state for modifications)",
-        "metadata": { "requestId": "string", "source": "string", "userAgent": "string", "traceId": "string?" },
-        "immutable": true
-      },
-      "storageAndRetention": {
-        "storage": "PostgreSQL audit_events table, partitioned by month",
-        "immutability": "Append-only; no UPDATE/DELETE permissions on audit table; enforced via DB triggers",
-        "searchability": "Indexed on: eventId, timestamp, actor.userId, action, target.entityId, category",
-        "retention": "Per-agency configurable (6/12/24 months); auto-purge via scheduled job",
-        "complianceExport": "GDPR-compliant export endpoint: /api/v1/audit/export (CSV/JSON)",
-        "crossTenantIsolation": "All queries filtered by agencyId; no cross-agency audit access",
-        "analytics": "Streamed to separate analytics DB (read replica) for dashboards"
-      }
-    },
-
-    "humanReviewWorkflow": {
-      "queueSystem": {
-        "queueTypes": ["Translation review", "AI confidence review", "Assessment override review"],
-        "priorityLevels": ["Urgent (client-facing, <4h SLA)", "Normal (<24h SLA)", "Low (<72h SLA)"],
-        "assignment": "Round-robin within reviewer pool; weighted by current load",
-        "loadBalancing": "Track reviewer workload; auto-route to least-loaded available reviewer",
-        "escalation": "Items unreviewed beyond SLA auto-escalate to senior reviewer or agency admin",
-        "rejectionHandling": "Rejected items return to queue with reviewer notes for next reviewer"
-      },
-      "reviewWorkflowSteps": [
-        "Translation Completed with Confidence < 80%",
-        "Queued in Review Queue with Priority Based on Content Type",
-        "Assigned to Available Translator/Reviewer (Round-Robin + Load Balance)",
-        "Reviewer accepts → Edit & approve → threshold met → Auto-publish",
-        "Reviewer rejects → Add notes → Re-queue (max 3 attempts)",
-        "SLA breach → Auto-escalate to senior reviewer"
+      "tracesTo": [
+        "REQ-F-036",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045"
       ]
     },
-
-    "candidateActivityTimeline": {
-      "timelineEvents": [
-        { "event": "Application submitted", "source": "System", "visibility": "Recruiter + Client" },
-        { "event": "CV parsed (success/failure)", "source": "System", "visibility": "Recruiter" },
-        { "event": "AI match score computed", "source": "System", "visibility": "Recruiter" },
-        { "event": "Screening result", "source": "System", "visibility": "Recruiter + Client" },
-        { "event": "Interview scheduled", "source": "System", "visibility": "Recruiter + Interviewer + Client" },
-        { "event": "Interview rescheduled", "source": "System", "visibility": "Recruiter + Interviewer + Client" },
-        { "event": "Interview completed", "source": "System", "visibility": "Recruiter + Interviewer + Client" },
-        { "event": "Assessment taken", "source": "System", "visibility": "Recruiter + Client" },
-        { "event": "Assessment overridden", "source": "System", "visibility": "Recruiter + Admin" },
-        { "event": "Translation requested/completed", "source": "System", "visibility": "Recruiter" },
-        { "event": "Outreach message sent", "source": "System", "visibility": "Recruiter" },
-        { "event": "Recruiter note added", "source": "Manual", "visibility": "Recruiter (shared per BR-067)" },
-        { "event": "Stage changed (auto or manual)", "source": "System", "visibility": "Recruiter + Client" },
-        { "event": "Candidate withdrew", "source": "Manual (candidate)", "visibility": "All stakeholders" },
-        { "event": "Offer sent/accepted/rejected", "source": "System", "visibility": "Recruiter + Client" },
-        { "event": "Status inquiry received", "source": "Email/portal", "visibility": "Recruiter" }
+    {
+      "id": "BO-005",
+      "objective": "Maintain auditable and secure candidate data handling",
+      "kpis": [
+        "100% user actions audit logged",
+        "RBAC enforced",
+        "CV data encrypted at rest and in transit"
       ],
-      "ux": {
-        "order": "Reverse chronological (most recent first)",
-        "grouping": "Grouped by day with expandable detail",
-        "colorCoding": "system = gray, recruiter = blue, candidate = green, AI = purple",
-        "filterable": true,
-        "exportable": true
-      }
-    },
-
-    "internalNotes": {
-      "model": {
-        "scope": "Per-candidate (not per-application — notes carry across client applications)",
-        "ownership": "Created by recruiter; editable only by creator or agency admin",
-        "visibility": "Private by default; explicitly shared with other recruiters via @mention",
-        "formatting": "Markdown-style formatting",
-        "mentions": "@recruiter triggers notification to mentioned user",
-        "tags": "Free-form tags for categorization (e.g., strong-technical, salary-sensitive)",
-        "tasks": "Attachable to-do items with assignee and due date"
-      },
-      "collaborationFeatures": [
-        { "feature": "@mentions", "description": "Tag another recruiter in notes; triggers in-app notification" },
-        { "feature": "Internal comments", "description": "Threaded comments on candidate profile (visible to all shared recruiters)" },
-        { "feature": "Task assignment", "description": "Create tasks on candidates with assignee, due date, status" },
-        { "feature": "Flag for review", "description": "Quick flag with category (data-quality, fit-concern, client-priority)" }
+      "tracesTo": [
+        "REQ-NF-005",
+        "REQ-NF-006",
+        "REQ-NF-007",
+        "REQ-NF-008"
       ]
-    },
-
-    "searchAndFiltering": {
-      "searchTypes": [
-        { "type": "Semantic search", "scope": "Candidate profiles vs job description", "implementation": "Vector similarity via pgvector (cosine)" },
-        { "type": "Full-text search", "scope": "Name, email, skills, notes", "implementation": "PostgreSQL full-text index (tsvector)" },
-        { "type": "Keyword search", "scope": "Any text field", "implementation": "LIKE/ILIKE with indexing" }
-      ],
-      "facetedFilters": [
-        { "filter": "Years of experience", "type": "Range (min–max)", "description": "Calculated from work history" },
-        { "filter": "Location", "type": "Dropdown / radius", "description": "City, country, or geo-radius" },
-        { "filter": "Visa status", "type": "Dropdown", "description": "Work authorization type (JP/VN/EN-specific)" },
-        { "filter": "Expected salary", "type": "Range (min–max)", "description": "Self-reported by candidate" },
-        { "filter": "Japanese level", "type": "Dropdown (JLPT N1–N5, Native, None)", "description": "Language proficiency" },
-        { "filter": "Vietnamese level", "type": "Dropdown (Native, Advanced, Intermediate, Basic, None)", "description": "Language proficiency" },
-        { "filter": "English level", "type": "Dropdown (Native, Fluent, Advanced, Intermediate, Basic)", "description": "Language proficiency" },
-        { "filter": "Skills", "type": "Multi-select tag filter", "description": "Exact match on parsed skills" },
-        { "filter": "Education level", "type": "Dropdown", "description": "Highest degree" },
-        { "filter": "AI match score", "type": "Range (0–100)", "description": "Filter by minimum score threshold" },
-        { "filter": "Pipeline stage", "type": "Multi-select", "description": "Current pipeline position" },
-        { "filter": "Application date", "type": "Range", "description": "Date applied" },
-        { "filter": "Status", "type": "Dropdown", "description": "Active, archived, rejected, hired" },
-        { "filter": "Client", "type": "Multi-select", "description": "Filter by HiringCompany" },
-        { "filter": "Source channel", "type": "Dropdown", "description": "Job board, LinkedIn, referral, direct, import" }
-      ],
-      "combinationLogic": "Semantic search and faceted filters operate as AND; full-text and keyword search can be combined with filters; saved searches per recruiter with optional email alerts"
-    },
-
-    "notificationCenter": {
-      "channels": [
-        { "channel": "In-app", "delivery": "Real-time via WebSocket / polling", "use": "All notification types; unread tracking" },
-        { "channel": "Email", "delivery": "SendGrid / AWS SES", "use": "Candidate-facing + important recruiter alerts" },
-        { "channel": "Push (future)", "delivery": "Browser push notifications", "use": "Desktop alerts (Phase 2)" }
-      ],
-      "notificationTypes": [
-        { "type": "Application received", "recipient": "Recruiter", "channel": "In-app + email", "timing": "Immediate" },
-        { "type": "AI match ready", "recipient": "Recruiter", "channel": "In-app + email", "timing": "Within 60s" },
-        { "type": "Interview scheduled", "recipient": "Candidate + Interviewer", "channel": "In-app + email", "timing": "Within 60s" },
-        { "type": "Interview reminder (24h)", "recipient": "Candidate + Interviewer", "channel": "In-app + email", "timing": "24h before" },
-        { "type": "Stage changed", "recipient": "Candidate + Recruiter", "channel": "In-app + email", "timing": "Within 30s" },
-        { "type": "Assessment result", "recipient": "Candidate + Recruiter", "channel": "In-app + email", "timing": "Within 5 min" },
-        { "type": "Client report", "recipient": "HiringCompany", "channel": "Email only", "timing": "Scheduled (daily/weekly)" },
-        { "type": "Scheduling conflict", "recipient": "Recruiter", "channel": "In-app + email", "timing": "Immediate" },
-        { "type": "Review queue item", "recipient": "Translator/Reviewer", "channel": "In-app + email", "timing": "Immediate" },
-        { "type": "AI cost alert", "recipient": "Agency Admin", "channel": "In-app + email", "timing": "When threshold reached" },
-        { "type": "Pipeline stall", "recipient": "Recruiter", "channel": "In-app", "timing": "After 7 days in stage" }
-      ],
-      "preferences": {
-        "emailCandidateNotifications": { "default": "On", "options": "On / Off per type" },
-        "inAppRecruiterAlerts": { "default": "On", "options": "On / Off per type" },
-        "digestFrequency": { "default": "Real-time", "options": "Real-time / Daily digest / Weekly digest" },
-        "quietHours": { "default": "Off", "options": "Configurable per-user (e.g., 10pm–7am)" }
-      }
-    },
-
-    "fileManagement": {
-      "assetTypes": [
-        { "type": "Resume/CV", "description": "Candidate's resume (PDF/DOCX)", "uploaders": ["Candidate (portal)", "Recruiter (manual)"], "access": "Recruiter + Client" },
-        { "type": "Offer Letter", "description": "Formal offer document (PDF)", "uploaders": ["Recruiter"], "access": "Recruiter + Client" },
-        { "type": "Assessment Recording", "description": "Interview recording (video/audio)", "uploaders": ["System (auto-record)"], "access": "Interviewer + Recruiter + Client" },
-        { "type": "Portfolio", "description": "Candidate portfolio files (images, PDFs, links)", "uploaders": ["Candidate (portal)"], "access": "Recruiter + Client" },
-        { "type": "Certificate", "description": "Professional certificates (PDF, images)", "uploaders": ["Candidate (portal)", "Recruiter (manual)"], "access": "Recruiter + Client" },
-        { "type": "Signed Contract", "description": "Employment contract (PDF)", "uploaders": ["Recruiter / System"], "access": "Recruiter + Client" }
-      ],
-      "storageSchema": {
-        "fileId": "UUID v4",
-        "fileName": "Original filename (sanitized)",
-        "fileType": "MIME type",
-        "fileSize": "Bytes",
-        "storagePath": "S3 key (agencyId/clientId/fileId/filename)",
-        "entityType": "candidate_resume | offer_letter | assessment_recording | portfolio | certificate | contract",
-        "entityId": "References the parent entity (candidateId, applicationId, etc.)",
-        "uploadedBy": "User ID",
-        "uploadedAt": "ISO 8601 UTC",
-        "accessLevel": "private (uploader only) | shared (agency) | restricted (specific roles)"
-      },
-      "accessControl": {
-        "Agency Admin": { "Resume/CV": "Read all", "Offer Letter": "Read all", "Recording": "Read all", "Portfolio/Certificate": "Read all" },
-        "Recruiter": { "Resume/CV": "Read all", "Offer Letter": "Read own client", "Recording": "Own assigned", "Portfolio/Certificate": "Read all" },
-        "Interviewer": { "Resume/CV": "Read assigned", "Offer Letter": "None", "Recording": "Own recorded", "Portfolio/Certificate": "None" },
-        "Client (HiringCompany)": { "Resume/CV": "Read own candidates", "Offer Letter": "Read own offers", "Recording": "Read own recordings", "Portfolio/Certificate": "Read own candidates" },
-        "Candidate": { "Resume/CV": "Own files only", "Offer Letter": "Own offers", "Recording": "None", "Portfolio/Certificate": "Own files" }
-      }
-    },
-
-    "reporting": {
-      "reportTypes": [
-        { "report": "Pipeline Summary", "format": "PDF / CSV", "frequency": "Weekly / On-demand", "recipients": "HiringCompany" },
-        { "report": "Time-to-Hire Analytics", "format": "PDF", "frequency": "Monthly", "recipients": "Agency Admin" },
-        { "report": "Source Effectiveness", "format": "PDF / CSV", "frequency": "Monthly", "recipients": "Agency Admin" },
-        { "report": "Conversion Funnel", "format": "PDF (visual)", "frequency": "Monthly", "recipients": "Agency Admin, HiringCompany" },
-        { "report": "Assessment Score Breakdown", "format": "CSV", "frequency": "On-demand", "recipients": "Recruiter" },
-        { "report": "Audit Log Export", "format": "CSV / JSON", "frequency": "On-demand", "recipients": "Agency Admin" },
-        { "report": "GDPR Data Export", "format": "JSON", "frequency": "On-request (candidate)", "recipients": "Candidate" }
-      ],
-      "exportCapabilities": {
-        "Candidate list": { "CSV": true, "PDF": true, "API Access": true },
-        "Pipeline metrics": { "CSV": true, "PDF": true, "API Access": true },
-        "Assessment results": { "CSV": true, "PDF": false, "API Access": true },
-        "Audit logs": { "CSV": true, "PDF": false, "API Access": true }
-      }
-    },
-
-    "observability": {
-      "loggingStrategy": {
-        "ERROR": { "description": "Failures, exceptions, security violations", "destination": "Sentry + DB log table", "retention": "12 months" },
-        "WARN": { "description": "Degraded performance, retry activations, fallback triggers", "destination": "Log aggregator", "retention": "6 months" },
-        "INFO": { "description": "Request lifecycle, stage transitions, AI calls", "destination": "Structured JSON logs", "retention": "3 months" },
-        "DEBUG": { "description": "Detailed processing steps, AI payloads (sanitized)", "destination": "Local/dev only", "retention": "Session" }
-      },
-      "distributedTracing": {
-        "traceId": "UUID v4, generated at API gateway",
-        "propagation": "HTTP headers (X-Trace-Id, X-Request-Id)",
-        "spans": "API handler → Service → DB → Queue → AI API",
-        "tool": "OpenTelemetry with Jaeger or Datadog"
-      },
-      "metrics": [
-        { "metric": "API response time (P95)", "type": "Gauge", "alertThreshold": ">500ms" },
-        { "metric": "Queue depth per queue", "type": "Gauge", "alertThreshold": ">100 items (warning), >500 (critical)" },
-        { "metric": "AI API latency (P95)", "type": "Gauge", "alertThreshold": ">5s" },
-        { "metric": "AI error rate", "type": "Counter", "alertThreshold": ">5% over 5 min" },
-        { "metric": "Circuit breaker state", "type": "State", "alertThreshold": "OPEN" },
-        { "metric": "Active users (concurrent)", "type": "Gauge", "alertThreshold": "N/A (capacity planning)" },
-        { "metric": "Queue processing rate", "type": "Counter", "alertThreshold": "Drop >50% from baseline" },
-        { "metric": "Daily AI spend", "type": "Gauge", "alertThreshold": "80% and 100% of daily budget" },
-        { "metric": "Error rate (HTTP 5xx)", "type": "Counter", "alertThreshold": ">1% over 5 min" }
-      ],
-      "healthCheckEndpoints": [
-        { "endpoint": "/health/live", "checks": "Application process is running" },
-        { "endpoint": "/health/ready", "checks": "DB connection, Redis connection" },
-        { "endpoint": "/health/ai-provider", "checks": "OpenAI API responsive, Gemini API responsive" },
-        { "endpoint": "/health/queue", "checks": "BullMQ Redis connection, queue consumers active" },
-        { "endpoint": "/health/full", "checks": "All of the above + disk space, memory" }
-      ]
-    },
-
-    "queueConfiguration": {
-      "queues": [
-        { "name": "ai-parse-cv", "priority": "P0 (Critical)", "concurrency": 5, "retry": "3x, exponential backoff", "maxFailures": "3 → DLQ", "rateLimit": "50/min", "description": "CV parsing and field extraction" },
-        { "name": "ai-match-score", "priority": "P0 (Critical)", "concurrency": 5, "retry": "3x, exponential backoff", "maxFailures": "3 → DLQ", "rateLimit": "30/min", "description": "AI candidate-job matching" },
-        { "name": "ai-translate-critical", "priority": "P0 (Critical)", "concurrency": 3, "retry": "2x, exponential backoff", "maxFailures": "2 → review queue", "rateLimit": "20/min", "description": "High-priority translations (client-facing)" },
-        { "name": "ai-translate-standard", "priority": "P1 (High)", "concurrency": 3, "retry": "2x, exponential backoff", "maxFailures": "2 → review queue", "rateLimit": "30/min", "description": "Internal/low-urgency translations" },
-        { "name": "ai-score-breakdown", "priority": "P1 (High)", "concurrency": 3, "retry": "2x, exponential backoff", "maxFailures": "2 → DLQ", "rateLimit": "20/min", "description": "AI-generated score explanations" },
-        { "name": "email-critical", "priority": "P0 (Critical)", "concurrency": 10, "retry": "3x, exponential backoff", "maxFailures": "5 → DLQ", "rateLimit": "100/min", "description": "Time-sensitive notifications" },
-        { "name": "email-standard", "priority": "P1 (High)", "concurrency": 5, "retry": "3x, exponential backoff", "maxFailures": "5 → DLQ", "rateLimit": "100/min", "description": "Non-urgent notifications" },
-        { "name": "email-bulk-report", "priority": "P2 (Low)", "concurrency": 2, "retry": "1x", "maxFailures": "3 → DLQ", "rateLimit": "10/min", "description": "Scheduled reports" },
-        { "name": "analytics-collector", "priority": "P2 (Low)", "concurrency": 2, "retry": "1x", "maxFailures": "3 → DLQ", "rateLimit": "50/min", "description": "Event collection for analytics" },
-        { "name": "audit-purge", "priority": "P3 (Minimal)", "concurrency": 1, "retry": "1x", "maxFailures": "3 → log", "rateLimit": "5/min", "description": "Data retention purge jobs" },
-        { "name": "cleanup-temp-files", "priority": "P3 (Minimal)", "concurrency": 1, "retry": "1x", "maxFailures": "3 → log", "rateLimit": "5/min", "description": "Remove stale temp files" },
-        { "name": "db-backup", "priority": "P3 (Minimal)", "concurrency": 1, "retry": "1x", "maxFailures": "3 → alert", "rateLimit": "1/day", "description": "Database backup" }
-      ],
-      "dlqStrategy": [
-        { "queue": "ai-parse-cv", "behavior": "Failed jobs → DLQ alert to admin; retryable manually" },
-        { "queue": "ai-match-score", "behavior": "Failed jobs → fallback to rule-based; log for investigation" },
-        { "queue": "email-critical", "behavior": "Failed jobs → fallback to in-app notification; alert admin" },
-        { "queue": "analytics-collector", "behavior": "Failed jobs → drop (non-critical); log metric" }
-      ]
-    },
-
-    "environment": {
-      "matrix": [
-        { "env": "Sandbox", "purpose": "Per-developer testing", "data": "Synthetic only", "access": "Developer", "aiProvider": "Free tier / test keys", "scale": "Minimal" },
-        { "env": "Dev", "purpose": "Feature integration testing", "data": "Anonymized copy of prod data", "access": "Dev team", "aiProvider": "OpenAI + Gemini", "scale": "Scaled down" },
-        { "env": "Staging", "purpose": "Client demo + QA", "data": "Anonymized copy of prod data + synthetic", "access": "QA + Demo users", "aiProvider": "OpenAI + Gemini", "scale": "Production-scale" },
-        { "env": "Production", "purpose": "Live client usage", "data": "Real client data", "access": "All authorized users", "aiProvider": "OpenAI (primary) + Gemini (fallback)", "scale": "Auto-scaling" }
-      ],
-      "releaseStrategy": {
-        "deployment": "Blue-green on GCP Cloud Run; zero-downtime",
-        "featureFlags": "LaunchDarkly or Unleash; per-agency toggle",
-        "canaryReleases": "New features enabled for 1 agency first, then gradual rollout",
-        "rollback": "Previous container version kept; instant rollback via traffic split",
-        "databaseMigrations": "Flyway or Prisma migrations; backward-compatible schema changes",
-        "aiModelUpdates": "Model version pinned per environment; canary with shadow traffic"
-      }
-    },
-
-    "candidatePortal": {
-      "capabilities": [
-        { "capability": "Application status tracking", "description": "View current stage, timeline of events", "priority": "P0" },
-        { "capability": "Upload new CV / resume", "description": "Replace existing resume", "priority": "P0" },
-        { "capability": "Manage availability", "description": "Submit preferred interview time slots", "priority": "P0" },
-        { "capability": "Respond to scheduling", "description": "Accept/decline/reschedule interview invitations", "priority": "P0" },
-        { "capability": "Withdraw application", "description": "Remove application from pipeline", "priority": "P0" },
-        { "capability": "View communication history", "description": "See all emails and notifications sent/received", "priority": "P1" },
-        { "capability": "Multi-language portal", "description": "JP/VN/EN interface", "priority": "P1" },
-        { "capability": "Interview prep materials", "description": "Receive documents/tips before interview", "priority": "P2" }
-      ],
-      "accessControl": {
-        "Candidate": { "canView": "Own application, own profile", "canModify": "Own profile, own availability" },
-        "Recruiter": { "canView": "All candidate portals in managed clients — view only", "canModify": "Can send updates to candidates via portal" }
-      }
-    },
-
-    "recruiterDashboard": {
-      "defaultWidgets": [
-        { "widget": "Pipeline summary (counts by stage)", "dataSource": "Application table, grouped by stage", "refresh": "Real-time" },
-        { "widget": "Overdue interviews", "dataSource": "Interview table", "refresh": "Every 5 min" },
-        { "widget": "Stalled candidates", "dataSource": "Application table + timeline", "refresh": "Daily" },
-        { "widget": "AI low-confidence queue", "dataSource": "LocalizedContent table where confidence < 80%", "refresh": "Real-time" },
-        { "widget": "Pending approvals", "dataSource": "Application table filtered by status", "refresh": "Real-time" },
-        { "widget": "Recent activity feed", "dataSource": "Timeline events, last 24h", "refresh": "Real-time" },
-        { "widget": "AI cost tracker", "dataSource": "AI usage logs", "refresh": "Hourly" },
-        { "widget": "Client pipeline comparison", "dataSource": "Cross-client stage counts", "refresh": "Daily" },
-        { "widget": "Upcoming interviews", "dataSource": "Interview table filtered by date", "refresh": "Every 5 min" }
-      ],
-      "customization": "Recruiters can add/remove/reorder widgets; layout persisted per user; filter by client, date range, stage"
-    },
-
-    "billingAndSubscription": {
-      "plans": [
-        { "plan": "Starter", "target": "Solo recruiter, 1–2 clients", "aiCreditsPerMonth": "$500 (~33K tokens/day)", "features": "MVP features, 1 client pipeline, basic support", "price": "$99/mo" },
-        { "plan": "Professional", "target": "Small agency, 3–10 clients", "aiCreditsPerMonth": "$1,000 (~66K tokens/day)", "features": "Multi-client, custom pipeline, analytics, priority support", "price": "$299/mo" },
-        { "plan": "Enterprise", "target": "Large agency, 10+ clients", "aiCreditsPerMonth": "$1,500 (~100K tokens/day)", "features": "White-label options, dedicated support, custom integrations, SLA", "price": "Custom" }
-      ],
-      "meteredResources": [
-        { "resource": "AI API calls", "unit": "Per-call", "tracking": "Incremented per service call" },
-        { "resource": "AI tokens consumed", "unit": "Per-token", "tracking": "Tracked per model per agency per day" },
-        { "resource": "CVs parsed", "unit": "Per-parse", "tracking": "Counted monthly per agency" },
-        { "resource": "Translations", "unit": "Per-document", "tracking": "Counted monthly per agency" },
-        { "resource": "Storage (S3)", "unit": "GB/month", "tracking": "Measured daily" },
-        { "resource": "Active users", "unit": "Per-seat", "tracking": "Counted monthly" }
-      ],
-      "overagePolicy": [
-        { "scenario": "AI budget 80% consumed", "action": "Alert agency admin" },
-        { "scenario": "AI budget 100% consumed", "action": "Suspend non-critical AI queues; notify admin" },
-        { "scenario": "Storage over plan limit", "action": "Read-only mode; notify admin to upgrade" },
-        { "scenario": "User seats over limit", "action": "Block new user creation; notify admin" }
-      ]
-    },
-
-    "tenantOnboarding": {
-      "steps": [
-        { "step": 1, "action": "Agency signs up with email/password or SSO", "owner": "Agency Admin", "duration": "< 1 min" },
-        { "step": 2, "action": "Agency profile created (name, logo, timezone, language)", "owner": "Agency Admin", "duration": "< 2 min" },
-        { "step": 3, "action": "Billing plan selected and payment configured", "owner": "Agency Admin", "duration": "< 5 min" },
-        { "step": 4, "action": "First HiringCompany (client) created", "owner": "Agency Admin", "duration": "< 3 min" },
-        { "step": 5, "action": "Pipeline stages configured for client (or use default template)", "owner": "Agency Admin / Client", "duration": "< 5 min" },
-        { "step": 6, "action": "Recruiters invited and assigned to client(s)", "owner": "Agency Admin", "duration": "< 5 min" },
-        { "step": 7, "action": "Calendar integration connected (optional)", "owner": "Recruiter", "duration": "< 3 min" },
-        { "step": 8, "action": "Client onboarding complete — ready to create jobs", "owner": "Client / Agency Admin", "duration": "—" }
-      ],
-      "checklistPerClient": [
-        "Client company profile completed",
-        "Pipeline stages configured (or default used)",
-        "At least 1 recruiter assigned",
-        "Job template created (or first job posted)",
-        "Calendar connected (optional but recommended)",
-        "Email/SMS channel configured",
-        "AI credit allocation confirmed"
-      ]
-    },
-
-    "businessRules": [
-      { "id": "BR-001", "category": "Candidate Management", "rule": "A candidate must have a unique email address within an agency", "rationale": "Prevents duplicate profiles", "mappedReqIds": ["FR-009"] },
-      { "id": "BR-002", "category": "Candidate Management", "rule": "Duplicate detection triggers when name + email + phone similarity exceeds 90%", "rationale": "Balances precision and recall in deduplication", "mappedReqIds": ["FR-009"] },
-      { "id": "BR-003", "category": "Candidate Management", "rule": "All candidate PII must be encrypted at rest (AES-256) and in transit (TLS 1.3)", "rationale": "GDPR/CCPA compliance", "mappedReqIds": ["CR-002"] },
-      { "id": "BR-004", "category": "Candidate Management", "rule": "Candidate data is scoped to the HiringCompany that sourced or received the candidate", "rationale": "Multi-client data isolation", "mappedReqIds": ["FR-042"] },
-      { "id": "BR-005", "category": "Candidate Management", "rule": "Candidates may be shared across a recruiter's assigned clients via shared pool", "rationale": "Agency-level candidate reuse", "mappedReqIds": ["FR-044"] },
-      { "id": "BR-006", "category": "Job & Pipeline", "rule": "Each job must belong to exactly one HiringCompany", "rationale": "Data integrity", "mappedReqIds": ["DR-013"] },
-      { "id": "BR-007", "category": "Job & Pipeline", "rule": "Default pipeline stages are: Applied → Screening → Interview → Technical → Offer → Hired/Rejected", "rationale": "Standard workflow baseline", "mappedReqIds": ["FR-025", "FR-024"] },
-      { "id": "BR-008", "category": "Job & Pipeline", "rule": "Clients may customize stage names and auto-transition rules", "rationale": "Client-specific workflows", "mappedReqIds": ["FR-025", "FR-045"] },
-      { "id": "BR-009", "category": "Job & Pipeline", "rule": "Automated stage transitions fire within 60 seconds of a trigger event (pass/fail/timeout)", "rationale": "Timely pipeline movement", "mappedReqIds": ["FR-026"] },
-      { "id": "BR-010", "category": "Job & Pipeline", "rule": "An application cannot exist without a valid Candidate and Job", "rationale": "Referential integrity", "mappedReqIds": ["DR-013"] },
-      { "id": "BR-011", "category": "Scheduling", "rule": "All times are stored in UTC and displayed in participant-local timezone", "rationale": "Multi-timezone correctness", "mappedReqIds": ["FR-017"] },
-      { "id": "BR-012", "category": "Scheduling", "rule": "Scheduling suggestions must be generated within 5 seconds of availability submission", "rationale": "Responsive UX", "mappedReqIds": ["FR-013", "NFR-004"] },
-      { "id": "BR-013", "category": "Scheduling", "rule": "Interview bookings must fall within business hours (9:00–18:00 local per participant)", "rationale": "Professional scheduling norms", "mappedReqIds": ["FR-013"] },
-      { "id": "BR-014", "category": "Scheduling", "rule": "Automated reminders are sent 24 hours before each scheduled interview", "rationale": "Reduce no-show rate", "mappedReqIds": ["FR-015"] },
-      { "id": "BR-015", "category": "Scheduling", "rule": "Candidates and interviewers can reschedule via self-service links without recruiter intervention", "rationale": "Self-service efficiency", "mappedReqIds": ["FR-016"] },
-      { "id": "BR-016", "category": "AI & Scoring", "rule": "AI matching scores are computed using weighted factors: Skills 40%, Experience 30%, Education 20%, Org Preference 10%", "rationale": "Transparent, configurable ranking", "mappedReqIds": ["FR-003"] },
-      { "id": "BR-017", "category": "AI & Scoring", "rule": "Weight values are admin-configurable per agency", "rationale": "Agency customization", "mappedReqIds": ["FR-003"] },
-      { "id": "BR-018", "category": "AI & Scoring", "rule": "AI matching must complete within 15 seconds per candidate-job pair", "rationale": "Real-time feedback", "mappedReqIds": ["NFR-003"] },
-      { "id": "BR-019", "category": "AI & Scoring", "rule": "AI-generated score breakdowns must explain each contributing factor", "rationale": "Transparency and trust", "mappedReqIds": ["FR-008", "FR-022"] },
-      { "id": "BR-020", "category": "AI & Scoring", "rule": "CV parsing must achieve ≥90% field-level accuracy on test corpus", "rationale": "Quality threshold", "mappedReqIds": ["FR-006"] },
-      { "id": "BR-021", "category": "AI & Scoring", "rule": "CV parsing and AI scoring end-to-end must complete within 15 seconds", "rationale": "Throughput requirement", "mappedReqIds": ["NFR-002"] },
-      { "id": "BR-022", "category": "AI & Scoring", "rule": "When AI services are unavailable, the system falls back to rule-based processing within 10 seconds of detection", "rationale": "Graceful degradation", "mappedReqIds": ["NFR-013"] },
-      { "id": "BR-023", "category": "AI & Scoring", "rule": "AI outputs are advisory-only; no consequential action is taken without human approval", "rationale": "Human-in-the-loop", "mappedReqIds": ["FR-023", "CR-001"] },
-      { "id": "BR-024", "category": "AI & Scoring", "rule": "System uses OpenAI GPT-4o as primary AI and Gemini 1.5 Pro as fallback", "rationale": "Resolved AI provider decision", "mappedReqIds": ["CR-009", "IR-004", "IR-005"] },
-      { "id": "BR-025", "category": "Assessment", "rule": "MCQ assessments must be auto-graded with 100% accuracy for predefined answer patterns", "rationale": "Reliability of auto-scoring", "mappedReqIds": ["FR-018", "FR-019"] },
-      { "id": "BR-026", "category": "Assessment", "rule": "Assessment scores are available within 5 seconds of submission", "rationale": "Immediate feedback", "mappedReqIds": ["NFR-004", "FR-020"] },
-      { "id": "BR-027", "category": "Assessment", "rule": "Recruiters can configure pass/fail thresholds per job (0–100, default 60)", "rationale": "Role-specific standards", "mappedReqIds": ["FR-021"] },
-      { "id": "BR-028", "category": "Assessment", "rule": "Recruiters can override any auto-pass/fail decision with a recorded reason", "rationale": "Human judgment for edge cases", "mappedReqIds": ["FR-023"] },
-      { "id": "BR-029", "category": "Translation", "rule": "Supported language pairs are JP↔VN, JP↔EN, VN↔EN", "rationale": "Core market requirement", "mappedReqIds": ["FR-028"] },
-      { "id": "BR-030", "category": "Translation", "rule": "Source language is auto-detected with ≥95% confidence before translation", "rationale": "Reduces manual input", "mappedReqIds": ["FR-031"] },
-      { "id": "BR-031", "category": "Translation", "rule": "Translations delivered within 30 seconds per document (up to 10 pages)", "rationale": "Acceptable user wait time", "mappedReqIds": ["FR-028", "NFR-005"] },
-      { "id": "BR-032", "category": "Translation", "rule": "Translations with confidence < 80% are routed to a human review queue", "rationale": "Quality control", "mappedReqIds": ["FR-032"] },
-      { "id": "BR-033", "category": "Translation", "rule": "Each agency maintains a bilingual glossary that overrides system defaults for client-specific terminology", "rationale": "Domain accuracy", "mappedReqIds": ["FR-028", "FR-030"] },
-      { "id": "BR-034", "category": "Communication", "rule": "Email notifications are sent within 60 seconds of trigger events", "rationale": "Timely communication", "mappedReqIds": ["FR-033"] },
-      { "id": "BR-035", "category": "Communication", "rule": "All candidate-facing emails include agency branding", "rationale": "Professional image", "mappedReqIds": ["FR-036"] },
-      { "id": "BR-036", "category": "Communication", "rule": "Template-based emails support HTML and plain text formats", "rationale": "Client flexibility", "mappedReqIds": ["FR-036"] },
-      { "id": "BR-037", "category": "Communication", "rule": "Pipeline progress reports are sent to HiringCompanies at configurable frequency (daily/weekly)", "rationale": "Client retention", "mappedReqIds": ["FR-035"] },
-      { "id": "BR-038", "category": "Access Control", "rule": "RBAC is enforced at entity level, not just route level", "rationale": "Data isolation", "mappedReqIds": ["FR-040"] },
-      { "id": "BR-039", "category": "Access Control", "rule": "Cross-client data access is denied by default; queries filtered by client_id", "rationale": "Multi-tenant security", "mappedReqIds": ["FR-042"] },
-      { "id": "BR-040", "category": "Access Control", "rule": "A recruiter may manage multiple HiringCompanies but only access their assigned data", "rationale": "Agency operational model", "mappedReqIds": ["FR-043"] },
-      { "id": "BR-041", "category": "Access Control", "rule": "SSO (Google / Microsoft) is optional; MFA is optional for admins", "rationale": "Reduced friction + enhanced security", "mappedReqIds": ["FR-038", "FR-039"] },
-      { "id": "BR-042", "category": "Access Control", "rule": "JWT access tokens expire and are refreshed via secure refresh token flow", "rationale": "Session security", "mappedReqIds": ["FR-041"] },
-      { "id": "BR-043", "category": "Security & Compliance", "rule": "All user inputs are sanitized against XSS, SQL injection, and NoSQL injection", "rationale": "OWASP baseline", "mappedReqIds": ["CR-001"] },
-      { "id": "BR-044", "category": "Security & Compliance", "rule": "File uploads are limited to PDF/DOCX, max 25MB, with magic byte validation", "rationale": "Prevent malicious uploads", "mappedReqIds": ["CR-003"] },
-      { "id": "BR-045", "category": "Security & Compliance", "rule": "All uploaded CVs are scanned for malware (ClamAV) before storage", "rationale": "Upload security", "mappedReqIds": ["IR-008"] },
-      { "id": "BR-046", "category": "Security & Compliance", "rule": "API requests are rate-limited to 100/min per user; uploads to 10/min per user", "rationale": "Abuse prevention", "mappedReqIds": ["CR-004"] },
-      { "id": "BR-047", "category": "Security & Compliance", "rule": "All candidate data access events are logged with who, what, when, IP, device fingerprint", "rationale": "Audit trail", "mappedReqIds": ["CR-007"] },
-      { "id": "BR-048", "category": "Security & Compliance", "rule": "Data retention is configurable per agency (6, 12, or 24 months); auto-purge on schedule", "rationale": "Compliance control", "mappedReqIds": ["CR-006"] },
-      { "id": "BR-049", "category": "Security & Compliance", "rule": "Right to erasure and data portability are supported per GDPR/CCPA", "rationale": "Regulatory compliance", "mappedReqIds": ["CR-005"] },
-      { "id": "BR-050", "category": "Security & Compliance", "rule": "Credentials and secrets are never hardcoded; managed via environment variables or secret manager", "rationale": "Secret management", "mappedReqIds": ["CR-001", "CR-002"] },
-      { "id": "BR-051", "category": "Infrastructure & Operations", "rule": "System maintains 99.5% monthly uptime SLA", "rationale": "Business continuity", "mappedReqIds": ["NFR-011"] },
-      { "id": "BR-052", "category": "Infrastructure & Operations", "rule": "Automated backups maintain ≤24-hour Recovery Point Objective", "rationale": "Data loss prevention", "mappedReqIds": ["NFR-012"] },
-      { "id": "BR-053", "category": "Infrastructure & Operations", "rule": "AI workloads scale horizontally via BullMQ message queue", "rationale": "Handle burst requests", "mappedReqIds": ["NFR-008"] },
-      { "id": "BR-054", "category": "Infrastructure & Operations", "rule": "AI circuit breaker detects failures within 10 seconds, resets after 30 seconds", "rationale": "Fast failover", "mappedReqIds": ["NFR-013"] },
-      { "id": "BR-055", "category": "Infrastructure & Operations", "rule": "Health check endpoints are available for DB, AI API, queue, and cache", "rationale": "Monitoring readiness", "mappedReqIds": ["NFR-014"] },
-      { "id": "BR-056", "category": "Infrastructure & Operations", "rule": "Deployment target is GCP (Cloud Run or GKE)", "rationale": "Resolved infrastructure decision", "mappedReqIds": ["CR-008"] },
-      { "id": "BR-057", "category": "Infrastructure & Operations", "rule": "Monthly AI API budget is $500–$1,500; alerts trigger at 80% threshold", "rationale": "Cost governance", "mappedReqIds": ["CR-010"] },
-      { "id": "BR-058", "category": "Infrastructure & Operations", "rule": "Database read replicas serve analytics queries to protect transaction performance", "rationale": "Scalability", "mappedReqIds": ["NFR-010"] },
-      { "id": "BR-059", "category": "AI Governance", "rule": "AI routing policy assigns cheapest model that meets quality requirements", "rationale": "Cost optimization", "mappedReqIds": ["BP-007", "CR-010"] },
-      { "id": "BR-060", "category": "AI Governance", "rule": "Translation jobs are batched (up to 20 documents/batch) when processing >5 pending items", "rationale": "Cost reduction", "mappedReqIds": ["BP-007", "NFR-005"] },
-      { "id": "BR-061", "category": "AI Governance", "rule": "Embedding results are cached for 30 days per document version", "rationale": "Prevent redundant compute", "mappedReqIds": ["BP-007"] },
-      { "id": "BR-062", "category": "AI Governance", "rule": "Prompt input is truncated to model's context limit minus 500 tokens for response", "rationale": "Prevent cost blowout", "mappedReqIds": ["BP-007", "NFR-003"] },
-      { "id": "BR-063", "category": "AI Governance", "rule": "AI cost dashboard is visible to Agency Admin in real time", "rationale": "Transparency", "mappedReqIds": ["BP-007", "BR-057"] },
-      { "id": "BR-064", "category": "AI Governance", "rule": "All AI API calls are logged with model, token count, cost, and latency", "rationale": "Audit and optimization", "mappedReqIds": ["BP-007", "CR-007"] },
-      { "id": "BR-065", "category": "Multi-Client Data Ownership", "rule": "Candidate profile is agency-scoped; application is client-scoped", "rationale": "Ownership clarity", "mappedReqIds": ["BP-003", "FR-042"] },
-      { "id": "BR-066", "category": "Multi-Client Data Ownership", "rule": "Interview feedback is client-scoped and never shared across clients", "rationale": "Client confidentiality", "mappedReqIds": ["BP-003", "FR-042", "GDPR"] },
-      { "id": "BR-067", "category": "Multi-Client Data Ownership", "rule": "Internal recruiter notes are private by default, shareable by explicit grant", "rationale": "Recruiter collaboration without leakage", "mappedReqIds": ["FR-042"] },
-      { "id": "BR-068", "category": "Multi-Client Data Ownership", "rule": "Salary expectations require candidate consent before sharing with any client", "rationale": "Regulatory compliance", "mappedReqIds": ["CR-005", "GDPR"] },
-      { "id": "BR-069", "category": "Multi-Client Data Ownership", "rule": "AI credit budget is agency-level with per-client allocation tracking", "rationale": "Cost governance across clients", "mappedReqIds": ["BP-007", "CR-010"] },
-      { "id": "BR-070", "category": "Multi-Client Data Ownership", "rule": "Cross-client deduplication is flag-only by default; merge requires recruiter approval", "rationale": "Prevent accidental data loss", "mappedReqIds": ["FR-009", "UC-008"] },
-      { "id": "BR-071", "category": "Multi-Client Data Ownership", "rule": "Agency admin can audit all data access across all clients", "rationale": "Oversight", "mappedReqIds": ["CR-007"] },
-      { "id": "BR-072", "category": "Workflow Engine", "rule": "All workflow transitions are event-driven and rule-configurable per client", "rationale": "Architecture requirement", "mappedReqIds": [] },
-      { "id": "BR-073", "category": "Workflow Engine", "rule": "Auto-transition fires within 60 seconds of trigger event", "rationale": "Timely pipeline movement", "mappedReqIds": ["FR-026"] },
-      { "id": "BR-074", "category": "Workflow Engine", "rule": "Manual stage override by recruiter always takes precedence over auto-rules", "rationale": "Human-in-the-loop", "mappedReqIds": ["FR-023"] },
-      { "id": "BR-075", "category": "Workflow Engine", "rule": "All transitions are logged as immutable workflow events", "rationale": "Auditability", "mappedReqIds": ["FR-023", "CR-007"] },
-      { "id": "BR-076", "category": "Workflow Engine", "rule": "Failed auto-transition triggers retry (3x) then routes to manual review queue", "rationale": "Reliability", "mappedReqIds": ["NFR-013"] },
-      { "id": "BR-077", "category": "Workflow Engine", "rule": "Stalled candidates (no transition >7 days) trigger recruiter alert", "rationale": "Pipeline health", "mappedReqIds": ["BP-004"] },
-      { "id": "BR-078", "category": "Audit", "rule": "All audit events are immutable and append-only", "rationale": "Integrity", "mappedReqIds": ["CR-007"] },
-      { "id": "BR-079", "category": "Audit", "rule": "Audit log entries are retained per agency-configurable policy (6/12/24 months)", "rationale": "Compliance", "mappedReqIds": ["CR-006"] },
-      { "id": "BR-080", "category": "Audit", "rule": "Audit log is searchable by actor, action, entity, timestamp, and category", "rationale": "Operability", "mappedReqIds": ["CR-007"] },
-      { "id": "BR-081", "category": "Audit", "rule": "GDPR data export includes all audit events related to the requesting user", "rationale": "Regulatory", "mappedReqIds": ["CR-005"] },
-      { "id": "BR-082", "category": "Audit", "rule": "High-severity events trigger real-time alert to agency admin", "rationale": "Security monitoring", "mappedReqIds": ["CR-001"] },
-      { "id": "BR-083", "category": "Audit", "rule": "Every API request is correlated via traceId across all services", "rationale": "Debugging", "mappedReqIds": ["NFR-014"] },
-      { "id": "BR-084", "category": "Human Review", "rule": "Translation confidence < 80% enters human review queue", "rationale": "Quality gate", "mappedReqIds": ["FR-032", "UC-024"] },
-      { "id": "BR-085", "category": "Human Review", "rule": "Review items are assigned via round-robin with load balancing", "rationale": "Fair distribution", "mappedReqIds": ["UC-024"] },
-      { "id": "BR-086", "category": "Human Review", "rule": "Review SLAs: Urgent <4h, Normal <24h, Low <72h", "rationale": "Service level", "mappedReqIds": ["UC-024"] },
-      { "id": "BR-087", "category": "Human Review", "rule": "SLA breach triggers auto-escalation to senior reviewer", "rationale": "Timely resolution", "mappedReqIds": ["UC-024"] },
-      { "id": "BR-088", "category": "Human Review", "rule": "Reviewer can approve, reject (with notes), or return for re-translation", "rationale": "Review completeness", "mappedReqIds": ["UC-024"] },
-      { "id": "BR-089", "category": "Human Review", "rule": "Max 3 review attempts before routing to alternative reviewer", "rationale": "Prevent bottlenecks", "mappedReqIds": ["UC-024"] },
-      { "id": "BR-090", "category": "Timeline & Collaboration", "rule": "All system and user actions on a candidate are recorded in the timeline", "rationale": "Traceability", "mappedReqIds": ["BP-006", "CR-007"] },
-      { "id": "BR-091", "category": "Timeline & Collaboration", "rule": "Timeline events inherit the visibility of their source entity", "rationale": "Data isolation", "mappedReqIds": ["BR-065", "BR-066"] },
-      { "id": "BR-092", "category": "Timeline & Collaboration", "rule": "Timeline is exportable to PDF per candidate", "rationale": "Client reporting", "mappedReqIds": ["BP-003"] },
-      { "id": "BR-093", "category": "Timeline & Collaboration", "rule": "Internal notes are private by default; shared via explicit @mention", "rationale": "Data minimization", "mappedReqIds": ["BR-067"] },
-      { "id": "BR-094", "category": "Timeline & Collaboration", "rule": "Notes are scoped to candidate (visible across client applications)", "rationale": "Recruiter context", "mappedReqIds": ["BP-003"] },
-      { "id": "BR-095", "category": "Timeline & Collaboration", "rule": "Tags and flags are agency-level configurable (predefined + custom)", "rationale": "Usability", "mappedReqIds": ["BP-004"] },
-      { "id": "BR-096", "category": "Timeline & Collaboration", "rule": "Tasks on candidates trigger in-app notifications to assignee", "rationale": "Collaboration", "mappedReqIds": ["BP-004"] },
-      { "id": "BR-097", "category": "Search & Filtering", "rule": "Semantic search is the default candidate discovery method", "rationale": "AI-first", "mappedReqIds": ["BP-002"] },
-      { "id": "BR-098", "category": "Search & Filtering", "rule": "Faceted filters narrow search results after semantic ranking", "rationale": "Precision", "mappedReqIds": ["BP-002"] },
-      { "id": "BR-099", "category": "Search & Filtering", "rule": "Saved searches with email alerts are available per recruiter", "rationale": "Productivity", "mappedReqIds": ["BP-004"] },
-      { "id": "BR-100", "category": "Search & Filtering", "rule": "All search queries are scoped to agency + active client context", "rationale": "Data isolation", "mappedReqIds": ["BR-039"] },
-      { "id": "BR-101", "category": "Notifications", "rule": "In-app notifications delivered within 30 seconds of event", "rationale": "Real-time UX", "mappedReqIds": ["FR-034"] },
-      { "id": "BR-102", "category": "Notifications", "rule": "Email notifications delivered within 60 seconds of event", "rationale": "Communication SLA", "mappedReqIds": ["FR-033"] },
-      { "id": "BR-103", "category": "Notifications", "rule": "All notifications are user-scoped and role-aware", "rationale": "Data minimization", "mappedReqIds": ["BR-038"] },
-      { "id": "BR-104", "category": "Notifications", "rule": "Unread notification count tracked per user", "rationale": "UX", "mappedReqIds": [] },
-      { "id": "BR-105", "category": "Notifications", "rule": "Notification preferences are configurable per user", "rationale": "User control", "mappedReqIds": [] },
-      { "id": "BR-106", "category": "Notifications", "rule": "Candidate-facing emails include agency branding", "rationale": "Brand consistency", "mappedReqIds": ["FR-036"] },
-      { "id": "BR-107", "category": "File Management", "rule": "All uploaded files are scanned for malware (ClamAV) before storage", "rationale": "Security", "mappedReqIds": ["IR-008", "CR-003"] },
-      { "id": "BR-108", "category": "File Management", "rule": "File storage path includes agencyId/clientId for tenant isolation", "rationale": "Data isolation", "mappedReqIds": ["BR-039"] },
-      { "id": "BR-109", "category": "File Management", "rule": "File retention follows agency data retention policy", "rationale": "Compliance", "mappedReqIds": ["BR-048"] },
-      { "id": "BR-110", "category": "File Management", "rule": "Signed contracts and offer letters are immutable once sent", "rationale": "Integrity", "mappedReqIds": [] },
-      { "id": "BR-111", "category": "Reporting", "rule": "Pipeline reports are available per-client with configurable date range", "rationale": "Client needs", "mappedReqIds": ["BP-003"] },
-      { "id": "BR-112", "category": "Reporting", "rule": "Bulk data export respects RBAC and tenant isolation", "rationale": "Security", "mappedReqIds": ["BR-039"] },
-      { "id": "BR-113", "category": "Reporting", "rule": "Scheduled reports are emailed at configured time", "rationale": "Automation", "mappedReqIds": ["BP-003"] },
-      { "id": "BR-114", "category": "Reporting", "rule": "GDPR data export completes within 72 hours of request", "rationale": "Compliance", "mappedReqIds": ["CR-005"] },
-      { "id": "BR-115", "category": "Observability", "rule": "All services emit structured JSON logs with traceId", "rationale": "Debugging", "mappedReqIds": ["NFR-014"] },
-      { "id": "BR-116", "category": "Observability", "rule": "Health check endpoints available for DB, AI providers, queue, cache", "rationale": "Ops readiness", "mappedReqIds": ["NFR-014"] },
-      { "id": "BR-117", "category": "Observability", "rule": "Alerting configured for error rate, latency, queue depth, AI cost", "rationale": "Proactive ops", "mappedReqIds": ["NFR-014"] },
-      { "id": "BR-118", "category": "Observability", "rule": "Distributed tracing propagated across all services", "rationale": "Debugging", "mappedReqIds": ["NFR-014"] },
-      { "id": "BR-119", "category": "Queue & Background Jobs", "rule": "AI parsing and matching jobs are processed before translation and reporting", "rationale": "Business priority", "mappedReqIds": ["NFR-008"] },
-      { "id": "BR-120", "category": "Queue & Background Jobs", "rule": "Critical queues (CV parse, match score) auto-scale workers under load", "rationale": "Throughput", "mappedReqIds": ["NFR-008"] },
-      { "id": "BR-121", "category": "Queue & Background Jobs", "rule": "Failed jobs retry with exponential backoff (3 attempts for critical, 1 for low)", "rationale": "Reliability", "mappedReqIds": ["NFR-013"] },
-      { "id": "BR-122", "category": "Queue & Background Jobs", "rule": "Permanently failed critical jobs enter admin alert pipeline", "rationale": "Error visibility", "mappedReqIds": ["NFR-014"] },
-      { "id": "BR-123", "category": "Environment & Release", "rule": "Production data never accessible in sandbox/dev environments", "rationale": "Data protection", "mappedReqIds": ["CR-002", "CR-007"] },
-      { "id": "BR-124", "category": "Environment & Release", "rule": "Staging uses anonymized production data for realistic testing", "rationale": "Quality", "mappedReqIds": [] },
-      { "id": "BR-125", "category": "Environment & Release", "rule": "Feature flags control gradual rollout of AI features", "rationale": "Risk mitigation", "mappedReqIds": ["BP-007"] },
-      { "id": "BR-126", "category": "Environment & Release", "rule": "Blue-green deployment ensures zero-downtime releases", "rationale": "Availability", "mappedReqIds": ["NFR-011"] },
-      { "id": "BR-127", "category": "Portal & Dashboard", "rule": "Candidate portal access requires authentication via email link or SSO", "rationale": "Security", "mappedReqIds": ["FR-037"] },
-      { "id": "BR-128", "category": "Portal & Dashboard", "rule": "Candidates can only view and modify their own application", "rationale": "Data isolation", "mappedReqIds": ["BR-039", "FR-042"] },
-      { "id": "BR-129", "category": "Portal & Dashboard", "rule": "Portal availability submissions trigger scheduling workflow", "rationale": "Automation", "mappedReqIds": ["FR-011"] },
-      { "id": "BR-130", "category": "Portal & Dashboard", "rule": "Portal UI rendered in candidate's preferred language", "rationale": "Localization", "mappedReqIds": ["FR-031"] },
-      { "id": "BR-131", "category": "Portal & Dashboard", "rule": "All external APIs versioned at /api/v1/", "rationale": "Compatibility", "mappedReqIds": [] },
-      { "id": "BR-132", "category": "Portal & Dashboard", "rule": "WebSocket connections authenticated via JWT in query param", "rationale": "Security", "mappedReqIds": ["BR-042"] },
-      { "id": "BR-133", "category": "Portal & Dashboard", "rule": "AI services decoupled and independently deployable", "rationale": "Scalability", "mappedReqIds": ["BP-007", "BR-053"] },
-      { "id": "BR-134", "category": "Portal & Dashboard", "rule": "Circuit breaker implemented for each AI provider independently", "rationale": "Reliability", "mappedReqIds": ["NFR-013"] },
-      { "id": "BR-135", "category": "Portal & Dashboard", "rule": "Rate limiting applied at API gateway (100 req/min/user, 10 uploads/min)", "rationale": "Security", "mappedReqIds": ["BR-046"] },
-      { "id": "BR-136", "category": "Portal & Dashboard", "rule": "Webhook delivery retries 3x with exponential backoff", "rationale": "Reliability", "mappedReqIds": ["NFR-013"] },
-      { "id": "BR-137", "category": "Portal & Dashboard", "rule": "All internal service-to-service calls authenticated via mTLS or service tokens", "rationale": "Security", "mappedReqIds": ["CR-001"] },
-      { "id": "BR-138", "category": "Billing & Onboarding", "rule": "AI credit budget is allocated per agency and resets monthly", "rationale": "Cost control", "mappedReqIds": ["BP-007", "CR-010"] },
-      { "id": "BR-139", "category": "Billing & Onboarding", "rule": "Per-client allocations can be set within agency budget", "rationale": "Multi-client control", "mappedReqIds": ["BP-003", "BP-007"] },
-      { "id": "BR-140", "category": "Billing & Onboarding", "rule": "Usage metrics are visible to Agency Admin in real-time dashboard", "rationale": "Transparency", "mappedReqIds": ["BP-007"] }
-    ],
-
-    "useCases": [
-      { "id": "UC-001", "title": "Search candidates across channels", "actor": "Recruiter", "preconditions": "At least one channel connector configured", "mainFlow": ["Recruiter enters search criteria", "System queries job boards, LinkedIn, internal DB", "Results displayed with match scores"], "postconditions": "Candidate list ranked by composite score", "mappedReqIds": ["FR-001"] },
-      { "id": "UC-002", "title": "AI semantic matching", "actor": "System", "preconditions": "Candidate profile and job description exist", "mainFlow": ["CV parsed", "Embedding generated", "Vector search against job embedding", "Weighted score computed", "Explanation generated"], "postconditions": "Match score and explanation stored; candidate ranked", "mappedReqIds": ["FR-002", "FR-003"] },
-      { "id": "UC-003", "title": "Manual score override", "actor": "Recruiter", "preconditions": "AI match score exists", "mainFlow": ["Recruiter views match details", "Adjusts weights or overrides score", "Records reason"], "postconditions": "Override recorded with audit trail; score updated", "mappedReqIds": ["FR-003", "FR-023"] },
-      { "id": "UC-004", "title": "Automated outreach", "actor": "System", "preconditions": "Top candidates matched, outreach approved by recruiter", "mainFlow": ["Match score computed", "Outreach message generated (draft)", "Recruiter reviews", "Approved", "Sent via email"], "postconditions": "Outreach delivered; status tracked", "mappedReqIds": ["FR-004"] },
-      { "id": "UC-005", "title": "Upload and parse CV", "actor": "Recruiter", "preconditions": "CV file in PDF/DOCX format (< 25MB)", "mainFlow": ["CV uploaded", "File validated (type, size, magic bytes)", "Malware scan", "Sent to AI parser", "Structured fields extracted", "Confidence scores assigned"], "postconditions": "Parsed fields stored; warnings flagged", "mappedReqIds": ["FR-005", "CR-003", "IR-008"] },
-      { "id": "UC-006", "title": "Manual field correction", "actor": "Recruiter", "preconditions": "Parse completed with warnings", "mainFlow": ["Recruiter reviews extracted fields", "Corrects errors", "Saves corrections"], "postconditions": "Updated fields persisted; correction logged", "mappedReqIds": ["FR-006", "FR-008"] },
-      { "id": "UC-007", "title": "CV screening against job", "actor": "System", "preconditions": "Parsed CV and job requirements exist", "mainFlow": ["Screen CV against job requirements", "Compute weighted score", "Generate explainable breakdown"], "postconditions": "Screening score and breakdown stored", "mappedReqIds": ["FR-007", "FR-008"] },
-      { "id": "UC-008", "title": "Duplicate detection", "actor": "System", "preconditions": "New candidate created", "mainFlow": ["Compare new candidate against pool", "Check name + email + phone similarity", "Flag if > 90% match"], "postconditions": "Duplicate flagged or merged", "mappedReqIds": ["FR-009"] },
-      { "id": "UC-009", "title": "Connect calendar", "actor": "Recruiter / Interviewer", "preconditions": "Google or Outlook account available", "mainFlow": ["User initiates OAuth flow", "Calendar permissions granted", "Events synced"], "postconditions": "Calendar connected; availability readable", "mappedReqIds": ["FR-010", "IR-002", "IR-003"] },
-      { "id": "UC-010", "title": "Collect candidate availability", "actor": "Candidate", "preconditions": "Application submitted", "mainFlow": ["Candidate receives scheduling link", "Submits preferred time slots", "Data stored"], "postconditions": "Availability stored for matching", "mappedReqIds": ["FR-011"] },
-      { "id": "UC-011", "title": "Suggest optimal slots", "actor": "System", "preconditions": "All participant availability collected", "mainFlow": ["Compute overlapping windows", "Respect business hours + timezone", "Rank top 3 options", "Present to recruiter"], "postconditions": "Slot suggestions displayed", "mappedReqIds": ["FR-013", "NFR-004"] },
-      { "id": "UC-012", "title": "Schedule multi-round interview", "actor": "Recruiter", "preconditions": "Slot confirmed for first round", "mainFlow": ["Select rounds (phone → technical → onsite)", "Auto-schedule each based on availability", "Send notifications"], "postconditions": "All rounds scheduled; participants notified", "mappedReqIds": ["FR-014", "FR-015"] },
-      { "id": "UC-013", "title": "Reschedule interview", "actor": "Candidate / Interviewer", "preconditions": "Interview scheduled", "mainFlow": ["Participant clicks reschedule link", "Selects new slot", "System validates", "Updates calendar + notifications"], "postconditions": "Interview rescheduled; all parties notified", "mappedReqIds": ["FR-016"] },
-      { "id": "UC-014", "title": "Send reminders", "actor": "System", "preconditions": "Interview scheduled", "mainFlow": ["24h before scheduled time", "Send email + in-app reminder to all participants"], "postconditions": "Reminders delivered", "mappedReqIds": ["FR-015"] },
-      { "id": "UC-015", "title": "Create MCQ assessment", "actor": "Recruiter", "preconditions": "Job exists with screening stage", "mainFlow": ["Configure questions + answers", "Set pass threshold", "Attach to job"], "postconditions": "Assessment ready for candidates", "mappedReqIds": ["FR-018", "FR-021"] },
-      { "id": "UC-016", "title": "Take and auto-grade assessment", "actor": "Candidate", "preconditions": "Assessment configured, candidate in interview stage", "mainFlow": ["Candidate completes assessment", "System grades instantly", "Score vs threshold", "Generate AI breakdown"], "postconditions": "Score and breakdown stored; pass/fail determined", "mappedReqIds": ["FR-018", "FR-019", "FR-020", "FR-022"] },
-      { "id": "UC-017", "title": "Override assessment result", "actor": "Recruiter", "preconditions": "Auto-graded score exists", "mainFlow": ["Review score and breakdown", "Override with reason", "Stage transition triggered if needed"], "postconditions": "Override recorded with audit trail", "mappedReqIds": ["FR-023"] },
-      { "id": "UC-018", "title": "Configure pipeline stages", "actor": "Agency Admin / Client", "preconditions": "Client company exists", "mainFlow": ["Select client", "Customize stage names and order", "Define auto-transition rules", "Save configuration"], "postconditions": "Pipeline stages active for client", "mappedReqIds": ["FR-024", "FR-025", "FR-026"] },
-      { "id": "UC-019", "title": "Manage candidate pipeline", "actor": "Recruiter", "preconditions": "Application exists", "mainFlow": ["View kanban board", "Drag candidate between stages", "Auto-transitions may trigger based on rules"], "postconditions": "Candidate status updated", "mappedReqIds": ["FR-024", "FR-026", "FR-027"] },
-      { "id": "UC-020", "title": "View pipeline dashboard", "actor": "Recruiter / Client", "preconditions": "Applications exist", "mainFlow": ["Open dashboard", "View counts per stage", "See conversion rates", "Filter by client/date/stage"], "postconditions": "Real-time metrics displayed", "mappedReqIds": ["FR-027", "NFR-001"] },
-      { "id": "UC-021", "title": "Translate CV", "actor": "Recruiter / System", "preconditions": "CV text available, language pair supported", "mainFlow": ["Request translation", "Auto-detect source language", "Apply glossary", "Generate translation", "Check confidence", "Publish or route to review"], "postconditions": "Translated content stored; low-confidence flagged", "mappedReqIds": ["FR-028", "FR-031", "FR-032"] },
-      { "id": "UC-022", "title": "Translate interview feedback", "actor": "Interviewer", "preconditions": "Feedback submitted in any supported language", "mainFlow": ["Submit feedback", "Auto-translate for cross-language panel", "Deliver translated version"], "postconditions": "Panel members see feedback in their language", "mappedReqIds": ["FR-029"] },
-      { "id": "UC-023", "title": "Translate job description", "actor": "Recruiter", "preconditions": "JD exists in source language", "mainFlow": ["Request JD translation", "Industry terminology preserved", "Review and publish"], "postconditions": "JD available in target language", "mappedReqIds": ["FR-030"] },
-      { "id": "UC-024", "title": "Review low-confidence translations", "actor": "Translator", "preconditions": "Translation with confidence < 80% queued", "mainFlow": ["Reviewer opens translation", "Edits corrections", "Approves or rejects", "Version incremented"], "postconditions": "Corrected translation published", "mappedReqIds": ["FR-032"] },
-      { "id": "UC-025", "title": "Candidate notification", "actor": "System", "preconditions": "Application submitted or stage changed", "mainFlow": ["Trigger event fires", "Select template", "Personalize", "Send via SendGrid/SES"], "postconditions": "Email delivered to candidate", "mappedReqIds": ["FR-033", "IR-001"] },
-      { "id": "UC-026", "title": "Recruiter notification", "actor": "System", "preconditions": "New application, match ready, or scheduling conflict", "mainFlow": ["Event detected", "In-app notification (30s)", "Email (60s)"], "postconditions": "Recruiter notified", "mappedReqIds": ["FR-034"] },
-      { "id": "UC-027", "title": "Client progress report", "actor": "System", "preconditions": "Configured report schedule", "mainFlow": ["Scheduled time triggers", "Compile pipeline stats", "Send branded email report"], "postconditions": "Report delivered to HiringCompany", "mappedReqIds": ["FR-035"] },
-      { "id": "UC-028", "title": "Login with credentials", "actor": "User", "preconditions": "Account exists", "mainFlow": ["Enter email + password", "bcrypt verification", "Issue JWT tokens", "Start session"], "postconditions": "Authenticated session active", "mappedReqIds": ["FR-037"] },
-      { "id": "UC-029", "title": "SSO login", "actor": "User", "preconditions": "Google or Microsoft account linked", "mainFlow": ["Click SSO", "OAuth2 flow", "Map to agency account", "Issue JWT"], "postconditions": "Authenticated via SSO", "mappedReqIds": ["FR-038", "IR-001"] },
-      { "id": "UC-030", "title": "MFA verification", "actor": "User", "preconditions": "MFA enabled on account", "mainFlow": ["Enter credentials", "Prompt for TOTP code", "Verify", "Complete login"], "postconditions": "MFA-verified session", "mappedReqIds": ["FR-039"] },
-      { "id": "UC-031", "title": "Role-based access enforcement", "actor": "System", "preconditions": "Every API request", "mainFlow": ["Request arrives", "Extract JWT", "Resolve role + client context", "Check RBAC matrix", "Allow (200) or deny (403)"], "postconditions": "Access granted or denied", "mappedReqIds": ["FR-040"] },
-      { "id": "UC-032", "title": "Switch client context", "actor": "Recruiter", "preconditions": "Multiple clients assigned", "mainFlow": ["Select client from dropdown", "All queries filtered to new client_id", "Dashboard updates"], "postconditions": "Recruiter operates within correct client scope", "mappedReqIds": ["FR-042", "FR-043"] },
-      { "id": "UC-033", "title": "Manage client account", "actor": "Agency Admin", "preconditions": "Client engagement agreement", "mainFlow": ["Create client profile", "Configure pipeline stages", "Assign recruiters", "Set billing tier"], "postconditions": "Client ready for operations", "mappedReqIds": ["FR-043", "FR-045"] },
-      { "id": "UC-034", "title": "View candidate activity timeline", "actor": "Recruiter / Client", "preconditions": "Candidate has application history", "mainFlow": ["Open candidate profile", "Timeline loads with all events", "Filter by type/date"], "postconditions": "Full chronological history visible", "mappedReqIds": ["BP-006"] },
-      { "id": "UC-035", "title": "Add internal note to candidate", "actor": "Recruiter", "preconditions": "Candidate profile exists", "mainFlow": ["Open candidate profile", "Add note (with @mention if needed)", "Save"], "postconditions": "Note stored; mentioned users notified", "mappedReqIds": ["BR-093"] },
-      { "id": "UC-036", "title": "View candidate portal as recruiter", "actor": "Recruiter", "preconditions": "Candidate has portal access", "mainFlow": ["Navigate to candidate portal view", "See what candidate sees"], "postconditions": "Portal preview for recruiter quality check", "mappedReqIds": ["BR-128"] },
-      { "id": "UC-037", "title": "Hybrid search with faceted filters", "actor": "Recruiter", "preconditions": "At least one candidate exists", "mainFlow": ["Enter search terms", "Apply filters", "View ranked results"], "postconditions": "Candidates matched by semantic + keyword + filters", "mappedReqIds": ["BR-097", "BR-098"] },
-      { "id": "UC-038", "title": "Respond to notification", "actor": "User", "preconditions": "Notification received", "mainFlow": ["Click notification", "Relevant screen opens", "Take action"], "postconditions": "Notification marked read; action recorded", "mappedReqIds": ["BR-101", "BR-102"] }
-    ],
-
-    "kpis": [
-      { "id": "KPI-001", "name": "Time-to-hire", "target": "≤25 days (from 45)", "measurement": "Average days from application to hire", "mappedReqIds": ["BP-001", "FR-001", "FR-010", "FR-013"] },
-      { "id": "KPI-002", "name": "AI matching accuracy", "target": "≥85% vs manual assessment", "measurement": "Sample comparison of AI vs recruiter rankings", "mappedReqIds": ["BP-002", "FR-002", "FR-003"] },
-      { "id": "KPI-003", "name": "CV parsing accuracy", "target": "≥90% field-level accuracy", "measurement": "Test corpus evaluation", "mappedReqIds": ["FR-005", "FR-006"] },
-      { "id": "KPI-004", "name": "Screening throughput", "target": "<15s per candidate-job pair", "measurement": "P95 latency measurement", "mappedReqIds": ["NFR-002", "NFR-003"] },
-      { "id": "KPI-005", "name": "Scheduling efficiency", "target": "60% reduction in scheduling time", "measurement": "Comparison with manual scheduling baseline", "mappedReqIds": ["FR-013", "FR-015", "FR-016"] },
-      { "id": "KPI-006", "name": "Translation quality", "target": "<10% require human review", "measurement": "Percentage routed to review queue below 80% confidence", "mappedReqIds": ["FR-032", "BR-032"] },
-      { "id": "KPI-007", "name": "Automation rate", "target": "≥60% of routine tasks automated", "measurement": "Count of auto-processed vs manual actions per recruiter", "mappedReqIds": ["BP-004", "FR-001", "FR-004", "FR-033", "FR-034"] },
-      { "id": "KPI-008", "name": "System uptime", "target": "99.5% monthly", "measurement": "Monitoring dashboard calculation", "mappedReqIds": ["NFR-011"] },
-      { "id": "KPI-009", "name": "AI cost efficiency", "target": "$500–$1,500/month actual spend", "measurement": "Monthly billing dashboard", "mappedReqIds": ["CR-010", "BR-057"] },
-      { "id": "KPI-010", "name": "Multi-tenant isolation", "target": "Zero cross-client data leaks", "measurement": "Penetration testing, access log audits", "mappedReqIds": ["NFR-007", "BR-039"] },
-      { "id": "KPI-011", "name": "Recruiter satisfaction", "target": "≥4.0/5.0", "measurement": "Quarterly survey", "mappedReqIds": ["BP-004"] },
-      { "id": "KPI-012", "name": "Client retention rate", "target": "≥90% annual", "measurement": "Churn analysis", "mappedReqIds": ["BP-003"] }
-    ],
-
-    "assumptions": [
-      { "id": "BA-001", "text": "Agencies operate 5 clients on average with 10–50 per agency", "impact": "Affects scaling architecture and pricing tiers" },
-      { "id": "BA-002", "text": "Primary markets (JP/VN/EN) have distinct regulatory frameworks for candidate data", "impact": "Requires jurisdiction-specific compliance" },
-      { "id": "BA-003", "text": "Recruitment agencies will adopt workflow automation incrementally", "impact": "Must ensure manual fallbacks at every stage" },
-      { "id": "BA-004", "text": "AI quality will meet ≥85% accuracy for matching decisions", "impact": "If lower, manual review load increases and value proposition weakens" },
-      { "id": "BA-005", "text": "Client companies will accept AI-assisted candidate ranking as advisory", "impact": "If rejected, all AI scoring becomes internal-only" }
-    ],
-
-    "constraints": [
-      { "id": "TC-001", "text": "No model fine-tuning in MVP (prompt engineering only)", "source": "Budget and timeline constraints (CR-010, BR-024)" },
-      { "id": "TC-002", "text": "All AI outputs are advisory — never autonomous decisions", "source": "Ethical and legal requirement (BR-023)" },
-      { "id": "TC-003", "text": "Assessment scoring is objective/MCQ only in MVP", "source": "Scope constraint (FR-018, F-004 scope note)" },
-      { "id": "TC-004", "text": "Maximum 25MB file upload size", "source": "Storage and processing constraints (CR-003)" },
-      { "id": "TC-005", "text": "No real-time AI interviewer in MVP", "source": "Deferred to Phase 2 (F-005)" },
-      { "id": "TC-006", "text": "No agentic AI workflows (AI-to-AI chains)", "source": "Complexity and reliability concerns" }
-    ],
-
-    "risks": [
-      { "id": "RSK-001", "text": "AI provider outage disrupts all AI features", "likelihood": "Medium", "impact": "Critical", "mitigation": "Circuit breaker + fallback provider; rule-based degradation", "mappedReqIds": ["NFR-013", "BR-022", "BR-054"] },
-      { "id": "RSK-002", "text": "AI matching accuracy below 85% erodes recruiter trust", "likelihood": "Medium", "impact": "High", "mitigation": "Continuous evaluation, fallback to manual ranking, A/B testing", "mappedReqIds": ["KPI-002", "BR-018"] },
-      { "id": "RSK-003", "text": "Data breach exposes candidate PII", "likelihood": "Low", "impact": "Critical", "mitigation": "Encryption, access logging, penetration testing, incident response plan", "mappedReqIds": ["CR-001", "CR-002", "CR-007"] },
-      { "id": "RSK-004", "text": "GDPR/CCPA non-compliance results in regulatory fines", "likelihood": "Low", "impact": "Critical", "mitigation": "Privacy-by-design, right to erasure, data portability, consent management", "mappedReqIds": ["CR-005", "BR-049"] },
-      { "id": "RSK-005", "text": "AI cost overruns exceed monthly budget", "likelihood": "Medium", "impact": "Medium", "mitigation": "Cost monitoring dashboard, alerts at 70%/90%, auto-pause non-critical queues", "mappedReqIds": ["CR-010", "BR-057", "KPI-009"] },
-      { "id": "RSK-006", "text": "Low-quality translations damage agency-client relationships", "likelihood": "Medium", "impact": "Medium", "mitigation": "Confidence-based routing to human review, glossary management", "mappedReqIds": ["BR-032", "BR-033", "UC-024"] },
-      { "id": "RSK-007", "text": "Cross-tenant data leak due to misconfigured queries", "likelihood": "Low", "impact": "Critical", "mitigation": "Mandatory client_id filtering, automated testing, security audits", "mappedReqIds": ["BR-039", "KPI-010"] },
-      { "id": "RSK-008", "text": "Calendar integration failures disrupt scheduling", "likelihood": "Medium", "impact": "Medium", "mitigation": "Retry with exponential backoff, manual scheduling fallback", "mappedReqIds": ["FR-010", "UC-009"] },
-      { "id": "RSK-009", "text": "Malicious file upload compromises system", "likelihood": "Low", "impact": "Critical", "mitigation": "File type validation, magic bytes, size limits, malware scanning", "mappedReqIds": ["CR-003", "BR-045", "IR-008"] },
-      { "id": "RSK-010", "text": "Recruiter resistance to AI-assisted workflows", "likelihood": "Medium", "impact": "Medium", "mitigation": "Training, gradual rollout, transparent AI explanations, override capability", "mappedReqIds": ["BP-004", "KPI-011"] },
-      { "id": "RSK-011", "text": "BullMQ/Redis failure blocks all AI processing", "likelihood": "Low", "impact": "High", "mitigation": "Redis Sentinel/Cluster, health checks, circuit breaker", "mappedReqIds": ["BR-053", "NFR-008"] },
-      { "id": "RSK-012", "text": "Multi-language support gaps (JP/VN/EN nuances)", "likelihood": "Medium", "impact": "Medium", "mitigation": "Glossary management, human review for low-confidence, cultural adaptation rules", "mappedReqIds": ["BR-029", "BR-033", "UC-024"] },
-      { "id": "RSK-013", "text": "Workflow engine misconfig causes incorrect stage transitions", "likelihood": "Low", "impact": "High", "mitigation": "Rule validation on save; dry-run mode for new rules", "mappedReqIds": ["BR-072", "BR-073"] },
-      { "id": "RSK-014", "text": "Notification overload reduces recruiter productivity", "likelihood": "Medium", "impact": "Low", "mitigation": "Digest modes; quiet hours; configurable per type", "mappedReqIds": ["BR-101", "BR-105"] },
-      { "id": "RSK-015", "text": "Data retention purge accidentally deletes active case data", "likelihood": "Low", "impact": "Critical", "mitigation": "Only purge expired data; soft-delete with grace period", "mappedReqIds": ["BR-048", "BR-079"] }
-    ],
-
-    "openQuestions": [
-      { "id": "OQ-006", "question": "Should translation support batch processing (multiple CVs at once) or only one at a time?", "impact": "Affects queue design, UX flow, and cost model", "category": "Translation", "status": "Open", "source": "Gate 2" },
-      { "id": "OQ-007", "question": "Should candidate outreach messages be fully AI-generated or template-based with AI personalization?", "impact": "Affects content generation scope and brand compliance", "category": "Candidate Sourcing", "status": "Open", "source": "Gate 2" },
-      { "id": "OQ-008", "question": "Should candidate deduplication be automatic (merge) or flag-only for recruiter review?", "impact": "Affects data model and UX", "category": "Multi-Client", "status": "Open", "source": "Gate 2" },
-      { "id": "OQ-009", "question": "Should the platform support candidate self-service portal for application tracking?", "impact": "Affects frontend scope and notification design", "category": "UX", "status": "Partially resolved", "source": "Gate 3", "note": "Basic portal defined; full portal deferred" },
-      { "id": "OQ-010", "question": "Should assessment results be visible to candidates or recruiters only?", "impact": "Affects trust/transparency and data access rules", "category": "Assessment", "status": "Open", "source": "Gate 3" },
-      { "id": "OQ-011", "question": "What retention SLA should be offered to enterprise clients (99.5% vs 99.9%)?", "impact": "Affects infrastructure cost and architecture", "category": "Operations", "status": "Open", "source": "Gate 3" },
-      { "id": "OQ-012", "question": "Should workflow rules be editable via UI or config files only?", "impact": "Affects build effort and client self-service", "category": "Workflow", "status": "New", "source": "Gate 3" },
-      { "id": "OQ-013", "question": "Should per-client AI credit allocation be hard-capped or soft-warned?", "impact": "Affects billing model and client experience", "category": "Billing", "status": "New", "source": "Gate 3" },
-      { "id": "OQ-014", "question": "Should candidate portal support multi-language interface (JP/VN/EN)?", "impact": "Affects frontend scope and translation effort", "category": "UX", "status": "New", "source": "Gate 3" }
-    ],
-
-    "traceabilitySummary": {
-      "coverage": [
-        { "artifactType": "Business Policies (BP)", "count": 8, "withMapping": 8, "coverage": "100%" },
-        { "artifactType": "Business Rules (BR)", "count": 140, "withMapping": 140, "coverage": "100%" },
-        { "artifactType": "Use Cases (UC)", "count": 41, "withMapping": 41, "coverage": "100%" },
-        { "artifactType": "KPIs", "count": 12, "withMapping": 11, "coverage": "92%" },
-        { "artifactType": "Risks (RSK)", "count": 15, "withMapping": 15, "coverage": "100%" },
-        { "artifactType": "Functional Reqs (FR)", "count": 45, "withMapping": 45, "coverage": "100%" },
-        { "artifactType": "Non-Func Reqs (NFR)", "count": 14, "withMapping": 14, "coverage": "100%" },
-        { "artifactType": "Data Reqs (DR)", "count": 14, "withMapping": 2, "coverage": "14%" },
-        { "artifactType": "Integration Reqs (IR)", "count": 8, "withMapping": 6, "coverage": "75%" },
-        { "artifactType": "Constraint Reqs (CR)", "count": 10, "withMapping": 10, "coverage": "100%" }
-      ],
-      "gaps": [
-        { "gap": "DR-001 through DR-010 (entity definitions)", "action": "Add data governance BRs for entity-level retention, backup, and access rules" },
-        { "gap": "FR-011, FR-012, FR-014, FR-037, FR-041", "action": "These are technical implementation details — consider if they need business-level traceability" },
-        { "gap": "NFR-001 (dashboard page load <2s)", "action": "No explicit BR — add performance monitoring BR" },
-        { "gap": "NFR-006 (500+ concurrent users)", "action": "No explicit BR — add capacity planning BR" },
-        { "gap": "NFR-009 (CDN for static assets)", "action": "Acceptable as infrastructure guideline" },
-        { "gap": "IR-001 (SendGrid/AWS SES)", "action": "Implicit in UC-025 — add explicit BR for email delivery SLA" },
-        { "gap": "IR-006 (External ATS P2)", "action": "Deferred — no business rule needed until Phase 2" },
-        { "gap": "IR-007 (pgvector/Pinecone)", "action": "Implicit in UC-002 — acceptable" }
-      ]
-    },
-
-    "gateValidation": {
-      "completeness": {
-        "status": "PASS",
-        "checks": [
-          "All 91 REQ-* from Gate 2 have ≥1 mapped BP, BR, or UC",
-          "All 5 roles have defined permission sets",
-          "All business rules are traceable to requirements",
-          "KPIs defined for all critical success metrics",
-          "Risks mapped to mitigating requirements",
-          "Use cases cover all 9 MVP features"
-        ]
-      },
-      "quality": {
-        "status": "PASS",
-        "checks": [
-          "Every BP, BR, UC has unique ID and clear description",
-          "Business rules kept separate from system/API design",
-          "No code-level decisions in business definition",
-          "All stakeholder roles defined with explicit interest/influence",
-          "Assumptions explicitly stated with impact-if-wrong",
-          "22-point expert review incorporated"
-        ]
-      }
     }
-  }
+  ],
+  "stakeholders": [
+    {
+      "id": "STK-001",
+      "name": "HR Manager",
+      "responsibilities": [
+        "Approve screening",
+        "Approve scheduling",
+        "Finalize pass/fail",
+        "Override AI/test output with reason"
+      ],
+      "successCriteria": [
+        "Decisions are explainable",
+        "Decisions are auditable",
+        "Decisions are human-owned"
+      ],
+      "tracesTo": [
+        "REQ-F-017",
+        "REQ-F-023",
+        "REQ-F-051",
+        "REQ-F-052"
+      ]
+    },
+    {
+      "id": "STK-002",
+      "name": "HR Recruiter",
+      "responsibilities": [
+        "Import/create jobs and candidates",
+        "Prepare JD/test inputs",
+        "Monitor pipeline",
+        "Handle candidate exceptions"
+      ],
+      "successCriteria": [
+        "Batch import works",
+        "Candidate state visible",
+        "Templates reduce manual communication"
+      ],
+      "tracesTo": [
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-004",
+        "REQ-F-055",
+        "REQ-F-061"
+      ]
+    },
+    {
+      "id": "STK-003",
+      "name": "Interviewer",
+      "responsibilities": [
+        "Provide calendar availability",
+        "Join interviews",
+        "Review relevant candidate context"
+      ],
+      "successCriteria": [
+        "Calendar conflicts avoided",
+        "Correct local time shown",
+        "Reminders received"
+      ],
+      "tracesTo": [
+        "REQ-F-021",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-026",
+        "REQ-F-027"
+      ]
+    },
+    {
+      "id": "STK-004",
+      "name": "Candidate",
+      "responsibilities": [
+        "Provide CV/availability",
+        "Complete async interview",
+        "Complete assigned tests"
+      ],
+      "successCriteria": [
+        "Instructions clear",
+        "Progress saved",
+        "Deadlines/reminders communicated"
+      ],
+      "tracesTo": [
+        "REQ-F-020",
+        "REQ-F-031",
+        "REQ-F-035",
+        "REQ-F-037",
+        "REQ-F-041"
+      ]
+    },
+    {
+      "id": "STK-005",
+      "name": "IT Admin",
+      "responsibilities": [
+        "Configure integrations",
+        "Manage access",
+        "Monitor failures/cost",
+        "Remediate technical exceptions"
+      ],
+      "successCriteria": [
+        "Integrations observable",
+        "RBAC works",
+        "Failures alerted"
+      ],
+      "tracesTo": [
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-010",
+        "REQ-NF-011"
+      ]
+    }
+  ],
+  "rolesAndPermissions": [
+    {
+      "id": "ROLE-001",
+      "role": "HR Recruiter",
+      "permissions": [
+        "create_candidate",
+        "import_candidates",
+        "create_job",
+        "upload_jd",
+        "assign_test",
+        "view_pipeline"
+      ],
+      "restrictions": [
+        "cannot approve screening",
+        "cannot approve schedule",
+        "cannot finalize pass/fail unless also HR Manager"
+      ],
+      "tracesTo": [
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-004",
+        "REQ-F-040",
+        "REQ-NF-006"
+      ]
+    },
+    {
+      "id": "ROLE-002",
+      "role": "HR Manager",
+      "permissions": [
+        "approve_screening",
+        "reject_screening",
+        "request_rescreen",
+        "approve_schedule",
+        "bulk_approve",
+        "override_test_grade",
+        "finalize_outcome"
+      ],
+      "restrictions": [
+        "overrides require reason",
+        "all decisions audited"
+      ],
+      "tracesTo": [
+        "REQ-F-017",
+        "REQ-F-023",
+        "REQ-F-052",
+        "REQ-F-054",
+        "REQ-NF-007"
+      ]
+    },
+    {
+      "id": "ROLE-003",
+      "role": "Interviewer",
+      "permissions": [
+        "connect_calendar",
+        "view_assigned_interviews",
+        "view_relevant_candidate_context"
+      ],
+      "restrictions": [
+        "cannot access unrelated CVs",
+        "cannot approve pipeline gates"
+      ],
+      "tracesTo": [
+        "REQ-F-021",
+        "REQ-F-024",
+        "REQ-NF-006",
+        "REQ-NF-008"
+      ]
+    },
+    {
+      "id": "ROLE-004",
+      "role": "Admin",
+      "permissions": [
+        "configure_google_workspace",
+        "configure_drive",
+        "manage_roles",
+        "view_audit_logs",
+        "monitor_failures",
+        "manage_retries"
+      ],
+      "restrictions": [
+        "does not own business hiring decisions"
+      ],
+      "tracesTo": [
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-NF-006",
+        "REQ-NF-007",
+        "REQ-NF-010"
+      ]
+    }
+  ],
+  "businessProcesses": [
+    {
+      "id": "BP-001",
+      "name": "Candidate Sourcing and Import",
+      "owner": "HR Recruiter",
+      "goal": "Convert job/candidate inputs into clean pipeline records",
+      "tracesTo": [
+        "REQ-F-001",
+        "REQ-F-002",
+        "REQ-F-003",
+        "REQ-F-005",
+        "REQ-F-006",
+        "REQ-I-001",
+        "REQ-F-004"
+      ]
+    },
+    {
+      "id": "BP-002",
+      "name": "CV Screening Approval",
+      "owner": "HR Manager",
+      "goal": "Produce explainable shortlist recommendations with human approval",
+      "tracesTo": [
+        "REQ-F-010",
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015",
+        "REQ-F-017",
+        "REQ-F-018",
+        "REQ-F-051",
+        "REQ-F-016"
+      ]
+    },
+    {
+      "id": "BP-003",
+      "name": "Interview Scheduling Approval",
+      "owner": "HR Manager",
+      "goal": "Confirm conflict-free interview time only after HR approval",
+      "tracesTo": [
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-F-027",
+        "REQ-I-002",
+        "REQ-I-003"
+      ]
+    },
+    {
+      "id": "BP-004",
+      "name": "Async AI Interview",
+      "owner": "HR Recruiter",
+      "goal": "Collect preliminary interview answers asynchronously",
+      "tracesTo": [
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037"
+      ]
+    },
+    {
+      "id": "BP-005",
+      "name": "Test Assignment and Grading",
+      "owner": "HR Recruiter",
+      "goal": "Evaluate candidate submissions consistently",
+      "tracesTo": [
+        "REQ-F-040",
+        "REQ-F-041",
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046"
+      ]
+    },
+    {
+      "id": "BP-006",
+      "name": "Final Candidate Decision",
+      "owner": "HR Manager",
+      "goal": "Convert evidence into human-owned pass/fail decision",
+      "tracesTo": [
+        "REQ-F-045",
+        "REQ-F-050",
+        "REQ-F-055",
+        "REQ-NF-007"
+      ]
+    },
+    {
+      "id": "BP-007",
+      "name": "Notification and Reminder Management",
+      "owner": "HR Recruiter",
+      "goal": "Ensure candidates, interviewers, and HR Managers receive required workflow communications",
+      "trigger": "Workflow event requires communication or reminder",
+      "steps": [
+        "Select approved template",
+        "Send from shared HR mailbox",
+        "Log delivery status",
+        "Notify owner on delivery failure"
+      ],
+      "exitCriteria": [
+        "Notification sent and logged",
+        "or delivery failure assigned to owner"
+      ],
+      "kpis": [
+        "Candidate-facing emails use shared HR mailbox",
+        "Pending action notification within 1 minute",
+        "Reminder timing configurable"
+      ],
+      "tracesTo": [
+        "REQ-F-026",
+        "REQ-F-060",
+        "REQ-F-061",
+        "REQ-F-062",
+        "REQ-I-003"
+      ]
+    },
+    {
+      "id": "BP-008",
+      "name": "Operational Performance and Monitoring",
+      "owner": "IT Admin",
+      "goal": "Monitor throughput, response time, uptime, AI errors, LLM cost, and scalability targets",
+      "trigger": "Operational metrics emitted or threshold breached",
+      "steps": [
+        "Collect operational metrics",
+        "Compare against KPI thresholds",
+        "Alert owner on sustained breach",
+        "Review monthly capacity and AI cost"
+      ],
+      "exitCriteria": [
+        "Metric recorded",
+        "or alert assigned to IT Admin"
+      ],
+      "kpis": [
+        "Screening time tracked",
+        "API p95 tracked",
+        "Uptime tracked",
+        "AI error and cost tracked"
+      ],
+      "tracesTo": [
+        "REQ-NF-001",
+        "REQ-NF-002",
+        "REQ-NF-003",
+        "REQ-NF-004",
+        "REQ-NF-009",
+        "REQ-NF-010",
+        "REQ-NF-011",
+        "REQ-NF-012"
+      ]
+    },
+    {
+      "id": "BP-009",
+      "name": "Candidate Withdrawal",
+      "owner": "HR Recruiter",
+      "goal": "Stop pipeline cleanly when candidate withdraws or HR records withdrawal",
+      "trigger": "Candidate requests withdrawal or HR marks candidate withdrawn",
+      "steps": [
+        "Confirm withdrawal source",
+        "Cancel or close pending approvals/actions",
+        "Notify assigned HR/interviewer when relevant",
+        "Record withdrawal reason if available",
+        "Move candidate to WITHDRAWN"
+      ],
+      "exitCriteria": [
+        "Candidate state is WITHDRAWN",
+        "All pending workflow actions are closed or cancelled"
+      ],
+      "kpis": [
+        "100% withdrawals audited",
+        "Relevant stakeholders notified"
+      ],
+      "tracesTo": [
+        "REQ-F-056",
+        "REQ-F-055",
+        "REQ-NF-007",
+        "REQ-D-007"
+      ]
+    },
+    {
+      "id": "BP-010",
+      "name": "Error Remediation",
+      "owner": "IT Admin",
+      "goal": "Resolve blocking import, parsing, AI, Google integration, or grading errors without silent pipeline stalls",
+      "trigger": "Candidate or job enters ERROR state",
+      "steps": [
+        "Classify error type",
+        "Assign remediation owner",
+        "Notify HR Recruiter or IT Admin",
+        "Retry or route to manual review",
+        "Return to previous valid state or mark WITHDRAWN"
+      ],
+      "exitCriteria": [
+        "Error resolved and candidate returns to previous valid state",
+        "or candidate is WITHDRAWN with reason"
+      ],
+      "kpis": [
+        "100% ERROR states have owner and reason",
+        "No unassigned ERROR older than configured SLA"
+      ],
+      "tracesTo": [
+        "REQ-F-018",
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-I-004",
+        "REQ-NF-010",
+        "REQ-NF-007"
+      ]
+    }
+  ],
+  "businessRules": [
+    {
+      "id": "BR-001",
+      "name": "Human approval is mandatory at business decision gates",
+      "type": "governance",
+      "rule": "Screening shortlist, schedule confirmation, and final pass/fail decisions must be approved by HR Manager or designated backup.",
+      "tracesTo": [
+        "REQ-F-017",
+        "REQ-F-023",
+        "REQ-F-051",
+        "REQ-F-054"
+      ]
+    },
+    {
+      "id": "BR-002",
+      "name": "Approval reminders do not imply auto-action",
+      "type": "governance",
+      "rule": "Pending approvals may trigger reminders and escalation, but must not auto-approve, auto-reject, auto-cancel, or auto-skip.",
+      "tracesTo": [
+        "REQ-F-053",
+        "REQ-F-054"
+      ]
+    },
+    {
+      "id": "BR-003",
+      "name": "Duplicate candidates require HR review",
+      "type": "data-quality",
+      "rule": "Candidate records with matching email or phone must be flagged for merge/skip/create-new decision.",
+      "tracesTo": [
+        "REQ-F-006"
+      ]
+    },
+    {
+      "id": "BR-004",
+      "name": "MVP file boundary excludes OCR",
+      "type": "scope",
+      "rule": "MVP accepts only text-native PDF/DOCX CV/JD files and rejects scanned/image-only files.",
+      "tracesTo": [
+        "REQ-F-010",
+        "REQ-F-018",
+        "REQ-C-002"
+      ]
+    },
+    {
+      "id": "BR-005",
+      "name": "Low-confidence AI or parsing requires manual review",
+      "type": "risk-control",
+      "rule": "AI outputs or extraction results below configured confidence threshold must route to manual review.",
+      "tracesTo": [
+        "REQ-F-018",
+        "REQ-NF-AI-005"
+      ]
+    },
+    {
+      "id": "BR-006",
+      "name": "Screening score must remain explainable",
+      "type": "ai-governance",
+      "rule": "Screening results must include total score, sub-scores, missing skills, red flags, confidence, and evidence spans.",
+      "tracesTo": [
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-015"
+      ]
+    },
+    {
+      "id": "BR-007",
+      "name": "Calendar events require approved slot",
+      "type": "process-control",
+      "rule": "No interview event or confirmation email may be sent until HR Manager approves a suggested slot.",
+      "tracesTo": [
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025"
+      ]
+    },
+    {
+      "id": "BR-008",
+      "name": "Scheduling respects timezone and working-hour policy",
+      "type": "scheduling",
+      "rule": "Suggested slots must respect participant timezones, configured working hours, 30-minute buffer, and minimum advance notice.",
+      "tracesTo": [
+        "REQ-F-022",
+        "REQ-F-027"
+      ]
+    },
+    {
+      "id": "BR-009",
+      "name": "MCQ grading is deterministic",
+      "type": "assessment",
+      "rule": "Multiple-choice answers are graded only against approved answer key, not by LLM judgment.",
+      "tracesTo": [
+        "REQ-F-042"
+      ]
+    },
+    {
+      "id": "BR-010",
+      "name": "Essay and coding AI grading must be rubric-backed",
+      "type": "assessment",
+      "rule": "Essay and coding AI scores must include criterion-level justification and preserve rubric/test-case versioning for audit.",
+      "tracesTo": [
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045"
+      ]
+    },
+    {
+      "id": "BR-011",
+      "name": "Candidate data access is role-bound",
+      "type": "security",
+      "rule": "Confidential candidate documents, transcripts, and submissions are accessible only to roles with business need.",
+      "tracesTo": [
+        "REQ-NF-006",
+        "REQ-NF-008"
+      ]
+    },
+    {
+      "id": "BR-012",
+      "name": "Audit trail is mandatory for accountability",
+      "type": "compliance",
+      "rule": "Imports, approvals, overrides, notifications, state changes, and final decisions must be auditable.",
+      "tracesTo": [
+        "REQ-NF-007",
+        "REQ-D-007",
+        "REQ-D-008",
+        "REQ-D-009"
+      ]
+    },
+    {
+      "id": "BR-013",
+      "name": "Phase 2 utility AI is outside MVP acceptance",
+      "type": "scope",
+      "rule": "Content generation, design generation, and translation are standalone Phase 2 capabilities and must not block MVP acceptance.",
+      "tracesTo": [
+        "REQ-C-006"
+      ]
+    },
+    {
+      "id": "BR-014",
+      "name": "Workflow communications use approved HR identity and templates",
+      "type": "communication",
+      "rule": "Candidate-facing emails and workflow reminders must use the shared HR mailbox, approved templates, and logged delivery status.",
+      "tracesTo": [
+        "REQ-F-026",
+        "REQ-F-060",
+        "REQ-F-061",
+        "REQ-F-062"
+      ]
+    },
+    {
+      "id": "BR-015",
+      "name": "Operational KPIs must be monitored",
+      "type": "operations",
+      "rule": "Recruitment operations must monitor screening time, throughput, response time, concurrency, uptime, AI failure, LLM cost, and scalability targets.",
+      "tracesTo": [
+        "REQ-NF-001",
+        "REQ-NF-002",
+        "REQ-NF-003",
+        "REQ-NF-004",
+        "REQ-NF-009",
+        "REQ-NF-010",
+        "REQ-NF-011",
+        "REQ-NF-012"
+      ]
+    },
+    {
+      "id": "BR-016",
+      "name": "Single-organization operating model",
+      "type": "scope",
+      "rule": "RecruitAI serves internal HR only and does not support multi-tenant agency operation in MVP.",
+      "tracesTo": [
+        "REQ-C-001"
+      ]
+    },
+    {
+      "id": "BR-017",
+      "name": "Google Workspace is the business integration standard",
+      "type": "platform",
+      "rule": "MVP recruitment communications, scheduling, and Drive ingestion depend on approved Google Workspace accounts and availability.",
+      "tracesTo": [
+        "REQ-C-003",
+        "REQ-I-004"
+      ]
+    },
+    {
+      "id": "BR-018",
+      "name": "Approval stall is accepted business risk",
+      "type": "governance",
+      "rule": "Approval queues may remain pending indefinitely; the business accepts reminder/escalation rather than automatic cancellation or skipping.",
+      "tracesTo": [
+        "REQ-C-004",
+        "REQ-F-056"
+      ]
+    },
+    {
+      "id": "BR-019",
+      "name": "Recruitment master data must be business-owned",
+      "type": "data-governance",
+      "rule": "Candidate profile, CV, JD, screening result, interview transcript, test submission, and grade records must have clear HR/System ownership and confidentiality classification.",
+      "tracesTo": [
+        "REQ-D-001",
+        "REQ-D-002",
+        "REQ-D-003",
+        "REQ-D-004",
+        "REQ-D-005",
+        "REQ-D-006"
+      ]
+    },
+    {
+      "id": "BR-020",
+      "name": "AI quality monitoring is ongoing business governance",
+      "type": "ai-governance",
+      "rule": "Shortlist precision and prompt/rubric drift must be monitored after launch and reviewed by HR/IT owners.",
+      "tracesTo": [
+        "REQ-NF-AI-002",
+        "REQ-NF-AI-004"
+      ]
+    },
+    {
+      "id": "BR-021",
+      "name": "Escalation does not create business approval",
+      "type": "governance",
+      "rule": "Escalation transfers review responsibility or sends notifications, but it never creates an approve/reject/pass/fail decision without explicit human action. Backup approver identity and timing remain blocking Gate 4 policy decisions.",
+      "tracesTo": [
+        "REQ-F-053",
+        "REQ-F-054"
+      ]
+    },
+    {
+      "id": "BR-022",
+      "name": "Final decision policy placeholder",
+      "type": "governance",
+      "rule": "Final pass/fail remains a human-owned HR Manager decision based on screening, interview, and test evidence. The exact combined threshold or weighting model is unresolved and blocks Gate 4.",
+      "tracesTo": [
+        "REQ-F-045",
+        "REQ-F-046",
+        "REQ-F-050"
+      ]
+    },
+    {
+      "id": "BR-023",
+      "name": "Retention policy placeholder",
+      "type": "compliance",
+      "rule": "Candidate CVs, transcripts, test submissions, and audit records require explicit retention/deletion periods before Gate 4 detail sign-off. Until defined, no destructive deletion behavior may be assumed.",
+      "tracesTo": [
+        "REQ-NF-005",
+        "REQ-NF-008",
+        "REQ-D-001",
+        "REQ-D-002",
+        "REQ-D-005",
+        "REQ-D-006"
+      ]
+    },
+    {
+      "id": "BR-024",
+      "name": "Calendar reschedule and cancellation policy placeholder",
+      "type": "scheduling",
+      "rule": "Post-approval interview reschedule/cancel behavior is unresolved and must be defined before Gate 4; no Calendar update flow may be assumed beyond initial approved event creation.",
+      "tracesTo": [
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-I-002"
+      ]
+    }
+  ],
+  "useCases": [
+    {
+      "id": "UC-001",
+      "name": "Import candidates from Excel",
+      "primaryActor": "HR Recruiter",
+      "businessAcceptanceCriteria": [
+        "Valid rows succeed even when invalid rows exist",
+        "Duplicate candidates are flagged",
+        "Import result is auditable"
+      ],
+      "tracesTo": [
+        "REQ-F-001",
+        "REQ-F-005",
+        "REQ-F-006"
+      ]
+    },
+    {
+      "id": "UC-002",
+      "name": "Auto-import candidates from Google Drive",
+      "primaryActor": "System",
+      "businessAcceptanceCriteria": [
+        "Import starts within 5 minutes",
+        "Same file does not create duplicates",
+        "Failures alert owner"
+      ],
+      "tracesTo": [
+        "REQ-F-003",
+        "REQ-I-001"
+      ]
+    },
+    {
+      "id": "UC-003",
+      "name": "Approve AI screening result",
+      "primaryActor": "HR Manager",
+      "businessAcceptanceCriteria": [
+        "Decision actor/timestamp recorded",
+        "Bulk approval supported",
+        "No auto-action on timeout"
+      ],
+      "tracesTo": [
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-F-017",
+        "REQ-F-052",
+        "REQ-F-054"
+      ]
+    },
+    {
+      "id": "UC-004",
+      "name": "Approve interview schedule",
+      "primaryActor": "HR Manager",
+      "businessAcceptanceCriteria": [
+        "At least 3 valid slots shown when available",
+        "Calendar event created only after approval",
+        "Emails sent from shared mailbox"
+      ],
+      "tracesTo": [
+        "REQ-F-020",
+        "REQ-F-021",
+        "REQ-F-022",
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025"
+      ]
+    },
+    {
+      "id": "UC-005",
+      "name": "Complete async AI interview",
+      "primaryActor": "Candidate",
+      "businessAcceptanceCriteria": [
+        "Progress survives multiple sessions",
+        "Deadline/reminders are enforced",
+        "Report includes recommendation and evidence"
+      ],
+      "tracesTo": [
+        "REQ-F-030",
+        "REQ-F-031",
+        "REQ-F-032",
+        "REQ-F-033",
+        "REQ-F-034",
+        "REQ-F-035",
+        "REQ-F-036",
+        "REQ-F-037"
+      ]
+    },
+    {
+      "id": "UC-006",
+      "name": "Grade candidate test",
+      "primaryActor": "System",
+      "businessAcceptanceCriteria": [
+        "MCQ is exact",
+        "Essay/coding scores include justification",
+        "Override requires reason"
+      ],
+      "tracesTo": [
+        "REQ-F-042",
+        "REQ-F-043",
+        "REQ-F-044",
+        "REQ-F-045",
+        "REQ-F-046"
+      ]
+    },
+    {
+      "id": "UC-007",
+      "name": "Finalize candidate outcome",
+      "primaryActor": "HR Manager",
+      "businessAcceptanceCriteria": [
+        "Final decision is human-owned",
+        "Override reason is stored",
+        "State history is visible"
+      ],
+      "tracesTo": [
+        "REQ-F-045",
+        "REQ-F-050",
+        "REQ-F-055",
+        "REQ-NF-007"
+      ]
+    },
+    {
+      "id": "UC-008",
+      "name": "Send workflow notifications and reminders",
+      "primaryActor": "System",
+      "businessAcceptanceCriteria": [
+        "Candidate-facing emails use shared HR mailbox",
+        "Templates are configurable",
+        "HR Manager receives pending-action notifications",
+        "Interview reminders are sent as configured"
+      ],
+      "tracesTo": [
+        "REQ-F-026",
+        "REQ-F-060",
+        "REQ-F-061",
+        "REQ-F-062",
+        "REQ-I-003"
+      ]
+    },
+    {
+      "id": "UC-009",
+      "name": "Withdraw candidate from pipeline",
+      "primaryActor": "HR Recruiter",
+      "businessAcceptanceCriteria": [
+        "Withdrawal can be recorded from any non-terminal stage",
+        "Pending actions are closed or cancelled",
+        "Withdrawal is audited and visible in state history"
+      ],
+      "tracesTo": [
+        "REQ-F-056",
+        "REQ-F-055",
+        "REQ-NF-007"
+      ]
+    },
+    {
+      "id": "UC-010",
+      "name": "Remediate pipeline error",
+      "primaryActor": "IT Admin",
+      "businessAcceptanceCriteria": [
+        "Every ERROR has reason and owner",
+        "Owner receives notification",
+        "Resolution returns candidate to prior state or WITHDRAWN"
+      ],
+      "tracesTo": [
+        "REQ-F-018",
+        "REQ-NF-010",
+        "REQ-NF-007"
+      ]
+    }
+  ],
+  "businessAcceptanceCriteria": [
+    {
+      "id": "BAC-001",
+      "criterion": "MVP supports full pipeline from import to final decision without requiring Phase 2 utility AI modules.",
+      "tracesTo": [
+        "REQ-C-005",
+        "REQ-C-006"
+      ]
+    },
+    {
+      "id": "BAC-002",
+      "criterion": "Every business decision gate has an accountable HR Manager decision recorded.",
+      "tracesTo": [
+        "REQ-F-017",
+        "REQ-F-023",
+        "REQ-F-050",
+        "REQ-NF-007"
+      ]
+    },
+    {
+      "id": "BAC-003",
+      "criterion": "Every AI recommendation used by HR includes explainability and confidence information.",
+      "tracesTo": [
+        "REQ-F-011",
+        "REQ-F-012",
+        "REQ-F-013",
+        "REQ-F-014",
+        "REQ-NF-AI-005"
+      ]
+    },
+    {
+      "id": "BAC-004",
+      "criterion": "Candidate confidential data is protected by RBAC, encryption, and audit logs.",
+      "tracesTo": [
+        "REQ-NF-005",
+        "REQ-NF-006",
+        "REQ-NF-007",
+        "REQ-NF-008"
+      ]
+    }
+  ],
+  "risks": [
+    {
+      "id": "RISK-001",
+      "risk": "No approval timeout can stall pipeline at scale",
+      "impact": "High",
+      "likelihood": "Medium",
+      "mitigation": "Reminder, SLA visibility, escalation to backup approver, queue monitoring",
+      "tracesTo": [
+        "REQ-F-053",
+        "REQ-F-054",
+        "REQ-NF-002"
+      ]
+    },
+    {
+      "id": "RISK-002",
+      "risk": "AI false rejection may remove qualified candidates",
+      "impact": "High",
+      "likelihood": "Medium",
+      "mitigation": "Human approval, confidence threshold, validation dataset, false reject review",
+      "tracesTo": [
+        "REQ-F-017",
+        "REQ-NF-AI-001",
+        "REQ-NF-AI-003",
+        "REQ-NF-AI-005"
+      ]
+    },
+    {
+      "id": "RISK-003",
+      "risk": "Google Workspace outage blocks scheduling/email/import",
+      "impact": "High",
+      "likelihood": "Medium",
+      "mitigation": "Retry/backoff, alerting, manual fallback process",
+      "tracesTo": [
+        "REQ-I-001",
+        "REQ-I-002",
+        "REQ-I-003",
+        "REQ-NF-010"
+      ]
+    },
+    {
+      "id": "RISK-004",
+      "risk": "Candidate PII exposure",
+      "impact": "High",
+      "likelihood": "Low",
+      "mitigation": "RBAC, encryption, audit logs, access-controlled CV storage",
+      "tracesTo": [
+        "REQ-NF-005",
+        "REQ-NF-006",
+        "REQ-NF-007",
+        "REQ-NF-008"
+      ]
+    },
+    {
+      "id": "RISK-005",
+      "risk": "Coding challenge execution introduces security risk",
+      "impact": "High",
+      "likelihood": "Medium",
+      "mitigation": "Gate implementation on approved sandbox/runtime decision",
+      "tracesTo": [
+        "REQ-F-044"
+      ]
+    },
+    {
+      "id": "RISK-006",
+      "risk": "Scanned PDFs/images are expected by users despite MVP boundary",
+      "impact": "Medium",
+      "likelihood": "Medium",
+      "mitigation": "Clear rejection reason and Phase 2 OCR backlog",
+      "tracesTo": [
+        "REQ-C-002",
+        "REQ-F-018"
+      ]
+    }
+  ],
+  "validation": {
+    "gate": "Gate 3 Business Definition",
+    "status": "CONDITIONAL_PASS",
+    "checks": [
+      {
+        "check": "Business objectives defined",
+        "status": "PASS"
+      },
+      {
+        "check": "KPIs are measurable",
+        "status": "PASS"
+      },
+      {
+        "check": "Stakeholders and roles defined",
+        "status": "PASS"
+      },
+      {
+        "check": "Permissions separated from UI/API detail",
+        "status": "PASS"
+      },
+      {
+        "check": "Business processes defined",
+        "status": "PASS"
+      },
+      {
+        "check": "Business rules separated from system behavior",
+        "status": "PASS"
+      },
+      {
+        "check": "Use cases include business acceptance criteria",
+        "status": "PASS"
+      },
+      {
+        "check": "BP/BR/UC trace to REQ IDs",
+        "status": "PASS"
+      },
+      {
+        "check": "Risks and mitigations documented",
+        "status": "PASS"
+      },
+      {
+        "check": "Blocking questions identified for Gate 4",
+        "status": "CONDITIONAL"
+      }
+    ]
+  },
+  "openQuestions": [
+    {
+      "id": "BQ-001",
+      "question": "What exact AI confidence threshold requires manual review?",
+      "owner": "HR Manager",
+      "blocksGate4": true,
+      "tracesTo": [
+        "REQ-NF-AI-005"
+      ]
+    },
+    {
+      "id": "BQ-002",
+      "question": "Who is the backup approver for screening/scheduling escalation?",
+      "owner": "HR Manager",
+      "blocksGate4": true,
+      "tracesTo": [
+        "REQ-F-053"
+      ]
+    },
+    {
+      "id": "BQ-003",
+      "question": "What retention/deletion policy applies to CVs, transcripts, and test submissions?",
+      "owner": "HR Manager / IT Admin",
+      "blocksGate4": true,
+      "tracesTo": [
+        "REQ-NF-005",
+        "REQ-NF-008"
+      ]
+    },
+    {
+      "id": "BQ-004",
+      "question": "What coding sandbox/runtime is approved?",
+      "owner": "IT Admin",
+      "blocksGate4": true,
+      "tracesTo": [
+        "REQ-F-044"
+      ]
+    },
+    {
+      "id": "BQ-005",
+      "question": "What exact Drive folder, ownership, webhook renewal, and naming convention should be used for MVP?",
+      "owner": "IT Admin",
+      "blocksGate4": true,
+      "tracesTo": [
+        "REQ-F-003",
+        "REQ-I-001"
+      ]
+    },
+    {
+      "id": "BQ-006",
+      "question": "What is the final combined pass/fail policy across screening, interview, and test?",
+      "owner": "HR Manager",
+      "blocksGate4": true,
+      "tracesTo": [
+        "REQ-F-046",
+        "REQ-F-050"
+      ]
+    },
+    {
+      "id": "BQ-007",
+      "question": "What is the Calendar reschedule/cancel policy after event creation?",
+      "owner": "HR Manager / IT Admin",
+      "blocksGate4": true,
+      "tracesTo": [
+        "REQ-F-023",
+        "REQ-F-024",
+        "REQ-F-025",
+        "REQ-I-002"
+      ]
+    }
+  ],
+  "businessStateMachine": {
+    "authoritativeSource": "Business-owned candidate lifecycle for Gate 4; aligned with Gate 2 state machine contract.",
+    "states": [
+      {
+        "state": "NEW",
+        "owner": "HR Recruiter",
+        "type": "draft",
+        "entry": "Candidate creation started",
+        "next": [
+          "IMPORTED",
+          "WITHDRAWN"
+        ]
+      },
+      {
+        "state": "IMPORTED",
+        "owner": "System",
+        "type": "active",
+        "entry": "Valid candidate/job input imported",
+        "next": [
+          "SCREENING_RUNNING",
+          "ERROR",
+          "WITHDRAWN"
+        ]
+      },
+      {
+        "state": "SCREENING_RUNNING",
+        "owner": "System",
+        "type": "active",
+        "entry": "JD and CV available",
+        "next": [
+          "SCREENING_PENDING_APPROVAL",
+          "ERROR",
+          "WITHDRAWN"
+        ]
+      },
+      {
+        "state": "SCREENING_PENDING_APPROVAL",
+        "owner": "HR Manager",
+        "type": "approval",
+        "entry": "Screening result generated",
+        "next": [
+          "SCREENED_IN",
+          "SCREENED_OUT",
+          "SCREENING_RUNNING",
+          "WITHDRAWN"
+        ]
+      },
+      {
+        "state": "SCREENED_IN",
+        "owner": "System",
+        "type": "active",
+        "entry": "HR Manager approves screening",
+        "next": [
+          "AVAILABILITY_PENDING",
+          "WITHDRAWN"
+        ]
+      },
+      {
+        "state": "SCREENED_OUT",
+        "owner": "HR Manager",
+        "type": "terminal",
+        "entry": "HR Manager rejects screening",
+        "next": []
+      },
+      {
+        "state": "AVAILABILITY_PENDING",
+        "owner": "Candidate / Interviewer",
+        "type": "active",
+        "entry": "Candidate screened in",
+        "next": [
+          "SCHEDULING_PENDING_APPROVAL",
+          "ERROR",
+          "WITHDRAWN"
+        ]
+      },
+      {
+        "state": "SCHEDULING_PENDING_APPROVAL",
+        "owner": "HR Manager",
+        "type": "approval",
+        "entry": "Valid interview slots generated",
+        "next": [
+          "INTERVIEW_SCHEDULED",
+          "AVAILABILITY_PENDING",
+          "WITHDRAWN"
+        ]
+      },
+      {
+        "state": "INTERVIEW_SCHEDULED",
+        "owner": "System",
+        "type": "active",
+        "entry": "HR Manager approves slot",
+        "next": [
+          "AI_INTERVIEW_PENDING",
+          "WITHDRAWN",
+          "ERROR"
+        ]
+      },
+      {
+        "state": "AI_INTERVIEW_PENDING",
+        "owner": "Candidate",
+        "type": "active",
+        "entry": "Interview link sent",
+        "next": [
+          "AI_INTERVIEW_COMPLETED",
+          "WITHDRAWN",
+          "ERROR"
+        ]
+      },
+      {
+        "state": "AI_INTERVIEW_COMPLETED",
+        "owner": "System",
+        "type": "active",
+        "entry": "Candidate submits async interview",
+        "next": [
+          "TEST_PENDING",
+          "FINAL_REVIEW",
+          "ERROR"
+        ]
+      },
+      {
+        "state": "TEST_PENDING",
+        "owner": "Candidate",
+        "type": "active",
+        "entry": "Test assigned",
+        "next": [
+          "TEST_GRADED",
+          "WITHDRAWN",
+          "ERROR"
+        ]
+      },
+      {
+        "state": "TEST_GRADED",
+        "owner": "System",
+        "type": "active",
+        "entry": "Test sections graded",
+        "next": [
+          "FINAL_REVIEW",
+          "ERROR"
+        ]
+      },
+      {
+        "state": "FINAL_REVIEW",
+        "owner": "HR Manager",
+        "type": "approval",
+        "entry": "Evidence package ready",
+        "next": [
+          "PASSED",
+          "FAILED",
+          "WITHDRAWN"
+        ]
+      },
+      {
+        "state": "PASSED",
+        "owner": "HR Manager",
+        "type": "terminal",
+        "entry": "Final pass decision recorded",
+        "next": []
+      },
+      {
+        "state": "FAILED",
+        "owner": "HR Manager",
+        "type": "terminal",
+        "entry": "Final fail decision recorded",
+        "next": []
+      },
+      {
+        "state": "WITHDRAWN",
+        "owner": "Candidate / HR Recruiter / HR Manager",
+        "type": "terminal",
+        "entry": "Candidate withdraws or HR marks withdrawn",
+        "next": []
+      },
+      {
+        "state": "ERROR",
+        "owner": "IT Admin / HR Recruiter",
+        "type": "remediation",
+        "entry": "Blocking technical or data issue",
+        "next": [
+          "previous_valid_state",
+          "WITHDRAWN"
+        ]
+      }
+    ]
+  },
+  "exceptionPaths": [
+    {
+      "bpId": "BP-001",
+      "exceptions": [
+        "invalid file",
+        "invalid row",
+        "duplicate candidate",
+        "Drive import failure"
+      ],
+      "owner": "HR Recruiter / IT Admin",
+      "resolution": "valid rows proceed; exceptions assigned for correction, merge/skip/create-new, or retry"
+    },
+    {
+      "bpId": "BP-002",
+      "exceptions": [
+        "unreadable CV",
+        "scanned file",
+        "low AI confidence",
+        "LLM failure"
+      ],
+      "owner": "HR Manager / IT Admin",
+      "resolution": "manual review, re-screen, reject unsupported file, or technical retry"
+    },
+    {
+      "bpId": "BP-003",
+      "exceptions": [
+        "no valid slots",
+        "candidate no response",
+        "Calendar unavailable",
+        "post-approval reschedule needed"
+      ],
+      "owner": "HR Manager",
+      "resolution": "request alternative availability, manual scheduling fallback, or reschedule policy once defined"
+    },
+    {
+      "bpId": "BP-004",
+      "exceptions": [
+        "expired link",
+        "incomplete submission",
+        "AI evaluation uncertain"
+      ],
+      "owner": "HR Recruiter / HR Manager",
+      "resolution": "reopen link, manual review, or mark withdrawn/error"
+    },
+    {
+      "bpId": "BP-005",
+      "exceptions": [
+        "test timeout",
+        "grading failure",
+        "coding sandbox error",
+        "plagiarism flag"
+      ],
+      "owner": "HR Manager / IT Admin",
+      "resolution": "re-grade, manual override, technical remediation, or final review exception"
+    },
+    {
+      "bpId": "BP-006",
+      "exceptions": [
+        "incomplete evidence package",
+        "conflicting scores",
+        "override needed"
+      ],
+      "owner": "HR Manager",
+      "resolution": "request missing evidence, record override reason, or defer final decision"
+    },
+    {
+      "bpId": "BP-009",
+      "exceptions": [
+        "ambiguous withdrawal request",
+        "withdrawal after scheduled interview"
+      ],
+      "owner": "HR Recruiter",
+      "resolution": "confirm request, notify stakeholders, close pending actions"
+    },
+    {
+      "bpId": "BP-010",
+      "exceptions": [
+        "unassigned error",
+        "repeated retry failure",
+        "integration outage"
+      ],
+      "owner": "IT Admin",
+      "resolution": "assign owner, escalate, fallback to manual process"
+    }
+  ],
+  "handoffMatrix": [
+    {
+      "from": "BP-001",
+      "to": "BP-002",
+      "signal": "Candidate IMPORTED and JD available",
+      "payload": "candidate profile, CV text/file, JD"
+    },
+    {
+      "from": "BP-002",
+      "to": "BP-003",
+      "signal": "Candidate SCREENED_IN",
+      "payload": "approved screening result and candidate context"
+    },
+    {
+      "from": "BP-003",
+      "to": "BP-004",
+      "signal": "Candidate INTERVIEW_SCHEDULED or interview stage reached",
+      "payload": "candidate profile, JD, interview template, language"
+    },
+    {
+      "from": "BP-004",
+      "to": "BP-005",
+      "signal": "Candidate AI_INTERVIEW_COMPLETED and test required",
+      "payload": "interview transcript, AI evaluation, assigned test"
+    },
+    {
+      "from": "BP-005",
+      "to": "BP-006",
+      "signal": "Candidate TEST_GRADED",
+      "payload": "test report, interview report, screening result"
+    },
+    {
+      "from": "any active BP",
+      "to": "BP-009",
+      "signal": "Candidate withdrawal request or HR withdrawal action",
+      "payload": "candidate, current state, reason if available"
+    },
+    {
+      "from": "any active BP",
+      "to": "BP-010",
+      "signal": "Blocking ERROR state",
+      "payload": "candidate/job, prior state, error reason, owning integration/process"
+    }
+  ]
 }

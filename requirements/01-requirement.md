@@ -1,443 +1,509 @@
-# 01-requirement — AI Recruitment Automation Platform
+﻿# Requirement Capture: RecruitAI — He thong Recruitment AI Automation (v2.0)
 
-## Project Overview
+Generated: 2026-05-12T11:05:00Z
+Language: bilingual (vi/en)
+Project type: data-ai
+Version: 2.0 (updated from review comments)
 
-**Name:** AI Recruitment Automation Platform  
-**Type:** Web application (multi-tenant SaaS for recruitment agencies)  
-**Status:** Requirements — Updated (Gate 2: System Design & LLM Architecture — Complete)  
-**Date:** 2026-05-12  
-**Author:** DuyMT (with user input)  
-**Last Updated:** 2026-05-12  
-**Architecture Spec:** [04-llm-architecture-spec.md](04-llm-architecture-spec.md)
+## 1. Context
 
----
+| Field | Value |
+|---|---|
+| Product/System | RecruitAI — He thong Recruitment AI Automation |
+| Business Domain | Human Resources / Recruitment |
+| Target Users | Phong HR noi bo doanh nghiep (internal HR team) |
+| Stakeholders | HR Manager, Hiring Manager, Interviewer, IT Admin |
+| Input Sources | User input, system diagram image, review comments |
+| Scope Boundary Known? | yes |
 
-## 1. Problem Statement
+## 2. Raw Requirement Inventory
 
-Recruitment agencies manually handle candidate sourcing, CV screening, interview scheduling, test scoring, and content generation — all time-consuming, error-prone, and inconsistent across clients. An automated recruitment platform is needed to streamline the end-to-end recruitment lifecycle, reduce time-to-hire, and improve candidate quality across multiple agency clients.
+### 2.1 Module: Candidate Sourcing (Tao nguon)
 
----
+| ID | Raw Requirement | Source | Type | Confidence | Notes |
+|---|---|---|---|---|---|
+| RAW-001 | Import batch CV/candidate tu Excel | User input | need | high | [CLARIFIED via Q&A] |
+| RAW-002 | Tao job/candidate thu cong trong he thong | User input | need | high | |
+| RAW-003 | Trigger import tu Google Drive khi co file moi | User input | need | high | [CLARIFIED via Q&A] Google Drive watch folder |
+| RAW-004 | Import JD dang text input truc tiep hoac PDF/DOCX file | Q&A | need | high | [CLARIFIED via Q&A] |
 
-## 2. Target Users & Stakeholders
+### 2.2 Module: CV Screening (Sang loc)
 
-| Role | Description | Persona |
-|------|-------------|---------|
-| **Agency Admin** | Manages agency settings, clients, billing, and user permissions | Administrative decision-maker |
-| **Recruiter** | Day-to-day operator: posts jobs, screens candidates, schedules interviews | Core workflow user |
-| **Interviewer** | Conducts interviews (live or AI-assisted), reviews automated scores | Evaluation specialist |
-| **Candidate (External)** | Job seeker interacting via portal and chatbot | End-user / applicant |
-| **HiringCompany (Employer)** | Views pipeline dashboards, provides feedback, approves hires | Customer stakeholder |
-| **Translator / Localizer** | Reviews AI-generated translations (JP/VN/EN) when needed | Content specialist |
+| ID | Raw Requirement | Source | Type | Confidence | Notes |
+|---|---|---|---|---|---|
+| RAW-005 | AI phan tich CV so voi JD de chon ung vien phu hop (LLM) | User input | need | high | |
+| RAW-006 | Output: Matching score (0-100) | Q&A | need | high | [CLARIFIED via Q&A] |
+| RAW-007 | Output: Summary diem manh/yeu cua ung vien | Q&A | need | high | [CLARIFIED via Q&A] |
+| RAW-008 | Output: Risk flags (diem khong phu hop nghiem trong) | Q&A | need | high | [CLARIFIED via Q&A] |
+| RAW-009 | Output: Missing skills list | Q&A | need | high | [CLARIFIED via Q&A] |
+| RAW-010 | HR Manager approve ket qua sang loc truoc khi chuyen buoc | User input + Q&A | need | high | [CLARIFIED via Q&A] Single approve, ho tro bulk |
+| RAW-011 | CV format: PDF + DOCX only (khong can OCR anh) | Q&A | constraint | high | [CLARIFIED via Q&A] |
 
----
+### 2.3 Module: Interview Scheduling (Set lich)
 
-## 3. Agency Data Model (NEW)
+| ID | Raw Requirement | Source | Type | Confidence | Notes |
+|---|---|---|---|---|---|
+| RAW-012 | Tu dong thu thap availability ung vien + nguoi phong van | User input | need | high | |
+| RAW-013 | He thong suggest lich, HR Manager approve truoc khi confirm | User input | need | high | [CLARIFIED via Q&A] |
+| RAW-014 | Len lich tu dong qua Google Calendar | User input | need | high | [CLARIFIED via Q&A] |
+| RAW-015 | Gui email tu dong qua shared HR mailbox (Gmail API) | User input + Q&A | need | high | [CLARIFIED via Q&A] |
+| RAW-016 | Nhac lich phong van qua email | User input | need | medium | |
+| RAW-017 | Timezone support cho ung vien/interviewer o nuoc ngoai | Review | need | medium | |
 
-### 3.1 Entity Relationships
+### 2.4 Module: AI Interview (Phong van so bo)
 
-```
-Agency
- ├── Recruiters (1:N)
- ├── ClientCompanies (1:N)
- ├── CandidatePools (1:N)
- └── Jobs (1:N)
+| ID | Raw Requirement | Source | Type | Confidence | Notes |
+|---|---|---|---|---|---|
+| RAW-018 | Phong van async qua text message (ung vien nhan link, tra loi khi nao tien) | User input + Q&A | need | high | [CLARIFIED via Q&A] |
+| RAW-019 | Hybrid: cau hoi co dinh + AI tao follow-up dua tren cau tra loi | Q&A | need | high | [CLARIFIED via Q&A] |
+| RAW-020 | AI danh gia nang luc ung vien va tao report | User input | need | high | |
+| RAW-021 | Ho tro da ngon ngu: Viet, Nhat, Anh | Q&A | need | high | [CLARIFIED via Q&A] |
 
-ClientCompany
- ├── Jobs (1:N)
- ├── Candidates (1:N, via Application)
- └── AssignedRecruiters (N:M)
+### 2.5 Module: Test Grading (Cham bai)
 
-Recruiter ──┐
-             ├── ClientCompany (N:M — recruiter manages multiple clients)
-Candidate ───┘
-     │
-     ▼
-  Application
-     │
-     ▼
-  Interview → Assessment → Translation
-     │
-     ▼
-  AI Match Score
-```
+| ID | Raw Requirement | Source | Type | Confidence | Notes |
+|---|---|---|---|---|---|
+| RAW-022 | Import bai test + dap an de cham diem (LLM) | User input | need | high | |
+| RAW-023 | Ho tro multiple choice (cham tu dong theo dap an) | Q&A | need | high | [CLARIFIED via Q&A] |
+| RAW-024 | Ho tro essay (AI danh gia theo rubric) | Q&A | need | high | [CLARIFIED via Q&A] |
+| RAW-025 | Ho tro coding challenge (test cases + code quality) | Q&A | need | high | [CLARIFIED via Q&A] |
 
-### 3.2 Core Entities (Data Model)
+### 2.6 Module: Content & Design (Standalone)
 
-| Entity | Key Fields |
-|--------|------------|
-| **Agency** | name, logo, settings, subscription tier, created_at |
-| **Recruiter** | name, email, role (admin/recruiter/interviewer), agency_id |
-| **ClientCompany** | name, industry, contact info, agency_id (foreign key) |
-| **Job** | title, description, requirements, salary_range, client_id, status, stages_config |
-| **Candidate** | full_name, email, phone, location, resume_url, languages |
-| **Application** | candidate_id, job_id, status, stage, applied_at, ai_match_score |
-| **Interview** | application_id, type (phone/technical/onsite), scheduled_at, interviewer_id, status, recording_url |
-| **Assessment** | application_id, type (MCQ/coding/scenario), score, breakdown, ai_feedback |
-| **LocalizedContent** | source_lang, target_lang, source_text, translated_text, entity_type (CV/feedback/JD), status, version |
-| **AIMatch** | application_id, embedding_vector, matching_score, skill_scores, org_preference_score, explanation |
+| ID | Raw Requirement | Source | Type | Confidence | Notes |
+|---|---|---|---|---|---|
+| RAW-026 | Tao content tuyen dung dang goi y (LLM) | User input | need | medium | Standalone, khong trong pipeline |
+| RAW-027 | Thiet ke anh tuyen dung don gian (LLM) dang goi y | User input | idea | medium | |
 
----
+### 2.7 Module: Translation (Standalone)
 
-## 4. Core Features
+| ID | Raw Requirement | Source | Type | Confidence | Notes |
+|---|---|---|---|---|---|
+| RAW-028 | Dich CV tieng Nhat (LLM) | User input | need | high | Viet/Nhat/Anh |
+| RAW-029 | Nhan xet phong van tieng Nhat (LLM) | User input | need | high | |
 
-### 4.1 MVP — P0 (Must Have)
+### 2.8 Pipeline & Workflow
 
-#### F-001: AI Candidate Sourcing
-- Multi-channel candidate search (job boards, LinkedIn, internal databases)
-- Candidate matching using semantic search against job descriptions
-- Ranking candidates based on weighted matching criteria (skills, experience, organizational preference signals)
-- Automated outreach messaging to top candidates
-- **AI Stack:** CV Parse → Embedding → Vector Search → Weighted Scoring → Match Score
+| ID | Raw Requirement | Source | Type | Confidence | Notes |
+|---|---|---|---|---|---|
+| RAW-030 | Pipeline auto: Tao nguon -> Sang loc -> Set lich -> Phong van -> Cham bai | User input | goal | high | |
+| RAW-031 | Human approve bat buoc o buoc sang loc va set lich | Q&A | constraint | high | [CLARIFIED via Q&A] |
+| RAW-032 | Content/Design/Dich CV la module rieng, khong trong pipeline | User input | constraint | high | |
+| RAW-033 | Approval timeout: chi reminder, khong auto cancel/skip | Q&A | constraint | high | [CLARIFIED via Q&A] |
+| RAW-034 | MVP = full pipeline chinh, Content/Design/Translation sau | Q&A | constraint | high | [CLARIFIED via Q&A] |
 
-#### F-002: CV Parsing & Screening
-- Resume/CV parsing (PDF, DOCX)
-- Structured data extraction (name, skills, experience, education)
-- Screening using weighted scoring and vector similarity against job requirements
-- Scoring and ranking with explainable rationale
-- Duplicate detection across candidate pools
-- **AI Stack:** Document parsing → Entity extraction → Semantic matching → Scoring
+### 2.9 Non-functional & Platform
 
-#### F-003: Interview Scheduling
-- Calendar integration (Google Calendar, Outlook)
-- Collect candidate and interviewer availability
-- Suggest optimal interview slots with timezone support
-- Multi-round scheduling (phone screen → technical → onsite)
-- Automated reminders and rescheduling links
-- Timezone-aware scheduling (JP/VN/EN timezones priority)
+| ID | Raw Requirement | Source | Type | Confidence | Notes |
+|---|---|---|---|---|---|
+| RAW-035 | Quy mo lon: > 200 job/thang | Q&A | constraint | high | [CLARIFIED via Q&A] |
+| RAW-036 | Ho tro da ngon ngu: Viet, Nhat, Anh | Q&A | need | high | |
+| RAW-037 | Khong rang buoc tech stack | Q&A | constraint | high | |
+| RAW-038 | Bao mat du lieu ung vien muc co ban | Q&A | constraint | medium | |
+| RAW-039 | Tich hop Google Workspace: Calendar, Gmail, Drive | Q&A | need | high | |
+| RAW-040 | He thong chi phuc vu HR noi bo, khong multi-tenant | Q&A | constraint | high | |
 
-#### F-004: Assessment Scoring (Objective Only)
-- **In MVP:** MCQ tests, predefined answer scoring, threshold-based pass/fail
-- Instant results with score breakdown
-- Configurable passing thresholds per job
-- Recruiter override capability for edge cases
-- **Not in MVP:** Coding judge, AI essay scoring, behavioral analysis
+## 3. Use-Case Details (per Module)
 
-#### F-005: Pipeline Management
-- Visual pipeline/kanban board with configurable stages
-- **Default stages:** Applied → Screening → Interview → Technical → Offer → Hired / Rejected
-- Customizable workflows per client
-- Drag-and-drop stage configuration
-- Automated stage transitions (pass/fail/timeout triggers)
-- Dashboard with real-time pipeline metrics
+### UC-SRC: Candidate Sourcing
 
-#### F-006: Translation (JP/VN/EN)
-- LLM-based translation for:
-  - CVs and resumes
-  - Interview feedback
-  - Job descriptions
-- Supported language pairs: Japanese ↔ Vietnamese ↔ English
-- Human review queue for low-confidence translations
-- Source language auto-detection
+| Field | Value |
+|---|---|
+| Actor | HR Recruiter, System |
+| Trigger | HR upload file / HR tao thu cong / File moi tren Google Drive |
+| Input | Excel file (batch), manual form data, Google Drive files |
+| Process | 1. Validate file format 2. Parse data (job/candidate) 3. Create records in system 4. Set candidate state = CV_IMPORTED |
+| Output | Job records, Candidate records with status |
+| Exception | File format invalid, duplicate candidate, missing required fields |
 
-#### F-007: Email & Notifications
-- Email system integration (SendGrid / AWS SES)
-- Automated notifications:
-  - Candidate: application received, interview scheduled, stage updates, rejection/offer
-  - Recruiter: new application, AI match ready, scheduling conflicts
-  - Client: pipeline progress reports
-- Template-based email system with agency branding
+### UC-SCR: CV Screening
 
-#### F-008: RBAC & Authentication
-- **Role-based access control (RBAC) matrix:**
+| Field | Value |
+|---|---|
+| Actor | HR Recruiter (trigger), System (process), HR Manager (approve) |
+| Trigger | HR trigger screening / Auto after CV_IMPORTED |
+| Input | JD (text or PDF/DOCX), CV file (PDF/DOCX) |
+| Process | 1. Extract text from CV 2. Parse JD requirements 3. Extract skills/experience/education/language from CV 4. Match CV vs JD criteria 5. Generate score + summary + flags |
+| Output | Matching score (0-100), Summary (strengths/weaknesses), Risk flags, Missing skills list, Recommendation (pass/fail/review) |
+| Exception | File corrupted, cannot parse CV, JD missing criteria |
+| Approval | HR Manager single approve (bulk supported). Reminder only if not approved, no timeout. |
 
-| Permission | Agency Admin | Recruiter | Interviewer | Client |
-|-----------|:---:|:---:|:---:|:---:|
-| Create/edit/archive jobs | ✅ | ✅ (own clients) | ❌ | ❌ |
-| View & manage candidates | ✅ | ✅ (assigned) | ✅ (assigned) | ✅ (own jobs) |
-| Reject candidates | ✅ | ✅ | ❌ | ❌ |
-| Approve offers | ✅ | ✅ | ❌ | ✅ |
-| View salary info | ✅ | ✅ | ❌ | ✅ |
-| Export CV | ✅ | ✅ | ❌ | ❌ |
-| Manage users & roles | ✅ | ❌ | ❌ | ❌ |
-| View analytics/dashboard | ✅ | ✅ | ❌ | ✅ |
+### UC-SCH: Interview Scheduling
 
-- Email/password authentication with optional SSO (Google, Microsoft)
-- Multi-factor authentication (optional)
-- Session management with configurable timeouts
+| Field | Value |
+|---|---|
+| Actor | System (suggest), HR Manager (approve), Candidate, Interviewer |
+| Trigger | Candidate state = SCREENING_APPROVED |
+| Input | Candidate availability, Interviewer Google Calendar (free/busy), scheduling rules |
+| Process | 1. Collect availability from candidate (form/email) 2. Read interviewer free/busy from GCal 3. Find optimal slots 4. Suggest to HR Manager 5. HR Manager approve 6. Create GCal event 7. Send confirmation email via shared HR mailbox |
+| Output | Calendar event created, confirmation emails sent |
+| Exception | No available slots, interviewer calendar not accessible, candidate not responding |
+| Approval | HR Manager single approve. Reminder only, no auto cancel. |
 
-#### F-009: Data Isolation (Multi-Client)
-- Recruiter manages multiple client companies
-- Data isolation per client: jobs, candidates, applications are client-scoped
-- Shared candidate pool across clients (with deduplication)
-- Per-client pipeline stage configuration
+### UC-INT: AI Interview (Async)
 
----
+| Field | Value |
+|---|---|
+| Actor | System (AI), Candidate |
+| Trigger | Candidate state = INTERVIEW_CONFIRMED |
+| Input | JD, candidate profile, interview question template |
+| Process | 1. Generate interview link 2. Send link to candidate via email 3. Candidate answers questions (text async) 4. Hybrid: fixed questions + AI follow-up based on answers 5. AI evaluates responses 6. Generate interview report |
+| Output | Interview transcript, AI evaluation report, score, recommendation |
+| Exception | Candidate not responding (reminder after 24h), link expired, AI evaluation uncertain |
 
-### 4.2 Phase 1 — P1 (Next Iteration)
+### UC-TST: Test Grading
 
-| Feature | Key Requirements |
-|---------|-----------------|
-| **Chatbot** | Candidate-facing for FAQ, application status, interview prep; internal recruiter chatbot; 24/7 with human handoff; multi-language (JP/VN/EN) |
-| **AI Summaries** | Auto-generated candidate summaries, interview summaries, screening reports |
-| **Advanced Analytics** | Recruitment metrics dashboard, time-to-hire tracking, source effectiveness, funnel conversion rates |
-| **Reranking** | LLM-based reranking of candidates using full profile context (not MVP's weighted scoring) |
+| Field | Value |
+|---|---|
+| Actor | HR Recruiter (setup), System (grade), Candidate |
+| Trigger | Candidate state = INTERVIEW_COMPLETED (or configured step) |
+| Input | Test definition + answer key/rubric, candidate submission |
+| Process | 1. Send test to candidate 2. Candidate submits answers 3. Grade: multiple choice (auto match), essay (AI + rubric), coding (test cases + quality) 4. Generate score report |
+| Output | Score per section, total score, detailed feedback, pass/fail recommendation |
+| Exception | Submission timeout, plagiarism detected, coding environment error |
 
-### 4.3 Phase 2 — P2 (Future)
+### UC-TRL: Translation (Standalone)
 
-| Feature | Key Requirements |
-|---------|-----------------|
-| **AI Interviewer** | Real-time AI-powered video/text interviews, question generation, sentiment analysis, scoring |
-| **Content Generation** | AI-generated job descriptions, offer/rejection letters, social media posts |
-| **Image Generation** | Branded recruitment graphics, social media visuals |
-| **White-label SaaS** | Custom branding per agency, white-label portal for clients |
-| **Event Sourcing** | Full audit trail with event sourcing architecture |
+| Field | Value |
+|---|---|
+| Actor | HR Recruiter |
+| Trigger | Manual request |
+| Input | CV file, interview notes, target language |
+| Process | 1. Extract text 2. Translate via LLM 3. Format output |
+| Output | Translated document (Viet/Nhat/Anh) |
+| Exception | Unsupported language, file parse error |
 
----
+### UC-CNT: Content Generation (Standalone)
 
-## 5. Integrations
+| Field | Value |
+|---|---|
+| Actor | HR Recruiter |
+| Trigger | Manual request |
+| Input | Job info, tone/style preferences |
+| Process | 1. Generate recruitment content via LLM 2. Present as suggestions 3. HR edits and publishes |
+| Output | Content suggestions (text), image suggestions |
+| Exception | Content inappropriate, generation failed |
 
-| Integration | Provider | Priority | Purpose |
-|-------------|----------|----------|---------|
-| **Email System** | SendGrid or AWS SES | P0 | Candidate/recruiter/client notifications |
-| **Calendar** | Google Calendar / Outlook | P0 | Interview scheduling & availability sync |
-| **AI Provider** | **OpenAI (primary) + Gemini (fallback)** | P0 | CV parsing, matching, scoring, translation |
-| **External ATS** | Greenhouse, Lever, Workday | P2 | Import/export candidate data |
-
----
-
-## 6. AI Architecture (Clarified)
-
-### 6.1 MVP AI Pipeline
+## 4. Candidate State Machine
 
 ```
-Input: CV (PDF/DOCX) or Job Description
-  │
-  ├── 1. CV Parse ──→ Structured fields (skills, exp, education)
-  │
-  ├── 2. Embedding ──→ Vector representation of candidate/job
-  │
-  ├── 3. Vector Search ──→ Similarity matching
-  │
-  ├── 4. Weighted Scoring ──→ Composite score (skills: 40%, exp: 30%, edu: 20%, culture: 10%)
-  │
-  ├── 5. Optional Translation ──→ JP/VN/EN output
-  └── 6. Optional Summarization ──→ Candidate profile summary
+NEW (manual create)
+  |
+  v
+CV_IMPORTED (auto after import)
+  |
+  v
+SCREENING_IN_PROGRESS (auto when screening starts)
+  |
+  v
+SCREENING_COMPLETED (auto when AI finishes)
+  |
+  v  [HUMAN APPROVE REQUIRED - HR Manager]
+SCREENING_APPROVED / SCREENING_REJECTED
+  |
+  v
+INTERVIEW_SCHEDULING (auto)
+  |
+  v  [HUMAN APPROVE REQUIRED - HR Manager]
+INTERVIEW_CONFIRMED
+  |
+  v
+INTERVIEW_IN_PROGRESS (auto when candidate starts)
+  |
+  v
+INTERVIEW_COMPLETED (auto when candidate finishes)
+  |
+  v
+TEST_PENDING (auto)
+  |
+  v
+TEST_IN_PROGRESS (auto when candidate starts)
+  |
+  v
+TEST_COMPLETED (auto when graded)
+  |
+  v
+PASSED / FAILED (based on combined scores)
 ```
 
-### 6.2 What is NOT in MVP
-- ❌ Real-time AI interviewer
-- ❌ Agentic AI workflows
-- ❌ Advanced reranking orchestration
-- ❌ AI essay scoring
-- ❌ Behavioral analysis via video
-- ❌ Coding judge (sandbox execution)
+State transition rules:
+- Auto transitions: CV_IMPORTED, SCREENING_IN_PROGRESS, SCREENING_COMPLETED, INTERVIEW_SCHEDULING, INTERVIEW_IN_PROGRESS, INTERVIEW_COMPLETED, TEST_PENDING, TEST_IN_PROGRESS, TEST_COMPLETED
+- Human approve required: SCREENING_APPROVED (HR Manager), INTERVIEW_CONFIRMED (HR Manager)
+- Terminal states: PASSED, FAILED, SCREENING_REJECTED, WITHDRAWN (candidate withdraws)
 
----
+## 5. Approval Workflow
 
-## 7. Auto Scheduling Logic
+### 5.1 Screening Approval
 
-### 7.1 Availability Collection
-- Candidate provides preferred time slots via portal/email link
-- Interviewer sets availability windows in calendar
-- System reads calendar events via OAuth API to detect conflicts
+| Field | Value |
+|---|---|
+| Approver | HR Manager |
+| Type | Single approve |
+| Bulk support | Yes (approve multiple candidates at once) |
+| Timeout | No timeout, reminder only |
+| Reminder | Send reminder after 24h if not actioned |
+| Escalation | None (no auto cancel, no escalate) |
+| Actions | Approve / Reject / Request re-screen |
 
-### 7.2 Slot Suggestion Algorithm
-- Find overlapping availability across all participants
-- Prioritize slots within 48h of request (fast scheduling)
-- Respect timezone differences (JP = UTC+9, VN = UTC+7, EN = various)
-- Avoid scheduling outside business hours (9:00–18:00 local per participant)
-- Suggest top 3 options ranked by: urgency, participant preferences, travel time buffer
+### 5.2 Schedule Approval
 
-### 7.3 Timezone Support
-- Store all times in UTC
-- Display in participant-local timezone
-- Auto-detect timezone from candidate location/IP
-- Support JP (JST/UTC+9), VN (ICT/UTC+7), EN (US/EU timezones)
+| Field | Value |
+|---|---|
+| Approver | HR Manager |
+| Type | Single approve |
+| Bulk support | Yes |
+| Timeout | No timeout, reminder only |
+| Reminder | Send reminder after 24h if not actioned |
+| Escalation | None |
+| Actions | Approve / Reject / Suggest alternative slot |
 
----
+## 6. Business Rules
 
-## 8. Assessment Scoring (Clarified)
+### 6.1 AI Matching Weights (Default, configurable per job)
 
-### 8.1 MVP Scoping
+| Criteria | Default Weight |
+|---|---|
+| Skills match | 40% |
+| Experience (years + relevance) | 30% |
+| Language proficiency | 20% |
+| Education | 10% |
 
-| Test Type | In MVP? | Details |
-|-----------|:-------:|---------|
-| MCQ (single/multiple correct) | ✅ | Automated grading, 100% accuracy |
-| Predefined answer matching | ✅ | Exact/regex match for short answers |
-| Threshold pass/fail | ✅ | Configurable per job |
-| Coding challenges | ❌ | Phase 2 — requires sandbox |
-| AI essay scoring | ❌ | Phase 2 |
-| Behavioral analysis | ❌ | Phase 2 |
+### 6.2 Scheduling Rules
 
-### 8.2 Scoring Flow
-1. Candidate completes assessment → Submission stored
-2. Auto-grading engine evaluates MCQ/short answers → Instant score
-3. Score vs threshold comparison → Pass/fail determination
-4. AI-generated score breakdown (strengths/weaknesses) → Attached to application
-5. Recruiter can override pass/fail decision
+| Rule | Value |
+|---|---|
+| Priority | Earliest available slot first |
+| Buffer | Minimum 30 min between interviews |
+| Working hours | 9:00-18:00 local timezone |
+| Advance notice | Minimum 24h before interview |
+| Timezone | Support multi-timezone (VN, JP, etc.) |
 
----
+### 6.3 AI Interview Rules
 
-## 9. Pipeline Design Specification
+| Rule | Value |
+|---|---|
+| Format | Async text message |
+| Questions | Hybrid: 5-7 fixed + 2-3 AI follow-up |
+| Time limit | 72h to complete from link sent |
+| Reminder | 24h before deadline |
+| Language | Match JD language (Viet/Nhat/Anh) |
 
-### 9.1 Configurable Stages
+### 6.4 Test Grading Rules
 
-| Stage ID | Default Name | Auto-Transition Rules |
-|----------|-------------|----------------------|
-| `applied` | Applied | On application submission |
-| `screening` | Screening | Auto-move after CV parse + AI score |
-| `interview` | Interview | If AI score ≥ threshold OR recruiter override |
-| `technical` | Technical | If interview passed |
-| `offer` | Offer | If technical assessment passed |
-| `hired` | Hired | If offer accepted |
-| `rejected` | Rejected | At any stage by recruiter decision or auto-fail |
+| Rule | Value |
+|---|---|
+| Multiple choice | Auto-grade against answer key |
+| Essay | AI grade with rubric, score 0-100 |
+| Coding | Run test cases + AI code quality review |
+| Pass threshold | Configurable per job (default 60%) |
 
-### 9.2 Stage Configuration Per Client
-- Clients can customize stage names, order, and auto-transition rules
-- Default template provided for quick start
-- Drag-and-drop reordering in UI
-- Stage-level access control (who can move candidates between stages)
+## 7. Non-functional Requirements
 
----
+### 7.1 Performance
 
-## 10. Security Requirements
+| Metric | Target |
+|---|---|
+| Jobs per month | > 200 |
+| CV processing | ~10,000/month estimated |
+| Single CV screening time | < 30 seconds |
+| Concurrent users | 50+ |
+| API response time | < 2s (p95) for non-AI calls |
 
-### 10.1 Application Security
+### 7.2 Security
 
 | Requirement | Detail |
-|-------------|--------|
-| **Upload validation** | File type whitelist (PDF, DOCX only for CVs), max size 25MB, magic bytes verification |
-| **Malware scanning** | All uploaded files scanned with ClamAV or equivalent before storage |
-| **Input sanitization** | All user inputs sanitized against XSS, SQL injection, NoSQL injection |
-| **Rate limiting** | API: 100 req/min per user; Upload: 10 files/min per user |
-| **Authentication** | JWT-based with refresh tokens, bcrypt password hashing |
-| **Authorization** | RBAC per entity level, not just route level |
+|---|---|
+| Data encryption | At rest + in transit (TLS 1.2+) |
+| Access control | Role-based (HR Recruiter, HR Manager, Interviewer, Admin) |
+| Audit log | All actions logged (who, what, when) |
+| CV file storage | Encrypted, access-controlled |
+| Session management | Token-based, auto-expire |
 
-### 10.2 Data Security
+### 7.3 Availability & Monitoring
 
-| Requirement | Detail |
-|-------------|--------|
-| **Encryption at rest** | AES-256 for all candidate PII, resumes, and AI outputs |
-| **Encryption in transit** | TLS 1.3 mandatory, HSTS enabled |
-| **Audit logging** | All data access events logged: who, what, when, IP, device |
-| **IP/device logging** | Track login IP, device fingerprint per session |
-| **GDPR/CCPA compliance** | Right to erasure, data portability, consent management |
-| **Data retention policy** | Configurable per agency: 6/12/24 months |
+| Metric | Target |
+|---|---|
+| Uptime | 99% |
+| AI error tracking | Log all LLM failures, fallback gracefully |
+| API failure alerts | Alert on 5xx errors, timeout spikes |
+| Cost monitoring | Track LLM token usage per job/month |
 
-### 10.3 Infrastructure Security
-- VPC isolation per environment (dev/staging/prod)
-- Secrets managed via environment variables or secret manager (no hardcoded credentials)
-- Regular dependency vulnerability scanning
-- DDoS protection at edge (CloudFlare/AWS Shield)
+## 8. Integration Requirements
 
----
+### 8.1 Gmail API
 
-## 11. User-facing Failure Handling
+| Field | Value |
+|---|---|
+| Send from | Shared HR mailbox (e.g. hr@company.com) |
+| Features | Send interview invitations, reminders, results |
+| Templates | Email templates configurable in system |
+| Auth | OAuth2 (Google Workspace) |
 
-### 11.1 Failure Scenarios & UX
+### 8.2 Google Calendar API
 
-| Scenario | User Message | System Action |
-|----------|-------------|---------------|
-| **CV parse fails** | "We couldn't fully parse your resume. Please review the extracted fields below and correct any errors." | Show editable extracted fields, allow manual override, queue for retry |
-| **AI service unavailable** | "Our AI service is temporarily busy. Your request has been queued and will be processed within 2 minutes." | Show estimated wait time, graceful degradation to rule-based processing |
-| **Calendar sync fails** | "We couldn't connect to your calendar. Please check your connection and try again." | Retry with exponential backoff (3 attempts), manual schedule entry fallback |
-| **Translation fails** | "Translation service is temporarily unavailable. Original text is displayed." | Fallback to source language, queue for retry, manual translation option |
+| Field | Value |
+|---|---|
+| Read | Free/busy status of interviewers |
+| Write | Create interview events |
+| Timezone | Multi-timezone support |
+| Auth | OAuth2 (Google Workspace) |
 
-### 11.2 General Failure Principles
-- Always show the original data when AI services fail
-- Never block the user — provide manual fallback for every automated step
-- Log all failures with full context for debugging
-- Retry with exponential backoff (max 3 attempts)
-- Toast/notification for transient errors; inline error for persistent issues
+### 8.3 Google Drive API
 
----
+| Field | Value |
+|---|---|
+| Watch | Specific folder(s) configured by admin |
+| Trigger | New file uploaded -> auto import |
+| File types | Excel (.xlsx), PDF, DOCX |
+| Auth | OAuth2 (Google Workspace) |
 
-## 12. Non-Functional Requirements
+## 9. File Format Requirements
 
-### 12.1 Performance
+| Type | Supported Formats | Notes |
+|---|---|---|
+| CV | PDF, DOCX | No image/scan OCR required |
+| JD | Text input (in-system), PDF, DOCX | Dual: direct text or file upload |
+| Test (import) | Excel (.xlsx), JSON | Structured format with questions + answers |
+| Batch import | Excel (.xlsx) | Candidate/Job batch data |
 
-| Metric | Target | Scope |
-|--------|--------|-------|
-| Page load | < 2 seconds | Dashboard views |
-| CV parsing | < 10 seconds | Including AI analysis |
-| AI matching score | < 15 seconds | Per candidate-job pair |
-| Scheduling suggestions | < 5 seconds | Availability computation |
-| Translation | < 30 seconds | Per document |
-| Concurrent users | 500+ | All tenants combined |
+## 10. Success Metrics
 
-### 12.2 Scalability
-- Multi-tenant architecture with data isolation per agency
-- Horizontal scaling for AI processing workloads via message queue
-- CDN for static assets
-- Database read replicas for analytics queries
+| Module | Metric | Target |
+|---|---|---|
+| Screening | CV processing time | < 30s per CV |
+| Screening | Matching accuracy (human agreement rate) | > 80% |
+| Scheduling | Calendar conflict rate | < 1% |
+| Scheduling | Time from approve to confirmed | < 1 hour |
+| AI Interview | Candidate completion rate | > 70% |
+| AI Interview | Evaluation consistency | > 85% agreement with human |
+| Test Grading | Auto-grade accuracy (multiple choice) | 100% |
+| Test Grading | AI grade correlation with human (essay) | > 75% |
+| Pipeline | End-to-end time (source to decision) | < 7 days |
 
-### 12.3 Reliability
-- 99.5% uptime SLA
-- Automated backups with 24h RPO
-- Fallback to rule-based processing when LLM services are unavailable
-- Health check endpoints for all critical services
+## 11. Scope & Phasing
 
----
+### MVP (Phase 1) — Full Pipeline
 
-## 13. Technology Stack
+| Module | Included |
+|---|---|
+| Candidate Sourcing | Yes |
+| CV Screening | Yes |
+| Interview Scheduling | Yes |
+| AI Interview (async) | Yes |
+| Test Grading | Yes |
+| Approval Workflow | Yes |
+| Google Integration | Yes |
 
-| Layer | Technology | Rationale |
-|-------|------------|-----------|
-| **Frontend** | Next.js 14+ (App Router), TypeScript, Tailwind CSS | SSR, API routes, strong typing, rapid styling |
-| **Backend** | NestJS (Node.js) | Modular architecture, built-in validation, TypeScript |
-| **Database** | PostgreSQL (primary), Redis (cache/sessions) | Relational integrity, caching layer |
-| **AI Provider** | OpenAI (primary) + Gemini (fallback) | Balance of capability, cost, and reliability |
-| **Vector DB** | pgvector or Pinecone | Embedding storage and similarity search |
-| **File Storage** | S3-compatible (MinIO or AWS S3) | CV storage, recordings, media |
-| **Auth** | NextAuth.js / Auth.js + RBAC | Multi-provider support, role management |
-| **Queue** | BullMQ (Redis) | Async AI processing, email delivery |
-| **Translation** | OpenAI GPT-4o / Gemini | High-quality JP/VN/EN translation |
-| **Deployment** | **GCP** (Cloud Run / GKE) | User-confirmed preference |
-| **Monitoring** | Sentry + custom logging | Error tracking, performance monitoring |
+### Phase 2 — Standalone Tools
 
----
+| Module | Included |
+|---|---|
+| Content Generation | Yes |
+| Design Generation | Yes |
+| CV Translation | Yes |
+| Interview Notes Translation | Yes |
 
-## 14. Open Questions — RESOLVED ✅
+### Out of Scope (all phases)
 
-Previous open questions have been resolved based on user decisions:
+- Multi-tenant / agency mode
+- Video/voice realtime interview
+- ATS/CRM integration with third-party systems
+- Mobile native app (web responsive is sufficient)
+- Onboarding workflow (post-hire)
 
-| # | Question | Resolution | Date |
-|---|----------|------------|------|
-| OQ-001 | AI cloud provider? | **OpenAI (primary) + Gemini (fallback)** | 2026-05-12 |
-| OQ-002 | Multi-tenancy depth? | **Single workspace with client-scoped data isolation** | 2026-05-12 |
-| OQ-003 | Budget? | **~$500–1,500/month** (determines model selection, caching strategy) | 2026-05-12 |
-| OQ-004 | Deployment target? | **GCP** (Cloud Run or GKE) | 2026-05-12 |
-| OQ-005 | Existing data migration? | **Optional — Phase 2** | 2026-05-12 |
+## 12. Problem Statements
 
----
+| ID | Problem | Who | Impact | Source |
+|---|---|---|---|---|
+| PROB-001 | Quy trinh tuyen dung thu cong ton nhieu thoi gian o quy mo > 200 job/thang | HR Team | Cham tre, bo lo ung vien tot | RAW-030, RAW-035 |
+| PROB-002 | Sang loc CV thu cong khong nhat quan | HR Recruiter | Danh gia chu quan | RAW-005 |
+| PROB-003 | Len lich phong van phuc tap khi coordinate nhieu ben | HR Coordinator | Email qua lai, conflict lich | RAW-012, RAW-013 |
+| PROB-004 | Danh gia so bo ung vien ton thoi gian interviewer | Interviewer | Phong van ung vien khong phu hop | RAW-018 |
+| PROB-005 | Cham bai test thu cong cham va khong dong nhat | HR Team | Delay pipeline | RAW-022 |
 
-## 15. Success Criteria
+## 13. Goals
 
-- [ ] All P0 features functional in MVP (AI sourcing, CV parsing, scheduling, test scoring, pipeline, translation, email, RBAC)
-- [ ] AI screening accuracy > 85% match rate vs manual recruiter assessment
-- [ ] CV parsing accuracy > 90% for structured fields
-- [ ] Interview scheduling time reduced by 60% vs manual process
-- [ ] Translation quality: human review needed for < 10% of outputs
-- [ ] End-to-end candidate pipeline visible within 5-minute onboarding
-- [ ] Zero data breaches; GDPR compliance verified
-- [ ] Support 3+ simultaneous agency tenants at launch
-- [ ] Fallback to rule-based processing confirmed for all failure scenarios
+| ID | Desired Outcome | Success Signal | Source |
+|---|---|---|---|
+| GOAL-001 | Tu dong hoa pipeline tuyen dung end-to-end voi human oversight | Giam 70%+ thoi gian xu ly thu cong | RAW-030 |
+| GOAL-002 | AI sang loc CV chinh xac, nhat quan | > 80% agreement voi human | RAW-005 |
+| GOAL-003 | Tu dong hoa scheduling qua Google Calendar/Gmail | Zero conflict lich | RAW-012-016 |
+| GOAL-004 | Danh gia so bo ung vien qua AI chatbot async | Giam so luong phong van khong can thiet | RAW-018 |
+| GOAL-005 | Ho tro tuyen dung da ngon ngu (Viet/Nhat/Anh) | Xu ly CV va phong van da ngon ngu seamless | RAW-021, RAW-028, RAW-029 |
 
----
+## 14. Constraints
 
-## 16. Timeline
+| ID | Constraint | Type | Source |
+|---|---|---|---|
+| CON-001 | Chi phuc vu HR noi bo, khong multi-tenant | business | RAW-040 |
+| CON-002 | > 200 job/thang, can high throughput | technical | RAW-035 |
+| CON-003 | Khong rang buoc tech stack | technical | RAW-037 |
+| CON-004 | Phu thuoc Google Workspace | platform | RAW-039 |
+| CON-005 | Content/Design/Translation la module rieng | business | RAW-032 |
+| CON-006 | Human approve bat buoc o sang loc va set lich | business | RAW-031 |
+| CON-007 | CV chi ho tro PDF/DOCX, khong can OCR anh | technical | RAW-011 |
+| CON-008 | Approval khong co timeout, chi reminder | business | RAW-033 |
 
-| Phase | Duration | Features | Milestone |
-|-------|----------|----------|-----------|
-| **Foundation** | 2–4 weeks | Auth, RBAC, data model, project setup, CI/CD | Working scaffold with database and auth |
-| **MVP ATS + AI** | 2–4 months | AI sourcing, CV parsing, scheduling, auto test scoring (MCQ only), pipeline management, translation, email notifications | Core ATS with AI matching in production |
-| **AI Automation** | Later phase | Chatbot, AI summaries, reranking, advanced analytics | Full AI automation layer |
-| **P2 Features** | Post-MVP | AI interviewer, content/image generation, white-label SaaS, event sourcing | Full product suite |
+## 15. Assumptions
 
-### Recommended MVP Priority Order
-1. **Week 1-2:** Foundation — Auth, RBAC, data model, project scaffolding
-2. **Week 3-4:** Pipeline management + basic job/candidate CRUD
-3. **Month 2:** CV parsing + AI matching (embedding + vector search + scoring)
-4. **Month 3:** Auto scheduling + email notifications + translation
-5. **Month 4:** Auto test scoring (MCQ) + dashboard + Polish
+| ID | Assumption | Risk if Wrong | How to Verify |
+|---|---|---|---|
+| ASM-001 | Cong ty da dung Google Workspace | Phai redesign integration | Confirm voi IT Admin |
+| ASM-002 | CV ung vien o dang PDF/DOCX co the extract text | Can them OCR | Khao sat format CV thuc te |
+| ASM-003 | Interviewer share Google Calendar | Fallback manual | Confirm voi hiring managers |
+| ASM-004 | Ung vien co the truy cap link chatbot | Can UX don gian | User testing |
+| ASM-005 | LLM API cost acceptable cho quy mo > 200 job/thang | Cost overrun | Estimate token usage |
+| ASM-006 | Shared HR mailbox da duoc setup | Can IT setup | Confirm voi IT |
 
----
+## 16. Risks
 
-## 17. Next Steps
+| ID | Risk | Impact | Probability | Mitigation |
+|---|---|---|---|---|
+| RISK-001 | AI sang loc co bias | high | medium | Human review, feedback loop, evaluation metrics |
+| RISK-002 | LLM hallucination trong danh gia | high | medium | Structured prompts, rubric-based, human override |
+| RISK-003 | Google API rate limit | medium | medium | Queue system, batch processing, retry |
+| RISK-004 | Ung vien khong phan hoi chatbot | medium | medium | Reminder, deadline, fallback manual |
+| RISK-005 | Chi phi LLM cao khi scale | medium | medium | Cost monitoring, caching, model selection |
+| RISK-006 | Du lieu ung vien bi leak | high | low | Encryption, access control, audit log |
 
-1. **Confirm resolved decisions** — Review and approve the 5 resolved open questions
-2. **Create system design document** — Architecture diagram reflecting agency model, data model, and AI pipeline
-3. **Define API contracts** — REST endpoints, WebSocket for real-time updates, AI service interfaces
-4. **Database schema** — ERD for all entities with indexes and constraints
-5. **UI/UX wireframes** — Aligned with reference image and updated MVP scope
-6. **Sprint 1 planning** — Foundation: Auth + RBAC + Data model
+## 17. Ambiguity Log
+
+| Term | Why Ambiguous | Clarifying Question | Status |
+|---|---|---|---|
+| AI matching weights | Default weights provided, nhung chua confirm voi business | Weights nay co phu hop voi thuc te tuyen dung? | Open |
+| Nhac lich timing | Chua ro nhac truoc bao lau | 24h? 1h? Ca hai? | Open |
+| Coding test environment | Chua ro chay code o dau | Sandbox? Third-party? In-browser? | Open |
+| Interview question count | Hybrid 5-7 fixed + 2-3 follow-up, chua confirm exact | Confirm so luong chinh xac? | Open |
+
+## 18. Validation Gate 1
+
+| Check | Status | Notes |
+|---|---|---|
+| Every raw requirement has ID | PASS | RAW-001 to RAW-040 |
+| Source/stakeholder captured | PASS | All sourced |
+| Classified by type | PASS | need/goal/constraint/idea |
+| Ambiguity flagged | PASS | 4 ambiguities logged |
+| Duplicates handled | PASS | No duplicates |
+| Product/system context present | PASS | Complete |
+| Use-case details per module | PASS | 7 use-cases defined |
+| Candidate state machine | PASS | 13 states defined |
+| Approval workflow | PASS | Detailed |
+| Business rules | PASS | 4 rule sets |
+| Non-functional requirements | PASS | Performance, Security, Availability |
+| Integration requirements | PASS | Gmail, Calendar, Drive |
+| File format requirements | PASS | CV, JD, Test, Batch |
+| Success metrics | PASS | 9 metrics defined |
+| Scope/phasing | PASS | MVP + Phase 2 + Out of scope |
+
+**Gate 1 Status: PASS**
+
+## 19. Open Questions
+
+| ID | Question | Owner | Blocks? |
+|---|---|---|---|
+| Q-001 | AI matching weights (40/30/20/10) co phu hop? | HR Manager | no |
+| Q-002 | Nhac lich: truoc 24h, 1h, hay ca hai? | HR Manager | no |
+| Q-003 | Coding test: sandbox environment nao? | IT Admin | no |
+| Q-004 | So luong cau hoi phong van chinh xac? | HR Manager | no |
+| Q-005 | Google Drive: folder nao watch? Naming convention? | IT Admin | no |
+| Q-006 | Email template: ai tao va quan ly? | HR Manager | no |

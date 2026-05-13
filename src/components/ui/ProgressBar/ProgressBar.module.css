@@ -1,0 +1,88 @@
+.progressWrapper {
+  width: 100%;
+}
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+.progressLabelText {
+  color: var(--color-text-secondary);
+}
+
+.progressValue {
+  font-weight: var(--font-medium);
+  color: var(--color-text);
+}
+
+.progressTrack {
+  width: 100%;
+  height: 8px;
+  background-color: var(--color-surface-container);
+  border-radius: var(--border-radius-full);
+  overflow: hidden;
+}
+
+.progressBar {
+  height: 100%;
+  border-radius: var(--border-radius-full);
+  transition: width var(--duration-normal) var(--ease-out);
+}
+
+/* Variants */
+.default {
+  background-color: var(--color-primary);
+}
+
+.success {
+  background-color: var(--color-success);
+}
+
+.warning {
+  background-color: var(--color-warning);
+}
+
+.danger {
+  background-color: var(--color-danger);
+}
+
+.info {
+  background-color: var(--color-info);
+}
+
+/* Sizes */
+.sm .progressTrack {
+  height: 4px;
+}
+
+.md .progressTrack {
+  height: 8px;
+}
+
+.lg .progressTrack {
+  height: 12px;
+}
+
+/* Striped animation */
+.striped .progressBar {
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.15) 25%,
+    transparent 25%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.15) 75%,
+    transparent 75%,
+    transparent
+  );
+  background-size: 1rem 1rem;
+  animation: stripes 1s linear infinite;
+}
+
+@keyframes stripes {
+  from { background-position: 1rem 0; }
+  to { background-position: 0 0; }
+}

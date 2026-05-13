@@ -1,0 +1,54 @@
+.card {
+  background-color: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+}
+
+.cardHeader {
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cardTitle {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-text);
+  margin: 0;
+}
+
+.cardDescription {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-1);
+}
+
+.cardContent {
+  padding: var(--space-5);
+}
+
+.cardFooter {
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-surface-container);
+}
+
+/* Panel variant - simpler card */
+.panel {
+  background-color: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-4);
+}
+
+/* Bordered variant */
+.bordered {
+  border-width: 2px;
+  border-color: var(--color-border-strong);
+}
+
+/* Elevated variant */
+.elevated {
+  box-shadow: var(--shadow-md);
+  border: none;
+}

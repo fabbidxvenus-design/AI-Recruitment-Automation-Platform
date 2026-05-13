@@ -1,0 +1,492 @@
+.importPage {
+  padding: var(--space-6);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-6);
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-on-surface);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.description {
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.blockersSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.mainContent {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: var(--space-6);
+}
+
+@media (max-width: 1024px) {
+  .mainContent {
+    grid-template-columns: 1fr;
+  }
+}
+
+.importMethods {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.uploadArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-6);
+  border: 2px dashed var(--color-outline);
+  border-radius: 12px;
+  background: var(--color-surface-container-low);
+  text-align: center;
+}
+
+.uploadIcon {
+  font-size: 48px;
+  margin-bottom: var(--space-3);
+}
+
+.uploadText {
+  font-size: 16px;
+  color: var(--color-on-surface);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.uploadFormats {
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+  margin: 0 0 var(--space-4) 0;
+}
+
+.fileInput {
+  display: none;
+}
+
+.fileInputLabel {
+  cursor: pointer;
+}
+
+.selectedFile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface-container);
+  border-radius: 8px;
+  margin-top: var(--space-3);
+}
+
+.fileName {
+  font-size: 14px;
+  color: var(--color-on-surface);
+}
+
+.removeFile {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--color-on-surface-variant);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.removeFile:hover {
+  color: var(--color-error);
+}
+
+.progressSection {
+  margin-top: var(--space-4);
+}
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+  margin-bottom: var(--space-1);
+}
+
+.progressBar {
+  height: 8px;
+  background: var(--color-surface-container);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--color-primary);
+  transition: width 0.3s ease;
+}
+
+.processingState {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface-container-low);
+  border-radius: 8px;
+  margin-top: var(--space-4);
+}
+
+.spinner {
+  font-size: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.successState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--color-success-light);
+  border-radius: 8px;
+  margin-top: var(--space-4);
+}
+
+.warning {
+  color: var(--color-warning);
+  font-size: 14px;
+}
+
+.driveSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+.driveIcon {
+  font-size: 48px;
+}
+
+.driveStatus {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+.driveLabel {
+  font-size: 14px;
+  color: var(--color-on-surface-variant);
+}
+
+.drivePath {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  background: var(--color-surface-container);
+  padding: var(--space-1) var(--space-2);
+  border-radius: 4px;
+  color: var(--color-on-surface);
+}
+
+.driveStats {
+  display: flex;
+  gap: var(--space-6);
+  width: 100%;
+}
+
+.driveStat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.driveStatValue {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.driveStatLabel {
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+}
+
+.manualForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.formLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-on-surface);
+}
+
+.formInput,
+.formSelect {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-outline);
+  border-radius: 8px;
+  font-size: 14px;
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+  transition: border-color 0.2s;
+}
+
+.formInput:focus,
+.formSelect:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.recentImports {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.importItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+
+.importItem:last-child {
+  border-bottom: none;
+}
+
+.importIcon {
+  font-size: 16px;
+  width: 24px;
+  text-align: center;
+}
+
+.importDetails {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.importName {
+  font-size: 14px;
+  color: var(--color-on-surface);
+  font-weight: 500;
+}
+
+.importMeta {
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+}
+
+.statsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.statItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.statValue {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.statLabel {
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modalContent {
+  background: var(--color-surface);
+  border-radius: 16px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow: auto;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+
+.modalHeader h2 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--color-on-surface);
+}
+
+.modalClose {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--color-on-surface-variant);
+  cursor: pointer;
+}
+
+.modalBody {
+  padding: var(--space-5);
+}
+
+.duplicateInfo {
+  margin: 0 0 var(--space-4) 0;
+  color: var(--color-on-surface-variant);
+}
+
+.duplicateList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.duplicateItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3);
+  background: var(--color-surface-container-low);
+  border-radius: 8px;
+}
+
+.candidateInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.candidateName {
+  font-weight: 500;
+  color: var(--color-on-surface);
+}
+
+.candidateEmail {
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+}
+
+.duplicateActions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-outline-variant);
+}
+
+/* Error state styles */
+.inputError {
+  border-color: var(--color-danger) !important;
+}
+
+.inputError:focus {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 2px var(--color-danger-light);
+}
+
+.fieldError {
+  display: block;
+  font-size: 12px;
+  color: var(--color-danger);
+  margin-top: var(--space-1);
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.formInput[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+
+/* Error state styles */
+.inputError {
+  border-color: var(--color-danger) !important;
+}
+
+.inputError:focus {
+  border-color: var(--color-danger);
+  box-shadow: 0 0 0 2px var(--color-danger-light);
+}
+
+.fieldError {
+  display: block;
+  font-size: 12px;
+  color: var(--color-danger);
+  margin-top: var(--space-1);
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.formInput[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}

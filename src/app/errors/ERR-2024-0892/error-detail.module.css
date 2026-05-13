@@ -1,0 +1,585 @@
+.errorDetailPage {
+  padding: var(--space-6);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-6);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.errorCode {
+  font-size: 14px;
+  font-weight: 600;
+  padding: var(--space-1) var(--space-3);
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+  border-radius: 6px;
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.titleSection {
+  flex: 1;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-on-surface);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.description {
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+/* Severity Banner */
+.severityBanner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-radius: 12px;
+  margin-bottom: var(--space-6);
+}
+
+.severityBanner.high {
+  background: var(--color-danger-light);
+  border: 1px solid var(--color-danger);
+}
+
+.severityBanner.critical {
+  background: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+.severityBanner.medium {
+  background: var(--color-warning-light);
+  border: 1px solid var(--color-warning);
+}
+
+.severityBanner.low {
+  background: var(--color-info-light);
+  border: 1px solid var(--color-info);
+}
+
+.severityIcon {
+  font-size: 24px;
+}
+
+.severityContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.severityLabel {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.severityBanner.high .severityLabel,
+.severityBanner.critical .severityLabel {
+  color: var(--color-danger);
+}
+
+.severityBanner.medium .severityLabel {
+  color: var(--color-warning);
+}
+
+.severityBanner.low .severityLabel {
+  color: var(--color-info);
+}
+
+.severityText {
+  font-size: 14px;
+  color: var(--color-on-surface);
+}
+
+.metaInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.metaLabel {
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+}
+
+.metaValue {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-on-surface);
+}
+
+/* Main Content Grid */
+.mainContent {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: var(--space-6);
+}
+
+@media (max-width: 1024px) {
+  .mainContent {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Status Timeline */
+.timelineSection {
+  margin-bottom: var(--space-6);
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  position: relative;
+  padding-left: var(--space-6);
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 8px;
+  bottom: 8px;
+  width: 2px;
+  background: var(--color-outline-variant);
+}
+
+.timelineItem {
+  display: flex;
+  gap: var(--space-4);
+  position: relative;
+}
+
+.timelineItem::before {
+  content: '';
+  position: absolute;
+  left: calc(-1 * var(--space-6) + 4px);
+  top: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-outline);
+  border: 2px solid var(--color-surface);
+}
+
+.timelineItem.current::before {
+  background: var(--color-primary);
+  box-shadow: 0 0 0 4px var(--color-primary-fixed);
+}
+
+.timelineItem.completed::before {
+  background: var(--color-success);
+}
+
+.timelineDot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface-container-low);
+  flex-shrink: 0;
+}
+
+.timelineItem.completed .timelineDot {
+  background: var(--color-success-light);
+}
+
+.timelineItem.current .timelineDot {
+  background: var(--color-primary);
+}
+
+.timelineItemContent {
+  flex: 1;
+  padding-bottom: var(--space-4);
+}
+
+.timelineTitle {
+  font-weight: 600;
+  color: var(--color-on-surface);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.timelineTime {
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+}
+
+/* Affected Entities */
+.entitiesSection {
+  margin-bottom: var(--space-6);
+}
+
+.entityList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.entityItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-container-low);
+  border-radius: 8px;
+}
+
+.entityIcon {
+  font-size: 16px;
+}
+
+.entityId {
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--color-on-surface-variant);
+}
+
+/* Resolution Steps */
+.resolutionSection {
+  margin-bottom: var(--space-6);
+}
+
+.resolutionSteps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.resolutionStep {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface-container-low);
+  border-radius: 8px;
+}
+
+.stepNumber {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-surface-container);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+  flex-shrink: 0;
+}
+
+.resolutionStep.completed .stepNumber {
+  background: var(--color-success);
+  color: var(--color-on-success);
+}
+
+.stepContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.stepTitle {
+  font-weight: 500;
+  color: var(--color-on-surface);
+}
+
+.stepDesc {
+  font-size: 13px;
+  color: var(--color-on-surface-variant);
+}
+
+/* Retry Settings Sidebar */
+.retrySettings {
+  margin-bottom: var(--space-5);
+}
+
+.settingsCard {
+  padding: var(--space-5);
+  background: var(--color-surface-container-low);
+  border-radius: 12px;
+}
+
+.settingsTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+  margin: 0 0 var(--space-4) 0;
+}
+
+.settingsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+.settingItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.settingLabel {
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+}
+
+.settingValue {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.settingValue.danger {
+  color: var(--color-danger);
+}
+
+/* Assignment Card */
+.assignmentCard {
+  padding: var(--space-5);
+  background: var(--color-surface-container-low);
+  border-radius: 12px;
+  margin-bottom: var(--space-5);
+}
+
+.assigneeSection {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.assigneeAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-surface-container);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.assigneeInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.assigneeName {
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.assigneeRole {
+  font-size: 13px;
+  color: var(--color-on-surface-variant);
+}
+
+/* Previous State */
+.previousState {
+  margin-bottom: var(--space-5);
+}
+
+.previousCard {
+  padding: var(--space-4);
+  background: var(--color-surface-container-low);
+  border-radius: 12px;
+  border: 1px dashed var(--color-outline);
+}
+
+.previousTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 var(--space-3) 0;
+}
+
+.previousValue {
+  font-size: 14px;
+  color: var(--color-on-surface);
+}
+
+/* Escalation Warning */
+.escalationWarning {
+  padding: var(--space-4);
+  background: var(--color-warning-light);
+  border-radius: 12px;
+  margin-bottom: var(--space-5);
+}
+
+.escalationIcon {
+  font-size: 20px;
+  margin-bottom: var(--space-2);
+}
+
+.escalationTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-warning);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.escalationText {
+  font-size: 13px;
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+/* Manual Review Section */
+.manualReview {
+  padding: var(--space-5);
+  background: var(--color-surface-container-low);
+  border-radius: 12px;
+  margin-bottom: var(--space-5);
+}
+
+.manualTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+  margin: 0 0 var(--space-3) 0;
+}
+
+.manualOptions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.manualOption {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-surface-container);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--color-on-surface);
+}
+
+.manualOptionIcon {
+  font-size: 16px;
+}
+
+/* Action Buttons */
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.actionButtons button {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modalContent {
+  background: var(--color-surface);
+  border-radius: 16px;
+  max-width: 500px;
+  width: 90%;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+
+.modalHeader h2 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--color-on-surface);
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--color-on-surface-variant);
+  cursor: pointer;
+}
+
+.modalBody {
+  padding: var(--space-5);
+}
+
+.formGroup {
+  margin-bottom: var(--space-4);
+}
+
+.formGroup label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-on-surface);
+  margin-bottom: var(--space-1);
+}
+
+.textarea {
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--color-outline);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-outline-variant);
+}
