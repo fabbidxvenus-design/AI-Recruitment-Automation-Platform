@@ -1,19 +1,19 @@
-﻿# Requirement Capture: RecruitAI — He thong Recruitment AI Automation (v2.0)
+﻿# Requirement Capture: RecruitAI â€” He thong Recruitment AI Automation (v2.1)
 
-Generated: 2026-05-12T11:05:00Z
+Generated: 2026-05-13T00:00:00Z
 Language: bilingual (vi/en)
 Project type: data-ai
-Version: 2.0 (updated from review comments)
+Version: 2.1 (updated with Phase 2 prototype scope clarification)
 
 ## 1. Context
 
 | Field | Value |
 |---|---|
-| Product/System | RecruitAI — He thong Recruitment AI Automation |
+| Product/System | RecruitAI â€” He thong Recruitment AI Automation |
 | Business Domain | Human Resources / Recruitment |
 | Target Users | Phong HR noi bo doanh nghiep (internal HR team) |
 | Stakeholders | HR Manager, Hiring Manager, Interviewer, IT Admin |
-| Input Sources | User input, system diagram image, review comments |
+| Input Sources | User input, system diagram image, review comments, explicit scope decisions |
 | Scope Boundary Known? | yes |
 
 ## 2. Raw Requirement Inventory
@@ -38,6 +38,7 @@ Version: 2.0 (updated from review comments)
 | RAW-009 | Output: Missing skills list | Q&A | need | high | [CLARIFIED via Q&A] |
 | RAW-010 | HR Manager approve ket qua sang loc truoc khi chuyen buoc | User input + Q&A | need | high | [CLARIFIED via Q&A] Single approve, ho tro bulk |
 | RAW-011 | CV format: PDF + DOCX only (khong can OCR anh) | Q&A | constraint | high | [CLARIFIED via Q&A] |
+| RAW-041 | CV Evidence Viewer: Cho phep HR xem CV goc, text trich xuat, va cac evidence spans duoc link voi tieu chi JD/screening (tich hop voi man hinh sang loc/final review â€” evidence detail la Phase 2 prototype utility) | Scope decision | need | high | Phase 2 prototype utility module |
 
 ### 2.3 Module: Interview Scheduling (Set lich)
 
@@ -68,31 +69,48 @@ Version: 2.0 (updated from review comments)
 | RAW-024 | Ho tro essay (AI danh gia theo rubric) | Q&A | need | high | [CLARIFIED via Q&A] |
 | RAW-025 | Ho tro coding challenge (test cases + code quality) | Q&A | need | high | [CLARIFIED via Q&A] |
 
-### 2.6 Module: Content & Design (Standalone)
+### 2.6 Module: Content Generation (Phase 2 Prototype)
 
 | ID | Raw Requirement | Source | Type | Confidence | Notes |
 |---|---|---|---|---|---|
-| RAW-026 | Tao content tuyen dung dang goi y (LLM) | User input | need | medium | Standalone, khong trong pipeline |
-| RAW-027 | Thiet ke anh tuyen dung don gian (LLM) dang goi y | User input | idea | medium | |
+| RAW-026 | Tao content tuyen dung dang goi y (LLM): plain text, copyable, ho tro export file, ho tro channel integration | User input + scope decision | need | high | [CLARIFIED via Q&A] Phase 2 prototype standalone |
+| RAW-026a | Content publishing: Ho tro thá»§ cong copy, export file, va tich hop channel (LinkedIn, Facebook, job boards...) | Scope decision | need | high | [CLARIFIED via Q&A] All 3 supported |
+| RAW-026b | Generated content phai duoc HR review/approve truoc khi publish/export/use | Scope decision | constraint | high | [CLARIFIED via Q&A] |
 
-### 2.7 Module: Translation (Standalone)
+### 2.7 Module: Design Generation (Phase 2 Prototype)
 
 | ID | Raw Requirement | Source | Type | Confidence | Notes |
 |---|---|---|---|---|---|
-| RAW-028 | Dich CV tieng Nhat (LLM) | User input | need | high | Viet/Nhat/Anh |
-| RAW-029 | Nhan xet phong van tieng Nhat (LLM) | User input | need | high | |
+| RAW-027 | Thiet ke anh tuyen dung don gian (LLM) dang goi y: mock image prototype â€” khong bat buoc tich hop image provider that | User input + scope decision | idea | high | [CLARIFIED via Q&A] Phase 2 prototype standalone |
+| RAW-027a | Design scope: mock/preview, creative suggestions, banner, poster, social asset â€” khong can integration that | Scope decision | need | high | [CLARIFIED via Q&A] Not real image generation |
+| RAW-027b | Generated design phai duoc HR review/approve truoc khi su dung | Scope decision | constraint | high | [CLARIFIED via Q&A] |
 
-### 2.8 Pipeline & Workflow
+### 2.8 Module: CV Translation (Phase 2 Prototype)
+
+| ID | Raw Requirement | Source | Type | Confidence | Notes |
+|---|---|---|---|---|---|
+| RAW-028 | Dich CV tieng Viet / Nhat / Anh (LLM) | User input + scope decision | need | high | [CLARIFIED via Q&A] vi/en/ja |
+| RAW-028a | CV translation: Ho tro HR review va related workflows, nhung CV goc la nguon chuan duy nhat | Scope decision | constraint | high | [CLARIFIED via Q&A] Original CV is source of truth |
+| RAW-028b | Screening decisions phai co traceback to original CV | Scope decision | constraint | high | [CLARIFIED via Q&A] |
+
+### 2.9 Module: Interview Notes Translation (Phase 2 Prototype)
+
+| ID | Raw Requirement | Source | Type | Confidence | Notes |
+|---|---|---|---|---|---|
+| RAW-029 | Nhan xet phong van tieng Nhat (LLM) | User input | need | high | Phase 2 prototype standalone |
+| RAW-029a | Translated notes: Ho tro HR review va related workflows | Scope decision | need | high | [CLARIFIED via Q&A] |
+
+### 2.10 Pipeline & Workflow
 
 | ID | Raw Requirement | Source | Type | Confidence | Notes |
 |---|---|---|---|---|---|
 | RAW-030 | Pipeline auto: Tao nguon -> Sang loc -> Set lich -> Phong van -> Cham bai | User input | goal | high | |
 | RAW-031 | Human approve bat buoc o buoc sang loc va set lich | Q&A | constraint | high | [CLARIFIED via Q&A] |
-| RAW-032 | Content/Design/Dich CV la module rieng, khong trong pipeline | User input | constraint | high | |
+| RAW-032 | Content/Design/Translation la cac Phrase 2 prototype standalone module, KHONG nam trong core pipeline | Scope decision | constraint | high | [CLARIFIED via Q&A] Updated wording |
 | RAW-033 | Approval timeout: chi reminder, khong auto cancel/skip | Q&A | constraint | high | [CLARIFIED via Q&A] |
-| RAW-034 | MVP = full pipeline chinh, Content/Design/Translation sau | Q&A | constraint | high | [CLARIFIED via Q&A] |
+| RAW-034 | MVP = full pipeline chinh (Phase 1); Content/Design/Translation la Phase 2 prototype standalone | Scope decision | constraint | high | [CLARIFIED via Q&A] Updated wording |
 
-### 2.9 Non-functional & Platform
+### 2.11 Non-functional & Platform
 
 | ID | Raw Requirement | Source | Type | Confidence | Notes |
 |---|---|---|---|---|---|
@@ -127,6 +145,18 @@ Version: 2.0 (updated from review comments)
 | Output | Matching score (0-100), Summary (strengths/weaknesses), Risk flags, Missing skills list, Recommendation (pass/fail/review) |
 | Exception | File corrupted, cannot parse CV, JD missing criteria |
 | Approval | HR Manager single approve (bulk supported). Reminder only if not approved, no timeout. |
+| Note | UC-CVIEW (CV Evidence Viewer) la Phase 2 prototype utility module, co the tich hop voi man hinh sang loc/final review nhung evidence detail khong thuoc MVP scope |
+
+### UC-CVIEW: CV Evidence Viewer
+
+| Field | Value |
+|---|---|
+| Actor | HR Recruiter, HR Manager |
+| Trigger | Manual request from screening results |
+| Input | CV file, Extracted text, Evidence spans from screening |
+| Process | 1. Display original CV 2. Display extracted text 3. Highlight/link evidence spans to JD criteria 4. Allow navigation between evidence and criteria |
+| Output | Unified view: original CV + text + linked evidence |
+| Note | Phase 2 prototype utility module; co the tich hop voi man hinh sang loc/final review nhung evidence detail khong thuoc MVP scope |
 
 ### UC-SCH: Interview Scheduling
 
@@ -162,27 +192,58 @@ Version: 2.0 (updated from review comments)
 | Output | Score per section, total score, detailed feedback, pass/fail recommendation |
 | Exception | Submission timeout, plagiarism detected, coding environment error |
 
-### UC-TRL: Translation (Standalone)
+### UC-TRL: CV Translation (Phase 2 Prototype)
 
 | Field | Value |
 |---|---|
 | Actor | HR Recruiter |
 | Trigger | Manual request |
-| Input | CV file, interview notes, target language |
+| Input | CV file, target language (vi/en/ja) |
 | Process | 1. Extract text 2. Translate via LLM 3. Format output |
-| Output | Translated document (Viet/Nhat/Anh) |
+| Output | Translated document (Viá»‡t/Nháº­t/Anh) |
 | Exception | Unsupported language, file parse error |
+| Note | Phase 2 prototype; original CV remains source of truth |
+| Policy | Screening decisions must trace back to original CV |
 
-### UC-CNT: Content Generation (Standalone)
+### UC-INTL: Interview Notes Translation (Phase 2 Prototype)
 
 | Field | Value |
 |---|---|
 | Actor | HR Recruiter |
 | Trigger | Manual request |
-| Input | Job info, tone/style preferences |
-| Process | 1. Generate recruitment content via LLM 2. Present as suggestions 3. HR edits and publishes |
-| Output | Content suggestions (text), image suggestions |
+| Input | Notes, target language |
+| Process | 1. Extract text 2. Translate via LLM 3. Format output |
+| Output | Translated notes |
+| Exception | Unsupported language, parse error |
+| Note | Phase 2 prototype |
+
+### UC-CNT: Content Generation (Phase 2 Prototype)
+
+| Field | Value |
+|---|---|
+| Actor | HR Recruiter |
+| Trigger | Manual request |
+| Input | Job info, tone/style preferences, output format preference |
+| Process | 1. Generate recruitment content via LLM 2. Present as suggestions 3. HR edits 4. HR chooses output method (copy/export/integration) |
+| Output | Content suggestions (text), with export options |
+| Output Options | a) Manual copy (plain text) b) Export file c) Channel integration |
 | Exception | Content inappropriate, generation failed |
+| Review | HR must review/approve before publish/export/use |
+| Note | Phase 2 prototype standalone utility module |
+
+### UC-DSG: Design Generation (Phase 2 Prototype)
+
+| Field | Value |
+|---|---|
+| Actor | HR Recruiter |
+| Trigger | Manual request |
+| Input | Job info, design type preference |
+| Process | 1. Generate design suggestion via LLM (mock image) 2. Present as preview 3. HR reviews |
+| Output | Mock/preview design suggestions (banner, poster, social asset...) |
+| Scope | Mock image prototype, not real image provider integration |
+| Exception | Generation failed |
+| Review | HR must review/approve before use |
+| Note | Phase 2 prototype standalone utility module |
 
 ## 4. Candidate State Machine
 
@@ -257,6 +318,14 @@ State transition rules:
 | Escalation | None |
 | Actions | Approve / Reject / Suggest alternative slot |
 
+### 5.3 Generated Content/Design Approval
+
+| Field | Value |
+|---|---|
+| Scope | Only for Phase 2 utilities (Content, Design, Translation) |
+| Type | HR review required before output use |
+| Note | Not part of core pipeline, separate approval flow |
+
 ## 6. Business Rules
 
 ### 6.1 AI Matching Weights (Default, configurable per job)
@@ -296,6 +365,15 @@ State transition rules:
 | Essay | AI grade with rubric, score 0-100 |
 | Coding | Run test cases + AI code quality review |
 | Pass threshold | Configurable per job (default 60%) |
+
+### 6.5 Phase 2 Prototype Module Rules
+
+| Module | Rule |
+|---|---|
+| Content Generation | HR must review/approve before publish/export/use |
+| Design Generation | HR must review/approve before use (mock prototype) |
+| CV Translation | Original CV remains source of truth; screening must trace back |
+| Interview Notes Translation | HR review supported for workflows |
 
 ## 7. Non-functional Requirements
 
@@ -357,6 +435,14 @@ State transition rules:
 | File types | Excel (.xlsx), PDF, DOCX |
 | Auth | OAuth2 (Google Workspace) |
 
+### 8.4 Content Channel Integration (Phase 2)
+
+| Field | Value |
+|---|---|
+| Scope | Support multiple channels - LinkedIn, Facebook, local job boards, etc. |
+| Implementation | Placeholder for Phase 2 prototype |
+| Note | Not real integration in Phase 2, just UI placeholders |
+
 ## 9. File Format Requirements
 
 | Type | Supported Formats | Notes |
@@ -382,7 +468,7 @@ State transition rules:
 
 ## 11. Scope & Phasing
 
-### MVP (Phase 1) — Full Pipeline
+### MVP (Phase 1) â€” Full Pipeline
 
 | Module | Included |
 |---|---|
@@ -394,14 +480,15 @@ State transition rules:
 | Approval Workflow | Yes |
 | Google Integration | Yes |
 
-### Phase 2 — Standalone Tools
+### Phase 2 â€” Standalone Prototype Modules
 
-| Module | Included |
-|---|---|
-| Content Generation | Yes |
-| Design Generation | Yes |
-| CV Translation | Yes |
-| Interview Notes Translation | Yes |
+| Module | Scope | Notes |
+|---|---|---|
+| CV Evidence Viewer | Phase 2 prototype utility | Tich hop voi screening/final review screens, evidence detail la next prototype module |
+| Content Generation | Phase 2 prototype | HR review before output |
+| Design Generation | Phase 2 prototype (mock) | HR review before use |
+| CV Translation | Phase 2 prototype | vi/en/ja, original CV is source of truth |
+| Interview Notes Translation | Phase 2 prototype | HR review supported |
 
 ### Out of Scope (all phases)
 
@@ -439,10 +526,14 @@ State transition rules:
 | CON-002 | > 200 job/thang, can high throughput | technical | RAW-035 |
 | CON-003 | Khong rang buoc tech stack | technical | RAW-037 |
 | CON-004 | Phu thuoc Google Workspace | platform | RAW-039 |
-| CON-005 | Content/Design/Translation la module rieng | business | RAW-032 |
+| CON-005 | Content/Design/Translation la Phase 2 prototype standalone, khong trong core pipeline | business | RAW-032 |
 | CON-006 | Human approve bat buoc o sang loc va set lich | business | RAW-031 |
 | CON-007 | CV chi ho tro PDF/DOCX, khong can OCR anh | technical | RAW-011 |
 | CON-008 | Approval khong co timeout, chi reminder | business | RAW-033 |
+| CON-009 | Generated content phai duoc HR review/approve truoc publish/export | business | RAW-026b, RAW-027b |
+| CON-010 | Generated design phai duoc HR review/approve truoc su dung | business | RAW-027b |
+| CON-011 | CV goc la nguon chuan duy nhat trong screening | business | RAW-028a |
+| CON-012 | Screening decisions phai traceback to original CV | business | RAW-028b |
 
 ## 15. Assumptions
 
@@ -454,6 +545,7 @@ State transition rules:
 | ASM-004 | Ung vien co the truy cap link chatbot | Can UX don gian | User testing |
 | ASM-005 | LLM API cost acceptable cho quy mo > 200 job/thang | Cost overrun | Estimate token usage |
 | ASM-006 | Shared HR mailbox da duoc setup | Can IT setup | Confirm voi IT |
+| ASM-007 | Content channel integration se la placeholder trong Phase 2 | Co the can them integration | Khao sat them |
 
 ## 16. Risks
 
@@ -465,32 +557,34 @@ State transition rules:
 | RISK-004 | Ung vien khong phan hoi chatbot | medium | medium | Reminder, deadline, fallback manual |
 | RISK-005 | Chi phi LLM cao khi scale | medium | medium | Cost monitoring, caching, model selection |
 | RISK-006 | Du lieu ung vien bi leak | high | low | Encryption, access control, audit log |
+| RISK-007 | Phase 2 modules bi hieu lam part of MVP | high | low | Clear scope separation in documents |
 
 ## 17. Ambiguity Log
 
-| Term | Why Ambiguous | Clarifying Question | Status |
+| Term / Statement | Why Ambiguous | Clarifying Question | Status |
 |---|---|---|---|
 | AI matching weights | Default weights provided, nhung chua confirm voi business | Weights nay co phu hop voi thuc te tuyen dung? | Open |
 | Nhac lich timing | Chua ro nhac truoc bao lau | 24h? 1h? Ca hai? | Open |
 | Coding test environment | Chua ro chay code o dau | Sandbox? Third-party? In-browser? | Open |
 | Interview question count | Hybrid 5-7 fixed + 2-3 follow-up, chua confirm exact | Confirm so luong chinh xac? | Open |
+| Channel integration | Chi xac nhan support, chua ro chi tiet | Integration nao? API hay placeholder? | Open |
 
 ## 18. Validation Gate 1
 
 | Check | Status | Notes |
 |---|---|---|
-| Every raw requirement has ID | PASS | RAW-001 to RAW-040 |
-| Source/stakeholder captured | PASS | All sourced |
+| Every raw requirement has ID | PASS | RAW-001 to RAW-041 (+ RAW-026a, RAW-026b, RAW-027a, RAW-027b, RAW-028a, RAW-028b, RAW-029a) |
+| Source/stakeholder captured | PASS | All sourced or marked scope decision |
 | Classified by type | PASS | need/goal/constraint/idea |
-| Ambiguity flagged | PASS | 4 ambiguities logged |
-| Duplicates handled | PASS | No duplicates |
+| Ambiguity flagged | PASS | 5 ambiguities logged |
+| Duplicates handled | PASS | No explicit duplicates |
 | Product/system context present | PASS | Complete |
-| Use-case details per module | PASS | 7 use-cases defined |
+| Use-case details per module | PASS | 9 use-cases defined (incl. CV Evidence, Translation, Content, Design) |
 | Candidate state machine | PASS | 13 states defined |
 | Approval workflow | PASS | Detailed |
-| Business rules | PASS | 4 rule sets |
+| Business rules | PASS | 5 rule sets |
 | Non-functional requirements | PASS | Performance, Security, Availability |
-| Integration requirements | PASS | Gmail, Calendar, Drive |
+| Integration requirements | PASS | Gmail, Calendar, Drive + Phase 2 channel placeholder |
 | File format requirements | PASS | CV, JD, Test, Batch |
 | Success metrics | PASS | 9 metrics defined |
 | Scope/phasing | PASS | MVP + Phase 2 + Out of scope |
@@ -507,3 +601,4 @@ State transition rules:
 | Q-004 | So luong cau hoi phong van chinh xac? | HR Manager | no |
 | Q-005 | Google Drive: folder nao watch? Naming convention? | IT Admin | no |
 | Q-006 | Email template: ai tao va quan ly? | HR Manager | no |
+| Q-007 | Channel integration: integration nao thuc te trong Phase 2? | HR Manager | no |

@@ -11,7 +11,8 @@ Upstream: `01-requirement.md/json` v2.0
 - **Primary users**: Internal HR Team (HR Recruiter, HR Manager, Interviewer)
 - **Core problem**: Quy trÃ¬nh tuyá»ƒn dá»¥ng thá»§ cÃ´ng khÃ´ng scale Ä‘Æ°á»£c á»Ÿ > 200 job/thÃ¡ng, sÃ ng lá»c CV khÃ´ng nháº¥t quÃ¡n, scheduling phá»©c táº¡p, Ä‘Ã¡nh giÃ¡ sÆ¡ bá»™ tá»‘n thá»i gian interviewer.
 - **Must-have scope (MVP)**: Candidate Sourcing, CV Screening, Interview Scheduling, AI Interview (async), Test Grading, Approval Workflow, Google Workspace Integration
-- **Explicitly out of scope**: Multi-tenant/agency, realtime voice/video interview, third-party ATS/CRM, mobile native app, post-hire onboarding
+- **Phase 2 Prototype Scope**: Recruitment content generation, AI design/mock generation, CV translation, interview transcript/notes translation, CV evidence viewer utility
+- **Explicitly out of scope**: Multi-tenant/agency, realtime voice/video interview, third-party ATS/CRM, mobile native app, post-hire onboarding, Phase 2 modules in Phase 1/MVP core pipeline
 
 ## 2. Scope
 
@@ -40,9 +41,9 @@ Upstream: `01-requirement.md/json` v2.0
 | SCOPE-OUT-003 | Third-party ATS/CRM integration | No existing system constraint | RAW-037 |
 | SCOPE-OUT-004 | Mobile native app | Web responsive sufficient | â€” |
 | SCOPE-OUT-005 | Post-hire onboarding workflow | Beyond recruitment scope | â€” |
-| SCOPE-OUT-006 | Content generation (Phase 2) | Standalone, not pipeline | RAW-032, RAW-034 |
-| SCOPE-OUT-007 | Design generation (Phase 2) | Standalone, not pipeline | RAW-032, RAW-034 |
-| SCOPE-OUT-008 | CV/Interview translation (Phase 2) | Standalone, not pipeline | RAW-032, RAW-034 |
+| SCOPE-OUT-006 | CV/Interview translation integrated into Phase 1 core pipeline | Utility modules are Phase 2 prototype standalone outside Phase 1/MVP core pipeline | RAW-028, RAW-029, RAW-032 |
+| SCOPE-OUT-007 | CV Evidence Viewer deep-link detail in Phase 1/MVP | Evidence viewer is Phase 2 prototype utility; screening/final review screens show summary only in MVP | RAW-041 |
+| SCOPE-OUT-008 | Multi-tenant / agency mode | Internal HR only | RAW-040 |
 
 ## 3. Functional Requirements
 
@@ -127,7 +128,52 @@ Upstream: `01-requirement.md/json` v2.0
 |---|---|---|---|---|---|
 | REQ-F-060 | The system shall send all candidate-facing emails from shared HR mailbox (e.g., hr@company.com) | P0 | Professional communication | Given any email to candidate, When sent, Then from address is shared HR mailbox | RAW-015 |
 | REQ-F-061 | The system shall support configurable email templates for each communication type | P1 | Customization | Given template configured, When email triggered, Then uses template with dynamic fields filled | RAW-015 |
-| REQ-F-062 | The system shall notify HR Manager of pending actions via email/in-app notification | P0 | Workflow awareness | Given action required, When event occurs, Then HR Manager notified within 1 minute | RAW-010, RAW-013, RAW-031, RAW-033 |
+### 3.8 Recruitment Content Generation (Phase 2 Prototype)
+
+| ID | Requirement Statement | Priority | Rationale | Acceptance Criteria | Source RAW IDs |
+|---|---|---|---|---|---|
+| REQ-F-070 | The system shall allow HR to request AI-generated recruitment content (job posting, social media copy, email templates) based on job information and tone/style preferences | P2 | Reduce HR time drafting job ads | Given job info and tone setting, When HR requests content, Then 2-3 content suggestions generated within 60s | RAW-026 |
+| REQ-F-071 | The system shall present generated content as editable suggestions for HR review | P2 | Human editing before publishing | Given content generated, When HR views, Then can edit text inline and see changes reflected | RAW-026 |
+| REQ-F-072 | The system shall support manual copy and export of approved content to file formats (TXT, DOCX) | P2 | HR needs portable output | Given content approved and export requested, Then content copied to clipboard or downloaded as file | RAW-026a |
+| REQ-F-073 | The system shall support channel integration for content publishing (social media, job boards) via connector interfaces | P2 | Publish content directly to channels | Given channel connectors configured, When HR publishes approved content, Then content sent via connector API; status tracked | RAW-026a |
+| REQ-F-074 | The system shall require HR Manager approval before any content is exported, published, or shared | P2 | Content governance | Given content generated, When HR attempts export/publish, Then approval workflow triggered; unauthorized distribution blocked | RAW-026, RAW-026a |
+| REQ-F-075 | The system shall track content version history including HR editor changes and approval decisions | P2 | Audit and compliance | Given content modified, When viewed later, Then version history shows all changes and approvers | RAW-026 |
+
+### 3.9 AI Design Generation (Phase 2 Prototype)
+
+| ID | Requirement Statement | Priority | Rationale | Acceptance Criteria | Source RAW IDs |
+|---|---|---|---|---|---|
+| REQ-F-080 | The system shall generate mock/preview visual assets (banners, posters, social media images) based on job content and design brief parameters | P2 | Visual content for job postings | Given job info and design parameters (size, style, color), When HR requests design, Then mock/preview image generated | RAW-027 |
+| REQ-F-081 | The system shall generate design as a mock/preview asset without requiring a real external image generation API or provider | P2 | No external design API dependency in Phase 2 | Given design request, When processed, Then preview asset produced internally; no third-party design API call required | RAW-027, RAW-027b |
+| REQ-F-082 | The system shall allow HR to review, select, and approve generated designs | P2 | Human selection before use | Given multiple design options, When HR reviews, Then can select best match and approve | RAW-027, RAW-027a |
+| REQ-F-083 | The system shall require HR Manager approval before any design asset is exported or used | P2 | Design governance | Given design selected, When export/use requested, Then approval required; unapproved designs cannot be exported | RAW-027, RAW-027a |
+
+### 3.10 CV Translation (Phase 2 Prototype)
+
+| ID | Requirement Statement | Priority | Rationale | Acceptance Criteria | Source RAW IDs |
+|---|---|---|---|---|---|
+| REQ-F-090 | The system shall translate CV text between Vietnamese, Japanese, and English | P2 | Multi-language recruitment support | Given CV in source language (vi/en/ja), When translation requested, Then full CV translated to target language | RAW-028 |
+| REQ-F-091 | The system shall preserve CV structure and formatting during translation | P2 | Readability of translated CV | Given CV with sections/formatting, When translated, Then section structure and basic formatting preserved | RAW-028 |
+| REQ-F-092 | The system shall mark translated CV as derived work and link to original CV | P2 | Source-of-truth traceability | Given translation generated, Then record shows original CV reference and translation metadata | RAW-028, RAW-028a |
+| REQ-F-093 | The system shall store translated CV with same access controls as original CV | P2 | Privacy for candidate data | Given translated CV created, When stored, Then access restricted to authorized roles; not shared externally | RAW-028, RAW-028a |
+| REQ-F-094 | The system shall support translated CV in screening and final review workflows for HR review, but screening decisions must trace back to original CV | P2 | Translation is review aid, not decision basis | Given screening or review with translated CV, When decision made, Then decision record references original CV; translated CV is supporting context only | RAW-028, RAW-028a, RAW-041 |
+| REQ-F-095 | The system shall display a visible notice that translated content is a translation and not the official record | P2 | Transparency for HR users | Given translated CV displayed, When viewed, Then clear notice shown: "Translation only — refer to original CV for official record" | RAW-028, RAW-028a |
+
+### 3.11 Interview Transcript/Notes Translation (Phase 2 Prototype)
+
+| ID | Requirement Statement | Priority | Rationale | Acceptance Criteria | Source RAW IDs |
+|---|---|---|---|---|---|
+| REQ-F-100 | The system shall translate interview notes and transcripts between Vietnamese, Japanese, and English | P2 | Multi-language interview support | Given interview notes in source language, When translation requested, Then notes/transcript translated to target language | RAW-029 |
+| REQ-F-101 | The system shall store translated interview content with access controls restricted to HR roles | P2 | Interview confidentiality | Given translated notes stored, When accessed, Then only authorized HR roles can view; not shared externally | RAW-029, RAW-029a |
+| REQ-F-102 | The system shall link translated interview content back to original document | P2 | Audit trail | Given translation generated, Then record shows original interview reference and translator model version | RAW-029, RAW-029a |
+
+### 3.12 CV Evidence Viewer (Phase 2 Prototype Utility)
+
+| ID | Requirement Statement | Priority | Rationale | Acceptance Criteria | Source RAW IDs |
+|---|---|---|---|---|---|
+| REQ-F-110 | The system shall display screening and final review screens with evidence summary (scores, flags, missing skills) | P2 | HR decision support | Given screening or review screen, When HR views candidate, Then evidence summary visible with key signals | RAW-041 |
+| REQ-F-111 | The system shall support navigation to CV evidence detail view (Phase 2) as an integrated utility on screening and final review screens | P2 | Evidence depth on demand | Given summary visible on screening/review screen, When HR clicks to drill down, Then CV evidence detail opened as integrated view | RAW-041, UC-CVIEW |
+| REQ-F-112 | The system shall display CV evidence detail as a standalone viewer integrated into existing screens, without blocking the primary review workflow | P2 | Non-disruptive evidence access | Given HR in review workflow, When opening evidence detail, Then workflow state preserved; detail shown as panel/modal | RAW-041, UC-CVIEW |
 
 ## 4. Non-Functional Requirements
 
@@ -159,6 +205,11 @@ Upstream: `01-requirement.md/json` v2.0
 | REQ-D-007 | Candidate state history | Pipeline audit trail | System | internal | RAW-030 |
 | REQ-D-008 | Approval decisions and timestamps | Compliance record | HR Manager | internal | RAW-031 |
 | REQ-D-009 | Email communication log | Sent emails record | System | internal | RAW-015 |
+| REQ-D-010 | Generated recruitment content (draft, approved, rejected) | Content generation drafts and approval records | HR Recruiter, HR Manager | internal | RAW-026 |
+| REQ-D-011 | Generated design/mock assets (draft, approved) | Design asset versions and approval records | HR Recruiter, HR Manager | internal | RAW-027 |
+| REQ-D-012 | Translated CV (source-linked, metadata) | Translated candidate documents | HR Recruiter, HR Manager | confidential | RAW-028, RAW-028a |
+| REQ-D-013 | Translated interview notes/transcripts | Translated interview records | HR Recruiter, HR Manager | confidential | RAW-029, RAW-029a |
+| REQ-D-014 | CV evidence viewer summary data | Screening/final review evidence display | HR Manager | internal | RAW-041 |
 
 ## 6. Integration Requirements
 
@@ -167,7 +218,10 @@ Upstream: `01-requirement.md/json` v2.0
 | REQ-I-001 | Google Drive API | Watch folder for new files, auto-import | File metadata + file content (Excel/PDF/DOCX) | Retry with exponential backoff; alert after 3 failures | RAW-003, RAW-039 |
 | REQ-I-002 | Google Calendar API | Read interviewer free/busy, create events | Free/busy slots, event details (participants, time, description) | Fallback to manual scheduling if API unavailable | RAW-014, RAW-039 |
 | REQ-I-003 | Gmail API | Send emails from shared HR mailbox | Email content (to, subject, body, attachments) | Queue and retry; alert HR if delivery fails | RAW-015, RAW-039 |
-| REQ-I-004 | LLM API (e.g., OpenAI/Claude) | CV screening, interview evaluation, test grading, content generation | Prompts + candidate/JD text â†’ AI responses | Retry with backoff; queue if rate limited; alert on sustained failure | RAW-005, RAW-020, RAW-022 |
+| REQ-I-004 | LLM API (e.g., OpenAI/Claude) | CV screening, interview evaluation, test grading | Prompts + candidate/JD text -> AI responses | Retry with backoff; queue if rate limited; alert on sustained failure | RAW-005, RAW-020, RAW-022 |
+| REQ-I-005 | LLM API (Phase 2) | Recruitment content generation, CV translation, interview transcript/notes translation | Prompts + job/CV/interview content -> AI responses | Retry with backoff; queue if rate limited; content gated by HR approval before export/publish | RAW-026, RAW-028, RAW-029 |
+| REQ-I-006 | AI Design Mock Generator (Phase 2) | Generate preview/mock design assets (banners, posters, social images) | Design brief + job content -> mock/preview image asset | Fail gracefully; no external design API required; output is mock asset for HR approval | RAW-027, RAW-027b |
+| REQ-I-007 | Content Channel Connectors (Phase 2) | Publish approved content to external channels | Approved content + channel config -> connector API call | Queue if connector unavailable; track publish status; require HR approval before dispatch | RAW-026a |
 
 ## 7. Constraints
 
@@ -178,7 +232,14 @@ Upstream: `01-requirement.md/json` v2.0
 | REQ-C-003 | Depends on Google Workspace availability | platform | All scheduling/email features require Google APIs | RAW-039 |
 | REQ-C-004 | Approval has no timeout, only reminders | business | Pipeline can stall indefinitely at approval points | RAW-033 |
 | REQ-C-005 | MVP must include full pipeline (no phased pipeline delivery) | business | All 5 pipeline stages must work together at launch | RAW-034 |
-| REQ-C-006 | Content/Design/Translation are Phase 2, not MVP | business | Do not implement standalone tools in first release | RAW-032, RAW-034 |
+| REQ-C-006 | Content/Design/Translation/CV evidence viewer are Phase 2 prototype standalone; excluded from Phase 1/MVP core pipeline | business | Do not implement Phase 2 standalone tools in first release | RAW-026, RAW-026a, RAW-027, RAW-027a, RAW-028, RAW-029, RAW-032, RAW-034, RAW-041 |
+| REQ-C-007 | Generated recruitment content requires HR review and approval before copy/export, file export, or channel publishing | business | Prevent unvetted AI content from being published or distributed | RAW-026, RAW-026a |
+| REQ-C-008 | Generated design/mock assets require HR review and approval before use | business | AI-generated designs are mock/preview; HR approval required before use | RAW-027, RAW-027a |
+| REQ-C-009 | Original CV text is the source of truth; screening decisions must trace back to original CV | business | Translated CV supports review but original CV governs screening decisions | RAW-028, RAW-028a |
+| REQ-C-010 | CV translation and interview transcript/notes translation are Phase 2 prototype; original documents stored securely | business | Privacy and security for translated candidate documents | RAW-028, RAW-028a, RAW-029, RAW-029a |
+| REQ-C-011 | Content publishing supports manual copy/export, file export, and channel integration — all require HR approval | business | Three content export paths; all gated behind HR review | RAW-026, RAW-026a |
+| REQ-C-012 | AI design generation is a mock image prototype; does not require real image provider or third-party AI design service | technical | Standalone mock/generation; no external design API dependency in Phase 2 | RAW-027, RAW-027b |
+| REQ-C-013 | OCR is excluded unless explicitly in scope; all MVP file processing uses text-native PDF/DOCX only | technical | OCR boundary; Phase 2 may expand file handling scope | RAW-011 |
 
 ## 8. Priority Model
 
@@ -200,10 +261,15 @@ Upstream: `01-requirement.md/json` v2.0
 | REQ-F-040 to REQ-F-046 | yes | yes | yes | yes | yes |
 | REQ-F-050 to REQ-F-056 | yes | yes | yes | yes | yes |
 | REQ-F-060 to REQ-F-062 | yes | yes | yes | yes | yes |
+| REQ-F-070 to REQ-F-075 | yes | yes | yes | yes | yes |
+| REQ-F-080 to REQ-F-083 | yes | yes | yes | yes | yes |
+| REQ-F-090 to REQ-F-095 | yes | yes | yes | yes | yes |
+| REQ-F-100 to REQ-F-102 | yes | yes | yes | yes | yes |
+| REQ-F-110 to REQ-F-112 | yes | yes | yes | yes | yes |
 | REQ-NF-001 to REQ-NF-012 | yes | yes | yes | yes | yes |
 | REQ-D-001 to REQ-D-009 | yes | yes | yes | yes | yes |
-| REQ-I-001 to REQ-I-004 | yes | yes | yes | yes | yes |
-| REQ-C-001 to REQ-C-006 | yes | yes | yes | yes | yes |
+| REQ-I-001 to REQ-I-007 | yes | yes | yes | yes | yes |
+| REQ-C-001 to REQ-C-013 | yes | yes | yes | yes | yes |
 
 ## 10. Requirement Conflicts
 
@@ -291,6 +357,8 @@ stateDiagram-v2
 | Scheduling slot | HR Manager | Single + bulk by requisition | Approve slot, reject, suggest alternative | SLA 8 working hours; reminder at 8 working hours | Escalate to backup HR Manager after 24h | Never create Calendar event before approval | REQ-F-022, REQ-F-023, REQ-F-024, REQ-F-051 |
 | Final candidate decision | HR Manager | Single | Pass, fail, request manual review | SLA 48h after test graded | Escalate to HR Manager backup at 72h if configured | Never mark candidate PASSED/FAILED solely from AI | REQ-F-045, REQ-F-050 |
 | Test grading override | HR Manager | Single | Accept grade, override grade, request re-grade | SLA 48h after grading issue raised | Admin review if technical grading failure persists | Override must store reason and actor | REQ-F-042, REQ-F-043, REQ-F-044, REQ-F-045 |
+| Content generation approval | HR Manager | Single | Approve, request revision | No SLA; Phase 2 | None | Never export/publish unapproved content | REQ-F-074 |
+| Design asset approval | HR Manager | Single | Approve, request revision | No SLA; Phase 2 | None | Never export/use unapproved designs | REQ-F-083 |
 
 ### 11.4 AI Result Contract
 
@@ -373,11 +441,14 @@ AI outputs used for screening, interview evaluation, and test grading shall be p
 
 | ID | Question | Affected Requirement IDs | Owner | Blocks Business Definition? |
 |---|---|---|---|---|
-| Q-001 | AI matching weights (40/30/20/10) â€” confirmed by business? | REQ-F-015 | HR Manager | no |
+| Q-001 | AI matching weights (40/30/20/10) confirmed by business? | REQ-F-015 | HR Manager | no |
 | Q-002 | Interview reminder timing: 24h before? 1h before? Both? | REQ-F-026 | HR Manager | no |
 | Q-003 | Coding test sandbox: in-browser execution or external service? | REQ-F-044 | IT Admin | no |
 | Q-004 | Exact number of fixed interview questions (5 or 7)? | REQ-F-032 | HR Manager | no |
 | Q-005 | Google Drive watch: which folder path? File naming convention? | REQ-F-003, REQ-I-001 | IT Admin | no |
-| Q-006 | Email templates: who creates/manages them? | REQ-F-061 | HR Manager | no |
+| Q-006 | Email templates: who creates and manages them? | REQ-F-061 | HR Manager | no |
 | Q-007 | Pass/fail threshold: combined score across all stages or per-stage? | REQ-F-046 | HR Manager | no |
+| Q-008 | Content generation: which specific channels (social media, job boards) will be integrated in Phase 2? Channel list and provider details needed for connector design. | REQ-F-073, REQ-I-007 | HR Manager | no |
+| Q-009 | Design generation: what asset types and size formats will Phase 2 mock generator support (banner, poster, social image dimensions)? | REQ-F-080, REQ-F-081 | HR Manager | no |
+| Q-010 | CV evidence viewer: what level of detail is needed beyond summary in Phase 2 (full CV text, evidence spans, AI reasoning trace)? | REQ-F-110 to REQ-F-112 | HR Manager | no |
 

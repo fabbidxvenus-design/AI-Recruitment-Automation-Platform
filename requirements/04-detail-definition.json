@@ -3,8 +3,8 @@
     "productName": "RecruitAI",
     "projectType": "data-ai",
     "language": "bilingual",
-    "version": "1.0.0",
-    "generatedAt": "2026-05-12T00:00:00Z",
+    "version": "0.2.0",
+    "generatedAt": "2026-05-13T00:00:00Z",
     "upstream": "03-business-definition.md/json",
     "gate": "Gate 4 Detail Definition",
     "status": "CONDITIONAL_PASS",
@@ -28,7 +28,8 @@
       "Backend APIs/RPC services",
       "Google Workspace integrations",
       "AI evaluation interfaces",
-      "Operational monitoring and audit trail"
+      "Operational monitoring and audit trail",
+      "Phase 2 standalone utility AI modules for content/design generation, CV evidence, CV translation, and interview translation"
     ],
     "primaryWorkflowsCovered": [
       "Candidate sourcing/import",
@@ -40,7 +41,12 @@
       "Notifications/reminders",
       "Withdrawal",
       "Error remediation",
-      "Monitoring/governance"
+      "Monitoring/governance",
+      "Phase 2 utility AI content generation",
+      "Phase 2 mock design generation",
+      "CV evidence viewing",
+      "CV translation",
+      "Interview notes/transcript translation"
     ],
     "criticalBusinessRulesImplemented": [
       "BR-001",
@@ -63,7 +69,13 @@
     "majorAssumptions": [
       "System is an internal single-organization web application plus candidate interview link.",
       "No external ATS/CRM or native mobile app in MVP.",
-      "OCR, final scoring policy, retention, backup approver, Drive folder policy, coding sandbox, and Calendar reschedule/cancel remain unresolved and are not assumed."
+      "OCR, final scoring policy, retention, backup approver, Drive folder policy, coding sandbox, and Calendar reschedule/cancel remain unresolved and are not assumed.",
+      "Phase 2 utility AI modules are standalone prototype scope, not MVP core pipeline.",
+      "Mock design generation uses prototype mock image service only, with no real provider integration.",
+      "Original CV and interview records remain source of truth; generated translations are review aids only.",
+      "HR approval is required before any generated content, mock design, or translation is used externally.",
+      "No OCR is included unless explicitly scoped later.",
+      "Content publishing supports manual copy, file export, and channel integration with fallback."
     ]
   },
   "screens": [
@@ -691,6 +703,400 @@
         "BQ-003",
         "BQ-005"
       ]
+    },
+    {
+      "id": "SCREEN-009",
+      "name": "Content Generation Workspace",
+      "purpose": "Allow HR to select a content template, generate AI recruitment content, review/approve the draft, and publish/export it through supported prototype channels.",
+      "primaryUser": "HR Recruiter / HR Manager",
+      "entryPoint": "Phase 2 utility AI module navigation or dashboard utility tile",
+      "primaryAction": "Select template and generate recruitment content draft for HR approval",
+      "secondaryActions": [
+        "Edit prompt and draft",
+        "Approve or reject generated content",
+        "Manual copy",
+        "File export",
+        "Channel integration export fallback"
+      ],
+      "states": {
+        "empty": "Show template selection, prompt guidance, and supported publishing options.",
+        "loading": "Show generation progress and preserve template/prompt input.",
+        "error": "Show safe generation/export error with retry and manual copy fallback.",
+        "success": "Show AI-generated draft, AI flag, approval status, and publish/export actions."
+      },
+      "accessibilityRequirements": "Template selector, prompt editor, approval controls, and export actions are keyboard accessible; AI-generated status is exposed as text; validation errors are linked with aria-describedby; review state changes use aria-live.",
+      "uiElements": [
+        {
+          "id": "UI-033",
+          "element": "Content template selector",
+          "type": "select",
+          "required": true,
+          "validationOrBehavior": "Template must be one of configured recruitment content templates before generation.",
+          "sourceIds": [
+            "BR-025",
+            "UC-011"
+          ]
+        },
+        {
+          "id": "UI-034",
+          "element": "Prompt and context editor",
+          "type": "textarea",
+          "required": true,
+          "validationOrBehavior": "Accepts HR prompt/context and preserves content for retry without leaking prompt internals in errors.",
+          "sourceIds": [
+            "BR-025",
+            "UC-011"
+          ]
+        },
+        {
+          "id": "UI-035",
+          "element": "Generated draft review panel",
+          "type": "card",
+          "required": true,
+          "validationOrBehavior": "Displays draft content with explicit AI-generated flag, status, and version timestamp.",
+          "sourceIds": [
+            "BR-026",
+            "UC-011"
+          ]
+        },
+        {
+          "id": "UI-036",
+          "element": "Approval and publish/export controls",
+          "type": "button-group",
+          "required": true,
+          "validationOrBehavior": "External use requires HR approval; supports manual copy, file export, and channel integration with fallback.",
+          "sourceIds": [
+            "BP-016",
+            "BR-026",
+            "UC-011"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-011",
+        "BR-025",
+        "BR-026",
+        "UC-011",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013"
+      ]
+    },
+    {
+      "id": "SCREEN-010",
+      "name": "Design Generation Workspace",
+      "purpose": "Allow HR to enter a design brief, generate a mock image prototype, review/approve it, and export the approved mock design.",
+      "primaryUser": "HR Recruiter / HR Manager",
+      "entryPoint": "Phase 2 utility AI module navigation or content/design utility tile",
+      "primaryAction": "Submit design brief and generate mock design image",
+      "secondaryActions": [
+        "Revise brief",
+        "Regenerate mock image",
+        "Approve or reject design",
+        "Export approved mock image"
+      ],
+      "states": {
+        "empty": "Show design brief input and mock-generation constraints.",
+        "loading": "Show mock image generation progress.",
+        "error": "Show mock service unavailable/validation error and retry guidance.",
+        "success": "Show mock image preview, AI-generated flag, approval state, and export action."
+      },
+      "accessibilityRequirements": "Brief input and approval controls have labels; mock image includes meaningful alt text; AI-generated status is text-visible; export controls are keyboard accessible.",
+      "uiElements": [
+        {
+          "id": "UI-037",
+          "element": "Design brief input",
+          "type": "textarea",
+          "required": true,
+          "validationOrBehavior": "Brief must not be empty before mock generation.",
+          "sourceIds": [
+            "BR-027",
+            "UC-012"
+          ]
+        },
+        {
+          "id": "UI-038",
+          "element": "Mock image preview",
+          "type": "image",
+          "required": true,
+          "validationOrBehavior": "Displays mockImageUrl result with AI-generated flag and no real provider integration assumption.",
+          "sourceIds": [
+            "BR-028",
+            "UC-012"
+          ]
+        },
+        {
+          "id": "UI-039",
+          "element": "Design approval controls",
+          "type": "button-group",
+          "required": true,
+          "validationOrBehavior": "HR approval required before export or external use.",
+          "sourceIds": [
+            "BP-016",
+            "BR-028",
+            "UC-012"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-012",
+        "BR-027",
+        "BR-028",
+        "UC-012",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "SCREEN-011",
+      "name": "CV Evidence Viewer",
+      "purpose": "Display structured CV details, section navigation, and original CV reference so HR can inspect source evidence without treating translations as source of truth.",
+      "primaryUser": "HR Recruiter / HR Manager",
+      "entryPoint": "Candidate detail, screening review evidence link, or Phase 2 utility module navigation",
+      "primaryAction": "Navigate structured CV sections and open original CV reference",
+      "secondaryActions": [
+        "Filter/search extracted sections",
+        "Open original CV reference",
+        "Copy evidence citation for HR review"
+      ],
+      "states": {
+        "empty": "Show no extracted evidence and link to original CV if available.",
+        "loading": "Show structured CV skeleton and section navigation placeholder.",
+        "error": "Show incomplete extraction/unstructured CV warning with original CV fallback.",
+        "success": "Show structured data, extracted sections, and original document reference."
+      },
+      "accessibilityRequirements": "Section navigation is keyboard accessible; structured fields use headings/lists; original document links have clear labels; missing/incomplete evidence is not color-only.",
+      "uiElements": [
+        {
+          "id": "UI-040",
+          "element": "Structured CV detail panel",
+          "type": "card",
+          "required": true,
+          "validationOrBehavior": "Shows structuredData and extractedSections while preserving original CV as source of truth.",
+          "sourceIds": [
+            "BR-029",
+            "UC-013"
+          ]
+        },
+        {
+          "id": "UI-041",
+          "element": "CV section navigation",
+          "type": "navigation",
+          "required": true,
+          "validationOrBehavior": "Allows jump navigation across extracted sections and indicates missing sections.",
+          "sourceIds": [
+            "UC-013"
+          ]
+        },
+        {
+          "id": "UI-042",
+          "element": "Original CV reference link",
+          "type": "link",
+          "required": true,
+          "validationOrBehavior": "Links every evidence view back to immutable original CV document ID.",
+          "sourceIds": [
+            "BR-029",
+            "UC-013"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-013",
+        "BR-029",
+        "UC-013"
+      ],
+      "requirementIds": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-012",
+        "REQ-C-009",
+        "REQ-C-010"
+      ]
+    },
+    {
+      "id": "SCREEN-012",
+      "name": "CV Translation Workspace",
+      "purpose": "Allow HR to select target language, generate a CV translation draft, compare it side-by-side with the original CV, and approve/reject the translation.",
+      "primaryUser": "HR Recruiter / HR Manager",
+      "entryPoint": "Candidate detail, CV Evidence Viewer, or Phase 2 utility module navigation",
+      "primaryAction": "Generate CV translation draft for target language vi/en/ja",
+      "secondaryActions": [
+        "Switch target language",
+        "Review side-by-side original and translation",
+        "Approve/reject translation",
+        "Resubmit edited translation"
+      ],
+      "states": {
+        "empty": "Show target language selector and original CV reference.",
+        "loading": "Show translation generation progress and preserve selected target language.",
+        "error": "Show unsupported language/LLM error with retry and original CV fallback.",
+        "success": "Show translation draft, original CV side-by-side, AI-generated flag, and approval controls."
+      },
+      "accessibilityRequirements": "Language selector and approval controls are labeled; side-by-side panes have headings; AI-generated status is text-visible; rejected/resubmitted status changes are announced.",
+      "uiElements": [
+        {
+          "id": "UI-043",
+          "element": "Target language selector",
+          "type": "select",
+          "required": true,
+          "validationOrBehavior": "Target language must be vi, en, or ja.",
+          "sourceIds": [
+            "BR-030",
+            "UC-014"
+          ]
+        },
+        {
+          "id": "UI-044",
+          "element": "Original CV and translation side-by-side",
+          "type": "split-panel",
+          "required": true,
+          "validationOrBehavior": "Original CV remains source of truth; translation must reference original document ID.",
+          "sourceIds": [
+            "BR-031",
+            "UC-014"
+          ]
+        },
+        {
+          "id": "UI-045",
+          "element": "Translation approval controls",
+          "type": "button-group",
+          "required": true,
+          "validationOrBehavior": "HR approval required before external use; rejected translation can be edited and resubmitted.",
+          "sourceIds": [
+            "BP-016",
+            "BR-031",
+            "UC-014"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "SCREEN-013",
+      "name": "Interview Translation Workspace",
+      "purpose": "Allow HR to input or select interview notes/transcripts, select target language, generate translation, and approve/reject translated interview text.",
+      "primaryUser": "HR Recruiter / HR Manager / Interviewer",
+      "entryPoint": "Interview detail, final review package, or Phase 2 utility module navigation",
+      "primaryAction": "Translate interview notes/transcript to vi/en/ja",
+      "secondaryActions": [
+        "Enter notes/transcript text",
+        "Select target language",
+        "Review original and translation",
+        "Approve/reject translation"
+      ],
+      "states": {
+        "empty": "Show transcript/notes input or existing interview selector plus target language selector.",
+        "loading": "Show translation progress and preserve source text.",
+        "error": "Show unsupported language/LLM error with retry and original transcript fallback.",
+        "success": "Show translated text, original notes/transcript reference, AI-generated flag, and approval controls."
+      },
+      "accessibilityRequirements": "Text input, language selector, comparison panels, and approvals are keyboard accessible; AI-generated status is text-visible; field errors are connected to controls.",
+      "uiElements": [
+        {
+          "id": "UI-046",
+          "element": "Interview notes/transcript input",
+          "type": "textarea",
+          "required": true,
+          "validationOrBehavior": "Requires existing interview record or entered notes/transcript before translation.",
+          "sourceIds": [
+            "BR-032",
+            "UC-015"
+          ]
+        },
+        {
+          "id": "UI-047",
+          "element": "Target language selector",
+          "type": "select",
+          "required": true,
+          "validationOrBehavior": "Target language must be vi, en, or ja.",
+          "sourceIds": [
+            "BR-032",
+            "UC-015"
+          ]
+        },
+        {
+          "id": "UI-048",
+          "element": "Interview translation review panel",
+          "type": "split-panel",
+          "required": true,
+          "validationOrBehavior": "Shows original notes/transcript and translated text with source interview ID reference.",
+          "sourceIds": [
+            "BR-033",
+            "UC-015"
+          ]
+        },
+        {
+          "id": "UI-049",
+          "element": "Interview translation approval controls",
+          "type": "button-group",
+          "required": true,
+          "validationOrBehavior": "HR approval required before external use; rejected translation can be edited and resubmitted.",
+          "sourceIds": [
+            "BP-016",
+            "BR-033",
+            "UC-015"
+          ]
+        }
+      ],
+      "sourceIds": [
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
     }
   ],
   "interfaces": [
@@ -1250,6 +1656,413 @@
       },
       "ownerFallbackPolicy": "If assigned owner is inactive/unavailable, reassign to configured backup owner from Q4-002; if no backup exists, alert Admin and HR Manager after 4 business hours unassigned.",
       "escalationAlertPolicy": "Escalation threshold creates notification to configured HR/Admin alert channels and audit event; escalation never changes candidate decision state."
+    },
+    {
+      "id": "API-011",
+      "name": "/api/content/generate",
+      "type": "REST",
+      "method": "POST",
+      "path": "/api/content/generate",
+      "description": "Generate AI recruitment content draft from valid template and HR prompt.",
+      "request": {
+        "template": "string",
+        "prompt": "string"
+      },
+      "response": {
+        "contentId": "uuid",
+        "content": "text",
+        "status": "pending",
+        "isAiGenerated": true
+      },
+      "errors": [
+        "400 validation error",
+        "401 unauthenticated",
+        "403 unauthorized",
+        "404 source not found",
+        "409 invalid status transition",
+        "502 AI/mock/channel dependency unavailable"
+      ],
+      "sourceIds": [
+        "BP-011",
+        "BR-025",
+        "BR-026",
+        "UC-011"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013"
+      ]
+    },
+    {
+      "id": "API-012",
+      "name": "/api/content/approve",
+      "type": "REST",
+      "method": "POST",
+      "path": "/api/content/approve",
+      "description": "Approve or reject generated content and enable approved publish/export.",
+      "request": {
+        "contentId": "uuid",
+        "approval": "approved|rejected",
+        "comment": "string?"
+      },
+      "response": {
+        "contentId": "uuid",
+        "status": "approved|rejected",
+        "publishedContent": "text?"
+      },
+      "errors": [
+        "400 validation error",
+        "401 unauthenticated",
+        "403 unauthorized",
+        "404 source not found",
+        "409 invalid status transition",
+        "502 AI/mock/channel dependency unavailable"
+      ],
+      "sourceIds": [
+        "BP-016",
+        "BR-026",
+        "BR-028",
+        "BR-031",
+        "BR-033",
+        "UC-011",
+        "UC-012",
+        "UC-014",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013"
+      ]
+    },
+    {
+      "id": "API-013",
+      "name": "/api/design/generate",
+      "type": "REST",
+      "method": "POST",
+      "path": "/api/design/generate",
+      "description": "Generate mock design image from design brief in prototype mode.",
+      "request": {
+        "brief": "string"
+      },
+      "response": {
+        "designId": "uuid",
+        "mockImageUrl": "url",
+        "status": "pending",
+        "isAiGenerated": true
+      },
+      "errors": [
+        "400 validation error",
+        "401 unauthenticated",
+        "403 unauthorized",
+        "404 source not found",
+        "409 invalid status transition",
+        "502 AI/mock/channel dependency unavailable"
+      ],
+      "sourceIds": [
+        "BP-012",
+        "BR-027",
+        "BR-028",
+        "UC-012"
+      ],
+      "requirementIds": [
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "API-014",
+      "name": "/api/design/approve",
+      "type": "REST",
+      "method": "POST",
+      "path": "/api/design/approve",
+      "description": "Approve or reject generated mock design for export.",
+      "request": {
+        "designId": "uuid",
+        "approval": "approved|rejected",
+        "comment": "string?"
+      },
+      "response": {
+        "designId": "uuid",
+        "status": "approved|rejected",
+        "approvedDesign": "url?"
+      },
+      "errors": [
+        "400 validation error",
+        "401 unauthenticated",
+        "403 unauthorized",
+        "404 source not found",
+        "409 invalid status transition",
+        "502 AI/mock/channel dependency unavailable"
+      ],
+      "sourceIds": [
+        "BP-016",
+        "BR-026",
+        "BR-028",
+        "BR-031",
+        "BR-033",
+        "UC-011",
+        "UC-012",
+        "UC-014",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "API-015",
+      "name": "/api/cv/{cvId}/evidence",
+      "type": "REST",
+      "method": "GET",
+      "path": "/api/cv/{cvId}/evidence",
+      "description": "Fetch structured CV evidence and original CV reference.",
+      "request": {
+        "cvId": "uuid"
+      },
+      "response": {
+        "cvId": "uuid",
+        "structuredData": "json",
+        "extractedSections": "array",
+        "originalCvUrl": "url"
+      },
+      "errors": [
+        "400 validation error",
+        "401 unauthenticated",
+        "403 unauthorized",
+        "404 source not found",
+        "409 invalid status transition",
+        "502 AI/mock/channel dependency unavailable"
+      ],
+      "sourceIds": [
+        "BP-013",
+        "BR-029",
+        "UC-013"
+      ],
+      "requirementIds": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-012",
+        "REQ-C-009",
+        "REQ-C-010"
+      ]
+    },
+    {
+      "id": "API-016",
+      "name": "/api/cv/translate",
+      "type": "REST",
+      "method": "POST",
+      "path": "/api/cv/translate",
+      "description": "Generate CV translation draft to target language.",
+      "request": {
+        "cvId": "uuid",
+        "targetLang": "vi|en|ja"
+      },
+      "response": {
+        "translationId": "uuid",
+        "translatedText": "text",
+        "status": "pending",
+        "isAiGenerated": true
+      },
+      "errors": [
+        "400 validation error",
+        "401 unauthenticated",
+        "403 unauthorized",
+        "404 source not found",
+        "409 invalid status transition",
+        "502 AI/mock/channel dependency unavailable"
+      ],
+      "sourceIds": [
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014"
+      ],
+      "requirementIds": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "API-017",
+      "name": "/api/cv/translation/approve",
+      "type": "REST",
+      "method": "POST",
+      "path": "/api/cv/translation/approve",
+      "description": "Approve or reject CV translation.",
+      "request": {
+        "translationId": "uuid",
+        "approval": "approved|rejected",
+        "comment": "string?"
+      },
+      "response": {
+        "translationId": "uuid",
+        "status": "approved|rejected"
+      },
+      "errors": [
+        "400 validation error",
+        "401 unauthenticated",
+        "403 unauthorized",
+        "404 source not found",
+        "409 invalid status transition",
+        "502 AI/mock/channel dependency unavailable"
+      ],
+      "sourceIds": [
+        "BP-016",
+        "BR-026",
+        "BR-028",
+        "BR-031",
+        "BR-033",
+        "UC-011",
+        "UC-012",
+        "UC-014",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "API-018",
+      "name": "/api/interview/translate",
+      "type": "REST",
+      "method": "POST",
+      "path": "/api/interview/translate",
+      "description": "Generate interview notes/transcript translation draft.",
+      "request": {
+        "interviewId": "uuid",
+        "targetLang": "vi|en|ja"
+      },
+      "response": {
+        "translationId": "uuid",
+        "translatedText": "text",
+        "status": "pending",
+        "isAiGenerated": true
+      },
+      "errors": [
+        "400 validation error",
+        "401 unauthenticated",
+        "403 unauthorized",
+        "404 source not found",
+        "409 invalid status transition",
+        "502 AI/mock/channel dependency unavailable"
+      ],
+      "sourceIds": [
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "API-019",
+      "name": "/api/interview/translation/approve",
+      "type": "REST",
+      "method": "POST",
+      "path": "/api/interview/translation/approve",
+      "description": "Approve or reject interview translation.",
+      "request": {
+        "translationId": "uuid",
+        "approval": "approved|rejected",
+        "comment": "string?"
+      },
+      "response": {
+        "translationId": "uuid",
+        "status": "approved|rejected"
+      },
+      "errors": [
+        "400 validation error",
+        "401 unauthenticated",
+        "403 unauthorized",
+        "404 source not found",
+        "409 invalid status transition",
+        "502 AI/mock/channel dependency unavailable"
+      ],
+      "sourceIds": [
+        "BP-016",
+        "BR-026",
+        "BR-028",
+        "BR-031",
+        "BR-033",
+        "UC-011",
+        "UC-012",
+        "UC-014",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
     }
   ],
   "dataObjects": [
@@ -2596,6 +3409,320 @@
         "BR-017",
         "BR-020"
       ]
+    },
+    {
+      "id": "DATA-011",
+      "name": "GeneratedContent",
+      "description": "AI-generated recruitment content draft and approval record for Phase 2 content generation workspace.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "type",
+          "type": "enum",
+          "required": true
+        },
+        {
+          "name": "template",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "prompt",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "content",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "status",
+          "type": "enum[pending,approved,rejected]",
+          "required": true
+        },
+        {
+          "name": "approver",
+          "type": "userId",
+          "required": false
+        },
+        {
+          "name": "timestamp",
+          "type": "datetime",
+          "required": true
+        },
+        {
+          "name": "isAiGenerated",
+          "type": "boolean",
+          "required": true
+        }
+      ],
+      "validation": "Template valid; status enum enforced; isAiGenerated must be true; external publish/export requires approved status.",
+      "sourceIds": [
+        "BP-011",
+        "BR-025",
+        "BR-026",
+        "UC-011",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013"
+      ]
+    },
+    {
+      "id": "DATA-012",
+      "name": "GeneratedDesign",
+      "description": "AI mock design generation record using mock image prototype, approval state, and export metadata.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "brief",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "mockImageUrl",
+          "type": "url",
+          "required": true
+        },
+        {
+          "name": "status",
+          "type": "enum[pending,approved,rejected]",
+          "required": true
+        },
+        {
+          "name": "approver",
+          "type": "userId",
+          "required": false
+        },
+        {
+          "name": "timestamp",
+          "type": "datetime",
+          "required": true
+        },
+        {
+          "name": "isAiGenerated",
+          "type": "boolean",
+          "required": true
+        }
+      ],
+      "validation": "Brief non-empty; status enum enforced; isAiGenerated must be true; mock generation is prototype-only.",
+      "sourceIds": [
+        "BP-012",
+        "BR-027",
+        "BR-028",
+        "UC-012",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "DATA-013",
+      "name": "CVEvidence",
+      "description": "Structured CV evidence view over existing candidate CV, including extracted sections and original CV reference.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "candidateId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "cvId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "structuredData",
+          "type": "json",
+          "required": true
+        },
+        {
+          "name": "extractedSections",
+          "type": "array",
+          "required": true
+        }
+      ],
+      "validation": "CV must exist; evidence must reference original cvId; incomplete extraction is visible and does not replace original CV.",
+      "sourceIds": [
+        "BP-013",
+        "BR-029",
+        "UC-013"
+      ],
+      "requirementIds": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-012",
+        "REQ-C-009",
+        "REQ-C-010"
+      ]
+    },
+    {
+      "id": "DATA-014",
+      "name": "CVTranslation",
+      "description": "Translation draft and approval record for a CV translated between vi/en/ja while preserving original CV source of truth.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "cvId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "sourceLang",
+          "type": "enum[vi,en,ja]",
+          "required": true
+        },
+        {
+          "name": "targetLang",
+          "type": "enum[vi,en,ja]",
+          "required": true
+        },
+        {
+          "name": "translatedText",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "status",
+          "type": "enum[pending,approved,rejected]",
+          "required": true
+        },
+        {
+          "name": "approver",
+          "type": "userId",
+          "required": false
+        },
+        {
+          "name": "isAiGenerated",
+          "type": "boolean",
+          "required": true
+        }
+      ],
+      "validation": "CV must exist; target language in vi/en/ja; translation references original cvId; approval required before external use.",
+      "sourceIds": [
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "DATA-015",
+      "name": "InterviewTranslation",
+      "description": "Translation draft and approval record for interview notes/transcripts translated between vi/en/ja.",
+      "fields": [
+        {
+          "name": "id",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "interviewId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "sourceLang",
+          "type": "enum[vi,en,ja]",
+          "required": true
+        },
+        {
+          "name": "targetLang",
+          "type": "enum[vi,en,ja]",
+          "required": true
+        },
+        {
+          "name": "translatedText",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "status",
+          "type": "enum[pending,approved,rejected]",
+          "required": true
+        },
+        {
+          "name": "approver",
+          "type": "userId",
+          "required": false
+        },
+        {
+          "name": "isAiGenerated",
+          "type": "boolean",
+          "required": true
+        }
+      ],
+      "validation": "Interview record must exist; target language in vi/en/ja; translation references original interviewId; approval required before external use.",
+      "sourceIds": [
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
     }
   ],
   "states": [
@@ -3121,6 +4248,314 @@
       "sourceIds": [
         "BR-012"
       ]
+    },
+    {
+      "id": "VAL-016",
+      "field": "Content template must be valid",
+      "rule": "Reject generation if template is not configured.",
+      "errorMessage": "Reject generation if template is not configured.",
+      "sourceIds": [
+        "BP-011",
+        "BR-025",
+        "BR-026",
+        "UC-011"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013"
+      ]
+    },
+    {
+      "id": "VAL-017",
+      "field": "Design brief must not be empty",
+      "rule": "Reject mock design generation with empty/whitespace brief.",
+      "errorMessage": "Reject mock design generation with empty/whitespace brief.",
+      "sourceIds": [
+        "BP-012",
+        "BR-027",
+        "BR-028",
+        "UC-012"
+      ],
+      "requirementIds": [
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "VAL-018",
+      "field": "CV must exist before translation",
+      "rule": "Reject translation if cvId does not resolve to existing CV.",
+      "errorMessage": "Reject translation if cvId does not resolve to existing CV.",
+      "sourceIds": [
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014"
+      ],
+      "requirementIds": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "VAL-019",
+      "field": "Interview record must exist before translation",
+      "rule": "Reject translation if interviewId does not resolve to existing interview.",
+      "errorMessage": "Reject translation if interviewId does not resolve to existing interview.",
+      "sourceIds": [
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "VAL-020",
+      "field": "Target language must be supported",
+      "rule": "targetLang must be one of vi, en, ja.",
+      "errorMessage": "targetLang must be one of vi, en, ja.",
+      "sourceIds": [
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "VAL-021",
+      "field": "Approval status must be valid",
+      "rule": "Approval workflow status must be pending, approved, or rejected only.",
+      "errorMessage": "Approval workflow status must be pending, approved, or rejected only.",
+      "sourceIds": [
+        "BP-016",
+        "BR-026",
+        "BR-028",
+        "BR-031",
+        "BR-033",
+        "UC-011",
+        "UC-012",
+        "UC-014",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013",
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012",
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "VAL-022",
+      "field": "Generated artifacts must carry AI flag",
+      "rule": "Generated content, design, and translations must set isAiGenerated=true and display it in UI.",
+      "errorMessage": "Generated content, design, and translations must set isAiGenerated=true and display it in UI.",
+      "sourceIds": [
+        "BP-011",
+        "BR-025",
+        "BR-026",
+        "UC-011",
+        "BP-012",
+        "BR-027",
+        "BR-028",
+        "UC-012",
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013",
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012",
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "VAL-023",
+      "field": "Translations must reference original document ID",
+      "rule": "CV translations reference cvId; interview translations reference interviewId; translated text cannot become source of truth.",
+      "errorMessage": "CV translations reference cvId; interview translations reference interviewId; translated text cannot become source of truth.",
+      "sourceIds": [
+        "BP-013",
+        "BR-029",
+        "UC-013",
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-012",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
     }
   ],
   "securityPrivacyCompliance": [
@@ -3358,6 +4793,222 @@
         "SCREEN-005",
         "SCREEN-006",
         "SCREEN-008"
+      ]
+    },
+    {
+      "id": "SEC-020",
+      "concern": "Generated content/design approval authorization",
+      "requirement": "Only HR Manager or configured HR approver can approve generated content/design for external use.",
+      "implementationExpectation": "RBAC check on approval APIs and UI actions.",
+      "verification": "Unauthorized approval returns 403 and no state change.",
+      "sourceIds": [
+        "BP-016",
+        "BR-026",
+        "BR-028",
+        "BR-031",
+        "BR-033",
+        "UC-011",
+        "UC-012",
+        "UC-014",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013",
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "SEC-021",
+      "concern": "Translation approval authorization",
+      "requirement": "Only HR Manager or configured HR approver can approve CV/interview translations for external use.",
+      "implementationExpectation": "RBAC check on translation approval APIs.",
+      "verification": "Unauthorized approval returns 403 and no state change.",
+      "sourceIds": [
+        "BP-016",
+        "BR-026",
+        "BR-028",
+        "BR-031",
+        "BR-033",
+        "UC-011",
+        "UC-012",
+        "UC-014",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "SEC-022",
+      "concern": "CV evidence viewer access control",
+      "requirement": "CV Evidence Viewer access matches existing CV access policy.",
+      "implementationExpectation": "Reuse candidate/CV authorization checks for evidence route and API.",
+      "verification": "User without CV access receives 403/redirect.",
+      "sourceIds": [
+        "BP-013",
+        "BR-029",
+        "UC-013"
+      ],
+      "requirementIds": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-012",
+        "REQ-C-009",
+        "REQ-C-010"
+      ]
+    },
+    {
+      "id": "SEC-023",
+      "concern": "AI-generated status visibility",
+      "requirement": "Generated content, mock designs, CV translations, and interview translations must be marked AI-generated in UI and API.",
+      "implementationExpectation": "Persist and render isAiGenerated flag and generation timestamp.",
+      "verification": "UI/API contract tests verify AI flag visibility.",
+      "sourceIds": [
+        "BP-011",
+        "BR-025",
+        "BR-026",
+        "UC-011",
+        "BP-012",
+        "BR-027",
+        "BR-028",
+        "UC-012",
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013",
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012",
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "SEC-024",
+      "concern": "Original document reference integrity",
+      "requirement": "Translations and evidence views must link to original CV/interview records and never overwrite source of truth.",
+      "implementationExpectation": "Immutable source references and audit events on generated artifacts.",
+      "verification": "Traceability/source reference tests verify original IDs are present.",
+      "sourceIds": [
+        "BP-013",
+        "BR-029",
+        "UC-013",
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-012",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
       ]
     }
   ],
@@ -3780,6 +5431,239 @@
         "BP-010",
         "BR-011"
       ]
+    },
+    {
+      "id": "TEST-021",
+      "type": "e2e",
+      "scenario": "Content generation workflow",
+      "steps": "Select template; enter prompt; generate draft; approve; publish/export.",
+      "expectedResult": "Draft generated with AI flag; approval audit exists; approved content can be copied/exported/published.",
+      "sourceIds": [
+        "BP-011",
+        "BR-025",
+        "BR-026",
+        "UC-011",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013"
+      ]
+    },
+    {
+      "id": "TEST-022",
+      "type": "e2e",
+      "scenario": "Design generation workflow",
+      "steps": "Enter brief; generate mock; approve; export.",
+      "expectedResult": "Mock image generated with AI flag; HR approval required before export.",
+      "sourceIds": [
+        "BP-012",
+        "BR-027",
+        "BR-028",
+        "UC-012",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "TEST-023",
+      "type": "e2e",
+      "scenario": "CV evidence viewer",
+      "steps": "Open CV evidence; navigate sections; open original reference.",
+      "expectedResult": "Structured data displays, section navigation works, and original CV reference is visible.",
+      "sourceIds": [
+        "BP-013",
+        "BR-029",
+        "UC-013"
+      ],
+      "requirementIds": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-012",
+        "REQ-C-009",
+        "REQ-C-010"
+      ]
+    },
+    {
+      "id": "TEST-024",
+      "type": "e2e",
+      "scenario": "CV translation workflow",
+      "steps": "Select target language; translate CV; compare original side-by-side; approve.",
+      "expectedResult": "Translation draft generated with AI flag, references original CV, and requires approval.",
+      "sourceIds": [
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "TEST-025",
+      "type": "e2e",
+      "scenario": "Interview translation workflow",
+      "steps": "Input/select notes; select target language; translate; approve.",
+      "expectedResult": "Translation draft generated with AI flag, references original interview, and requires approval.",
+      "sourceIds": [
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "TEST-026",
+      "type": "e2e",
+      "scenario": "Approval rejection flow",
+      "steps": "Reject generated artifact; edit draft/brief/translation; resubmit for approval.",
+      "expectedResult": "Artifact returns to pending after resubmit; rejection and approval audit events recorded.",
+      "sourceIds": [
+        "BP-016",
+        "BR-026",
+        "BR-028",
+        "BR-031",
+        "BR-033",
+        "UC-011",
+        "UC-012",
+        "UC-014",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013",
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012",
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "TEST-027",
+      "type": "integration",
+      "scenario": "Source of truth validation",
+      "steps": "Create translation; make screening/final decision evidence package; inspect source references.",
+      "expectedResult": "Screening/final decisions trace to original CV/interview records, not translation text.",
+      "sourceIds": [
+        "BP-013",
+        "BR-029",
+        "UC-013",
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-012",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
     }
   ],
   "edgeCases": [
@@ -3871,6 +5755,201 @@
       "sourceIds": [
         "BR-024",
         "BQ-007"
+      ]
+    },
+    {
+      "id": "EDGE-011",
+      "edgeCase": "Content generation fails",
+      "expectedBehavior": "LLM timeout or invalid template shows safe error, preserves prompt/template where valid, and does not create approved content.",
+      "sourceIds": [
+        "BP-011",
+        "BR-025",
+        "BR-026",
+        "UC-011"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013"
+      ]
+    },
+    {
+      "id": "EDGE-012",
+      "edgeCase": "Design generation fails",
+      "expectedBehavior": "Mock service unavailable shows retry path and no approved/exportable design is created.",
+      "sourceIds": [
+        "BP-012",
+        "BR-027",
+        "BR-028",
+        "UC-012"
+      ],
+      "requirementIds": [
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "EDGE-013",
+      "edgeCase": "CV evidence extraction incomplete",
+      "expectedBehavior": "Missing sections/unstructured CV are explicitly marked and original CV remains available for manual review.",
+      "sourceIds": [
+        "BP-013",
+        "BR-029",
+        "UC-013"
+      ],
+      "requirementIds": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-012",
+        "REQ-C-009",
+        "REQ-C-010"
+      ]
+    },
+    {
+      "id": "EDGE-014",
+      "edgeCase": "Translation fails",
+      "expectedBehavior": "Unsupported language or LLM error shows safe retry message; original CV/interview remains available and no approved translation is created.",
+      "sourceIds": [
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "EDGE-015",
+      "edgeCase": "Approval workflow interrupted",
+      "expectedBehavior": "Approver unavailable/session timeout keeps artifact pending/rejected and never auto-approves.",
+      "sourceIds": [
+        "BP-016",
+        "BR-026",
+        "BR-028",
+        "BR-031",
+        "BR-033",
+        "UC-011",
+        "UC-012",
+        "UC-014",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013",
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012",
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "EDGE-016",
+      "edgeCase": "Channel integration unavailable",
+      "expectedBehavior": "Approved content/design export falls back to manual copy or file export; channel failure is visible and auditable.",
+      "sourceIds": [
+        "BP-011",
+        "BR-025",
+        "BR-026",
+        "UC-011",
+        "BP-012",
+        "BR-027",
+        "BR-028",
+        "UC-012"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013",
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012"
       ]
     }
   ],
@@ -6839,6 +8918,1331 @@
         "REQ-F-024",
         "REQ-F-025",
         "REQ-I-002"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SCREEN-009",
+      "upstreamBusinessIds": [
+        "BP-011",
+        "BR-025",
+        "BR-026",
+        "UC-011",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SCREEN-010",
+      "upstreamBusinessIds": [
+        "BP-012",
+        "BR-027",
+        "BR-028",
+        "UC-012",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SCREEN-011",
+      "upstreamBusinessIds": [
+        "BP-013",
+        "BR-029",
+        "UC-013"
+      ],
+      "requirementIds": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-012",
+        "REQ-C-009",
+        "REQ-C-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SCREEN-012",
+      "upstreamBusinessIds": [
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SCREEN-013",
+      "upstreamBusinessIds": [
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "DATA-011",
+      "upstreamBusinessIds": [
+        "BP-011",
+        "BR-025",
+        "BR-026",
+        "UC-011",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "DATA-012",
+      "upstreamBusinessIds": [
+        "BP-012",
+        "BR-027",
+        "BR-028",
+        "UC-012",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "DATA-013",
+      "upstreamBusinessIds": [
+        "BP-013",
+        "BR-029",
+        "UC-013"
+      ],
+      "requirementIds": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-012",
+        "REQ-C-009",
+        "REQ-C-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "DATA-014",
+      "upstreamBusinessIds": [
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "DATA-015",
+      "upstreamBusinessIds": [
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "API-011",
+      "upstreamBusinessIds": [
+        "BP-011",
+        "BR-025",
+        "BR-026",
+        "UC-011"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "API-012",
+      "upstreamBusinessIds": [
+        "BP-016",
+        "BR-026",
+        "BR-028",
+        "BR-031",
+        "BR-033",
+        "UC-011",
+        "UC-012",
+        "UC-014",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "API-013",
+      "upstreamBusinessIds": [
+        "BP-012",
+        "BR-027",
+        "BR-028",
+        "UC-012"
+      ],
+      "requirementIds": [
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "API-014",
+      "upstreamBusinessIds": [
+        "BP-016",
+        "BR-026",
+        "BR-028",
+        "BR-031",
+        "BR-033",
+        "UC-011",
+        "UC-012",
+        "UC-014",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "API-015",
+      "upstreamBusinessIds": [
+        "BP-013",
+        "BR-029",
+        "UC-013"
+      ],
+      "requirementIds": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-012",
+        "REQ-C-009",
+        "REQ-C-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "API-016",
+      "upstreamBusinessIds": [
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014"
+      ],
+      "requirementIds": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "API-017",
+      "upstreamBusinessIds": [
+        "BP-016",
+        "BR-026",
+        "BR-028",
+        "BR-031",
+        "BR-033",
+        "UC-011",
+        "UC-012",
+        "UC-014",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "API-018",
+      "upstreamBusinessIds": [
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "API-019",
+      "upstreamBusinessIds": [
+        "BP-016",
+        "BR-026",
+        "BR-028",
+        "BR-031",
+        "BR-033",
+        "UC-011",
+        "UC-012",
+        "UC-014",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-016",
+      "upstreamBusinessIds": [
+        "BP-011",
+        "BR-025",
+        "BR-026",
+        "UC-011"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-017",
+      "upstreamBusinessIds": [
+        "BP-012",
+        "BR-027",
+        "BR-028",
+        "UC-012"
+      ],
+      "requirementIds": [
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-018",
+      "upstreamBusinessIds": [
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014"
+      ],
+      "requirementIds": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-019",
+      "upstreamBusinessIds": [
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-020",
+      "upstreamBusinessIds": [
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-021",
+      "upstreamBusinessIds": [
+        "BP-016",
+        "BR-026",
+        "BR-028",
+        "BR-031",
+        "BR-033",
+        "UC-011",
+        "UC-012",
+        "UC-014",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013",
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012",
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-022",
+      "upstreamBusinessIds": [
+        "BP-011",
+        "BR-025",
+        "BR-026",
+        "UC-011",
+        "BP-012",
+        "BR-027",
+        "BR-028",
+        "UC-012",
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013",
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012",
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "VAL-023",
+      "upstreamBusinessIds": [
+        "BP-013",
+        "BR-029",
+        "UC-013",
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-012",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SEC-020",
+      "upstreamBusinessIds": [
+        "BP-016",
+        "BR-026",
+        "BR-028",
+        "BR-031",
+        "BR-033",
+        "UC-011",
+        "UC-012",
+        "UC-014",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013",
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SEC-021",
+      "upstreamBusinessIds": [
+        "BP-016",
+        "BR-026",
+        "BR-028",
+        "BR-031",
+        "BR-033",
+        "UC-011",
+        "UC-012",
+        "UC-014",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SEC-022",
+      "upstreamBusinessIds": [
+        "BP-013",
+        "BR-029",
+        "UC-013"
+      ],
+      "requirementIds": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-012",
+        "REQ-C-009",
+        "REQ-C-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SEC-023",
+      "upstreamBusinessIds": [
+        "BP-011",
+        "BR-025",
+        "BR-026",
+        "UC-011",
+        "BP-012",
+        "BR-027",
+        "BR-028",
+        "UC-012",
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013",
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012",
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "SEC-024",
+      "upstreamBusinessIds": [
+        "BP-013",
+        "BR-029",
+        "UC-013",
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-012",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-021",
+      "upstreamBusinessIds": [
+        "BP-011",
+        "BR-025",
+        "BR-026",
+        "UC-011",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-022",
+      "upstreamBusinessIds": [
+        "BP-012",
+        "BR-027",
+        "BR-028",
+        "UC-012",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-023",
+      "upstreamBusinessIds": [
+        "BP-013",
+        "BR-029",
+        "UC-013"
+      ],
+      "requirementIds": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-012",
+        "REQ-C-009",
+        "REQ-C-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-024",
+      "upstreamBusinessIds": [
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-025",
+      "upstreamBusinessIds": [
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015",
+        "BP-016"
+      ],
+      "requirementIds": [
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-026",
+      "upstreamBusinessIds": [
+        "BP-016",
+        "BR-026",
+        "BR-028",
+        "BR-031",
+        "BR-033",
+        "UC-011",
+        "UC-012",
+        "UC-014",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013",
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012",
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "TEST-027",
+      "upstreamBusinessIds": [
+        "BP-013",
+        "BR-029",
+        "UC-013",
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-012",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "EDGE-011",
+      "upstreamBusinessIds": [
+        "BP-011",
+        "BR-025",
+        "BR-026",
+        "UC-011"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "EDGE-012",
+      "upstreamBusinessIds": [
+        "BP-012",
+        "BR-027",
+        "BR-028",
+        "UC-012"
+      ],
+      "requirementIds": [
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "EDGE-013",
+      "upstreamBusinessIds": [
+        "BP-013",
+        "BR-029",
+        "UC-013"
+      ],
+      "requirementIds": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-012",
+        "REQ-C-009",
+        "REQ-C-010"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "EDGE-014",
+      "upstreamBusinessIds": [
+        "BP-014",
+        "BR-030",
+        "BR-031",
+        "UC-014",
+        "BP-015",
+        "BR-032",
+        "BR-033",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "EDGE-015",
+      "upstreamBusinessIds": [
+        "BP-016",
+        "BR-026",
+        "BR-028",
+        "BR-031",
+        "BR-033",
+        "UC-011",
+        "UC-012",
+        "UC-014",
+        "UC-015"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013",
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012",
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-013",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-014",
+        "REQ-I-007",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012"
+      ],
+      "rawIds": []
+    },
+    {
+      "detailId": "EDGE-016",
+      "upstreamBusinessIds": [
+        "BP-011",
+        "BR-025",
+        "BR-026",
+        "UC-011",
+        "BP-012",
+        "BR-027",
+        "BR-028",
+        "UC-012"
+      ],
+      "requirementIds": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-C-007",
+        "REQ-C-012",
+        "REQ-C-013",
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012"
       ],
       "rawIds": []
     }

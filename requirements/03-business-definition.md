@@ -1,6 +1,6 @@
 # Business Definition: RecruitAI — Hệ thống Recruitment AI Automation
 
-Generated: 2026-05-12T00:00:00Z
+Generated: 2026-05-13T00:00:00Z
 Language: bilingual (vi/en)
 Project type: data-ai
 Upstream: `02-requirement-definition.md/json`
@@ -11,7 +11,7 @@ Upstream: `02-requirement-definition.md/json`
 
 RecruitAI automates the internal HR recruitment pipeline from sourcing to final candidate decision while preserving HR Manager authority at business decision gates. The business goal is to scale recruitment above 200 jobs/month, improve consistency of screening/interview/test evaluation, reduce scheduling friction, and keep candidate data auditable and secure.
 
-MVP business scope is the full recruitment pipeline: Candidate Sourcing ? CV Screening ? Interview Scheduling ? Async AI Interview ? Test Grading ? Final Review. Content generation, design generation, and translation remain standalone Phase 2 capabilities and do not block MVP acceptance.
+MVP business scope is the full recruitment pipeline: Candidate Sourcing → CV Screening → Interview Scheduling → Async AI Interview → Test Grading → Final Review. Phase 2 prototype scope additionally includes standalone utility AI modules: recruitment content generation, mock design generation, CV evidence viewer detail, CV translation, and interview notes/transcript translation. These utility modules are in scope for the next prototype but remain outside Phase 1/MVP core pipeline acceptance.
 
 ## 2. Business Objectives and KPIs
 
@@ -56,6 +56,12 @@ MVP business scope is the full recruitment pipeline: Candidate Sourcing ? CV Scr
 | BP-008 | Operational Performance and Monitoring | Monitor throughput, response time, uptime, AI errors, LLM cost, and scalability targets | IT Admin | REQ-NF-001, REQ-NF-002, REQ-NF-003, REQ-NF-004, REQ-NF-009, REQ-NF-010, REQ-NF-011, REQ-NF-012 |
 | BP-009 | Candidate Withdrawal | Stop pipeline cleanly when candidate withdraws or HR records withdrawal | HR Recruiter | REQ-F-056, REQ-F-055, REQ-NF-007, REQ-D-007 |
 | BP-010 | Error Remediation | Resolve blocking import, parsing, AI, Google integration, or grading errors without silent pipeline stalls | IT Admin | REQ-F-018, REQ-I-001, REQ-I-002, REQ-I-003, REQ-I-004, REQ-NF-010, REQ-NF-007 |
+| BP-011 | Phase 2 Utility AI Governance | Operate standalone utility AI modules without changing Phase 1/MVP core pipeline decisions | HR Manager | REQ-C-006, REQ-C-007, REQ-C-008, REQ-C-009, REQ-C-010, REQ-C-011, REQ-C-012, REQ-C-013 |
+| BP-012 | Recruitment Content Generation and Approval | Generate, edit, approve, export, and publish recruitment content suggestions | HR Recruiter / HR Manager | REQ-F-070, REQ-F-071, REQ-F-072, REQ-F-073, REQ-F-074, REQ-F-075, REQ-D-010, REQ-I-005, REQ-I-007, REQ-C-007, REQ-C-011 |
+| BP-013 | Mock Recruitment Design Generation and Approval | Generate mock recruitment creative previews and approve them before export or use | HR Recruiter / HR Manager | REQ-F-080, REQ-F-081, REQ-F-082, REQ-F-083, REQ-D-011, REQ-I-006, REQ-C-008, REQ-C-012 |
+| BP-014 | CV Evidence Review | Review original CV, extracted text, and evidence detail linked to screening/JD criteria | HR Manager | REQ-F-110, REQ-F-111, REQ-F-112, REQ-D-014, REQ-C-013 |
+| BP-015 | CV Translation for Review | Translate CV content across vi/en/ja for review while preserving original CV as source of truth | HR Recruiter / HR Manager | REQ-F-090, REQ-F-091, REQ-F-092, REQ-F-093, REQ-F-094, REQ-F-095, REQ-D-012, REQ-C-009, REQ-C-010 |
+| BP-016 | Interview Notes and Transcript Translation | Translate interview notes/transcripts across vi/en/ja while preserving original interview record | HR Recruiter / HR Manager | REQ-F-100, REQ-F-101, REQ-F-102, REQ-D-013, REQ-C-010 |
 
 ## 6. Business State Machine
 
@@ -98,7 +104,7 @@ Business rules define policy and decision constraints only. They avoid UI, API, 
 | BR-010 | Essay and coding AI grading must be rubric-backed | Essay and coding AI scores must include criterion-level justification and preserve rubric/test-case versioning for audit. | assessment | REQ-F-043, REQ-F-044, REQ-F-045 |
 | BR-011 | Candidate data access is role-bound | Confidential candidate documents, transcripts, and submissions are accessible only to roles with business need. | security | REQ-NF-006, REQ-NF-008 |
 | BR-012 | Audit trail is mandatory for accountability | Imports, approvals, overrides, notifications, state changes, and final decisions must be auditable. | compliance | REQ-NF-007, REQ-D-007, REQ-D-008, REQ-D-009 |
-| BR-013 | Phase 2 utility AI is outside MVP acceptance | Content generation, design generation, and translation are standalone Phase 2 capabilities and must not block MVP acceptance. | scope | REQ-C-006 |
+| BR-013 | Phase 2 utility AI is in prototype scope but outside MVP acceptance | Content generation, mock design generation, CV evidence viewer detail, CV translation, and interview translation are standalone Phase 2 prototype capabilities. They must not block Phase 1/MVP acceptance and must not mutate core candidate pipeline state without explicit approved workflow. | scope | REQ-C-006, REQ-F-070, REQ-F-080, REQ-F-090, REQ-F-100, REQ-F-110 |
 | BR-014 | Workflow communications use approved HR identity and templates | Candidate-facing emails and workflow reminders must use the shared HR mailbox, approved templates, and logged delivery status. | communication | REQ-F-026, REQ-F-060, REQ-F-061, REQ-F-062 |
 | BR-015 | Operational KPIs must be monitored | Recruitment operations must monitor screening time, throughput, response time, concurrency, uptime, AI failure, LLM cost, and scalability targets. | operations | REQ-NF-001, REQ-NF-002, REQ-NF-003, REQ-NF-004, REQ-NF-009, REQ-NF-010, REQ-NF-011, REQ-NF-012 |
 | BR-016 | Single-organization operating model | RecruitAI serves internal HR only and does not support multi-tenant agency operation in MVP. | scope | REQ-C-001 |
@@ -110,6 +116,15 @@ Business rules define policy and decision constraints only. They avoid UI, API, 
 | BR-022 | Final decision policy placeholder | Final pass/fail remains a human-owned HR Manager decision based on screening, interview, and test evidence. The exact combined threshold or weighting model is unresolved and blocks Gate 4. | governance | REQ-F-045, REQ-F-046, REQ-F-050 |
 | BR-023 | Retention policy placeholder | Candidate CVs, transcripts, test submissions, and audit records require explicit retention/deletion periods before Gate 4 detail sign-off. Until defined, no destructive deletion behavior may be assumed. | compliance | REQ-NF-005, REQ-NF-008, REQ-D-001, REQ-D-002, REQ-D-005, REQ-D-006 |
 | BR-024 | Calendar reschedule and cancellation policy placeholder | Post-approval interview reschedule/cancel behavior is unresolved and must be defined before Gate 4; no Calendar update flow may be assumed beyond initial approved event creation. | scheduling | REQ-F-023, REQ-F-024, REQ-F-025, REQ-I-002 |
+| BR-025 | Generated content requires HR approval | AI-generated recruitment content must be reviewed and approved by HR before copy, export, file generation, or channel publishing. | governance | REQ-F-071, REQ-F-072, REQ-F-073, REQ-F-074, REQ-C-007, REQ-C-011 |
+| BR-026 | Generated design requires HR approval | Mock generated design assets must be reviewed and approved by HR before export, publishing, or operational use. | governance | REQ-F-080, REQ-F-082, REQ-F-083, REQ-C-008, REQ-C-012 |
+| BR-027 | AI-generated status must be visible | Generated content and mock design assets must be clearly marked as AI-generated or AI-assisted until HR approval is recorded. | ai-governance | REQ-F-071, REQ-F-082, REQ-D-010, REQ-D-011 |
+| BR-028 | Generated content and design require moderation | Recruitment content and mock creative outputs must be reviewed for safety, appropriateness, and policy fit before approval or channel use. | risk-control | REQ-F-074, REQ-F-083, REQ-C-007, REQ-C-008 |
+| BR-029 | Original CV is source of truth | Translated CVs support review and related workflows, but original CV remains the authoritative record and screening decisions must trace to original CV evidence. | data-integrity | REQ-F-092, REQ-F-094, REQ-F-095, REQ-C-009 |
+| BR-030 | Original interview record is source of truth | Translated interview notes/transcripts support review, but original notes/transcripts remain the authoritative record for audit and final decision evidence. | data-integrity | REQ-F-100, REQ-F-101, REQ-F-102, REQ-D-013, REQ-C-010 |
+| BR-031 | CV evidence detail is review support | CV evidence viewer detail may support HR review, but it must not create a new automated decision gate or replace existing screening approval authority. | ai-governance | REQ-F-110, REQ-F-111, REQ-F-112, REQ-D-014 |
+| BR-032 | No OCR without explicit scope decision | Scanned/image-only CV support and OCR remain out of scope unless explicitly added; unsupported documents must not be silently inferred. | scope | REQ-C-013 |
+| BR-033 | Utility AI artifacts follow candidate data privacy rules | Translated CVs, translated transcripts, evidence details, generated artifacts, prompts, and approvals must follow role-based access, audit, and retention controls appropriate to their source data. | security | REQ-F-093, REQ-F-101, REQ-D-010, REQ-D-011, REQ-D-012, REQ-D-013, REQ-D-014, REQ-C-010 |
 
 ## 8. Exception Paths
 
@@ -198,6 +213,37 @@ Business rules define policy and decision constraints only. They avoid UI, API, 
 - **Business acceptance criteria:** Every ERROR has reason and owner; Owner receives notification; Resolution returns candidate to prior state or WITHDRAWN
 - **Trace to REQ:** REQ-F-018, REQ-NF-010, REQ-NF-007
 
+
+### UC-011 ? Generate and approve recruitment content
+
+- **Primary actor:** HR Recruiter / HR Manager
+- **Business acceptance criteria:** HR can generate editable content suggestions from job context; HR approval is recorded before copy/export/file/channel publish; Approved content can be manually copied, exported to file, or sent through configured channel connector
+- **Trace to REQ:** REQ-F-070, REQ-F-071, REQ-F-072, REQ-F-073, REQ-F-074, REQ-F-075, REQ-C-007, REQ-C-011
+
+### UC-012 ? Generate and approve mock recruitment design
+
+- **Primary actor:** HR Recruiter / HR Manager
+- **Business acceptance criteria:** HR can generate mock creative previews without real image provider integration; HR can select/review generated mock assets; HR approval is required before export or use
+- **Trace to REQ:** REQ-F-080, REQ-F-081, REQ-F-082, REQ-F-083, REQ-C-008, REQ-C-012
+
+### UC-013 ? Review CV evidence detail
+
+- **Primary actor:** HR Manager
+- **Business acceptance criteria:** HR can view original CV, extracted text, and screening/JD-linked evidence detail; Evidence detail is review support and does not change pipeline state; Unsupported scanned/OCR-needed documents remain clearly out of scope
+- **Trace to REQ:** REQ-F-110, REQ-F-111, REQ-F-112, REQ-D-014, REQ-C-013
+
+### UC-014 ? Translate CV for HR review
+
+- **Primary actor:** HR Recruiter / HR Manager
+- **Business acceptance criteria:** HR can translate CV content across vi/en/ja; Translated CV is linked to original CV; Screening decisions remain traceable to original CV
+- **Trace to REQ:** REQ-F-090, REQ-F-091, REQ-F-092, REQ-F-093, REQ-F-094, REQ-F-095, REQ-C-009, REQ-C-010
+
+### UC-015 ? Translate interview notes or transcript
+
+- **Primary actor:** HR Recruiter / HR Manager
+- **Business acceptance criteria:** HR can translate interview notes/transcripts across vi/en/ja; Translated interview content remains access-controlled; Original interview record remains authoritative for audit
+- **Trace to REQ:** REQ-F-100, REQ-F-101, REQ-F-102, REQ-D-013, REQ-C-010
+
 ## 11. Business Acceptance Criteria
 
 | ID | Criterion | Trace to REQ |
@@ -206,6 +252,10 @@ Business rules define policy and decision constraints only. They avoid UI, API, 
 | BAC-002 | Every business decision gate has an accountable HR Manager decision recorded. | REQ-F-017, REQ-F-023, REQ-F-050, REQ-NF-007 |
 | BAC-003 | Every AI recommendation used by HR includes explainability and confidence information. | REQ-F-011, REQ-F-012, REQ-F-013, REQ-F-014, REQ-NF-AI-005 |
 | BAC-004 | Candidate confidential data is protected by RBAC, encryption, and audit logs. | REQ-NF-005, REQ-NF-006, REQ-NF-007, REQ-NF-008 |
+| BAC-005 | Phase 2 utility AI modules are explicitly in prototype scope but do not block Phase 1/MVP pipeline acceptance. | REQ-C-006 |
+| BAC-006 | Generated recruitment content and mock design assets require recorded HR approval before export, publishing, or use. | REQ-F-074, REQ-F-083, REQ-C-007, REQ-C-008, REQ-C-011 |
+| BAC-007 | CV and interview translations preserve source linkage, access control, and source-of-truth warnings. | REQ-F-092, REQ-F-093, REQ-F-094, REQ-F-095, REQ-F-101, REQ-F-102, REQ-C-009, REQ-C-010 |
+| BAC-008 | CV evidence detail supports HR review with original/extracted/evidence context and does not introduce OCR or a new automated decision gate. | REQ-F-110, REQ-F-111, REQ-F-112, REQ-C-013 |
 
 ## 12. Business Risks
 
@@ -217,6 +267,11 @@ Business rules define policy and decision constraints only. They avoid UI, API, 
 | RISK-004 | Candidate PII exposure | High | Low | RBAC, encryption, audit logs, access-controlled CV storage | REQ-NF-005, REQ-NF-006, REQ-NF-007, REQ-NF-008 |
 | RISK-005 | Coding challenge execution introduces security risk | High | Medium | Gate implementation on approved sandbox/runtime decision | REQ-F-044 |
 | RISK-006 | Scanned PDFs/images are expected by users despite MVP boundary | Medium | Medium | Clear rejection reason and Phase 2 OCR backlog | REQ-C-002, REQ-F-018 |
+| RISK-007 | Unapproved AI-generated recruitment content may be published externally | High | Medium | Require HR approval, visible AI-generated status, moderation review, and audit trail before copy/export/channel publishing | REQ-F-073, REQ-F-074, REQ-C-007, REQ-C-011 |
+| RISK-008 | Mock generated design may be mistaken for approved brand asset | Medium | Medium | Mark mock assets as AI-assisted draft until HR approval; keep real provider integration out of scope | REQ-F-080, REQ-F-081, REQ-F-083, REQ-C-008, REQ-C-012 |
+| RISK-009 | Translated CV may be misused as source of truth for screening | High | Medium | Show source-of-truth warning and require screening decisions to trace to original CV | REQ-F-092, REQ-F-094, REQ-F-095, REQ-C-009 |
+| RISK-010 | Translated CV or interview transcript may expose confidential candidate data | High | Medium | Apply RBAC, audit, retention, and source-linked access controls to translated artifacts | REQ-F-093, REQ-F-101, REQ-D-012, REQ-D-013, REQ-C-010 |
+| RISK-011 | Channel integration scope may expand beyond prototype readiness | Medium | Medium | Treat channel integrations as Phase 2 prototype connectors with explicit channel decision question | REQ-F-073, REQ-I-007, REQ-C-011 |
 
 ## 13. Open Questions
 
@@ -229,6 +284,10 @@ Business rules define policy and decision constraints only. They avoid UI, API, 
 | BQ-005 | What exact Drive folder, ownership, webhook renewal, and naming convention should be used for MVP? | IT Admin | yes | REQ-F-003, REQ-I-001 |
 | BQ-006 | What is the final combined pass/fail policy across screening, interview, and test? | HR Manager | yes | REQ-F-046, REQ-F-050 |
 | BQ-007 | What is the Calendar reschedule/cancel policy after event creation? | HR Manager / IT Admin | yes | REQ-F-023, REQ-F-024, REQ-F-025, REQ-I-002 |
+| BQ-008 | Which specific recruitment publishing channels are included in the Phase 2 prototype connector set? | HR Manager / IT Admin | no | REQ-F-073, REQ-I-007, REQ-C-011 |
+| BQ-009 | Which export file formats are required for generated recruitment content beyond TXT/DOCX? | HR Manager | no | REQ-F-072 |
+| BQ-010 | What mock design asset sizes/templates are required for banners, posters, and social assets? | HR Manager | no | REQ-F-080, REQ-I-006 |
+| BQ-011 | What level of CV evidence detail is required: extracted text only, evidence spans, or reasoning trace? | HR Manager | no | REQ-F-110, REQ-F-111, REQ-D-014 |
 
 ## 14. Gate 3 Validation
 

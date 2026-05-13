@@ -3,12 +3,12 @@
     "productName": "RecruitAI",
     "projectType": "data-ai",
     "language": "bilingual",
-    "version": "0.1.0",
-    "generatedAt": "2026-05-12T00:00:00Z",
+    "version": "0.2.0",
+    "generatedAt": "2026-05-13T00:00:00Z",
     "upstream": "02-requirement-definition.md/json",
     "gate": "Gate 3 Business Definition",
     "status": "CONDITIONAL_PASS",
-    "reviewNote": "Gate 3 remains conditional until blocking business policy questions are answered in Gate 4."
+    "reviewNote": "Gate 3 updated for Phase 2 prototype utility AI scope while preserving Phase 1/MVP acceptance boundary."
   },
   "businessObjectives": [
     {
@@ -83,7 +83,10 @@
         "REQ-NF-005",
         "REQ-NF-006",
         "REQ-NF-007",
-        "REQ-NF-008"
+        "REQ-NF-008",
+        "REQ-D-012",
+        "REQ-D-013",
+        "REQ-D-014"
       ]
     }
   ],
@@ -503,6 +506,100 @@
         "REQ-NF-010",
         "REQ-NF-007"
       ]
+    },
+    {
+      "id": "BP-011",
+      "name": "Phase 2 Utility AI Governance",
+      "owner": "HR Manager",
+      "goal": "Operate standalone utility AI modules without changing Phase 1/MVP core pipeline decisions.",
+      "tracesTo": [
+        "REQ-C-006",
+        "REQ-C-007",
+        "REQ-C-008",
+        "REQ-C-009",
+        "REQ-C-010",
+        "REQ-C-011",
+        "REQ-C-012",
+        "REQ-C-013"
+      ]
+    },
+    {
+      "id": "BP-012",
+      "name": "Recruitment Content Generation and Approval",
+      "owner": "HR Recruiter / HR Manager",
+      "goal": "Generate, edit, approve, export, and publish recruitment content suggestions.",
+      "tracesTo": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-D-010",
+        "REQ-I-005",
+        "REQ-I-007",
+        "REQ-C-007",
+        "REQ-C-011"
+      ]
+    },
+    {
+      "id": "BP-013",
+      "name": "Mock Recruitment Design Generation and Approval",
+      "owner": "HR Recruiter / HR Manager",
+      "goal": "Generate mock recruitment creative previews and approve them before export or use.",
+      "tracesTo": [
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-D-011",
+        "REQ-I-006",
+        "REQ-C-008",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "BP-014",
+      "name": "CV Evidence Review",
+      "owner": "HR Manager",
+      "goal": "Review original CV, extracted text, and evidence detail linked to screening/JD criteria without making it part of Phase 1/MVP core scope.",
+      "tracesTo": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-014",
+        "REQ-C-013"
+      ]
+    },
+    {
+      "id": "BP-015",
+      "name": "CV Translation for Review",
+      "owner": "HR Recruiter / HR Manager",
+      "goal": "Translate CV content across vi/en/ja for review while preserving original CV as source of truth.",
+      "tracesTo": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-D-012",
+        "REQ-C-009",
+        "REQ-C-010"
+      ]
+    },
+    {
+      "id": "BP-016",
+      "name": "Interview Notes and Transcript Translation",
+      "owner": "HR Recruiter / HR Manager",
+      "goal": "Translate interview notes/transcripts across vi/en/ja while preserving original interview record.",
+      "tracesTo": [
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-013",
+        "REQ-C-010"
+      ]
     }
   ],
   "businessRules": [
@@ -636,11 +733,16 @@
     },
     {
       "id": "BR-013",
-      "name": "Phase 2 utility AI is outside MVP acceptance",
+      "name": "Phase 2 utility AI is in prototype scope but outside MVP acceptance",
       "type": "scope",
-      "rule": "Content generation, design generation, and translation are standalone Phase 2 capabilities and must not block MVP acceptance.",
+      "rule": "Content generation, mock design generation, CV evidence viewer detail, CV translation, and interview translation are standalone Phase 2 prototype capabilities. They must not block Phase 1/MVP acceptance and must not mutate core candidate pipeline state without explicit approved workflow.",
       "tracesTo": [
-        "REQ-C-006"
+        "REQ-C-006",
+        "REQ-F-070",
+        "REQ-F-080",
+        "REQ-F-090",
+        "REQ-F-100",
+        "REQ-F-110"
       ]
     },
     {
@@ -769,6 +871,119 @@
         "REQ-F-024",
         "REQ-F-025",
         "REQ-I-002"
+      ]
+    },
+    {
+      "id": "BR-025",
+      "name": "Generated content requires HR approval",
+      "type": "governance",
+      "rule": "AI-generated recruitment content must be reviewed and approved by HR before copy, export, file generation, or channel publishing.",
+      "tracesTo": [
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-C-007",
+        "REQ-C-011"
+      ]
+    },
+    {
+      "id": "BR-026",
+      "name": "Generated design requires HR approval",
+      "type": "governance",
+      "rule": "Mock generated design assets must be reviewed and approved by HR before export, publishing, or operational use.",
+      "tracesTo": [
+        "REQ-F-080",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-C-008",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "BR-027",
+      "name": "AI-generated status must be visible",
+      "type": "ai-governance",
+      "rule": "Generated content and mock design assets must be clearly marked as AI-generated or AI-assisted until HR approval is recorded.",
+      "tracesTo": [
+        "REQ-F-071",
+        "REQ-F-082",
+        "REQ-D-010",
+        "REQ-D-011"
+      ]
+    },
+    {
+      "id": "BR-028",
+      "name": "Generated content and design require moderation",
+      "type": "risk-control",
+      "rule": "Recruitment content and mock creative outputs must be reviewed for safety, appropriateness, and policy fit before approval or channel use.",
+      "tracesTo": [
+        "REQ-F-074",
+        "REQ-F-083",
+        "REQ-C-007",
+        "REQ-C-008"
+      ]
+    },
+    {
+      "id": "BR-029",
+      "name": "Original CV is source of truth",
+      "type": "data-integrity",
+      "rule": "Translated CVs support review and related workflows, but original CV remains the authoritative record and screening decisions must trace to original CV evidence.",
+      "tracesTo": [
+        "REQ-F-092",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-C-009"
+      ]
+    },
+    {
+      "id": "BR-030",
+      "name": "Original interview record is source of truth",
+      "type": "data-integrity",
+      "rule": "Translated interview notes/transcripts support review, but original notes/transcripts remain the authoritative record for audit and final decision evidence.",
+      "tracesTo": [
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-013",
+        "REQ-C-010"
+      ]
+    },
+    {
+      "id": "BR-031",
+      "name": "CV evidence detail is review support",
+      "type": "ai-governance",
+      "rule": "CV evidence viewer detail may support HR review, but it must not create a new automated decision gate or replace existing screening approval authority.",
+      "tracesTo": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-014"
+      ]
+    },
+    {
+      "id": "BR-032",
+      "name": "No OCR without explicit scope decision",
+      "type": "scope",
+      "rule": "Scanned/image-only CV support and OCR remain out of scope unless explicitly added; unsupported documents must not be silently inferred.",
+      "tracesTo": [
+        "REQ-C-013"
+      ]
+    },
+    {
+      "id": "BR-033",
+      "name": "Utility AI artifacts follow candidate data privacy rules",
+      "type": "security",
+      "rule": "Translated CVs, translated transcripts, evidence details, generated artifacts, prompts, and approvals must follow role-based access, audit, and retention controls appropriate to their source data.",
+      "tracesTo": [
+        "REQ-F-093",
+        "REQ-F-101",
+        "REQ-D-010",
+        "REQ-D-011",
+        "REQ-D-012",
+        "REQ-D-013",
+        "REQ-D-014",
+        "REQ-C-010"
       ]
     }
   ],
@@ -939,6 +1154,98 @@
         "REQ-NF-010",
         "REQ-NF-007"
       ]
+    },
+    {
+      "id": "UC-011",
+      "name": "Generate and approve recruitment content",
+      "primaryActor": "HR Recruiter / HR Manager",
+      "businessAcceptanceCriteria": [
+        "HR can generate editable content suggestions from job context",
+        "HR approval is recorded before copy/export/file/channel publish",
+        "Approved content can be manually copied, exported to file, or sent through configured channel connector"
+      ],
+      "tracesTo": [
+        "REQ-F-070",
+        "REQ-F-071",
+        "REQ-F-072",
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-F-075",
+        "REQ-C-007",
+        "REQ-C-011"
+      ]
+    },
+    {
+      "id": "UC-012",
+      "name": "Generate and approve mock recruitment design",
+      "primaryActor": "HR Recruiter / HR Manager",
+      "businessAcceptanceCriteria": [
+        "HR can generate mock creative previews without real image provider integration",
+        "HR can select/review generated mock assets",
+        "HR approval is required before export or use"
+      ],
+      "tracesTo": [
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-082",
+        "REQ-F-083",
+        "REQ-C-008",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "UC-013",
+      "name": "Review CV evidence detail",
+      "primaryActor": "HR Manager",
+      "businessAcceptanceCriteria": [
+        "HR can view original CV, extracted text, and screening/JD-linked evidence detail",
+        "Evidence detail is review support and does not change pipeline state",
+        "Unsupported scanned/OCR-needed documents remain clearly out of scope"
+      ],
+      "tracesTo": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-D-014",
+        "REQ-C-013"
+      ]
+    },
+    {
+      "id": "UC-014",
+      "name": "Translate CV for HR review",
+      "primaryActor": "HR Recruiter / HR Manager",
+      "businessAcceptanceCriteria": [
+        "HR can translate CV content across vi/en/ja",
+        "Translated CV is linked to original CV",
+        "Screening decisions remain traceable to original CV"
+      ],
+      "tracesTo": [
+        "REQ-F-090",
+        "REQ-F-091",
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-C-009",
+        "REQ-C-010"
+      ]
+    },
+    {
+      "id": "UC-015",
+      "name": "Translate interview notes or transcript",
+      "primaryActor": "HR Recruiter / HR Manager",
+      "businessAcceptanceCriteria": [
+        "HR can translate interview notes/transcripts across vi/en/ja",
+        "Translated interview content remains access-controlled",
+        "Original interview record remains authoritative for audit"
+      ],
+      "tracesTo": [
+        "REQ-F-100",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-D-013",
+        "REQ-C-010"
+      ]
     }
   ],
   "businessAcceptanceCriteria": [
@@ -979,6 +1286,48 @@
         "REQ-NF-006",
         "REQ-NF-007",
         "REQ-NF-008"
+      ]
+    },
+    {
+      "id": "BAC-005",
+      "criterion": "Phase 2 utility AI modules are explicitly in prototype scope but do not block Phase 1/MVP pipeline acceptance.",
+      "tracesTo": [
+        "REQ-C-006"
+      ]
+    },
+    {
+      "id": "BAC-006",
+      "criterion": "Generated recruitment content and mock design assets require recorded HR approval before export, publishing, or use.",
+      "tracesTo": [
+        "REQ-F-074",
+        "REQ-F-083",
+        "REQ-C-007",
+        "REQ-C-008",
+        "REQ-C-011"
+      ]
+    },
+    {
+      "id": "BAC-007",
+      "criterion": "CV and interview translations preserve source linkage, access control, and source-of-truth warnings.",
+      "tracesTo": [
+        "REQ-F-092",
+        "REQ-F-093",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-F-101",
+        "REQ-F-102",
+        "REQ-C-009",
+        "REQ-C-010"
+      ]
+    },
+    {
+      "id": "BAC-008",
+      "criterion": "CV evidence detail supports HR review with original/extracted/evidence context and does not introduce OCR or a new automated decision gate.",
+      "tracesTo": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-F-112",
+        "REQ-C-013"
       ]
     }
   ],
@@ -1053,6 +1402,72 @@
       "tracesTo": [
         "REQ-C-002",
         "REQ-F-018"
+      ]
+    },
+    {
+      "id": "RISK-007",
+      "risk": "Unapproved AI-generated recruitment content may be published externally",
+      "impact": "High",
+      "likelihood": "Medium",
+      "mitigation": "Require HR approval, visible AI-generated status, moderation review, and audit trail before copy/export/channel publishing",
+      "tracesTo": [
+        "REQ-F-073",
+        "REQ-F-074",
+        "REQ-C-007",
+        "REQ-C-011"
+      ]
+    },
+    {
+      "id": "RISK-008",
+      "risk": "Mock generated design may be mistaken for approved brand asset",
+      "impact": "Medium",
+      "likelihood": "Medium",
+      "mitigation": "Mark mock assets as AI-assisted draft until HR approval; keep real provider integration out of scope",
+      "tracesTo": [
+        "REQ-F-080",
+        "REQ-F-081",
+        "REQ-F-083",
+        "REQ-C-008",
+        "REQ-C-012"
+      ]
+    },
+    {
+      "id": "RISK-009",
+      "risk": "Translated CV may be misused as source of truth for screening",
+      "impact": "High",
+      "likelihood": "Medium",
+      "mitigation": "Show source-of-truth warning and require screening decisions to trace to original CV",
+      "tracesTo": [
+        "REQ-F-092",
+        "REQ-F-094",
+        "REQ-F-095",
+        "REQ-C-009"
+      ]
+    },
+    {
+      "id": "RISK-010",
+      "risk": "Translated CV or interview transcript may expose confidential candidate data",
+      "impact": "High",
+      "likelihood": "Medium",
+      "mitigation": "Apply RBAC, audit, retention, and source-linked access controls to translated artifacts",
+      "tracesTo": [
+        "REQ-F-093",
+        "REQ-F-101",
+        "REQ-D-012",
+        "REQ-D-013",
+        "REQ-C-010"
+      ]
+    },
+    {
+      "id": "RISK-011",
+      "risk": "Channel integration scope may expand beyond prototype readiness",
+      "impact": "Medium",
+      "likelihood": "Medium",
+      "mitigation": "Treat channel integrations as Phase 2 prototype connectors with explicit channel decision question",
+      "tracesTo": [
+        "REQ-F-073",
+        "REQ-I-007",
+        "REQ-C-011"
       ]
     }
   ],
@@ -1170,6 +1585,47 @@
         "REQ-F-024",
         "REQ-F-025",
         "REQ-I-002"
+      ]
+    },
+    {
+      "id": "BQ-008",
+      "question": "Which specific recruitment publishing channels are included in the Phase 2 prototype connector set?",
+      "owner": "HR Manager / IT Admin",
+      "blocksGate4": false,
+      "tracesTo": [
+        "REQ-F-073",
+        "REQ-I-007",
+        "REQ-C-011"
+      ]
+    },
+    {
+      "id": "BQ-009",
+      "question": "Which export file formats are required for generated recruitment content beyond TXT/DOCX?",
+      "owner": "HR Manager",
+      "blocksGate4": false,
+      "tracesTo": [
+        "REQ-F-072"
+      ]
+    },
+    {
+      "id": "BQ-010",
+      "question": "What mock design asset sizes/templates are required for banners, posters, and social assets?",
+      "owner": "HR Manager",
+      "blocksGate4": false,
+      "tracesTo": [
+        "REQ-F-080",
+        "REQ-I-006"
+      ]
+    },
+    {
+      "id": "BQ-011",
+      "question": "What level of CV evidence detail is required: extracted text only, evidence spans, or reasoning trace?",
+      "owner": "HR Manager",
+      "blocksGate4": false,
+      "tracesTo": [
+        "REQ-F-110",
+        "REQ-F-111",
+        "REQ-D-014"
       ]
     }
   ],

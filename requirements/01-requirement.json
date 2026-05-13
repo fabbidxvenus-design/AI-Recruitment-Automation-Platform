@@ -1,14 +1,15 @@
-﻿{
+{
   "metadata": {
     "productName": "RecruitAI",
     "projectType": "data-ai",
     "language": "bilingual",
-    "version": "2.0",
-    "generatedAt": "2026-05-12T11:14:00Z",
+    "version": "2.1",
+    "generatedAt": "2026-05-13T00:00:00Z",
     "inputSources": [
       {"type": "pasted-text", "path": "", "description": "User input"},
       {"type": "file", "path": "Hệ thống recruitment.jpg", "description": "System diagram"},
-      {"type": "interactive", "path": "", "description": "Q&A + review comments"}
+      {"type": "interactive", "path": "", "description": "Q&A + review comments"},
+      {"type": "scope-decision", "path": "", "description": "Explicit scope decisions for Phase 2 prototype modules"}
     ]
   },
   "context": {
@@ -19,46 +20,54 @@
     "scopeBoundaryKnown": "yes"
   },
   "rawRequirements": [
-    {"id": "RAW-001", "text": "Import batch CV/candidate từ Excel", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-002", "text": "Tạo job/candidate thủ công trong hệ thống", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": ""},
-    {"id": "RAW-003", "text": "Trigger import từ Google Drive khi có file mới", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A] Google Drive watch folder"},
-    {"id": "RAW-004", "text": "Import JD dạng text input trực tiếp hoặc PDF/DOCX file", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-005", "text": "AI phân tích CV so với JD để chọn ứng viên phù hợp (LLM)", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": ""},
-    {"id": "RAW-006", "text": "Output: Matching score (0-100)", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-007", "text": "Output: Summary điểm mạnh/yếu của ứng viên", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-008", "text": "Output: Risk flags (điểm không phù hợp nghiêm trọng)", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-009", "text": "Output: Missing skills list", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-010", "text": "HR Manager approve kết quả sàng lọc trước khi chuyển bước", "source": "User input + Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A] Single approve, hỗ trợ bulk"},
-    {"id": "RAW-011", "text": "CV format: PDF + DOCX only (không cần OCR ảnh)", "source": "Q&A", "stakeholder": "HR Manager", "type": "constraint", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-012", "text": "Tự động thu thập availability ứng viên + người phỏng vấn", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": ""},
-    {"id": "RAW-013", "text": "Hệ thống suggest lịch, HR Manager approve trước khi confirm", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-014", "text": "Lên lịch tự động qua Google Calendar", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-015", "text": "Gửi email tự động qua shared HR mailbox (Gmail API)", "source": "User input + Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-016", "text": "Nhắc lịch phỏng vấn qua email", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "medium", "sourceRefs": [], "notes": ""},
-    {"id": "RAW-017", "text": "Timezone support cho ứng viên/interviewer ở nước ngoài", "source": "Review", "stakeholder": "HR Manager", "type": "need", "confidence": "medium", "sourceRefs": [], "notes": ""},
-    {"id": "RAW-018", "text": "Phỏng vấn async qua text message", "source": "User input + Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-019", "text": "Hybrid: câu hỏi cố định + AI tạo follow-up dựa trên câu trả lời", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-020", "text": "AI đánh giá năng lực ứng viên và tạo report", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": ""},
-    {"id": "RAW-021", "text": "Hỗ trợ đa ngôn ngữ: Việt, Nhật, Anh", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-022", "text": "Import bài test + đáp án để chấm điểm (LLM)", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": ""},
-    {"id": "RAW-023", "text": "Hỗ trợ multiple choice (chấm tự động theo đáp án)", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-024", "text": "Hỗ trợ essay (AI đánh giá theo rubric)", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-025", "text": "Hỗ trợ coding challenge (test cases + code quality)", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-026", "text": "Tạo content tuyển dụng dạng gợi ý (LLM)", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "medium", "sourceRefs": [], "notes": "Standalone"},
-    {"id": "RAW-027", "text": "Thiết kế ảnh tuyển dụng đơn giản (LLM) dạng gợi ý", "source": "User input", "stakeholder": "HR Manager", "type": "idea", "confidence": "medium", "sourceRefs": [], "notes": "Standalone"},
-    {"id": "RAW-028", "text": "Dịch CV tiếng Nhật (LLM)", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": "Việt/Nhật/Anh"},
-    {"id": "RAW-029", "text": "Nhận xét phỏng vấn tiếng Nhật (LLM)", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": ""},
-    {"id": "RAW-030", "text": "Pipeline auto: Tạo nguồn → Sàng lọc → Set lịch → Phỏng vấn → Chấm bài", "source": "User input", "stakeholder": "HR Manager", "type": "goal", "confidence": "high", "sourceRefs": [], "notes": ""},
-    {"id": "RAW-031", "text": "Human approve bắt buộc ở bước sàng lọc và set lịch", "source": "Q&A", "stakeholder": "HR Manager", "type": "constraint", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-032", "text": "Content/Design/Dịch CV là module riêng, không trong pipeline", "source": "User input", "stakeholder": "HR Manager", "type": "constraint", "confidence": "high", "sourceRefs": [], "notes": ""},
-    {"id": "RAW-033", "text": "Approval timeout: chỉ reminder, không auto cancel/skip", "source": "Q&A", "stakeholder": "HR Manager", "type": "constraint", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-034", "text": "MVP = full pipeline chính, Content/Design/Translation sau", "source": "Q&A", "stakeholder": "HR Manager", "type": "constraint", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-035", "text": "Quy mô lớn: > 200 job/tháng", "source": "Q&A", "stakeholder": "HR Manager", "type": "constraint", "confidence": "high", "sourceRefs": [], "notes": "[CLARIFIED via Q&A]"},
-    {"id": "RAW-036", "text": "Hỗ trợ đa ngôn ngữ: Việt, Nhật, Anh", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": ""},
-    {"id": "RAW-037", "text": "Không ràng buộc tech stack", "source": "Q&A", "stakeholder": "IT Admin", "type": "constraint", "confidence": "high", "sourceRefs": [], "notes": ""},
-    {"id": "RAW-038", "text": "Bảo mật dữ liệu ứng viên mức cơ bản", "source": "Q&A", "stakeholder": "HR Manager", "type": "constraint", "confidence": "medium", "sourceRefs": [], "notes": ""},
-    {"id": "RAW-039", "text": "Tích hợp Google Workspace: Calendar, Gmail, Drive", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "sourceRefs": [], "notes": ""},
-    {"id": "RAW-040", "text": "Hệ thống chỉ phục vụ HR nội bộ, không multi-tenant", "source": "Q&A", "stakeholder": "HR Manager", "type": "constraint", "confidence": "high", "sourceRefs": [], "notes": ""}
+    {"id": "RAW-001", "text": "Import batch CV/candidate từ Excel", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-002", "text": "Tạo job/candidate thủ công trong hệ thống", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": ""},
+    {"id": "RAW-003", "text": "Trigger import từ Google Drive khi có file mới", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A] Google Drive watch folder"},
+    {"id": "RAW-004", "text": "Import JD dạng text input trực tiếp hoặc PDF/DOCX file", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-005", "text": "AI phân tích CV so với JD để chọn ứng viên phù hợp (LLM)", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": ""},
+    {"id": "RAW-006", "text": "Output: Matching score (0-100)", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-007", "text": "Output: Summary điểm mạnh/yếu của ứng viên", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-008", "text": "Output: Risk flags (điểm không phù hợp nghiêm trọng)", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-009", "text": "Output: Missing skills list", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-010", "text": "HR Manager approve kết qu��� sàng lọc trước khi chuyển bước", "source": "User input + Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A] Single approve, hỗ trợ bulk"},
+    {"id": "RAW-011", "text": "CV format: PDF + DOCX only (không cần OCR ảnh)", "source": "Q&A", "stakeholder": "HR Manager", "type": "constraint", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-041", "text": "CV Evidence Viewer: Cho phép HR xem CV gốc, text trích xuất, và các evidence spans được link với tiêu chí JD/screening (tích hợp với màn hình sàng lọc/final review — evidence detail là Phase 2 prototype utility)", "source": "Scope decision", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "Phase 2 prototype utility module"},
+    {"id": "RAW-012", "text": "Tự động thu thập availability ứng viên + người phỏng vấn", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": ""},
+    {"id": "RAW-013", "text": "Hệ thống suggest lịch, HR Manager approve trước khi confirm", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-014", "text": "Lên lịch tự động qua Google Calendar", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-015", "text": "Gửi email tự động qua shared HR mailbox (Gmail API)", "source": "User input + Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-016", "text": "Nhắc lịch phỏng vấn qua email", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "medium", "notes": ""},
+    {"id": "RAW-017", "text": "Timezone support cho ứng viên/interviewer ở nước ngoài", "source": "Review", "stakeholder": "HR Manager", "type": "need", "confidence": "medium", "notes": ""},
+    {"id": "RAW-018", "text": "Phỏng vấn async qua text message", "source": "User input + Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-019", "text": "Hybrid: câu hỏi cố định + AI tạo follow-up dựa trên câu trả lời", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-020", "text": "AI đánh giá năng lực ứng viên và tạo report", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": ""},
+    {"id": "RAW-021", "text": "Hỗ trợ đa ngôn ngữ: Việt, Nhật, Anh", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-022", "text": "Import bài test + đáp án để chấm điểm (LLM)", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": ""},
+    {"id": "RAW-023", "text": "Hỗ trợ multiple choice (chấm tự động theo đáp án)", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-024", "text": "Hỗ trợ essay (AI đánh giá theo rubric)", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-025", "text": "Hỗ trợ coding challenge (test cases + code quality)", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-026", "text": "Tạo content tuyển dụng dạng gợi ý (LLM): plain text, copyable, ho trợ export file, ho trợ channel integration", "source": "User input + scope decision", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "Phase 2 prototype standalone"},
+    {"id": "RAW-026a", "text": "Content publishing: Hỗ trợ thủ công copy, export file, và tích hợp channel (LinkedIn, Facebook, job boards...)", "source": "Scope decision", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A] All 3 supported"},
+    {"id": "RAW-026b", "text": "Generated content phải được HR review/approve trước khi publish/export/use", "source": "Scope decision", "stakeholder": "HR Manager", "type": "constraint", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-027", "text": "Thiết kế ảnh tuyển dụng đơn giản (LLM) dạng gợi ý: mock image prototype — không bắt buộc tích hợp image provider thật", "source": "User input + scope decision", "stakeholder": "HR Manager", "type": "idea", "confidence": "high", "notes": "Phase 2 prototype standalone"},
+    {"id": "RAW-027a", "text": "Design scope: mock/preview, creative suggestions, banner, poster, social asset — không cần integration thật", "source": "Scope decision", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A] Not real image generation"},
+    {"id": "RAW-027b", "text": "Generated design phải được HR review/approve trước khi sử dụng", "source": "Scope decision", "stakeholder": "HR Manager", "type": "constraint", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-028", "text": "Dịch CV tiếng Việt / Nhật / Anh (LLM)", "source": "User input + scope decision", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "vi/en/ja"},
+    {"id": "RAW-028a", "text": "CV translation: Hỗ trợ HR review và related workflows, nhưng CV gốc là nguồn chuẩn duy nhất", "source": "Scope decision", "stakeholder": "HR Manager", "type": "constraint", "confidence": "high", "notes": "[CLARIFIED via Q&A] Original CV is source of truth"},
+    {"id": "RAW-028b", "text": "Screening decisions phải có traceback to original CV", "source": "Scope decision", "stakeholder": "HR Manager", "type": "constraint", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-029", "text": "Nhận xét phỏng vấn tiếng Nhật (LLM)", "source": "User input", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "Phase 2 prototype standalone"},
+    {"id": "RAW-029a", "text": "Translated notes: Hỗ trợ HR review và related workflows", "source": "Scope decision", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-030", "text": "Pipeline auto: Tạo nguồn → Sàng lọc → Set lịch → Phỏng vấn → Chấm bài", "source": "User input", "stakeholder": "HR Manager", "type": "goal", "confidence": "high", "notes": ""},
+    {"id": "RAW-031", "text": "Human approve bắt buộc ở bước sàng lọc và set lịch", "source": "Q&A", "stakeholder": "HR Manager", "type": "constraint", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-032", "text": "Content/Design/Translation là các Phase 2 prototype standalone module, KHÔNG nằm trong core pipeline", "source": "Scope decision", "stakeholder": "HR Manager", "type": "constraint", "confidence": "high", "notes": "[CLARIFIED via Q&A] Updated wording"},
+    {"id": "RAW-033", "text": "Approval timeout: chỉ reminder, không auto cancel/skip", "source": "Q&A", "stakeholder": "HR Manager", "type": "constraint", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-034", "text": "MVP = full pipeline chính (Phase 1); Content/Design/Translation là Phase 2 prototype standalone", "source": "Scope decision", "stakeholder": "HR Manager", "type": "constraint", "confidence": "high", "notes": "[CLARIFIED via Q&A] Updated wording"},
+    {"id": "RAW-035", "text": "Quy mô lớn: > 200 job/tháng", "source": "Q&A", "stakeholder": "HR Manager", "type": "constraint", "confidence": "high", "notes": "[CLARIFIED via Q&A]"},
+    {"id": "RAW-036", "text": "Hỗ trợ đa ngôn ngữ: Việt, Nhật, Anh", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": ""},
+    {"id": "RAW-037", "text": "Không ràng buộc tech stack", "source": "Q&A", "stakeholder": "IT Admin", "type": "constraint", "confidence": "high", "notes": ""},
+    {"id": "RAW-038", "text": "Bảo mật dữ liệu ứng viên mức cơ bản", "source": "Q&A", "stakeholder": "HR Manager", "type": "constraint", "confidence": "medium", "notes": ""},
+    {"id": "RAW-039", "text": "Tích hợp Google Workspace: Calendar, Gmail, Drive", "source": "Q&A", "stakeholder": "HR Manager", "type": "need", "confidence": "high", "notes": ""},
+    {"id": "RAW-040", "text": "Hệ thống chỉ phục vụ HR nội bộ, không multi-tenant", "source": "Q&A", "stakeholder": "HR Manager", "type": "constraint", "confidence": "high", "notes": ""}
   ],
   "useCases": [
     {
@@ -81,6 +90,16 @@
       "output": ["Matching score (0-100)", "Summary", "Risk flags", "Missing skills", "Recommendation"],
       "exception": ["File corrupted", "Cannot parse CV", "JD missing criteria"],
       "approval": "HR Manager single approve (bulk supported). Reminder only, no timeout."
+    },
+    {
+      "id": "UC-CVIEW",
+      "name": "CV Evidence Viewer",
+      "actor": ["HR Recruiter", "HR Manager"],
+      "trigger": "Manual request from screening results",
+      "input": ["CV file", "Extracted text", "Evidence spans from screening"],
+      "process": ["Display original CV", "Display extracted text", "Highlight/link evidence spans to JD criteria", "Allow navigation between evidence and criteria"],
+      "output": ["Unified view: original CV + text + linked evidence"],
+      "note": "Phase 2 prototype utility module; co the tich hop voi man hinh sang loc/final review nhung evidence detail khong thuoc MVP scope"
     },
     {
       "id": "UC-SCH",
@@ -115,23 +134,52 @@
     },
     {
       "id": "UC-TRL",
-      "name": "Translation (Standalone)",
+      "name": "CV Translation (Phase 2 Prototype)",
       "actor": ["HR Recruiter"],
       "trigger": "Manual request",
-      "input": ["CV file", "Interview notes", "Target language"],
+      "input": ["CV file", "Target language (vi/en/ja)"],
       "process": ["Extract text", "Translate via LLM", "Format output"],
       "output": ["Translated document (Việt/Nhật/Anh)"],
-      "exception": ["Unsupported language", "File parse error"]
+      "exception": ["Unsupported language", "File parse error"],
+      "note": "Phase 2 prototype; original CV remains source of truth",
+      "policy": "Screening decisions must trace back to original CV"
+    },
+    {
+      "id": "UC-INTL",
+      "name": "Interview Notes Translation (Phase 2 Prototype)",
+      "actor": ["HR Recruiter"],
+      "trigger": "Manual request",
+      "input": ["Notes", "Target language"],
+      "process": ["Extract text", "Translate via LLM", "Format output"],
+      "output": ["Translated notes"],
+      "exception": ["Unsupported language", "Parse error"],
+      "note": "Phase 2 prototype"
     },
     {
       "id": "UC-CNT",
-      "name": "Content Generation (Standalone)",
+      "name": "Content Generation (Phase 2 Prototype)",
       "actor": ["HR Recruiter"],
       "trigger": "Manual request",
-      "input": ["Job info", "Tone/style preferences"],
-      "process": ["Generate content via LLM", "Present as suggestions", "HR edits and publishes"],
-      "output": ["Content suggestions (text)", "Image suggestions"],
-      "exception": ["Content inappropriate", "Generation failed"]
+      "input": ["Job info", "Tone/style preferences", "Output format preference"],
+      "process": ["Generate content via LLM", "Present as suggestions", "HR edits", "HR chooses output method (copy/export/integration)"],
+      "output": ["Content suggestions (text)", "Export options"],
+      "outputOptions": ["Manual copy (plain text)", "Export file", "Channel integration"],
+      "exception": ["Content inappropriate", "Generation failed"],
+      "review": "HR must review/approve before publish/export/use",
+      "note": "Phase 2 prototype standalone utility module"
+    },
+    {
+      "id": "UC-DSG",
+      "name": "Design Generation (Phase 2 Prototype)",
+      "actor": ["HR Recruiter"],
+      "trigger": "Manual request",
+      "input": ["Job info", "Design type preference"],
+      "process": ["Generate design suggestion via LLM (mock image)", "Present as preview", "HR reviews"],
+      "output": ["Mock/preview design suggestions (banner, poster, social asset...)"],
+      "scope": "Mock image prototype, not real image provider integration",
+      "exception": ["Generation failed"],
+      "review": "HR must review/approve before use",
+      "note": "Phase 2 prototype standalone utility module"
     }
   ],
   "candidateStateMachine": {
@@ -158,6 +206,12 @@
       "reminder": "24h",
       "escalation": "none",
       "actions": ["Approve", "Reject", "Suggest alternative"]
+    },
+    "phase2Utilities": {
+      "approver": "HR Manager",
+      "type": "review_required",
+      "scope": "Content/Design/Translation output only",
+      "note": "Not part of core pipeline, separate approval flow"
     }
   },
   "businessRules": {
@@ -187,6 +241,11 @@
       "essay": "ai_grade_with_rubric_0-100",
       "coding": "test_cases_plus_code_quality",
       "passThreshold": "configurable_default_60_percent"
+    },
+    "phase2Prototype": {
+      "content": "HR review required before publish/export/use",
+      "design": "HR review required before use (mock prototype)",
+      "cvTranslation": "Original CV remains source of truth; screening must trace back"
     }
   },
   "nonFunctionalRequirements": {
@@ -229,6 +288,12 @@
       "trigger": "new_file_auto_import",
       "fileTypes": ["xlsx", "pdf", "docx"],
       "auth": "OAuth2"
+    },
+    "contentChannel": {
+      "scope": "placeholder_for_phase_2",
+      "channels": ["LinkedIn", "Facebook", "local_job_boards"],
+      "implementation": "placeholder_UI_only",
+      "note": "Not real integration in Phase 2"
     }
   },
   "fileFormatRequirements": {
@@ -250,7 +315,13 @@
   ],
   "scope": {
     "mvp": ["Candidate Sourcing", "CV Screening", "Interview Scheduling", "AI Interview", "Test Grading", "Approval Workflow", "Google Integration"],
-    "phase2": ["Content Generation", "Design Generation", "CV Translation", "Interview Notes Translation"],
+    "phase2": ["CV Evidence Viewer (prototype utility)", "Content Generation", "Design Generation (mock)", "CV Translation", "Interview Notes Translation"],
+    "phase2Clarifications": {
+      "contentOutput": ["Manual copy", "Export file", "Channel integration"],
+      "designScope": "Mock image prototype",
+      "cvLanguages": ["vi", "en", "ja"],
+      "cvPolicy": "Original CV is source of truth"
+    },
     "outOfScope": ["Multi-tenant/agency", "Video/voice realtime interview", "Third-party ATS/CRM integration", "Mobile native app", "Onboarding workflow"]
   },
   "validation": {
@@ -280,6 +351,7 @@
     {"id": "Q-003", "question": "Coding test: sandbox environment nào?", "owner": "IT Admin", "blocksNextStep": false},
     {"id": "Q-004", "question": "Số lượng câu hỏi phỏng vấn chính xác?", "owner": "HR Manager", "blocksNextStep": false},
     {"id": "Q-005", "question": "Google Drive: folder nào watch? Naming convention?", "owner": "IT Admin", "blocksNextStep": false},
-    {"id": "Q-006", "question": "Email template: ai tạo và quản lý?", "owner": "HR Manager", "blocksNextStep": false}
+    {"id": "Q-006", "question": "Email template: ai tạo và quản lý?", "owner": "HR Manager", "blocksNextStep": false},
+    {"id": "Q-007", "question": "Channel integration: integration nào thực tế trong Phase 2?", "owner": "HR Manager", "blocksNextStep": false}
   ]
 }

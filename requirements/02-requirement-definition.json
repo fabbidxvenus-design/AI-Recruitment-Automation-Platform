@@ -10,10 +10,14 @@
         "type": "existing-artifact",
         "path": "requirements/01-requirement.json",
         "description": "Raw requirements v2.0"
+      },
+      {
+        "type": "review-comment",
+        "description": "Gate 1 decisions: RAW-026/026a/026b content generation, RAW-027/027a/027b design generation, RAW-028/028a CV translation, RAW-029/029a interview translation, RAW-032/034 utility modules Phase 2, RAW-041 CV evidence viewer Phase 2"
       }
     ],
     "reviewStatus": "CONDITIONAL_PASS",
-    "reviewedAt": "2026-05-12T00:00:00Z"
+    "reviewedAt": "2026-05-13T00:00:00Z"
   },
   "summary": {
     "productGoal": "Automate end-to-end recruitment pipeline with AI-powered screening, scheduling, interview, and grading under HR Manager oversight",
@@ -38,7 +42,15 @@
       "Third-party ATS/CRM",
       "Mobile native",
       "Post-hire onboarding",
-      "Content/Design/Translation (Phase 2)"
+      "CV/Interview translation integrated into Phase 1 core pipeline",
+      "CV Evidence Viewer deep-link detail in Phase 1/MVP"
+    ],
+    "phase2Prototype": [
+      "Recruitment content generation (copy/export/file/channel integration with HR approval)",
+      "AI design/mock generation (no real image provider required, HR approval required before use)",
+      "CV translation (vi/en/ja, original CV is source of truth, screening decisions trace to original)",
+      "Interview transcript/notes translation (vi/en/ja, confidential storage)",
+      "CV Evidence Viewer utility (integrated on screening/final review screens, not MVP depth)"
     ]
   },
   "scope": {
@@ -132,9 +144,15 @@
       },
       {
         "id": "SCOPE-OUT-006",
-        "item": "Content/Design/Translation",
-        "reason": "Phase 2",
-        "source": "RAW-032, RAW-034"
+        "item": "CV/Interview translation integrated into Phase 1 core pipeline",
+        "reason": "Utility modules are Phase 2 prototype standalone outside Phase 1/MVP core pipeline",
+        "source": "RAW-028, RAW-029, RAW-032"
+      },
+      {
+        "id": "SCOPE-OUT-007",
+        "item": "CV Evidence Viewer deep-link detail in Phase 1/MVP",
+        "reason": "Evidence viewer is Phase 2 prototype utility; screening/final review screens show summary only in MVP",
+        "source": "RAW-041"
       }
     ]
   },
@@ -724,6 +742,226 @@
         "RAW-031",
         "RAW-033"
       ]
+    },
+    {
+      "id": "REQ-F-070",
+      "statement": "The system shall allow HR to request AI-generated recruitment content based on job info and tone/style preferences",
+      "priority": "P2",
+      "rationale": "Reduce HR time drafting job ads",
+      "acceptanceCriteria": [
+        "Given job info and tone setting, When HR requests content, Then 2-3 suggestions generated within 60s"
+      ],
+      "sourceRawIds": ["RAW-026"]
+    },
+    {
+      "id": "REQ-F-071",
+      "statement": "The system shall present generated content as editable suggestions for HR review",
+      "priority": "P2",
+      "rationale": "Human editing before publishing",
+      "acceptanceCriteria": [
+        "Given content generated, When HR views, Then can edit inline and see changes"
+      ],
+      "sourceRawIds": ["RAW-026"]
+    },
+    {
+      "id": "REQ-F-072",
+      "statement": "The system shall support manual copy and export of approved content to file formats (TXT, DOCX)",
+      "priority": "P2",
+      "rationale": "HR needs portable output",
+      "acceptanceCriteria": [
+        "Given content approved and export requested, Then copy to clipboard or download as file"
+      ],
+      "sourceRawIds": ["RAW-026a"]
+    },
+    {
+      "id": "REQ-F-073",
+      "statement": "The system shall support channel integration for content publishing via connector interfaces",
+      "priority": "P2",
+      "rationale": "Publish content directly to channels",
+      "acceptanceCriteria": [
+        "Given channel connectors configured, When HR publishes approved content, Then sent via connector API with status tracked"
+      ],
+      "sourceRawIds": ["RAW-026a"]
+    },
+    {
+      "id": "REQ-F-074",
+      "statement": "The system shall require HR Manager approval before any content is exported, published, or shared",
+      "priority": "P2",
+      "rationale": "Content governance",
+      "acceptanceCriteria": [
+        "Given content generated, When export/publish attempted, Then approval required; unauthorized distribution blocked"
+      ],
+      "sourceRawIds": ["RAW-026", "RAW-026a"]
+    },
+    {
+      "id": "REQ-F-075",
+      "statement": "The system shall track content version history including HR editor changes and approval decisions",
+      "priority": "P2",
+      "rationale": "Audit and compliance",
+      "acceptanceCriteria": [
+        "Given content modified, When viewed later, Then version history shows all changes and approvers"
+      ],
+      "sourceRawIds": ["RAW-026"]
+    },
+    {
+      "id": "REQ-F-080",
+      "statement": "The system shall generate mock/preview visual assets (banners, posters, social images) based on job content and design brief",
+      "priority": "P2",
+      "rationale": "Visual content for job postings",
+      "acceptanceCriteria": [
+        "Given job info and design parameters, When HR requests design, Then mock/preview image generated"
+      ],
+      "sourceRawIds": ["RAW-027"]
+    },
+    {
+      "id": "REQ-F-081",
+      "statement": "The system shall generate design as mock/preview without requiring real external image generation API",
+      "priority": "P2",
+      "rationale": "No external design API dependency in Phase 2",
+      "acceptanceCriteria": [
+        "Given design request, When processed, Then preview asset produced internally; no third-party design API required"
+      ],
+      "sourceRawIds": ["RAW-027", "RAW-027b"]
+    },
+    {
+      "id": "REQ-F-082",
+      "statement": "The system shall allow HR to review, select, and approve generated designs",
+      "priority": "P2",
+      "rationale": "Human selection before use",
+      "acceptanceCriteria": [
+        "Given multiple design options, When HR reviews, Then can select best match and approve"
+      ],
+      "sourceRawIds": ["RAW-027", "RAW-027a"]
+    },
+    {
+      "id": "REQ-F-083",
+      "statement": "The system shall require HR Manager approval before any design asset is exported or used",
+      "priority": "P2",
+      "rationale": "Design governance",
+      "acceptanceCriteria": [
+        "Given design selected, When export/use requested, Then approval required; unapproved designs cannot be exported"
+      ],
+      "sourceRawIds": ["RAW-027", "RAW-027a"]
+    },
+    {
+      "id": "REQ-F-090",
+      "statement": "The system shall translate CV text between Vietnamese, Japanese, and English",
+      "priority": "P2",
+      "rationale": "Multi-language recruitment support",
+      "acceptanceCriteria": [
+        "Given CV in source language (vi/en/ja), When translation requested, Then full CV translated to target language"
+      ],
+      "sourceRawIds": ["RAW-028"]
+    },
+    {
+      "id": "REQ-F-091",
+      "statement": "The system shall preserve CV structure and formatting during translation",
+      "priority": "P2",
+      "rationale": "Readability of translated CV",
+      "acceptanceCriteria": [
+        "Given CV with sections/formatting, When translated, Then section structure and basic formatting preserved"
+      ],
+      "sourceRawIds": ["RAW-028"]
+    },
+    {
+      "id": "REQ-F-092",
+      "statement": "The system shall mark translated CV as derived work and link to original CV",
+      "priority": "P2",
+      "rationale": "Source-of-truth traceability",
+      "acceptanceCriteria": [
+        "Given translation generated, Then record shows original CV reference and translation metadata"
+      ],
+      "sourceRawIds": ["RAW-028", "RAW-028a"]
+    },
+    {
+      "id": "REQ-F-093",
+      "statement": "The system shall store translated CV with same access controls as original CV",
+      "priority": "P2",
+      "rationale": "Privacy for candidate data",
+      "acceptanceCriteria": [
+        "Given translated CV created, When stored, Then access restricted to authorized roles; not shared externally"
+      ],
+      "sourceRawIds": ["RAW-028", "RAW-028a"]
+    },
+    {
+      "id": "REQ-F-094",
+      "statement": "The system shall support translated CV in screening and final review for HR review; screening decisions must trace to original CV",
+      "priority": "P2",
+      "rationale": "Translation is review aid, not decision basis",
+      "acceptanceCriteria": [
+        "Given screening/review with translated CV, When decision made, Then decision record references original CV"
+      ],
+      "sourceRawIds": ["RAW-028", "RAW-028a", "RAW-041"]
+    },
+    {
+      "id": "REQ-F-095",
+      "statement": "The system shall display a visible notice that translated content is a translation and not the official record",
+      "priority": "P2",
+      "rationale": "Transparency for HR users",
+      "acceptanceCriteria": [
+        "Given translated CV displayed, When viewed, Then clear notice: Translation only -- refer to original CV"
+      ],
+      "sourceRawIds": ["RAW-028", "RAW-028a"]
+    },
+    {
+      "id": "REQ-F-100",
+      "statement": "The system shall translate interview notes and transcripts between Vietnamese, Japanese, and English",
+      "priority": "P2",
+      "rationale": "Multi-language interview support",
+      "acceptanceCriteria": [
+        "Given interview notes in source language, When translation requested, Then notes/transcript translated to target language"
+      ],
+      "sourceRawIds": ["RAW-029"]
+    },
+    {
+      "id": "REQ-F-101",
+      "statement": "The system shall store translated interview content with access controls restricted to HR roles",
+      "priority": "P2",
+      "rationale": "Interview confidentiality",
+      "acceptanceCriteria": [
+        "Given translated notes stored, When accessed, Then only authorized HR roles can view; not shared externally"
+      ],
+      "sourceRawIds": ["RAW-029", "RAW-029a"]
+    },
+    {
+      "id": "REQ-F-102",
+      "statement": "The system shall link translated interview content back to original document",
+      "priority": "P2",
+      "rationale": "Audit trail",
+      "acceptanceCriteria": [
+        "Given translation generated, Then record shows original interview reference and translator model version"
+      ],
+      "sourceRawIds": ["RAW-029", "RAW-029a"]
+    },
+    {
+      "id": "REQ-F-110",
+      "statement": "The system shall display screening and final review screens with evidence summary (scores, flags, missing skills)",
+      "priority": "P2",
+      "rationale": "HR decision support",
+      "acceptanceCriteria": [
+        "Given screening or review screen, When HR views candidate, Then evidence summary visible with key signals"
+      ],
+      "sourceRawIds": ["RAW-041"]
+    },
+    {
+      "id": "REQ-F-111",
+      "statement": "The system shall support navigation to CV evidence detail view (Phase 2) as integrated utility on screening/final review screens",
+      "priority": "P2",
+      "rationale": "Evidence depth on demand",
+      "acceptanceCriteria": [
+        "Given summary on screening/review screen, When HR clicks to drill down, Then CV evidence detail opened as integrated view"
+      ],
+      "sourceRawIds": ["RAW-041", "UC-CVIEW"]
+    },
+    {
+      "id": "REQ-F-112",
+      "statement": "The system shall display CV evidence detail as standalone viewer integrated into existing screens, without blocking primary review workflow",
+      "priority": "P2",
+      "rationale": "Non-disruptive evidence access",
+      "acceptanceCriteria": [
+        "Given HR in review workflow, When opening evidence detail, Then workflow state preserved; detail shown as panel/modal"
+      ],
+      "sourceRawIds": ["RAW-041", "UC-CVIEW"]
     }
   ],
   "nonFunctionalRequirements": [
@@ -956,9 +1194,47 @@
       "businessMeaning": "Sent emails record",
       "owner": "System",
       "sensitivity": "internal",
-      "sourceRawIds": [
-        "RAW-015"
-      ]
+      "sourceRawIds": ["RAW-015"]
+    },
+    {
+      "id": "REQ-D-010",
+      "dataNeed": "Generated recruitment content (draft, approved, rejected)",
+      "businessMeaning": "Content drafts and approval records",
+      "owner": "HR Recruiter, HR Manager",
+      "sensitivity": "internal",
+      "sourceRawIds": ["RAW-026"]
+    },
+    {
+      "id": "REQ-D-011",
+      "dataNeed": "Generated design/mock assets (draft, approved)",
+      "businessMeaning": "Design asset versions and approval records",
+      "owner": "HR Recruiter, HR Manager",
+      "sensitivity": "internal",
+      "sourceRawIds": ["RAW-027"]
+    },
+    {
+      "id": "REQ-D-012",
+      "dataNeed": "Translated CV (source-linked, metadata)",
+      "businessMeaning": "Translated candidate documents",
+      "owner": "HR Recruiter, HR Manager",
+      "sensitivity": "confidential",
+      "sourceRawIds": ["RAW-028", "RAW-028a"]
+    },
+    {
+      "id": "REQ-D-013",
+      "dataNeed": "Translated interview notes/transcripts",
+      "businessMeaning": "Translated interview records",
+      "owner": "HR Recruiter, HR Manager",
+      "sensitivity": "confidential",
+      "sourceRawIds": ["RAW-029", "RAW-029a"]
+    },
+    {
+      "id": "REQ-D-014",
+      "dataNeed": "CV evidence viewer summary data",
+      "businessMeaning": "Screening/final review evidence display",
+      "owner": "HR Manager",
+      "sensitivity": "internal",
+      "sourceRawIds": ["RAW-041"]
     }
   ],
   "integrationRequirements": [
@@ -998,14 +1274,34 @@
     {
       "id": "REQ-I-004",
       "system": "LLM API",
-      "purpose": "CV screening, interview evaluation, test grading; content generation only in Phase 2",
+      "purpose": "CV screening, interview evaluation, test grading",
       "dataExchanged": "Prompts + text -> AI responses",
-      "failureExpectation": "Retry with backoff; queue if rate limited; route sustained failures or schema-invalid outputs to manual review",
-      "sourceRawIds": [
-        "RAW-005",
-        "RAW-020",
-        "RAW-022"
-      ]
+      "failureExpectation": "Retry with backoff; queue if rate limited; route sustained failures to manual review",
+      "sourceRawIds": ["RAW-005", "RAW-020", "RAW-022"]
+    },
+    {
+      "id": "REQ-I-005",
+      "system": "LLM API (Phase 2)",
+      "purpose": "Recruitment content generation, CV translation, interview transcript/notes translation",
+      "dataExchanged": "Prompts + job/CV/interview content -> AI responses",
+      "failureExpectation": "Retry with backoff; queue if rate limited; content gated by HR approval before export/publish",
+      "sourceRawIds": ["RAW-026", "RAW-028", "RAW-029"]
+    },
+    {
+      "id": "REQ-I-006",
+      "system": "AI Design Mock Generator (Phase 2)",
+      "purpose": "Generate preview/mock design assets (banners, posters, social images)",
+      "dataExchanged": "Design brief + job content -> mock/preview image asset",
+      "failureExpectation": "Fail gracefully; no external design API required; output is mock asset for HR approval",
+      "sourceRawIds": ["RAW-027", "RAW-027b"]
+    },
+    {
+      "id": "REQ-I-007",
+      "system": "Content Channel Connectors (Phase 2)",
+      "purpose": "Publish approved content to external channels",
+      "dataExchanged": "Approved content + channel config -> connector API call",
+      "failureExpectation": "Queue if connector unavailable; track publish status; require HR approval before dispatch",
+      "sourceRawIds": ["RAW-026a"]
     }
   ],
   "constraints": [
@@ -1056,13 +1352,59 @@
     },
     {
       "id": "REQ-C-006",
-      "constraint": "Content/Design/Translation = Phase 2",
+      "constraint": "Content/Design/Translation/CV evidence viewer are Phase 2 prototype standalone; excluded from Phase 1/MVP core pipeline",
       "type": "business",
-      "impact": "Not in first release",
-      "sourceRawIds": [
-        "RAW-032",
-        "RAW-034"
-      ]
+      "impact": "Do not implement Phase 2 standalone tools in first release",
+      "sourceRawIds": ["RAW-026", "RAW-026a", "RAW-027", "RAW-027a", "RAW-028", "RAW-029", "RAW-032", "RAW-034", "RAW-041"]
+    },
+    {
+      "id": "REQ-C-007",
+      "constraint": "Generated recruitment content requires HR review and approval before copy/export, file export, or channel publishing",
+      "type": "business",
+      "impact": "Prevent unvetted AI content from being published or distributed",
+      "sourceRawIds": ["RAW-026", "RAW-026a"]
+    },
+    {
+      "id": "REQ-C-008",
+      "constraint": "Generated design/mock assets require HR review and approval before use",
+      "type": "business",
+      "impact": "AI-generated designs are mock/preview; HR approval required before use",
+      "sourceRawIds": ["RAW-027", "RAW-027a"]
+    },
+    {
+      "id": "REQ-C-009",
+      "constraint": "Original CV text is the source of truth; screening decisions must trace back to original CV",
+      "type": "business",
+      "impact": "Translated CV supports review but original CV governs screening decisions",
+      "sourceRawIds": ["RAW-028", "RAW-028a"]
+    },
+    {
+      "id": "REQ-C-010",
+      "constraint": "CV translation and interview transcript/notes translation are Phase 2 prototype; original documents stored securely",
+      "type": "business",
+      "impact": "Privacy and security for translated candidate documents",
+      "sourceRawIds": ["RAW-028", "RAW-028a", "RAW-029", "RAW-029a"]
+    },
+    {
+      "id": "REQ-C-011",
+      "constraint": "Content publishing supports manual copy/export, file export, and channel integration -- all require HR approval",
+      "type": "business",
+      "impact": "Three content export paths; all gated behind HR review",
+      "sourceRawIds": ["RAW-026", "RAW-026a"]
+    },
+    {
+      "id": "REQ-C-012",
+      "constraint": "AI design generation is mock image prototype; does not require real image provider or third-party AI design service",
+      "type": "technical",
+      "impact": "Standalone mock/generation; no external design API dependency in Phase 2",
+      "sourceRawIds": ["RAW-027", "RAW-027b"]
+    },
+    {
+      "id": "REQ-C-013",
+      "constraint": "OCR is excluded unless explicitly in scope; all MVP file processing uses text-native PDF/DOCX only",
+      "type": "technical",
+      "impact": "OCR boundary; Phase 2 may expand file handling scope",
+      "sourceRawIds": ["RAW-011"]
     }
   ],
   "conflicts": [
@@ -1175,9 +1517,28 @@
     {
       "id": "Q-007",
       "question": "Pass threshold: combined or per-stage?",
-      "affectedIds": [
-        "REQ-F-046"
-      ],
+      "affectedIds": ["REQ-F-046"],
+      "owner": "HR Manager",
+      "blocksBusinessDefinition": false
+    },
+    {
+      "id": "Q-008",
+      "question": "Content generation: which specific channels (social media, job boards) will be integrated in Phase 2? Channel list and provider details needed for connector design.",
+      "affectedIds": ["REQ-F-073", "REQ-I-007"],
+      "owner": "HR Manager",
+      "blocksBusinessDefinition": false
+    },
+    {
+      "id": "Q-009",
+      "question": "Design generation: what asset types and size formats will Phase 2 mock generator support (banner, poster, social image dimensions)?",
+      "affectedIds": ["REQ-F-080", "REQ-F-081"],
+      "owner": "HR Manager",
+      "blocksBusinessDefinition": false
+    },
+    {
+      "id": "Q-010",
+      "question": "CV evidence viewer: what level of detail is needed beyond summary in Phase 2 (full CV text, evidence spans, AI reasoning trace)?",
+      "affectedIds": ["REQ-F-110", "REQ-F-111", "REQ-F-112"],
       "owner": "HR Manager",
       "blocksBusinessDefinition": false
     },
