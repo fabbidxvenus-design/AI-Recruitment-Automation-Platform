@@ -39,6 +39,12 @@ const navSectionsMeta: { titleKey: string; items: NavItem[] }[] = [
     ],
   },
   {
+    titleKey: 'nav.tools',
+    items: [
+      { labelKey: 'nav.aiTools', href: '/tools', icon: '🛠️' },
+    ],
+  },
+  {
     titleKey: 'nav.admin',
     items: [
       { labelKey: 'nav.configMonitoring', href: '/admin', icon: '⚙️' },
