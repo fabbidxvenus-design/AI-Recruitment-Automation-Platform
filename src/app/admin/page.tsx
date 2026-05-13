@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Notice } from '@/components/ui/Notice';
@@ -11,6 +12,7 @@ import { mockIntegrationHealth, bqBlockers } from '@/lib/mockData';
 import styles from './admin.module.css';
 
 export default function AdminPage() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'integrations' | 'api' | 'monitoring'>('integrations');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -22,9 +24,9 @@ export default function AdminPage() {
     <div className={styles.adminPage}>
       <div className={styles.header}>
         <div>
-          <h1 className={styles.title}>Admin Configuration & Monitoring</h1>
+          <h1 className={styles.title}>{t('admin.title')}</h1>
           <p className={styles.description}>
-            System configuration, integration health, and operational monitoring
+            {t('admin.description')}
           </p>
         </div>
       </div>
@@ -32,17 +34,17 @@ export default function AdminPage() {
       <div className={styles.blockersSection}>
         {bq002 && (
           <Notice variant="blocker" title={`${bq002.code}: ${bq002.title}`}>
-            {bq002.description} Configure Google OAuth credentials to enable this feature.
+            {bq002.description} {t('admin.integrations.notices.bq002.body')}
           </Notice>
         )}
         {bq003 && (
           <Notice variant="blocker" title={`${bq003.code}: ${bq003.title}`}>
-            {bq003.description} Implement AI matching service for this feature.
+            {bq003.description} {t('admin.integrations.notices.bq003.body')}
           </Notice>
         )}
         {bq005 && (
           <Notice variant="blocker" title={`${bq005.code}: ${bq005.title}`}>
-            {bq005.description} Implement AI test grading service.
+            {bq005.description} {t('admin.integrations.notices.bq005.body')}
           </Notice>
         )}
       </div>
@@ -58,7 +60,7 @@ export default function AdminPage() {
             id={`tab-${tab}`}
             aria-controls={`panel-${tab}`}
           >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            {t(`admin.tabs.${tab}`)}
           </button>
         ))}
       </div>
@@ -68,15 +70,15 @@ export default function AdminPage() {
           {isLoading ? (
             <Card>
               <CardContent>
-                <LoadingState text="Loading integrations..." />
+                <LoadingState text={t('common.loading')} />
               </CardContent>
             </Card>
           ) : (
             <>
           <Card>
             <CardHeader
-              title="Google Workspace Integration"
-              description="Configure OAuth and API connections"
+              title={t('admin.integrations.googleWorkspace.title')}
+              description={t('admin.integrations.googleWorkspace.description')}
             />
             <CardContent>
               <div className={styles.integrationConfig}>
@@ -84,14 +86,14 @@ export default function AdminPage() {
                   <div className={styles.configHeader}>
                     <span className={styles.configIcon}>📊</span>
                     <div className={styles.configInfo}>
-                      <span className={styles.configName}>Google Sheets API</span>
-                      <span className={styles.configDesc}>Candidate data import</span>
+                      <span className={styles.configName}>{t('admin.integrations.googleSheets.name')}</span>
+                      <span className={styles.configDesc}>{t('admin.integrations.googleSheets.desc')}</span>
                     </div>
-                    <StatusBadge variant="success" label="Connected" />
+                    <StatusBadge variant="success" label={t('admin.integrations.googleSheets.connected')} />
                   </div>
                   <div className={styles.configDetails}>
-                    <span>Last sync: 2 hours ago</span>
-                    <Button variant="ghost" size="sm">Configure</Button>
+                    <span>{t('admin.integrations.googleSheets.lastSync', { time: '2 hours ago' })}</span>
+                    <Button variant="ghost" size="sm">{t('admin.integrations.googleSheets.configure')}</Button>
                   </div>
                 </div>
 
@@ -99,17 +101,17 @@ export default function AdminPage() {
                   <div className={styles.configHeader}>
                     <span className={styles.configIcon}>📁</span>
                     <div className={styles.configInfo}>
-                      <span className={styles.configName}>Google Drive</span>
-                      <span className={styles.configDesc}>Auto-import from watch folder</span>
+                      <span className={styles.configName}>{t('admin.integrations.googleDrive.name')}</span>
+                      <span className={styles.configDesc}>{t('admin.integrations.googleDrive.desc')}</span>
                     </div>
-                    <StatusBadge variant="warning" label="Requires Setup" />
+                    <StatusBadge variant="warning" label={t('admin.integrations.googleSheets.requiresSetup')} />
                   </div>
                   <div className={styles.configDetails}>
-                    <span>Watch folder not configured</span>
-                    <Button variant="secondary" size="sm">Configure</Button>
+                    <span>{t('admin.integrations.googleDrive.watchNotConfigured')}</span>
+                    <Button variant="secondary" size="sm">{t('admin.integrations.googleSheets.configure')}</Button>
                   </div>
-                  <Notice variant="warning" title="BQ-005: Drive Watch Blocked">
-                    Automatic file monitoring requires folder path configuration.
+                  <Notice variant="warning" title={t('admin.integrations.notices.bq005.title')}>
+                    {t('admin.integrations.notices.bq005.body')}
                   </Notice>
                 </div>
 
@@ -117,14 +119,14 @@ export default function AdminPage() {
                   <div className={styles.configHeader}>
                     <span className={styles.configIcon}>📅</span>
                     <div className={styles.configInfo}>
-                      <span className={styles.configName}>Google Calendar</span>
-                      <span className={styles.configDesc}>Interview scheduling</span>
+                      <span className={styles.configName}>{t('admin.integrations.googleCalendar.name')}</span>
+                      <span className={styles.configDesc}>{t('admin.integrations.googleCalendar.desc')}</span>
                     </div>
-                    <StatusBadge variant="success" label="Connected" />
+                    <StatusBadge variant="success" label={t('admin.integrations.googleSheets.connected')} />
                   </div>
                   <div className={styles.configDetails}>
-                    <span>Calendar ID: hr-recruitment@company.com</span>
-                    <Button variant="ghost" size="sm">Configure</Button>
+                    <span>{t('admin.integrations.googleCalendar.calendarId', { id: 'hr-recruitment@company.com' })}</span>
+                    <Button variant="ghost" size="sm">{t('admin.integrations.googleSheets.configure')}</Button>
                   </div>
                 </div>
 
@@ -132,14 +134,14 @@ export default function AdminPage() {
                   <div className={styles.configHeader}>
                     <span className={styles.configIcon}>📧</span>
                     <div className={styles.configInfo}>
-                      <span className={styles.configName}>Gmail API</span>
-                      <span className={styles.configDesc}>Candidate communication</span>
+                      <span className={styles.configName}>{t('admin.integrations.gmailApi.name')}</span>
+                      <span className={styles.configDesc}>{t('admin.integrations.gmailApi.desc')}</span>
                     </div>
-                    <StatusBadge variant="success" label="Connected" />
+                    <StatusBadge variant="success" label={t('admin.integrations.googleSheets.connected')} />
                   </div>
                   <div className={styles.configDetails}>
-                    <span>Sending from: hr@company.com</span>
-                    <Button variant="ghost" size="sm">Configure</Button>
+                    <span>{t('admin.integrations.gmailApi.sendingFrom', { email: 'hr@company.com' })}</span>
+                    <Button variant="ghost" size="sm">{t('admin.integrations.googleSheets.configure')}</Button>
                   </div>
                 </div>
 
@@ -147,14 +149,14 @@ export default function AdminPage() {
                   <div className={styles.configHeader}>
                     <span className={styles.configIcon}>🤖</span>
                     <div className={styles.configInfo}>
-                      <span className={styles.configName}>Gemini AI API</span>
-                      <span className={styles.configDesc}>CV screening and evaluation</span>
+                      <span className={styles.configName}>{t('admin.integrations.geminiApi.name')}</span>
+                      <span className={styles.configDesc}>{t('admin.integrations.geminiApi.desc')}</span>
                     </div>
-                    <StatusBadge variant="warning" label="Degraded" />
+                    <StatusBadge variant="warning" label={t('admin.integrations.geminiApi.degraded')} />
                   </div>
                   <div className={styles.configDetails}>
-                    <span>3 errors in last hour</span>
-                    <Button variant="ghost" size="sm">View Logs</Button>
+                    <span>{t('admin.integrations.geminiApi.errors', { count: 3 })}</span>
+                    <Button variant="ghost" size="sm">{t('admin.integrations.geminiApi.viewLogs')}</Button>
                   </div>
                 </div>
               </div>
@@ -163,8 +165,8 @@ export default function AdminPage() {
 
           <Card>
             <CardHeader
-              title="Integration Health Status"
-              description="Real-time status of all connected services"
+              title={t('admin.integrations.healthStatus.title')}
+              description={t('admin.integrations.healthStatus.description')}
             />
             <CardContent>
               <div className={styles.healthGrid}>
@@ -177,11 +179,11 @@ export default function AdminPage() {
                     <div className={styles.healthMeta}>
                       <span className={styles.healthEndpoint}>{integration.endpoint}</span>
                       <span className={styles.healthSync}>
-                        Last sync: {new Date(integration.lastSync).toLocaleTimeString()}
+                        {t('admin.integrations.healthStatus.lastSync', { time: new Date(integration.lastSync).toLocaleTimeString() })}
                       </span>
                       {integration.errorCount > 0 && (
                         <span className={styles.healthErrors}>
-                          {integration.errorCount} errors
+                          {t('admin.integrations.healthStatus.errors', { count: integration.errorCount })}
                         </span>
                       )}
                     </div>
@@ -199,30 +201,30 @@ export default function AdminPage() {
         <div className={styles.content} role="tabpanel" id="panel-api" aria-labelledby="tab-api">
           <Card>
             <CardHeader
-              title="API Configuration"
-              description="LLM and external service API settings"
+              title={t('admin.api.title')}
+              description={t('admin.api.description')}
             />
             <CardContent>
               <div className={styles.apiSettings}>
                 <div className={styles.apiItem}>
                   <div className={styles.apiHeader}>
-                    <h3>Gemini API</h3>
-                    <StatusBadge variant="success" label="Active" />
+                    <h3>{t('admin.api.geminiApi')}</h3>
+                    <StatusBadge variant="success" label={t('admin.api.active')} />
                   </div>
                   <div className={styles.apiForm}>
                     <div className={styles.formGroup}>
-                      <label>API Key</label>
+                      <label>{t('admin.api.apiKey')}</label>
                       <input type="password" value="••••••••••••••••" readOnly className={styles.input} />
                     </div>
                     <div className={styles.formGroup}>
-                      <label>Model Version</label>
+                      <label>{t('admin.api.modelVersion')}</label>
                       <select className={styles.select}>
                         <option>gemini-pro-1.5</option>
                         <option>gemini-pro</option>
                       </select>
                     </div>
                     <div className={styles.formGroup}>
-                      <label>Max Tokens per Request</label>
+                      <label>{t('admin.api.maxTokens')}</label>
                       <input type="number" value="8192" className={styles.input} />
                     </div>
                   </div>
@@ -230,19 +232,19 @@ export default function AdminPage() {
 
                 <div className={styles.apiItem}>
                   <div className={styles.apiHeader}>
-                    <h3>Usage Limits</h3>
+                    <h3>{t('admin.api.usageLimits.title')}</h3>
                   </div>
                   <div className={styles.usageLimits}>
                     <div className={styles.usageItem}>
-                      <span className={styles.usageLabel}>Monthly Token Budget</span>
+                      <span className={styles.usageLabel}>{t('admin.api.usageLimits.monthlyBudget')}</span>
                       <ProgressBar value={45} variant="info" showValue label="1.8M / 4M tokens" />
                     </div>
                     <div className={styles.usageItem}>
-                      <span className={styles.usageLabel}>API Cost This Month</span>
+                      <span className={styles.usageLabel}>{t('admin.api.usageLimits.monthlyCost')}</span>
                       <ProgressBar value={62} variant="warning" showValue label="$248 / $400 budget" />
                     </div>
                     <div className={styles.usageItem}>
-                      <span className={styles.usageLabel}>Daily Request Limit</span>
+                      <span className={styles.usageLabel}>{t('admin.api.usageLimits.dailyLimit')}</span>
                       <ProgressBar value={28} variant="success" showValue label="840 / 3,000 requests" />
                     </div>
                   </div>
@@ -253,27 +255,27 @@ export default function AdminPage() {
 
           <Card>
             <CardHeader
-              title="Data Retention Policy"
-              description="Configure data storage and deletion rules"
+              title={t('admin.api.dataRetention.title')}
+              description={t('admin.api.dataRetention.description')}
             />
             <CardContent>
               <div className={styles.retentionSettings}>
                 <div className={styles.retentionItem}>
                   <div className={styles.retentionInfo}>
-                    <span className={styles.retentionLabel}>CV Storage</span>
-                    <span className={styles.retentionDesc}>Duration: 90 days after decision</span>
+                    <span className={styles.retentionLabel}>{t('admin.api.dataRetention.cvStorage')}</span>
+                    <span className={styles.retentionDesc}>{t('admin.api.dataRetention.cvStorageDuration', { days: 90 })}</span>
                   </div>
-                  <Button variant="ghost" size="sm">Edit Policy</Button>
+                  <Button variant="ghost" size="sm">{t('admin.api.dataRetention.editPolicy')}</Button>
                 </div>
                 <div className={styles.retentionItem}>
                   <div className={styles.retentionInfo}>
-                    <span className={styles.retentionLabel}>Interview Transcripts</span>
-                    <span className={styles.retentionDesc}>Duration: 1 year</span>
+                    <span className={styles.retentionLabel}>{t('admin.api.dataRetention.interviewTranscripts')}</span>
+                    <span className={styles.retentionDesc}>{t('admin.api.dataRetention.interviewDuration', { years: 1 })}</span>
                   </div>
-                  <Button variant="ghost" size="sm">Edit Policy</Button>
+                  <Button variant="ghost" size="sm">{t('admin.api.dataRetention.editPolicy')}</Button>
                 </div>
-                <Notice variant="warning" title="BQ-003: Retention Policy Blocked">
-                  Automatic data deletion requires retention policy confirmation from HR/IT Admin.
+                <Notice variant="warning" title={t('admin.api.dataRetention.notice.title')}>
+                  {t('admin.api.dataRetention.notice.body')}
                 </Notice>
               </div>
             </CardContent>
@@ -290,7 +292,7 @@ export default function AdminPage() {
                   <span className={styles.statIcon}>📊</span>
                   <div className={styles.statInfo}>
                     <span className={styles.statValue}>99.2%</span>
-                    <span className={styles.statLabel}>System Uptime</span>
+                    <span className={styles.statLabel}>{t('admin.monitoring.stats.uptime')}</span>
                   </div>
                 </div>
               </CardContent>
@@ -301,7 +303,7 @@ export default function AdminPage() {
                   <span className={styles.statIcon}>⚡</span>
                   <div className={styles.statInfo}>
                     <span className={styles.statValue}>142ms</span>
-                    <span className={styles.statLabel}>Avg API Response</span>
+                    <span className={styles.statLabel}>{t('admin.monitoring.stats.avgResponse')}</span>
                   </div>
                 </div>
               </CardContent>
@@ -312,7 +314,7 @@ export default function AdminPage() {
                   <span className={styles.statIcon}>🤖</span>
                   <div className={styles.statInfo}>
                     <span className={styles.statValue}>1,247</span>
-                    <span className={styles.statLabel}>AI Calls Today</span>
+                    <span className={styles.statLabel}>{t('admin.monitoring.stats.aiCalls')}</span>
                   </div>
                 </div>
               </CardContent>
@@ -323,7 +325,7 @@ export default function AdminPage() {
                   <span className={styles.statIcon}>💰</span>
                   <div className={styles.statInfo}>
                     <span className={styles.statValue}>$248</span>
-                    <span className={styles.statLabel}>API Cost MTD</span>
+                    <span className={styles.statLabel}>{t('admin.monitoring.stats.apiCostMtd')}</span>
                   </div>
                 </div>
               </CardContent>
@@ -332,43 +334,43 @@ export default function AdminPage() {
 
           <Card>
             <CardHeader
-              title="Queue & Processing Status"
-              description="Background job queue monitoring"
+              title={t('admin.monitoring.queue.title')}
+              description={t('admin.monitoring.queue.description')}
             />
             <CardContent>
               <div className={styles.queueList}>
                 <div className={styles.queueItem}>
                   <div className={styles.queueInfo}>
-                    <span className={styles.queueName}>CV Screening Queue</span>
-                    <span className={styles.queueStatus}>Processing normally</span>
+                    <span className={styles.queueName}>{t('admin.monitoring.queue.cvScreening')}</span>
+                    <span className={styles.queueStatus}>{t('admin.monitoring.queue.processingNormally')}</span>
                   </div>
                   <div className={styles.queueStats}>
-                    <span>12 pending</span>
-                    <span>0 failed</span>
+                    <span>{t('admin.monitoring.queue.pending', { count: 12 })}</span>
+                    <span>{t('admin.monitoring.queue.failed', { count: 0 })}</span>
                   </div>
                 </div>
                 <div className={styles.queueItem}>
                   <div className={styles.queueInfo}>
-                    <span className={styles.queueName}>Email Queue</span>
-                    <span className={styles.queueStatus}>Processing normally</span>
+                    <span className={styles.queueName}>{t('admin.monitoring.queue.emailQueue')}</span>
+                    <span className={styles.queueStatus}>{t('admin.monitoring.queue.processingNormally')}</span>
                   </div>
                   <div className={styles.queueStats}>
-                    <span>3 pending</span>
-                    <span>0 failed</span>
+                    <span>{t('admin.monitoring.queue.pending', { count: 3 })}</span>
+                    <span>{t('admin.monitoring.queue.failed', { count: 0 })}</span>
                   </div>
                 </div>
                 <div className={styles.queueItem}>
                   <div className={styles.queueInfo}>
-                    <span className={styles.queueName}>AI Interview Processing</span>
+                    <span className={styles.queueName}>{t('admin.monitoring.queue.aiProcessing')}</span>
                     <span className={styles.queueStatus}>1 stalled job detected</span>
                   </div>
                   <div className={styles.queueStats}>
-                    <span>5 pending</span>
-                    <span className={styles.queueError}>1 stalled</span>
+                    <span>{t('admin.monitoring.queue.pending', { count: 5 })}</span>
+                    <span className={styles.queueError}>1 {t('admin.monitoring.queue.stalled')}</span>
                   </div>
                 </div>
-                <Notice variant="warning" title="Queue Stall Detected">
-                  One AI interview processing job has been stalled for over 2 hours. Manual intervention may be required.
+                <Notice variant="warning" title={t('admin.monitoring.queueStall.title')}>
+                  {t('admin.monitoring.queueStall.body')}
                 </Notice>
               </div>
             </CardContent>
@@ -376,8 +378,8 @@ export default function AdminPage() {
 
           <Card>
             <CardHeader
-              title="Recent System Events"
-              description="Audit log for system actions"
+              title={t('admin.monitoring.events.title')}
+              description={t('admin.monitoring.events.description')}
             />
             <CardContent>
               <div className={styles.eventList}>
@@ -389,7 +391,7 @@ export default function AdminPage() {
                 <div className={styles.eventItem}>
                   <span className={styles.eventTime}>May 13, 2024 11:38 AM</span>
                   <span className={styles.eventIcon}>📧</span>
-                  <span className={styles.eventText}>Interview reminder sent to Sarah Chen</span>
+                  <span className={styles.eventText}>{t('admin.monitoring.events.interviewReminderSent', { name: 'Sarah Chen' })}</span>
                 </div>
                 <div className={styles.eventItem}>
                   <span className={styles.eventTime}>May 13, 2024 11:30 AM</span>

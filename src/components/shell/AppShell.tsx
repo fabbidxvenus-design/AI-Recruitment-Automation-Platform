@@ -2,58 +2,64 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/i18n';
 import styles from './AppShell.module.css';
 
 interface NavItem {
-  label: string;
+  labelKey: string;
   href: string;
   icon?: string;
 }
 
-const navSections: { title: string; items: NavItem[] }[] = [
+const navSectionsMeta: { titleKey: string; items: NavItem[] }[] = [
   {
-    title: 'Pipeline',
+    titleKey: 'nav.pipeline',
+    items: [{ labelKey: 'nav.dashboard', href: '/dashboard', icon: '📊' }],
+  },
+  {
+    titleKey: 'nav.candidates',
     items: [
-      { label: 'Recruitment Dashboard', href: '/dashboard', icon: '📊' },
+      { labelKey: 'nav.sourcingImport', href: '/candidates/import', icon: '📥' },
+      { labelKey: 'nav.screeningReview', href: '/screening/review', icon: '✅' },
     ],
   },
   {
-    title: 'Candidates',
+    titleKey: 'nav.interviews',
     items: [
-      { label: 'Sourcing & Import', href: '/candidates/import', icon: '📥' },
-      { label: 'Screening Review', href: '/screening/review', icon: '✅' },
+      { labelKey: 'nav.scheduleApproval', href: '/interviews/schedule-approval', icon: '📅' },
+      { labelKey: 'nav.aiWorkspace', href: '/portal/interview/demo-token', icon: '🤖' },
     ],
   },
   {
-    title: 'Interviews',
+    titleKey: 'nav.assessment',
     items: [
-      { label: 'Schedule Approval', href: '/interviews/schedule-approval', icon: '📅' },
-      { label: 'AI Interview Workspace', href: '/portal/interview/demo-token', icon: '🤖' },
+      { labelKey: 'nav.testGrading', href: '/tests/grading', icon: '📝' },
+      { labelKey: 'nav.finalReview', href: '/final-review', icon: '🎯' },
     ],
   },
   {
-    title: 'Assessment',
+    titleKey: 'nav.admin',
     items: [
-      { label: 'Test Grading', href: '/tests/grading', icon: '📝' },
-      { label: 'Final Review', href: '/final-review', icon: '🎯' },
-    ],
-  },
-  {
-    title: 'Admin',
-    items: [
-      { label: 'Configuration & Monitoring', href: '/admin', icon: '⚙️' },
-      { label: 'Error Remediation', href: '/errors/ERR-2024-0892', icon: '🔧' },
+      { labelKey: 'nav.configMonitoring', href: '/admin', icon: '⚙️' },
+      { labelKey: 'nav.errorRemediation', href: '/errors/ERR-2024-0892', icon: '🔧' },
     ],
   },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { t } = useTranslation();
+  const { locale, setLocale } = useLanguage();
+
+  const handleLanguageSwitch = () => {
+    setLocale(locale === 'vi' ? 'en' : 'vi');
+  };
 
   return (
     <div className={styles.shell}>
       <a href="#main-content" className="skip-link">
-        Skip to main content
+        {t('sidebar.skipLink')}
       </a>
 
       {/* Sidebar */}
@@ -61,14 +67,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className={styles.sidebarHeader}>
           <div className={styles.logo}>
             <span className={styles.logoIcon}>R</span>
-            <span className={styles.logoText}>RecruitAI</span>
+            <span className={styles.logoText}>{t('app.title')}</span>
           </div>
         </div>
 
         <nav className={styles.nav}>
-          {navSections.map((section) => (
-            <div key={section.title} className={styles.navSection}>
-              <h2 className={styles.navSectionTitle}>{section.title}</h2>
+          {navSectionsMeta.map((section) => (
+            <div key={section.titleKey} className={styles.navSection}>
+              <h2 className={styles.navSectionTitle}>{t(section.titleKey)}</h2>
               <ul className={styles.navList}>
                 {section.items.map((item) => {
                   const isActive = pathname === item.href;
@@ -80,7 +86,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         aria-current={isActive ? 'page' : undefined}
                       >
                         {item.icon && <span className={styles.navIcon}>{item.icon}</span>}
-                        <span className={styles.navLabel}>{item.label}</span>
+                        <span className={styles.navLabel}>{t(item.labelKey)}</span>
                       </Link>
                     </li>
                   );
@@ -94,8 +100,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className={styles.userInfo}>
             <div className={styles.userAvatar}>HR</div>
             <div className={styles.userDetails}>
-              <span className={styles.userName}>HR Manager</span>
-              <span className={styles.userRole}>Administrator</span>
+              <span className={styles.userName}>{t('sidebar.hrManager')}</span>
+              <span className={styles.userRole}>{t('sidebar.administrator')}</span>
             </div>
           </div>
         </div>
@@ -105,13 +111,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <main id="main-content" className={styles.main}>
         <header className={styles.topbar}>
           <div className={styles.topbarTitle}>
-            <span className={styles.topbarBreadcrumb}>RecruitAI</span>
+            <span className={styles.topbarBreadcrumb}>{t('app.title')}</span>
           </div>
           <div className={styles.topbarActions}>
-            <button className={styles.topbarButton} type="button" aria-label="Notifications">
+            <button
+              className={styles.langSwitch}
+              type="button"
+              onClick={handleLanguageSwitch}
+              aria-label={t('language.switchTo')}
+              title={t('language.switchTo')}
+            >
+              {locale === 'vi' ? 'EN' : 'VI'}
+            </button>
+            <button className={styles.topbarButton} type="button" aria-label={t('topbar.notifications')}>
               <span>🔔</span>
             </button>
-            <button className={styles.topbarButton} type="button" aria-label="Settings">
+            <button className={styles.topbarButton} type="button" aria-label={t('topbar.settings')}>
               <span>⚙️</span>
             </button>
           </div>

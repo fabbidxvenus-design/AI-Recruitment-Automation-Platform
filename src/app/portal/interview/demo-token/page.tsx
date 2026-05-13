@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Notice } from '@/components/ui/Notice';
@@ -8,7 +9,10 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { mockInterviewSessions } from '@/lib/mockData';
 import styles from './interview.module.css';
 
+export const dynamic = 'force-dynamic';
+
 export default function InterviewPage() {
+  const { t } = useTranslation();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [showConsent, setShowConsent] = useState(true);
@@ -78,11 +82,11 @@ export default function InterviewPage() {
           <CardContent>
             <div className={styles.expiredContent}>
               <span aria-hidden="true" className={styles.expiredIcon}>⏰</span>
-              <h2>Interview Link Expired</h2>
-              <p>The deadline for this interview has passed. Please contact the HR team if you wish to continue.</p>
+              <h2>{t('portal.interview.expired.title')}</h2>
+              <p>{t('portal.interview.expired.message')}</p>
               <div className={styles.expiredActions}>
-                <Button variant="secondary">Contact HR</Button>
-                <Button variant="ghost">Withdraw Application</Button>
+                <Button variant="secondary">{t('portal.interview.expired.contactHR')}</Button>
+                <Button variant="ghost">{t('portal.interview.expired.withdraw')}</Button>
               </div>
             </div>
           </CardContent>
@@ -96,55 +100,47 @@ export default function InterviewPage() {
       <div className={styles.interviewPage}>
         <div className={styles.consentContainer}>
           <Card>
-            <CardHeader title="AI Async Interview" description="Please review the instructions before starting" />
+            <CardHeader title={t('portal.interview.title')} description={t('portal.interview.description')} />
             <CardContent>
               <div className={styles.consentContent}>
                 <div className={styles.consentSection}>
-                  <h3>About This Interview</h3>
-                  <p>
-                    This is an asynchronous text-based interview. You will answer a series of questions
-                    related to the position. Each question has a suggested time limit, but you have up to
-                    the deadline to complete all responses.
-                  </p>
+                  <h3>{t('portal.interview.aboutThisInterview')}</h3>
+                  <p>{t('portal.interview.aboutThisInterview')}</p>
                 </div>
 
                 <div className={styles.consentSection}>
-                  <h3>Interview Format</h3>
+                  <h3>{t('portal.interview.interviewFormat')}</h3>
                   <ul>
-                    <li>Fixed questions presented sequentially</li>
-                    <li>AI-generated follow-up questions based on your responses</li>
-                    <li>Progress is automatically saved</li>
-                    <li>You can return to complete within the deadline</li>
+                    <li>{t('portal.interview.interviewFormatItems.item1')}</li>
+                    <li>{t('portal.interview.interviewFormatItems.item2')}</li>
+                    <li>{t('portal.interview.interviewFormatItems.item3')}</li>
+                    <li>{t('portal.interview.interviewFormatItems.item4')}</li>
                   </ul>
                 </div>
 
                 <div className={styles.consentSection}>
-                  <h3>Privacy Notice</h3>
-                  <p>
-                    Your responses will be analyzed using AI to generate an evaluation report.
-                    Data is processed securely and only accessible to authorized HR personnel.
-                    Personal information is handled according to our privacy policy.
-                  </p>
+                  <h3>{t('portal.interview.privacyNotice')}</h3>
+                  <p>{t('portal.interview.privacyText')}</p>
                 </div>
 
                 <div className={styles.consentSection}>
-                  <h3>Deadline</h3>
+                  <h3>{t('portal.interview.deadline')}</h3>
                   <div className={styles.deadlineDisplay}>
                     <span className={styles.deadlineIcon} aria-hidden="true">⏱️</span>
-                    <span className={styles.deadlineValue}>{timeRemaining} remaining</span>
-                    <span className={styles.deadlineDate}>Until May 15, 2024 at 11:59 PM</span>
+                    <span className={styles.deadlineValue}>{t('portal.interview.timeRemaining', { time: timeRemaining })}</span>
+                    <span className={styles.deadlineDate}>{t('portal.interview.deadlineDate', { date: 'May 15, 2024 at 11:59 PM' })}</span>
                   </div>
                 </div>
 
                 <Notice variant="info" title="Reminder">
-                  A reminder email will be sent if you have not completed the interview within 48 hours.
+                  {t('portal.interview.reminderEmail')}
                 </Notice>
               </div>
             </CardContent>
             <div className={styles.consentActions}>
-              <Button variant="ghost">Save & Exit</Button>
+              <Button variant="ghost">{t('portal.interview.actions.saveExit')}</Button>
               <Button variant="primary" onClick={handleStartInterview}>
-                Start Interview
+                {t('portal.interview.actions.startInterview')}
               </Button>
             </div>
           </Card>
@@ -157,8 +153,8 @@ export default function InterviewPage() {
     <div className={styles.interviewPage}>
       <div className={styles.interviewHeader}>
         <div className={styles.headerLeft}>
-          <h1 className={styles.title}>AI Async Interview</h1>
-          <p className={styles.candidateName}>Candidate: {session.candidateName}</p>
+          <h1 className={styles.title}>{t('portal.interview.inProgress.title')}</h1>
+          <p className={styles.candidateName}>{t('portal.interview.inProgress.candidate')} {session.candidateName}</p>
         </div>
         <div className={styles.headerRight}>
           <div
@@ -168,22 +164,22 @@ export default function InterviewPage() {
             aria-label={`Time remaining: ${timeRemaining}`}
           >
             <span className={styles.deadlineIcon} aria-hidden="true">⏱️</span>
-            <span>{timeRemaining} remaining</span>
+            <span>{t('portal.interview.inProgress.timeRemaining', { time: timeRemaining })}</span>
           </div>
           <Button variant="ghost" size="sm" onClick={handleSaveProgress}>
-            Save Progress
+            {t('portal.interview.inProgress.saveProgress')}
           </Button>
         </div>
       </div>
 
       <div className={styles.progressSection}>
         <div className={styles.progressLabel}>
-          <span>Progress</span>
+          <span>{t('portal.interview.progress.label')}</span>
           <span>{Math.round(progress)}%</span>
         </div>
         <ProgressBar value={progress} showValue={false} variant="info" />
         <span className={styles.questionCount}>
-          Question {currentQuestionIndex + 1} of {session.questions.length}
+          {t('portal.interview.progress.questionCount', { current: currentQuestionIndex + 1, total: session.questions.length })}
         </span>
       </div>
 
@@ -204,18 +200,18 @@ export default function InterviewPage() {
             {currentQuestion.text}
           </h2>
           <div className={styles.questionMeta}>
-            <span>Suggested time: {currentQuestion.expectedDuration} minutes</span>
+            <span>{t('portal.interview.question.suggestedTime', { minutes: currentQuestion.expectedDuration })}</span>
           </div>
 
           <div className={styles.answerSection}>
             <label htmlFor="answer" className={styles.answerLabel}>
-              Your Answer
+              {t('portal.interview.answer.label')}
             </label>
             <textarea
               id="answer"
               className={styles.answerInput}
               rows={6}
-              placeholder="Type your answer here..."
+              placeholder={t('portal.interview.answer.placeholder')}
               value={answers[currentQuestion.id] || ''}
               onChange={(e) => handleAnswerChange(currentQuestion.id, e.target.value)}
               aria-describedby="answer-hint"
@@ -232,7 +228,7 @@ export default function InterviewPage() {
 
           {answers[currentQuestion.id] && session.responses.find(r => r.questionId === currentQuestion.id) && (
             <div className={styles.previousResponses}>
-              <h4>Previous Responses</h4>
+              <h4>{t('portal.interview.previousResponses')}</h4>
               {session.responses.slice(0, currentQuestionIndex).map((response, index) => {
                 const question = session.questions[index];
                 return (
@@ -241,7 +237,7 @@ export default function InterviewPage() {
                     <p className={styles.responseAnswer}>{response.answer}</p>
                     {response.aiFeedback && (
                       <div className={styles.aiFeedback}>
-                        <span className={styles.feedbackLabel}>AI Feedback:</span>
+                        <span className={styles.feedbackLabel}>{t('portal.interview.aiFeedback')}</span>
                         {response.aiFeedback}
                       </div>
                     )}
@@ -259,7 +255,7 @@ export default function InterviewPage() {
             disabled={currentQuestionIndex === 0}
             aria-label="Go to previous question"
           >
-            Previous
+            {t('portal.interview.navigation.previous')}
           </Button>
           <div className={styles.questionDots} role="navigation" aria-label="Question navigation">
             {session.questions.map((_, index) => (
@@ -277,7 +273,7 @@ export default function InterviewPage() {
               disabled={!answers[currentQuestion.id]}
               aria-label="Go to next question"
             >
-              Next Question
+              {t('portal.interview.navigation.next')}
             </Button>
           ) : (
             <Button
@@ -286,18 +282,18 @@ export default function InterviewPage() {
               disabled={!answers[currentQuestion.id] || Object.keys(answers).length < session.questions.length}
               aria-label="Submit interview"
             >
-              Submit Interview
+              {t('portal.interview.navigation.submit')}
             </Button>
           )}
         </div>
       </Card>
 
       <div className={styles.tips}>
-        <h4>Tips for Success</h4>
+        <h4>{t('portal.interview.tips.title')}</h4>
         <ul>
-          <li>Be specific and provide examples when possible</li>
-          <li>Take your time to structure your thoughts</li>
-          <li>Your progress is automatically saved</li>
+          <li>{t('portal.interview.tips.tip1')}</li>
+          <li>{t('portal.interview.tips.tip2')}</li>
+          <li>{t('portal.interview.tips.tip3')}</li>
         </ul>
       </div>
     </div>

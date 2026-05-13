@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { MetricCard } from '@/components/ui/MetricCard';
@@ -21,6 +22,7 @@ import {
 import styles from './dashboard.module.css';
 
 export default function DashboardPage() {
+  const { t } = useTranslation();
   const pendingApprovals = mockScreeningEvaluations.filter(e => e.status === 'pending');
   const pendingSchedules = mockScheduleSlots.filter(s => s.status === 'pending');
   const openErrors = mockErrorRemediationItems.filter(e => e.status !== 'resolved');
@@ -28,7 +30,7 @@ export default function DashboardPage() {
   const approvalColumns = [
     {
       key: 'candidate',
-      header: 'Candidate',
+      header: t('dashboard.columns.candidate'),
       render: (row: typeof mockScreeningEvaluations[0]) => (
         <div className={styles.candidateCell}>
           <span className={styles.candidateName}>{row.candidateName}</span>
@@ -38,7 +40,7 @@ export default function DashboardPage() {
     },
     {
       key: 'score',
-      header: 'AI Score',
+      header: t('dashboard.columns.aiScore'),
       render: (row: typeof mockScreeningEvaluations[0]) => (
         <div className={styles.scoreCell}>
           <span className={styles.scoreValue}>{row.overallScore}</span>
@@ -48,11 +50,11 @@ export default function DashboardPage() {
     },
     {
       key: 'decision',
-      header: 'Recommendation',
+      header: t('dashboard.columns.recommendation'),
       render: (row: typeof mockScreeningEvaluations[0]) => (
         <StatusBadge
           variant={row.decision === 'approve' ? 'success' : row.decision === 'reject' ? 'danger' : 'warning'}
-          label={row.decision === 'approve' ? 'Approve' : row.decision === 'reject' ? 'Reject' : 'Review'}
+          label={t(`common.decision.${row.decision}`)}
         />
       ),
     },
@@ -60,7 +62,7 @@ export default function DashboardPage() {
       key: 'actions',
       header: '',
       render: () => (
-        <Link href="/screening/review" className={styles.actionLink}>Review</Link>
+        <Link href="/screening/review" className={styles.actionLink}>{t('dashboard.approvals.review')}</Link>
       ),
     },
   ];
@@ -68,7 +70,7 @@ export default function DashboardPage() {
   const errorColumns = [
     {
       key: 'code',
-      header: 'Error Code',
+      header: t('dashboard.columns.errorCode'),
       render: (row: typeof mockErrorRemediationItems[0]) => (
         <Link href={`/errors/${row.errorCode}`} className={styles.errorCodeLink}>
           {row.errorCode}
@@ -77,33 +79,33 @@ export default function DashboardPage() {
     },
     {
       key: 'title',
-      header: 'Title',
+      header: t('dashboard.columns.title'),
       render: (row: typeof mockErrorRemediationItems[0]) => row.title,
     },
     {
       key: 'severity',
-      header: 'Severity',
+      header: t('dashboard.columns.severity'),
       render: (row: typeof mockErrorRemediationItems[0]) => (
         <StatusBadge
           variant={row.severity === 'critical' ? 'danger' : row.severity === 'high' ? 'warning' : 'info'}
-          label={row.severity.charAt(0).toUpperCase() + row.severity.slice(1)}
+          label={t(`common.severity.${row.severity}`)}
         />
       ),
     },
     {
       key: 'status',
-      header: 'Status',
+      header: t('dashboard.columns.status'),
       render: (row: typeof mockErrorRemediationItems[0]) => (
         <StatusBadge
           variant={row.status === 'open' ? 'danger' : row.status === 'in_progress' ? 'warning' : 'success'}
-          label={row.status.replace('_', ' ')}
+          label={t(`common.status.${row.status}`)}
         />
       ),
     },
     {
       key: 'assignee',
-      header: 'Assignee',
-      render: (row: typeof mockErrorRemediationItems[0]) => row.assignee || 'Unassigned',
+      header: t('dashboard.columns.assignee'),
+      render: (row: typeof mockErrorRemediationItems[0]) => row.assignee || t('common.unassigned'),
     },
   ];
 
@@ -111,42 +113,42 @@ export default function DashboardPage() {
     <div className={styles.dashboard}>
       <section className={styles.kpiSection}>
         <MetricCard
-          label="Total Candidates"
+          label={t('dashboard.kpi.totalCandidates')}
           value={dashboardMetrics.totalCandidates}
           icon="👥"
-          change="+12 this week"
+          change={t('dashboard.kpi.plusThisWeek')}
           trend="up"
           variant="primary"
         />
         <MetricCard
-          label="Active Jobs"
+          label={t('dashboard.kpi.activeJobs')}
           value={dashboardMetrics.activeJobs}
           icon="💼"
           variant="info"
         />
         <MetricCard
-          label="Pending Screening"
+          label={t('dashboard.kpi.pendingScreening')}
           value={dashboardMetrics.pendingScreening}
           icon="📋"
           variant="warning"
         />
         <MetricCard
-          label="Interviews This Week"
+          label={t('dashboard.kpi.interviewsThisWeek')}
           value={dashboardMetrics.interviewsThisWeek}
           icon="📅"
           variant="purple"
         />
         <MetricCard
-          label="Offers Pending"
+          label={t('dashboard.kpi.offersPending')}
           value={dashboardMetrics.offersPending}
           icon="🎯"
           variant="success"
         />
         <MetricCard
-          label="Avg. Time to Hire"
+          label={t('dashboard.kpi.avgTimeToHire')}
           value={`${dashboardMetrics.avgTimeToHire}d`}
           icon="⏱️"
-          change="-2 days"
+          change={t('dashboard.kpi.minusDays')}
           trend="up"
           variant="teal"
         />
@@ -154,19 +156,19 @@ export default function DashboardPage() {
 
       <Notice
         variant="blocker"
-        title="AI-Enabled Features Blocked"
-        action={<Link href="/admin"><Button variant="secondary" size="sm">Configure</Button></Link>}
+        title={t('dashboard.notice.aiBlocked')}
+        action={<Link href="/admin"><Button variant="secondary" size="sm">{t('common.configure')}</Button></Link>}
       >
-        Several AI-powered features require Google API setup. {bqBlockers.filter(b => b.screenIds.includes('SCREEN-001')).length} blockers affect this dashboard.
+        {t('dashboard.notice.aiBlockedDesc', { count: bqBlockers.filter(b => b.screenIds.includes('SCREEN-001')).length })}
       </Notice>
 
       <section className={styles.mainContent}>
         <div className={styles.leftColumn}>
           <Card>
             <CardHeader
-              title="Pipeline Overview"
-              description="Active candidates by stage"
-              action={<Link href="/candidates/import"><Button variant="ghost" size="sm">View All</Button></Link>}
+              title={t('dashboard.pipeline.title')}
+              description={t('dashboard.pipeline.description')}
+              action={<Link href="/candidates/import"><Button variant="ghost" size="sm">{t('common.viewAll')}</Button></Link>}
             />
             <CardContent>
               <div className={styles.pipelineJobs}>
@@ -205,24 +207,24 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader
-              title="Pending Approvals"
-              description={`${pendingApprovals.length} items require HR Manager action`}
-              action={<Link href="/screening/review"><Button variant="primary" size="sm">Review All</Button></Link>}
+              title={t('dashboard.approvals.title')}
+              description={t('dashboard.approvals.description', { count: pendingApprovals.length })}
+              action={<Link href="/screening/review"><Button variant="primary" size="sm">{t('common.reviewAll')}</Button></Link>}
             />
             <CardContent>
               <DataTable
                 columns={approvalColumns}
                 data={pendingApprovals}
-                caption="Pending approval items"
+                caption={t('dashboard.approvals.caption')}
               />
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader
-              title="Interview Schedule Pending"
-              description={`${pendingSchedules.length} interviews awaiting approval`}
-              action={<Link href="/interviews/schedule-approval"><Button variant="ghost" size="sm">View All</Button></Link>}
+              title={t('dashboard.schedule.title')}
+              description={t('dashboard.schedule.description', { count: pendingSchedules.length })}
+              action={<Link href="/interviews/schedule-approval"><Button variant="ghost" size="sm">{t('common.viewAll')}</Button></Link>}
             />
             <CardContent>
               <div className={styles.scheduleList}>
@@ -236,7 +238,7 @@ export default function DashboardPage() {
                       <span>{slot.interviewerName}</span>
                       <span>{new Date(slot.scheduledAt).toLocaleDateString()}</span>
                     </div>
-                    <StatusBadge variant="warning" label="Pending Approval" />
+                    <StatusBadge variant="warning" label={t('common.status.pending')} />
                   </div>
                 ))}
               </div>
@@ -247,15 +249,15 @@ export default function DashboardPage() {
         <div className={styles.rightColumn}>
           <Card>
             <CardHeader
-              title="Error Remediation Queue"
-              description={`${openErrors.length} open errors`}
-              action={<Link href="/errors/ERR-2024-0892"><Button variant="ghost" size="sm">View Details</Button></Link>}
+              title={t('dashboard.errors.title')}
+              description={t('dashboard.errors.description', { count: openErrors.length })}
+              action={<Link href="/errors/ERR-2024-0892"><Button variant="ghost" size="sm">{t('dashboard.errors.viewDetails')}</Button></Link>}
             />
             <CardContent>
               <DataTable
                 columns={errorColumns}
                 data={openErrors}
-                caption="Error remediation items"
+                caption={t('dashboard.errors.caption')}
                 compact
               />
             </CardContent>
@@ -263,9 +265,9 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader
-              title="Integration Health"
-              description="Google Workspace status"
-              action={<Link href="/admin"><Button variant="ghost" size="sm">Admin Panel</Button></Link>}
+              title={t('dashboard.integration.title')}
+              description={t('dashboard.integration.description')}
+              action={<Link href="/admin"><Button variant="ghost" size="sm">{t('common.adminPanel')}</Button></Link>}
             />
             <CardContent>
               <div className={styles.integrationList}>
@@ -277,10 +279,10 @@ export default function DashboardPage() {
                     </div>
                     <div className={styles.integrationMeta}>
                       {integration.status !== 'healthy' && (
-                        <span className={styles.errorCount}>{integration.errorCount} errors</span>
+                        <span className={styles.errorCount}>{integration.errorCount} {t('dashboard.integration.errors')}</span>
                       )}
                       <span className={styles.lastSync}>
-                        Last sync: {new Date(integration.lastSync).toLocaleTimeString()}
+                        {t('common.dateTime.lastSync')}: {new Date(integration.lastSync).toLocaleTimeString()}
                       </span>
                     </div>
                   </div>
@@ -291,37 +293,37 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader
-              title="Recent Activity"
-              description="Latest pipeline events"
+              title={t('dashboard.activity.title')}
+              description={t('dashboard.activity.description')}
             />
             <CardContent>
               <div className={styles.activityFeed}>
                 <div className={styles.activityItem}>
                   <span className={styles.activityIcon}>✅</span>
                   <div className={styles.activityContent}>
-                    <span className={styles.activityText}>Sarah Chen moved to Interview stage</span>
-                    <span className={styles.activityTime}>2 hours ago</span>
+                    <span className={styles.activityText}>{t('dashboard.activity.movedToStage', { name: 'Sarah Chen', stage: 'Interview' })}</span>
+                    <span className={styles.activityTime}>{t('dashboard.activity.twoHoursAgo')}</span>
                   </div>
                 </div>
                 <div className={styles.activityItem}>
                   <span className={styles.activityIcon}>📋</span>
                   <div className={styles.activityContent}>
-                    <span className={styles.activityText}>3 candidates awaiting screening review</span>
-                    <span className={styles.activityTime}>5 hours ago</span>
+                    <span className={styles.activityText}>{t('dashboard.activity.awaitingScreening', { count: 3 })}</span>
+                    <span className={styles.activityTime}>{t('dashboard.activity.fiveHoursAgo')}</span>
                   </div>
                 </div>
                 <div className={styles.activityItem}>
                   <span className={styles.activityIcon}>📅</span>
                   <div className={styles.activityContent}>
-                    <span className={styles.activityText}>Interview scheduled with Emily Williams</span>
-                    <span className={styles.activityTime}>Yesterday</span>
+                    <span className={styles.activityText}>{t('dashboard.activity.scheduledInterview', { name: 'Emily Williams' })}</span>
+                    <span className={styles.activityTime}>{t('common.dateTime.yesterday')}</span>
                   </div>
                 </div>
                 <div className={styles.activityItem}>
                   <span className={styles.activityIcon}>⚠️</span>
                   <div className={styles.activityContent}>
-                    <span className={styles.activityText}>Video processing error requires attention</span>
-                    <span className={styles.activityTime}>2 days ago</span>
+                    <span className={styles.activityText}>{t('dashboard.activity.videoError')}</span>
+                    <span className={styles.activityTime}>{t('dashboard.activity.twoDaysAgo')}</span>
                   </div>
                 </div>
               </div>

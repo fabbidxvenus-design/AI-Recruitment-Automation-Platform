@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Notice } from '@/components/ui/Notice';
@@ -13,6 +14,7 @@ import styles from './grading.module.css';
 type TabType = 'all' | 'mcq' | 'essay' | 'coding';
 
 export default function TestGradingPage() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabType>('all');
   const [selectedTest, setSelectedTest] = useState<string | null>(null);
   const [overrideModalOpen, setOverrideModalOpen] = useState(false);
@@ -40,15 +42,15 @@ export default function TestGradingPage() {
     <div className={styles.gradingPage}>
       <div className={styles.header}>
         <div>
-          <h1 className={styles.title}>Test Grading Review & Override</h1>
+          <h1 className={styles.title}>{t('tests.grading.title')}</h1>
           <p className={styles.description}>
-            Review AI-graded test results and override scores when necessary
+            {t('tests.grading.description')}
           </p>
         </div>
       </div>
 
-      <Notice variant="blocker" title="BQ-004: Coding Sandbox Unavailable">
-        Coding challenge execution is blocked pending IT approval of sandbox runtime environment.
+      <Notice variant="blocker" title={t('tests.grading.notice.title')}>
+        {t('tests.grading.notice.body')}
       </Notice>
 
       <div className={styles.tabs}>
@@ -58,7 +60,7 @@ export default function TestGradingPage() {
             className={`${styles.tab} ${activeTab === tab ? styles.active : ''}`}
             onClick={() => setActiveTab(tab)}
           >
-            {tab === 'all' ? 'All Tests' : tab.toUpperCase()}
+            {t(`tests.grading.tabs.${tab}`)}
             <span className={styles.tabCount}>
               {tab === 'all' ? mockTestResults.length : mockTestResults.filter(t => {
                 if (tab === 'mcq') return t.testName.includes('JavaScript');
@@ -74,7 +76,7 @@ export default function TestGradingPage() {
       <div className={styles.mainContent}>
         <div className={styles.testList}>
           <Card>
-            <CardHeader title="Test Results" description={`${filteredTests.length} results`} />
+            <CardHeader title={t('tests.grading.results.title')} description={t('tests.grading.results.count', { count: filteredTests.length })} />
             <CardContent>
               <div className={styles.testItems}>
                 {filteredTests.map(test => (
@@ -98,7 +100,7 @@ export default function TestGradingPage() {
                       <span className={styles.scoreValue}>{test.score}</span>
                       <span className={styles.scoreMax}>/{test.maxScore}</span>
                       <span className={styles.gradingMethod}>
-                        Graded by: {test.gradedBy === 'ai' ? 'AI' : test.gradedBy === 'override' ? 'Human Override' : 'Human'}
+                        {test.gradedBy === 'ai' ? t('tests.grading.gradedBy.ai') : test.gradedBy === 'override' ? t('tests.grading.gradedBy.humanOverride') : t('tests.grading.gradedBy.human')}
                       </span>
                     </div>
                   </div>
@@ -125,55 +127,55 @@ export default function TestGradingPage() {
               <CardContent>
                 <div className={styles.gradingDetails}>
                   <div className={styles.detailSection}>
-                    <h3 className={styles.sectionTitle}>Grading Information</h3>
+                    <h3 className={styles.sectionTitle}>{t('tests.grading.gradingInfo.title')}</h3>
                     <div className={styles.infoGrid}>
                       <div className={styles.infoItem}>
-                        <span className={styles.infoLabel}>Graded By</span>
+                        <span className={styles.infoLabel}>{t('tests.grading.gradingInfo.gradedBy')}</span>
                         <span className={styles.infoValue}>
-                          {selected.gradedBy === 'ai' ? 'AI (Gemini Pro)' : selected.gradedBy === 'override' ? 'Human Override' : 'Human Review'}
+                          {selected.gradedBy === 'ai' ? t('tests.grading.gradedBy.ai') : selected.gradedBy === 'override' ? t('tests.grading.gradedBy.humanOverride') : t('tests.grading.gradedBy.human')}
                         </span>
                       </div>
                       <div className={styles.infoItem}>
-                        <span className={styles.infoLabel}>Graded At</span>
+                        <span className={styles.infoLabel}>{t('tests.grading.gradingInfo.gradedAt')}</span>
                         <span className={styles.infoValue}>
                           {new Date(selected.gradedAt).toLocaleString()}
                         </span>
                       </div>
                       <div className={styles.infoItem}>
-                        <span className={styles.infoLabel}>Status</span>
+                        <span className={styles.infoLabel}>{t('tests.grading.gradingInfo.status')}</span>
                         <StatusBadge
                           variant={selected.status === 'approved' ? 'success' : selected.status === 'flagged' ? 'warning' : 'info'}
                           label={selected.status}
                         />
                       </div>
                       <div className={styles.infoItem}>
-                        <span className={styles.infoLabel}>Pass Threshold</span>
+                        <span className={styles.infoLabel}>{t('tests.grading.gradingInfo.passThreshold')}</span>
                         <span className={styles.infoValue}>60%</span>
                       </div>
                     </div>
                   </div>
 
                   <div className={styles.detailSection}>
-                    <h3 className={styles.sectionTitle}>Score Breakdown</h3>
+                    <h3 className={styles.sectionTitle}>{t('tests.grading.scoreBreakdown.title')}</h3>
                     <div className={styles.scoreBreakdown}>
                       <ProgressBar
                         value={selected.score}
                         max={selected.maxScore}
                         showValue
                         variant={selected.score >= 80 ? 'success' : selected.score >= 60 ? 'warning' : 'danger'}
-                        label="Overall Score"
+                        label={t('tests.grading.scoreBreakdown.overallScore')}
                       />
                       <div className={styles.sectionScores}>
                         <div className={styles.sectionScore}>
-                          <span className={styles.sectionLabel}>Accuracy</span>
+                          <span className={styles.sectionLabel}>{t('tests.grading.scoreBreakdown.accuracy')}</span>
                           <ProgressBar value={Math.min(selected.score + 5, 100)} variant="info" size="sm" />
                         </div>
                         <div className={styles.sectionScore}>
-                          <span className={styles.sectionLabel}>Completeness</span>
+                          <span className={styles.sectionLabel}>{t('tests.grading.scoreBreakdown.completeness')}</span>
                           <ProgressBar value={Math.max(selected.score - 10, 0)} variant="info" size="sm" />
                         </div>
                         <div className={styles.sectionScore}>
-                          <span className={styles.sectionLabel}>Quality</span>
+                          <span className={styles.sectionLabel}>{t('tests.grading.scoreBreakdown.quality')}</span>
                           <ProgressBar value={selected.score - 5} variant="info" size="sm" />
                         </div>
                       </div>
@@ -181,7 +183,7 @@ export default function TestGradingPage() {
                   </div>
 
                   <div className={styles.detailSection}>
-                    <h3 className={styles.sectionTitle}>AI Evaluation</h3>
+                    <h3 className={styles.sectionTitle}>{t('tests.grading.aiEvaluation')}</h3>
                     <div className={styles.aiEvaluation}>
                       <p>{selected.aiGrade}</p>
                     </div>
@@ -189,12 +191,12 @@ export default function TestGradingPage() {
 
                   {selected.overrideReason && (
                     <div className={styles.detailSection}>
-                      <h3 className={styles.sectionTitle}>Override Reason</h3>
+                      <h3 className={styles.sectionTitle}>{t('tests.grading.overrideReason')}</h3>
                       <div className={styles.overrideInfo}>
                         <p>{selected.overrideReason}</p>
                         {selected.humanGrade && (
                           <div className={styles.humanGrade}>
-                            <span className={styles.gradeLabel}>Human Grade:</span>
+                            <span className={styles.gradeLabel}>{t('tests.grading.humanGrade')}</span>
                             <span>{selected.humanGrade}</span>
                           </div>
                         )}
@@ -204,12 +206,12 @@ export default function TestGradingPage() {
                 </div>
               </CardContent>
               <div className={styles.actionButtons}>
-                <Button variant="ghost">Flag for Review</Button>
+                <Button variant="ghost">{t('tests.grading.actions.flagReview')}</Button>
                 <Button variant="secondary" onClick={() => setOverrideModalOpen(true)}>
-                  Override Score
+                  {t('tests.grading.actions.overrideScore')}
                 </Button>
                 <Link href="/final-review">
-                  <Button variant="primary">Approve & Proceed to Final Review</Button>
+                  <Button variant="primary">{t('tests.grading.actions.approveProceed')}</Button>
                 </Link>
               </div>
             </Card>
@@ -218,7 +220,7 @@ export default function TestGradingPage() {
               <CardContent>
                 <div className={styles.emptyState}>
                   <span className={styles.emptyIcon}>📝</span>
-                  <p>Select a test result to view details</p>
+                  <p>{t('tests.grading.empty')}</p>
                 </div>
               </CardContent>
             </Card>
@@ -230,38 +232,38 @@ export default function TestGradingPage() {
         <div className={styles.modal}>
           <div className={styles.modalContent}>
             <div className={styles.modalHeader}>
-              <h2>Override Test Score</h2>
+              <h2>{t('tests.grading.modal.title')}</h2>
               <button className={styles.closeButton} onClick={() => setOverrideModalOpen(false)}>×</button>
             </div>
             <div className={styles.modalBody}>
               <p className={styles.modalDescription}>
-                Override scores require a reason and will be logged for audit purposes.
+                {t('tests.grading.modal.description')}
               </p>
               <div className={styles.formGroup}>
-                <label htmlFor="overrideScore">New Score (0-100)</label>
+                <label htmlFor="overrideScore">{t('tests.grading.modal.newScore')}</label>
                 <input type="number" id="overrideScore" min="0" max="100" className={styles.input} />
               </div>
               <div className={styles.formGroup}>
-                <label htmlFor="overrideReason">Reason for Override *</label>
+                <label htmlFor="overrideReason">{t('tests.grading.modal.reasonRequired')}</label>
                 <textarea
                   id="overrideReason"
                   className={styles.textarea}
                   rows={4}
                   value={overrideReason}
                   onChange={(e) => setOverrideReason(e.target.value)}
-                  placeholder="Explain why this override is necessary..."
+                  placeholder={t('tests.grading.modal.reasonPlaceholder')}
                   required
                 />
               </div>
               <div className={styles.mfaNotice}>
                 <span className={styles.mfaIcon}>🔐</span>
-                <span>HR Manager MFA verification required to submit override</span>
+                <span>{t('tests.grading.modal.mfaRequired')}</span>
               </div>
             </div>
             <div className={styles.modalFooter}>
-              <Button variant="ghost" onClick={() => setOverrideModalOpen(false)}>Cancel</Button>
+              <Button variant="ghost" onClick={() => setOverrideModalOpen(false)}>{t('tests.grading.modal.cancel')}</Button>
               <Button variant="primary" onClick={handleOverrideSubmit} disabled={!overrideReason.trim()}>
-                Verify & Submit Override
+                {t('tests.grading.modal.submit')}
               </Button>
             </div>
           </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
 import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -10,6 +11,7 @@ import { mockScheduleSlots } from '@/lib/mockData';
 import styles from './schedule-approval.module.css';
 
 export default function ScheduleApprovalPage() {
+  const { t, i18n } = useTranslation();
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [showConflictWarning, setShowConflictWarning] = useState(false);
 
@@ -17,15 +19,15 @@ export default function ScheduleApprovalPage() {
   const selected = mockScheduleSlots.find(s => s.id === selectedSlot);
 
   const handleApprove = (slotId: string) => {
-    alert(`Interview slot ${slotId} approved. Calendar event will be created.`);
+    alert(`approved: ${slotId}`);
   };
 
   const handleReject = (slotId: string) => {
-    alert(`Interview slot ${slotId} rejected. Candidate will be notified.`);
+    alert(`rejected: ${slotId}`);
   };
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('en-US', {
+    return new Date(dateStr).toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -34,7 +36,7 @@ export default function ScheduleApprovalPage() {
   };
 
   const formatTime = (dateStr: string) => {
-    return new Date(dateStr).toLocaleTimeString('en-US', {
+    return new Date(dateStr).toLocaleTimeString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', {
       hour: '2-digit',
       minute: '2-digit',
     });
@@ -44,30 +46,29 @@ export default function ScheduleApprovalPage() {
     <div className={styles.schedulePage}>
       <div className={styles.header}>
         <div>
-          <h1 className={styles.title}>Interview Schedule Approval</h1>
+          <h1 className={styles.title}>{t('interviews.scheduleApproval.title')}</h1>
           <p className={styles.description}>
-            Review and approve AI-suggested interview slots before calendar events are created
+            {t('interviews.scheduleApproval.description')}
           </p>
         </div>
         <div className={styles.headerStats}>
           <div className={styles.statItem}>
             <span className={styles.statValue}>{pendingSlots.length}</span>
-            <span className={styles.statLabel}>Pending Approval</span>
+            <span className={styles.statLabel}>{t('interviews.scheduleApproval.pendingApproval')}</span>
           </div>
         </div>
       </div>
 
-      <Notice variant="info" title="Schedule Policy Notice">
-        <strong>BQ-007 Unresolved:</strong> The Calendar reschedule/cancel policy after event creation is not yet confirmed.
-        Manual intervention may be required for schedule changes. Do not assume automated cancellation behavior.
+      <Notice variant="info" title={t('interviews.scheduleApproval.notice.title')}>
+        <strong>{t('interviews.scheduleApproval.notice.prefix')}</strong> {t('interviews.scheduleApproval.notice.body')}
       </Notice>
 
       <div className={styles.mainContent}>
         <div className={styles.slotsList}>
           <Card>
             <CardHeader
-              title="Suggested Slots"
-              description={`${pendingSlots.length} interviews awaiting approval`}
+              title={t('interviews.scheduleApproval.suggestedSlots.title')}
+              description={t('interviews.scheduleApproval.suggestedSlots.description', { count: pendingSlots.length })}
             />
             <CardContent>
               <div className={styles.slotItems}>
@@ -79,7 +80,7 @@ export default function ScheduleApprovalPage() {
                   >
                     <div className={styles.slotHeader}>
                       <span className={styles.candidateName}>{slot.candidateName}</span>
-                      <StatusBadge variant="warning" label="Pending" />
+                      <StatusBadge variant="warning" label={t('interviews.scheduleApproval.pending')} />
                     </div>
                     <div className={styles.slotDetails}>
                       <div className={styles.slotDetail}>
@@ -96,7 +97,7 @@ export default function ScheduleApprovalPage() {
                       </div>
                       <div className={styles.slotDetail}>
                         <span className={styles.detailIcon}>⏰</span>
-                        <span>{formatTime(slot.scheduledAt)} ({slot.duration} min)</span>
+                        <span>{formatTime(slot.scheduledAt)} ({slot.duration} {t('interviews.scheduleApproval.suggestedSlots.minDuration')})</span>
                       </div>
                     </div>
                   </div>
@@ -110,85 +111,85 @@ export default function ScheduleApprovalPage() {
           {selected ? (
             <Card>
               <CardHeader
-                title={`Schedule: ${selected.candidateName}`}
+                title={t('interviews.scheduleApproval.detail.title', { name: selected.candidateName })}
                 description={selected.interviewType}
               />
               <CardContent>
                 <div className={styles.scheduleDetails}>
                   <div className={styles.detailSection}>
-                    <h3 className={styles.sectionTitle}>Interview Details</h3>
+                    <h3 className={styles.sectionTitle}>{t('interviews.scheduleApproval.detail.interviewDetails')}</h3>
                     <div className={styles.detailGrid}>
                       <div className={styles.detailItem}>
-                        <span className={styles.detailLabel}>Candidate</span>
+                        <span className={styles.detailLabel}>{t('interviews.scheduleApproval.detail.candidate')}</span>
                         <span className={styles.detailValue}>{selected.candidateName}</span>
                       </div>
                       <div className={styles.detailItem}>
-                        <span className={styles.detailLabel}>Interviewer</span>
+                        <span className={styles.detailLabel}>{t('interviews.scheduleApproval.detail.interviewer')}</span>
                         <span className={styles.detailValue}>{selected.interviewerName}</span>
                       </div>
                       <div className={styles.detailItem}>
-                        <span className={styles.detailLabel}>Type</span>
+                        <span className={styles.detailLabel}>{t('interviews.scheduleApproval.detail.type')}</span>
                         <span className={styles.detailValue}>{selected.interviewType}</span>
                       </div>
                       <div className={styles.detailItem}>
-                        <span className={styles.detailLabel}>Duration</span>
-                        <span className={styles.detailValue}>{selected.duration} minutes</span>
+                        <span className={styles.detailLabel}>{t('interviews.scheduleApproval.detail.duration')}</span>
+                        <span className={styles.detailValue}>{t('interviews.scheduleApproval.detail.durationMin', { min: selected.duration })}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className={styles.detailSection}>
-                    <h3 className={styles.sectionTitle}>Date & Time</h3>
+                    <h3 className={styles.sectionTitle}>{t('interviews.scheduleApproval.detail.dateTime')}</h3>
                     <div className={styles.dateTimeDisplay}>
                       <div className={styles.dateBox}>
                         <span className={styles.dayName}>
-                          {new Date(selected.scheduledAt).toLocaleDateString('en-US', { weekday: 'long' })}
+                          {new Date(selected.scheduledAt).toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', { weekday: 'long' })}
                         </span>
                         <span className={styles.dayNumber}>
                           {new Date(selected.scheduledAt).getDate()}
                         </span>
                         <span className={styles.monthYear}>
-                          {new Date(selected.scheduledAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                          {new Date(selected.scheduledAt).toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', { month: 'long', year: 'numeric' })}
                         </span>
                       </div>
                       <div className={styles.timeBox}>
                         <span className={styles.time}>{formatTime(selected.scheduledAt)}</span>
-                        <span className={styles.timezone}>Asia/Ho_Chi_Minh (UTC+7)</span>
+                        <span className={styles.timezone}>{t('interviews.scheduleApproval.timezone')}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className={styles.detailSection}>
-                    <h3 className={styles.sectionTitle}>Availability Check</h3>
+                    <h3 className={styles.sectionTitle}>{t('interviews.scheduleApproval.detail.availability')}</h3>
                     <div className={styles.availabilityList}>
                       <div className={styles.availabilityItem}>
                         <span className={styles.availabilityIcon}>✓</span>
-                        <span>Candidate confirmed availability</span>
+                        <span>{t('interviews.scheduleApproval.detail.candidateConfirmed')}</span>
                       </div>
                       <div className={styles.availabilityItem}>
                         <span className={styles.availabilityIcon}>✓</span>
-                        <span>Interviewer free on Google Calendar</span>
+                        <span>{t('interviews.scheduleApproval.detail.interviewerFree')}</span>
                       </div>
                       <div className={styles.availabilityItem}>
                         <span className={styles.availabilityIcon}>✓</span>
-                        <span>Within working hours (9:00 - 18:00)</span>
+                        <span>{t('interviews.scheduleApproval.detail.withinWorkingHours')}</span>
                       </div>
                     </div>
                   </div>
 
                   {showConflictWarning && (
-                    <Notice variant="warning" title="Schedule Conflict Detected">
-                      The interviewer has another meeting at 15:00. Buffer time of 30 minutes recommended.
+                    <Notice variant="warning" title={t('interviews.scheduleApproval.conflict.title')}>
+                      {t('interviews.scheduleApproval.conflict.desc')}
                     </Notice>
                   )}
 
                   <div className={styles.detailSection}>
-                    <h3 className={styles.sectionTitle}>What Happens on Approval</h3>
+                    <h3 className={styles.sectionTitle}>{t('interviews.scheduleApproval.approval.whatHappens')}</h3>
                     <ul className={styles.approvalSteps}>
-                      <li>Google Calendar event will be created for all participants</li>
-                      <li>Confirmation email will be sent to candidate and interviewer</li>
-                      <li>Interview link (Google Meet) will be included in invitation</li>
-                      <li>Reminder will be sent 24 hours before interview</li>
+                      <li>{t('interviews.scheduleApproval.approval.calendarCreated')}</li>
+                      <li>{t('interviews.scheduleApproval.approval.emailSent')}</li>
+                      <li>{t('interviews.scheduleApproval.approval.meetLink')}</li>
+                      <li>{t('interviews.scheduleApproval.approval.reminderSent')}</li>
                     </ul>
                   </div>
                 </div>
@@ -200,17 +201,17 @@ export default function ScheduleApprovalPage() {
                       checked={showConflictWarning}
                       onChange={(e) => setShowConflictWarning(e.target.checked)}
                     />
-                    Show conflict warning (demo)
+                    {t('interviews.scheduleApproval.conflict.showWarning')}
                   </label>
                 </div>
               </CardContent>
               <div className={styles.actionButtons}>
                 <Button variant="danger" onClick={() => handleReject(selected.id)}>
-                  Reject & Request Alternative
+                  {t('interviews.scheduleApproval.actions.rejectAlternative')}
                 </Button>
                 <Link href="/portal/interview/demo-token">
                   <Button variant="primary" onClick={() => handleApprove(selected.id)}>
-                    Approve & Go to Interview Workspace
+                    {t('interviews.scheduleApproval.actions.approveWorkspace')}
                   </Button>
                 </Link>
               </div>
@@ -220,7 +221,7 @@ export default function ScheduleApprovalPage() {
               <CardContent>
                 <div className={styles.emptyState}>
                   <span className={styles.emptyIcon}>📅</span>
-                  <p>Select an interview slot to review and approve</p>
+                  <p>{t('interviews.scheduleApproval.empty.selectToReview')}</p>
                 </div>
               </CardContent>
             </Card>

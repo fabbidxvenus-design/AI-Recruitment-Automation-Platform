@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Notice } from '@/components/ui/Notice';
@@ -11,6 +12,7 @@ import { mockFinalReviewPackages } from '@/lib/mockData';
 import styles from './final-review.module.css';
 
 export default function FinalReviewPage() {
+  const { t } = useTranslation();
   const [selectedCandidate, setSelectedCandidate] = useState<string | null>(null);
   const [showDecisionModal, setShowDecisionModal] = useState(false);
   const [decision, setDecision] = useState<'PASS' | 'FAIL' | null>(null);
@@ -27,7 +29,7 @@ export default function FinalReviewPage() {
 
   const handleSubmitDecision = () => {
     if (!reason.trim()) {
-      setReasonError('Reason is required for final decision');
+      setReasonError(t('finalReview.modal.reasonRequired'));
       return;
     }
     if (mfaVerified && reason.trim()) {
@@ -46,7 +48,7 @@ export default function FinalReviewPage() {
 
   const handleReasonBlur = () => {
     if (!reason.trim()) {
-      setReasonError('Reason is required for final decision');
+      setReasonError(t('finalReview.modal.reasonRequired'));
     } else {
       setReasonError('');
     }
@@ -56,29 +58,29 @@ export default function FinalReviewPage() {
     <div className={styles.finalReviewPage}>
       <div className={styles.header}>
         <div>
-          <h1 className={styles.title}>Final Review & Decision</h1>
+          <h1 className={styles.title}>{t('finalReview.title')}</h1>
           <p className={styles.description}>
-            Review complete candidate package and make final hiring decision
+            {t('finalReview.description')}
           </p>
         </div>
         <div className={styles.headerActions}>
-          <Button variant="ghost">View History</Button>
+          <Button variant="ghost">{t('finalReview.actions.viewHistory')}</Button>
           <Link href="/dashboard">
-            <Button variant="secondary">Back to Dashboard</Button>
+            <Button variant="secondary">{t('finalReview.actions.backToDashboard')}</Button>
           </Link>
         </div>
       </div>
 
-      <Notice variant="blocker" title="BQ-006: Combined Policy Unresolved">
-        Combined approval policy and compensation analysis not fully configured. Escalation workflows may require manual intervention. HR/IT Admin approval needed.
+      <Notice variant="blocker" title={t('finalReview.notice.title')}>
+        {t('finalReview.notice.body')}
       </Notice>
 
       <div className={styles.mainContent}>
         <div className={styles.candidatePanel}>
           <Card>
             <CardHeader
-              title="Candidates for Final Review"
-              description={`${mockFinalReviewPackages.length} candidates`}
+              title={t('finalReview.candidates.title')}
+              description={t('finalReview.candidates.count', { count: mockFinalReviewPackages.length })}
             />
             <CardContent>
               <div className={styles.candidateList}>
@@ -106,7 +108,7 @@ export default function FinalReviewPage() {
                       <span className={styles.scoreValue}>{candidate.overallScore}</span>
                       <StatusBadge
                         variant={candidate.recommendation.includes('strong') ? 'success' : 'warning'}
-                        label={candidate.recommendation.replace('_', ' ').replace('hire', ' Hire')}
+                        label={t(`finalReview.recommendation.label.${candidate.recommendation}`)}
                       />
                     </div>
                   </div>
@@ -131,12 +133,12 @@ export default function FinalReviewPage() {
             <CardContent>
               <div className={styles.reviewSections}>
                 <section className={styles.reviewSection}>
-                  <h3 className={styles.sectionTitle}>Interview Summary</h3>
+                  <h3 className={styles.sectionTitle}>{t('finalReview.sections.interviewSummary')}</h3>
                   <p className={styles.summaryText}>{selected.interviewSummary}</p>
                 </section>
 
                 <section className={styles.reviewSection}>
-                  <h3 className={styles.sectionTitle}>Test Results Summary</h3>
+                  <h3 className={styles.sectionTitle}>{t('finalReview.sections.testResultsSummary')}</h3>
                   <p className={styles.summaryText}>{selected.testResultsSummary}</p>
                   <div className={styles.testScoreDisplay}>
                     <ProgressBar
@@ -144,50 +146,50 @@ export default function FinalReviewPage() {
                       max={100}
                       showValue
                       variant={selected.overallScore >= 80 ? 'success' : selected.overallScore >= 60 ? 'warning' : 'danger'}
-                      label="Overall Assessment"
+                      label={t('finalReview.sections.overallScore')}
                     />
                   </div>
                 </section>
 
                 <section className={styles.reviewSection}>
-                  <h3 className={styles.sectionTitle}>Compensation</h3>
+                  <h3 className={styles.sectionTitle}>{t('finalReview.sections.compensation')}</h3>
                   <div className={styles.compensationGrid}>
                     <div className={styles.compItem}>
-                      <span className={styles.compLabel}>Requested</span>
+                      <span className={styles.compLabel}>{t('finalReview.sections.requested')}</span>
                       <span className={styles.compValue}>${selected.compensation.requested.toLocaleString()}</span>
                     </div>
                     <div className={styles.compItem}>
-                      <span className={styles.compLabel}>Recommended</span>
+                      <span className={styles.compLabel}>{t('finalReview.sections.recommended')}</span>
                       <span className={styles.compValue}>${selected.compensation.recommended.toLocaleString()}</span>
                     </div>
                     <div className={styles.compItem}>
-                      <span className={styles.compLabel}>Status</span>
+                      <span className={styles.compLabel}>{t('finalReview.sections.status')}</span>
                       <StatusBadge
                         variant={selected.compensation.approved ? 'success' : 'warning'}
-                        label={selected.compensation.approved ? 'Approved' : 'Pending'}
+                        label={selected.compensation.approved ? t('common.status.approved') : t('common.status.pending')}
                       />
                     </div>
                   </div>
-                  <Notice variant="info" title="Market Rate Analysis">
-                    BQ-006: External market data not integrated. Recommended compensation based on internal data only.
+                  <Notice variant="info" title={t('finalReview.compensationNotice.title')}>
+                    {t('finalReview.compensationNotice.body')}
                   </Notice>
                 </section>
 
                 <section className={styles.reviewSection}>
-                  <h3 className={styles.sectionTitle}>Documents</h3>
+                  <h3 className={styles.sectionTitle}>{t('finalReview.sections.documents')}</h3>
                   <div className={styles.documentList}>
                     {selected.documents.map(doc => (
                       <div key={doc.id} className={styles.documentItem}>
                         <span className={styles.docIcon}>📄</span>
                         <span className={styles.docName}>{doc.name}</span>
-                        <Button variant="ghost" size="sm">View</Button>
+                        <Button variant="ghost" size="sm">{t('finalReview.documentActions.view')}</Button>
                       </div>
                     ))}
                   </div>
                 </section>
 
                 <section className={styles.reviewSection}>
-                  <h3 className={styles.sectionTitle}>Approval Workflow</h3>
+                  <h3 className={styles.sectionTitle}>{t('finalReview.sections.approvalWorkflow')}</h3>
                   <div className={styles.approverList}>
                     {selected.approvers.map((approver, index) => (
                       <div key={index} className={styles.approverItem}>
@@ -211,25 +213,25 @@ export default function FinalReviewPage() {
                 </section>
 
                 <section className={styles.reviewSection}>
-                  <h3 className={styles.sectionTitle}>Recommendation</h3>
+                  <h3 className={styles.sectionTitle}>{t('finalReview.sections.recommendation')}</h3>
                   <div className={styles.recommendation}>
                     <span className={`${styles.recBadge} ${styles[selected.recommendation]}`}>
-                      {selected.recommendation.replace('_', ' ').replace('hire', ' Hire').replace('no', 'No ')}
+                      {t(`finalReview.recommendation.label.${selected.recommendation}`)}
                     </span>
                     <p className={styles.recText}>
-                      Based on interview performance and test scores, this candidate is recommended for {selected.recommendation.includes('no') ? 'rejection' : 'hiring'}.
+                      {t('finalReview.recommendation.text', { decision: selected.recommendation.includes('no') ? t('common.decision.reject').toLowerCase() : t('common.decision.approve').toLowerCase() })}
                     </p>
                   </div>
                 </section>
               </div>
             </CardContent>
             <div className={styles.actionButtons}>
-              <Button variant="ghost">Request More Info</Button>
+              <Button variant="ghost">{t('finalReview.decisionActions.requestInfo')}</Button>
               <Button variant="danger" onClick={() => handleDecision('FAIL')}>
-                Reject (FAIL)
+                {t('finalReview.decisionActions.reject')}
               </Button>
               <Button variant="primary" onClick={() => handleDecision('PASS')}>
-                Approve (PASS)
+                {t('finalReview.decisionActions.approve')}
               </Button>
             </div>
           </Card>
@@ -240,34 +242,34 @@ export default function FinalReviewPage() {
         <div className={styles.modal}>
           <div className={styles.modalContent}>
             <div className={styles.modalHeader}>
-              <h2>Confirm Final Decision: {decision}</h2>
+              <h2>{t('finalReview.modal.title', { decision })}</h2>
               <button className={styles.closeButton} onClick={() => setShowDecisionModal(false)}>×</button>
             </div>
             <div className={styles.modalBody}>
               <div className={styles.decisionInfo}>
                 <p>
-                  You are about to make a <strong>{decision === 'PASS' ? 'PASS' : 'FAIL'}</strong> decision for <strong>{selected.candidateName}</strong>.
+                  {t('finalReview.modal.warning', { decision, name: selected.candidateName })}
                 </p>
                 <p className={styles.decisionWarning}>
-                  This action requires MFA verification and will be logged for audit purposes.
+                  {t('finalReview.modal.auditNotice')}
                 </p>
               </div>
 
               {!mfaVerified ? (
                 <div className={styles.mfaSection}>
-                  <p className={styles.mfaLabel}>Verify your identity to continue:</p>
+                  <p className={styles.mfaLabel}>{t('finalReview.modal.mfaLabel')}</p>
                   <Button variant="secondary" onClick={handleVerifyMfa}>
-                    🔐 Verify with MFA Device
+                    🔐 {t('finalReview.modal.verifyMfa')}
                   </Button>
                 </div>
               ) : (
                 <div className={styles.reasonSection}>
                   <div className={styles.mfaVerified}>
                     <span aria-hidden="true">✓</span>
-                    <span>MFA Verified</span>
+                    <span>{t('finalReview.modal.mfaVerified')}</span>
                   </div>
                   <div className={styles.formGroup}>
-                    <label htmlFor="decisionReason">Reason for Decision *</label>
+                    <label htmlFor="decisionReason">{t('finalReview.modal.reasonLabel')}</label>
                     <textarea
                       id="decisionReason"
                       className={styles.textarea}
@@ -275,7 +277,7 @@ export default function FinalReviewPage() {
                       value={reason}
                       onChange={(e) => setReason(e.target.value)}
                       onBlur={handleReasonBlur}
-                      placeholder="Enter your reason for this decision..."
+                      placeholder={t('finalReview.modal.reasonPlaceholder')}
                       required
                       aria-required="true"
                       aria-invalid={!!reasonError}
@@ -291,13 +293,13 @@ export default function FinalReviewPage() {
               )}
             </div>
             <div className={styles.modalFooter}>
-              <Button variant="ghost" onClick={() => setShowDecisionModal(false)}>Cancel</Button>
+              <Button variant="ghost" onClick={() => setShowDecisionModal(false)}>{t('finalReview.modal.cancel')}</Button>
               <Button
                 variant={decision === 'PASS' ? 'primary' : 'danger'}
                 onClick={handleSubmitDecision}
                 disabled={!mfaVerified || !reason.trim()}
               >
-                Confirm {decision} Decision
+                {t('finalReview.modal.confirm', { decision })}
               </Button>
             </div>
           </div>
