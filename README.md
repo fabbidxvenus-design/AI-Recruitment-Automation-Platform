@@ -17,6 +17,7 @@ RecruitAI là nguyên mẫu tự động hóa tuyển dụng được xây dựn
 - CSS Modules với design tokens toàn cục
 - Dữ liệu mock tĩnh trong `src/lib/mockData.ts`
 - Mock fixtures cho AI Tools trong `src/lib/mock-content-data.ts` và `src/lib/ai-design-mock.ts`
+- Mock fixtures cho CV/Job Intake trong `src/lib/cvIntakeMockData.ts` và `src/lib/jobIntakeMockData.ts`
 
 ## Chạy dự án
 
@@ -60,6 +61,7 @@ npm run typecheck  # kiểm tra TypeScript
 | CV Evidence Viewer | `/tools/cv-evidence` | Xem dữ liệu cấu trúc trích xuất từ CV bằng AI |
 | AI CV Translation | `/tools/cv-translation` | Dịch CV ứng viên đa ngôn ngữ bằng AI |
 | AI Interview Translation | `/tools/interview-translation` | Dịch bản ghi phỏng vấn và phân đoạn người nói |
+| Job/JD Intake | `/jobs/intake` | Tạo mới Job và nhập Job Description (thủ công, PDF, Drive) |
 
 Route gốc `/` tự động chuyển đến `/dashboard`.
 
