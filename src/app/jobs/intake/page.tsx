@@ -44,12 +44,12 @@ export default function JobIntakePage() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1 className={styles.title}>Job / JD Intake</h1>
-        <p className={styles.description}>Create or import new job openings and job descriptions</p>
+        <h1 className={styles.title}>{t('tools.jobIntake.title')}</h1>
+        <p className={styles.description}>{t('tools.jobIntake.description')}</p>
       </header>
 
-      <Notice variant="info" title="JD Parsing">
-        AI will automatically extract skills and requirements from your Job Description after submission.
+      <Notice variant="info" title={t('tools.jobIntake.notice.title')}>
+        {t('tools.jobIntake.notice.description')}
       </Notice>
 
       <div className={styles.sourceSelection}>
@@ -57,74 +57,74 @@ export default function JobIntakePage() {
           className={`${styles.tab} ${source === 'manual' ? styles.active : ''}`}
           onClick={() => setSource('manual')}
         >
-          Manual Form
+          {t('tools.jobIntake.sources.manual')}
         </button>
         <button
           className={`${styles.tab} ${source === 'text' ? styles.active : ''}`}
           onClick={() => setSource('text')}
         >
-          Paste Text
+          {t('tools.jobIntake.sources.text')}
         </button>
         <button
           className={`${styles.tab} ${source === 'file' ? styles.active : ''}`}
           onClick={() => setSource('file')}
         >
-          Upload File
+          {t('tools.jobIntake.sources.file')}
         </button>
         <button
           className={`${styles.tab} ${source === 'drive' ? styles.active : ''}`}
           onClick={() => setSource('drive')}
         >
-          Google Drive
+          {t('tools.jobIntake.sources.drive')}
         </button>
       </div>
 
       <Card className={styles.formCard}>
         <div className={styles.formGroup}>
-          <label htmlFor="jobTitle">Job Title *</label>
+          <label htmlFor="jobTitle">{t('tools.jobIntake.form.jobTitle')} *</label>
           <input
             id="jobTitle"
             type="text"
             value={jobData.title}
             onChange={(e) => setJobData({ ...jobData, title: e.target.value })}
-            placeholder="e.g. Senior Frontend Engineer"
+            placeholder={t('tools.jobIntake.form.jobTitlePlaceholder')}
             className={styles.input}
           />
         </div>
 
         <div className={styles.formRow}>
           <div className={styles.formGroup}>
-            <label htmlFor="dept">Department</label>
+            <label htmlFor="dept">{t('tools.jobIntake.form.department')}</label>
             <input
               id="dept"
               type="text"
               value={jobData.department}
               onChange={(e) => setJobData({ ...jobData, department: e.target.value })}
-              placeholder="e.g. Engineering"
+              placeholder={t('tools.jobIntake.form.departmentPlaceholder')}
               className={styles.input}
             />
           </div>
           <div className={styles.formGroup}>
-            <label htmlFor="loc">Location</label>
+            <label htmlFor="loc">{t('tools.jobIntake.form.location')}</label>
             <input
               id="loc"
               type="text"
               value={jobData.location}
               onChange={(e) => setJobData({ ...jobData, location: e.target.value })}
-              placeholder="e.g. Remote"
+              placeholder={t('tools.jobIntake.form.locationPlaceholder')}
               className={styles.input}
             />
           </div>
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="jdContent">Job Description Content *</label>
+          <label htmlFor="jdContent">{t('tools.jobIntake.form.jdContent')} *</label>
           <textarea
             id="jdContent"
             rows={10}
             value={jobData.content}
             onChange={(e) => setJobData({ ...jobData, content: e.target.value })}
-            placeholder="Paste the job description text here..."
+            placeholder={t('tools.jobIntake.form.jdContentPlaceholder')}
             className={styles.textarea}
           />
         </div>
@@ -135,7 +135,7 @@ export default function JobIntakePage() {
             onClick={handleCreate}
             disabled={!jobData.title || !jobData.content || loading}
           >
-            {loading ? 'Creating...' : 'Create Job Requisition'}
+            {loading ? t('tools.jobIntake.actions.creating') : t('tools.jobIntake.actions.create')}
           </Button>
         </div>
       </Card>

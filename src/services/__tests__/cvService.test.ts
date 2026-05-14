@@ -6,6 +6,58 @@ describe('cvService', () => {
     vi.clearAllTimers();
   });
 
+  describe('importCV', () => {
+    it('returns ApiResponse with success and correct shape', async () => {
+      const request = {
+        candidateId: 'cand-123',
+        fileName: 'resume.pdf',
+      };
+
+      const result = await cvService.importCV(request);
+
+      expect(result.success).toBe(true);
+      expect(result.data).toBeDefined();
+
+      if (result.data) {
+        expect(result.data).toHaveProperty('cv');
+        expect(result.data).toHaveProperty('version');
+
+        const { cv, version } = result.data;
+
+        expect(cv.candidateId).toBe(request.candidateId);
+        expect(cv.originalFileName).toBe(request.fileName);
+        expect(typeof cv.id).toBe('string');
+        expect(typeof cv.uploadedAt).toBe('string');
+
+        expect(version.candidateId).toBe(request.candidateId);
+        expect(version.cvFileId).toBe(cv.id);
+        expect(version.versionNumber).toBe(1);
+        expect(typeof version.id).toBe('string');
+      }
+    });
+  });
+
+  describe('extractCVProfile', () => {
+    it('returns ApiResponse with success and extracted profile data', async () => {
+      const cvVersionId = 'cv-ver-123';
+      const result = await cvService.extractCVProfile(cvVersionId);
+
+      expect(result.success).toBe(true);
+      expect(result.data).toBeDefined();
+
+      if (result.data) {
+        expect(result.data.cvVersionId).toBe(cvVersionId);
+        expect(result.data.confidence).toBeGreaterThan(0);
+        expect(result.data.extractedProfile).toBeDefined();
+
+        const profile = result.data.extractedProfile;
+        expect(profile.fullName).toBeDefined();
+        expect(Array.isArray(profile.skills)).toBe(true);
+        expect(typeof result.data.id).toBe('string');
+      }
+    });
+  });
+
   describe('getCVEvidence', () => {
     it('returns ApiResponse with success and correct shape', async () => {
       const result = await cvService.getCVEvidence({ cvId: 'cv-001' });
