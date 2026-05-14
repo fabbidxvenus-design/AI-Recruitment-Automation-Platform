@@ -14,16 +14,35 @@ export default function ScheduleApprovalPage() {
   const { t, i18n } = useTranslation();
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [showConflictWarning, setShowConflictWarning] = useState(false);
+  const [slots, setSlots] = useState(mockScheduleSlots);
+  const [feedback, setFeedback] = useState<{ variant: 'success' | 'info' | 'warning'; title: string; body: string } | null>(null);
 
-  const pendingSlots = mockScheduleSlots.filter(s => s.status === 'pending');
-  const selected = mockScheduleSlots.find(s => s.id === selectedSlot);
+  const pendingSlots = slots.filter(s => s.status === 'pending');
+  const selected = slots.find(s => s.id === selectedSlot);
 
   const handleApprove = (slotId: string) => {
-    alert(`approved: ${slotId}`);
+    const slot = slots.find(item => item.id === slotId);
+    setSlots(prev => prev.map(item => (
+      item.id === slotId ? { ...item, status: 'approved' } : item
+    )));
+    setFeedback({
+      variant: 'success',
+      title: 'Interview slot approved',
+      body: slot ? `${slot.candidateName}'s workspace link is ready for the prototype interview.` : 'The selected slot was approved.',
+    });
   };
 
   const handleReject = (slotId: string) => {
-    alert(`rejected: ${slotId}`);
+    const slot = slots.find(item => item.id === slotId);
+    setSlots(prev => prev.map(item => (
+      item.id === slotId ? { ...item, status: 'rejected' } : item
+    )));
+    setFeedback({
+      variant: 'warning',
+      title: 'Alternative requested',
+      body: slot ? `${slot.candidateName}'s proposed slot was rejected and marked for rescheduling.` : 'The selected slot was rejected.',
+    });
+    setSelectedSlot(null);
   };
 
   const formatDate = (dateStr: string) => {
@@ -62,6 +81,12 @@ export default function ScheduleApprovalPage() {
       <Notice variant="info" title={t('interviews.scheduleApproval.notice.title')}>
         <strong>{t('interviews.scheduleApproval.notice.prefix')}</strong> {t('interviews.scheduleApproval.notice.body')}
       </Notice>
+
+      {feedback && (
+        <Notice variant={feedback.variant} title={feedback.title}>
+          {feedback.body}
+        </Notice>
+      )}
 
       <div className={styles.mainContent}>
         <div className={styles.slotsList}>

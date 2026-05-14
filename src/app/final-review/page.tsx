@@ -23,9 +23,15 @@ export default function FinalReviewPage() {
   const [mfaVerified, setMfaVerified] = useState(false);
   const [reason, setReason] = useState('');
   const [reasonError, setReasonError] = useState('');
+  const [feedback, setFeedback] = useState<{ variant: 'success' | 'info' | 'warning'; title: string; body: string } | null>(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [viewedDocument, setViewedDocument] = useState<string | null>(null);
 
   const activeWorkflowPackage = resolveFinalReviewPackageForActivePlan();
-  const finalReviewPackages = [activeWorkflowPackage, ...mockFinalReviewPackages.filter((reviewPackage) => reviewPackage.id !== activeWorkflowPackage.id)];
+  const [finalReviewPackages, setFinalReviewPackages] = useState(() => [
+    activeWorkflowPackage,
+    ...mockFinalReviewPackages.filter((reviewPackage) => reviewPackage.id !== activeWorkflowPackage.id),
+  ]);
   const selected = finalReviewPackages.find(p => p.id === selectedCandidate) || activeWorkflowPackage;
 
   const handleDecision = (type: 'PASS' | 'FAIL') => {
@@ -40,7 +46,24 @@ export default function FinalReviewPage() {
     }
     if (mfaVerified && reason.trim()) {
       markFinalReviewSubmitted(selected.id);
-      alert(`Final decision ${decision} submitted for ${selected.candidateName}`);
+      setFinalReviewPackages(prev => prev.map(reviewPackage => (
+        reviewPackage.id === selected.id
+          ? {
+              ...reviewPackage,
+              recommendation: decision === 'PASS' ? 'strong_hire' : 'strong_no_hire',
+              approvers: reviewPackage.approvers.map((approver, index) => (
+                index === 0
+                  ? { ...approver, status: 'approved', timestamp: new Date().toISOString() }
+                  : approver
+              )),
+            }
+          : reviewPackage
+      )));
+      setFeedback({
+        variant: 'success',
+        title: 'Final decision submitted',
+        body: `${selected.candidateName} was marked ${decision} with an immutable evidence snapshot.`,
+      });
       setShowDecisionModal(false);
       setDecision(null);
       setMfaVerified(false);
@@ -71,7 +94,7 @@ export default function FinalReviewPage() {
           </p>
         </div>
         <div className={styles.headerActions}>
-          <Button variant="ghost">{t('finalReview.actions.viewHistory')}</Button>
+          <Button variant="ghost" onClick={() => setHistoryOpen(true)}>{t('finalReview.actions.viewHistory')}</Button>
           <Link href="/dashboard">
             <Button variant="secondary">{t('finalReview.actions.backToDashboard')}</Button>
           </Link>
@@ -81,6 +104,12 @@ export default function FinalReviewPage() {
       <Notice variant="blocker" title={t('finalReview.notice.title')}>
         {t('finalReview.notice.body')}
       </Notice>
+
+      {feedback && (
+        <Notice variant={feedback.variant} title={feedback.title}>
+          {feedback.body}
+        </Notice>
+      )}
 
       <div className={styles.mainContent}>
         <div className={styles.candidatePanel}>
@@ -234,7 +263,7 @@ export default function FinalReviewPage() {
                       <div key={doc.id} className={styles.documentItem}>
                         <span className={styles.docIcon}>📄</span>
                         <span className={styles.docName}>{doc.name}</span>
-                        <Button variant="ghost" size="sm">{t('finalReview.documentActions.view')}</Button>
+                        <Button variant="ghost" size="sm" onClick={() => setViewedDocument(doc.name)}>{t('finalReview.documentActions.view')}</Button>
                       </div>
                     ))}
                   </div>
@@ -278,7 +307,16 @@ export default function FinalReviewPage() {
               </div>
             </CardContent>
             <div className={styles.actionButtons}>
-              <Button variant="ghost">{t('finalReview.decisionActions.requestInfo')}</Button>
+              <Button
+                variant="ghost"
+                onClick={() => setFeedback({
+                  variant: 'info',
+                  title: 'Information requested',
+                  body: `${selected.candidateName}'s recruiter follow-up request was added to the mock audit log.`,
+                })}
+              >
+                {t('finalReview.decisionActions.requestInfo')}
+              </Button>
               <Button variant="danger" onClick={() => handleDecision('FAIL')}>
                 {t('finalReview.decisionActions.reject')}
               </Button>
@@ -289,6 +327,54 @@ export default function FinalReviewPage() {
           </Card>
         </div>
       </div>
+
+
+      {historyOpen && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+              <h2>Decision history</h2>
+              <button className={styles.closeButton} onClick={() => setHistoryOpen(false)}>Ã—</button>
+            </div>
+            <div className={styles.modalBody}>
+              <p className={styles.summaryText}>Mock audit trail for {selected.candidateName}.</p>
+              <div className={styles.approverList}>
+                {selected.approvers.map((approver, index) => (
+                  <div key={`${approver.name}-${index}`} className={styles.approverItem}>
+                    <div className={styles.approverInfo}>
+                      <span className={styles.approverName}>{approver.name}</span>
+                      <span className={styles.approverRole}>{approver.role}</span>
+                    </div>
+                    <StatusBadge variant={approver.status === 'approved' ? 'success' : 'warning'} label={approver.status} dot />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className={styles.modalFooter}>
+              <Button variant="primary" onClick={() => setHistoryOpen(false)}>Close</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {viewedDocument && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+              <h2>{viewedDocument}</h2>
+              <button className={styles.closeButton} onClick={() => setViewedDocument(null)}>Ã—</button>
+            </div>
+            <div className={styles.modalBody}>
+              <Notice variant="info" title="Mock document preview">
+                This prototype records that the evidence document was opened without loading an external file.
+              </Notice>
+            </div>
+            <div className={styles.modalFooter}>
+              <Button variant="primary" onClick={() => setViewedDocument(null)}>Close</Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showDecisionModal && (
         <div className={styles.modal}>

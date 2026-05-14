@@ -18,6 +18,7 @@ export default function InterviewPage() {
   const [showConsent, setShowConsent] = useState(true);
   const [interviewStarted, setInterviewStarted] = useState(false);
   const [isExpired, setIsExpired] = useState(false);
+  const [feedback, setFeedback] = useState<{ variant: 'success' | 'info' | 'warning'; title: string; body: string } | null>(null);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(() =>
     typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false
   );
@@ -68,11 +69,36 @@ export default function InterviewPage() {
 
   const handleSubmit = () => {
     markInterviewCompleted(session.id);
-    alert('Interview submitted! AI analysis will be available shortly.');
+    setSession(prev => ({ ...prev, status: 'completed' }));
+    setFeedback({
+      variant: 'success',
+      title: 'Interview submitted',
+      body: 'AI analysis is queued and the recruiter workspace now shows this interview as completed.',
+    });
   };
 
   const handleSaveProgress = () => {
-    alert('Progress saved. You can return later to complete the interview.');
+    setFeedback({
+      variant: 'info',
+      title: 'Progress saved',
+      body: `${Object.keys(answers).length} answer(s) saved locally for this prototype session.`,
+    });
+  };
+
+  const handleContactHr = () => {
+    setFeedback({
+      variant: 'info',
+      title: 'HR contact prepared',
+      body: 'A mock support request has been queued for hr@company.com.',
+    });
+  };
+
+  const handleWithdraw = () => {
+    setFeedback({
+      variant: 'warning',
+      title: 'Withdrawal drafted',
+      body: 'The application withdrawal is staged locally and would require confirmation in production.',
+    });
   };
 
   const renderAssessmentTraceability = () => {
@@ -126,9 +152,14 @@ export default function InterviewPage() {
               <span aria-hidden="true" className={styles.expiredIcon}>⏰</span>
               <h2>{t('portal.interview.expired.title')}</h2>
               <p>{t('portal.interview.expired.message')}</p>
+              {feedback && (
+                <Notice variant={feedback.variant} title={feedback.title}>
+                  {feedback.body}
+                </Notice>
+              )}
               <div className={styles.expiredActions}>
-                <Button variant="secondary">{t('portal.interview.expired.contactHR')}</Button>
-                <Button variant="ghost">{t('portal.interview.expired.withdraw')}</Button>
+                <Button variant="secondary" onClick={handleContactHr}>{t('portal.interview.expired.contactHR')}</Button>
+                <Button variant="ghost" onClick={handleWithdraw}>{t('portal.interview.expired.withdraw')}</Button>
               </div>
             </div>
           </CardContent>
@@ -178,11 +209,17 @@ export default function InterviewPage() {
                   {t('portal.interview.reminderEmail')}
                 </Notice>
 
+                {feedback && (
+                  <Notice variant={feedback.variant} title={feedback.title}>
+                    {feedback.body}
+                  </Notice>
+                )}
+
                 {renderAssessmentTraceability()}
               </div>
             </CardContent>
             <div className={styles.consentActions}>
-              <Button variant="ghost">{t('portal.interview.actions.saveExit')}</Button>
+              <Button variant="ghost" onClick={handleSaveProgress}>{t('portal.interview.actions.saveExit')}</Button>
               <Button variant="primary" onClick={handleStartInterview}>
                 {t('portal.interview.actions.startInterview')}
               </Button>
@@ -215,6 +252,12 @@ export default function InterviewPage() {
           </Button>
         </div>
       </div>
+
+      {feedback && (
+        <Notice variant={feedback.variant} title={feedback.title}>
+          {feedback.body}
+        </Notice>
+      )}
 
       <div className={styles.progressSection}>
         <div className={styles.progressLabel}>

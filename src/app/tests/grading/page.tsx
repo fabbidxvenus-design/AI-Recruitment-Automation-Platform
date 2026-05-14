@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/i18n';
 import { formatDate, formatDateTime } from '@/lib/formatDate';
@@ -17,14 +17,20 @@ import styles from './grading.module.css';
 type TabType = 'all' | 'mcq' | 'essay' | 'coding';
 
 export default function TestGradingPage() {
+  const router = useRouter();
   const { t } = useTranslation();
   const { locale } = useLanguage();
   const [activeTab, setActiveTab] = useState<TabType>('all');
   const activeWorkflowTest = resolveTestResultForActivePlan();
-  const workflowTestResults = [activeWorkflowTest, ...mockTestResults.filter((test) => test.id !== activeWorkflowTest.id)];
+  const [workflowTestResults, setWorkflowTestResults] = useState(() => [
+    activeWorkflowTest,
+    ...mockTestResults.filter((test) => test.id !== activeWorkflowTest.id),
+  ]);
   const [selectedTest, setSelectedTest] = useState<string | null>(activeWorkflowTest.id);
   const [overrideModalOpen, setOverrideModalOpen] = useState(false);
   const [overrideReason, setOverrideReason] = useState('');
+  const [overrideScore, setOverrideScore] = useState('');
+  const [feedback, setFeedback] = useState<{ variant: 'success' | 'info' | 'warning'; title: string; body: string } | null>(null);
 
   const selected = workflowTestResults.find(test => test.id === selectedTest);
 
@@ -37,11 +43,51 @@ export default function TestGradingPage() {
   });
 
   const handleOverrideSubmit = () => {
-    if (overrideReason.trim()) {
-      alert(`Override submitted with reason: ${overrideReason}`);
-      setOverrideModalOpen(false);
-      setOverrideReason('');
-    }
+    if (!selected || !overrideReason.trim()) return;
+
+    const parsedScore = Number(overrideScore);
+    const nextScore = Number.isFinite(parsedScore) ? Math.max(0, Math.min(selected.maxScore, parsedScore)) : selected.score;
+
+    setWorkflowTestResults(prev => prev.map(test => (
+      test.id === selected.id
+        ? {
+            ...test,
+            score: nextScore,
+            status: nextScore >= 60 ? 'approved' : 'flagged',
+            gradedBy: 'override',
+            overrideReason,
+            humanGrade: `${nextScore}/${test.maxScore}`,
+          }
+        : test
+    )));
+    setFeedback({
+      variant: 'success',
+      title: 'Override submitted',
+      body: `${selected.candidateName} now has a human override score of ${nextScore}/${selected.maxScore}.`,
+    });
+    setOverrideModalOpen(false);
+    setOverrideReason('');
+    setOverrideScore('');
+  };
+
+  const handleApproveProceed = () => {
+    if (!selected) return;
+
+    markTestGraded(selected.id);
+    router.push('/final-review');
+  };
+
+  const handleFlagForReview = () => {
+    if (!selected) return;
+
+    setWorkflowTestResults(prev => prev.map(test => (
+      test.id === selected.id ? { ...test, status: 'flagged' } : test
+    )));
+    setFeedback({
+      variant: 'warning',
+      title: 'Result flagged',
+      body: `${selected.candidateName}'s test result is now marked for reviewer follow-up.`,
+    });
   };
 
   return (
@@ -58,6 +104,12 @@ export default function TestGradingPage() {
       <Notice variant="blocker" title={t('tests.grading.notice.title')}>
         {t('tests.grading.notice.body')}
       </Notice>
+
+      {feedback && (
+        <Notice variant={feedback.variant} title={feedback.title}>
+          {feedback.body}
+        </Notice>
+      )}
 
       <div className={styles.tabs}>
         {(['all', 'mcq', 'essay', 'coding'] as TabType[]).map(tab => (
@@ -248,13 +300,11 @@ export default function TestGradingPage() {
                 </div>
               </CardContent>
               <div className={styles.actionButtons}>
-                <Button variant="ghost">{t('tests.grading.actions.flagReview')}</Button>
+                <Button variant="ghost" onClick={handleFlagForReview}>{t('tests.grading.actions.flagReview')}</Button>
                 <Button variant="secondary" onClick={() => setOverrideModalOpen(true)}>
                   {t('tests.grading.actions.overrideScore')}
                 </Button>
-                <Link href="/final-review" onClick={() => markTestGraded(selected.id)}>
-                  <Button variant="primary">{t('tests.grading.actions.approveProceed')}</Button>
-                </Link>
+                <Button variant="primary" onClick={handleApproveProceed}>{t('tests.grading.actions.approveProceed')}</Button>
               </div>
             </Card>
           ) : (
@@ -283,7 +333,15 @@ export default function TestGradingPage() {
               </p>
               <div className={styles.formGroup}>
                 <label htmlFor="overrideScore">{t('tests.grading.modal.newScore')}</label>
-                <input type="number" id="overrideScore" min="0" max="100" className={styles.input} />
+                <input
+                  type="number"
+                  id="overrideScore"
+                  min="0"
+                  max={selected?.maxScore ?? 100}
+                  className={styles.input}
+                  value={overrideScore}
+                  onChange={(e) => setOverrideScore(e.target.value)}
+                />
               </div>
               <div className={styles.formGroup}>
                 <label htmlFor="overrideReason">{t('tests.grading.modal.reasonRequired')}</label>

@@ -18,6 +18,8 @@ export default function AdminPage() {
   const { locale } = useLanguage();
   const [activeTab, setActiveTab] = useState<'integrations' | 'api' | 'monitoring'>('integrations');
   const [isLoading, setIsLoading] = useState(false);
+  const [feedback, setFeedback] = useState<{ variant: 'success' | 'info' | 'warning'; title: string; body: string } | null>(null);
+  const [modal, setModal] = useState<{ title: string; body: string } | null>(null);
 
   const bq002 = bqBlockers.find(b => b.code === 'BQ-002');
   const bq003 = bqBlockers.find(b => b.code === 'BQ-003');
@@ -33,6 +35,12 @@ export default function AdminPage() {
           </p>
         </div>
       </div>
+
+      {feedback && (
+        <Notice variant={feedback.variant} title={feedback.title}>
+          {feedback.body}
+        </Notice>
+      )}
 
       <div className={styles.blockersSection}>
         {bq002 && (
@@ -96,7 +104,7 @@ export default function AdminPage() {
                   </div>
                   <div className={styles.configDetails}>
                     <span>{t('admin.integrations.googleSheets.lastSync', { time: '2 hours ago' })}</span>
-                    <Button variant="ghost" size="sm">{t('admin.integrations.googleSheets.configure')}</Button>
+                    <Button variant="ghost" size="sm" onClick={() => setModal({ title: 'Google Sheets configuration', body: 'Mock configuration panel opened for sheet mapping, sync cadence, and metadata column validation.' })}>{t('admin.integrations.googleSheets.configure')}</Button>
                   </div>
                 </div>
 
@@ -111,7 +119,7 @@ export default function AdminPage() {
                   </div>
                   <div className={styles.configDetails}>
                     <span>{t('admin.integrations.googleDrive.watchNotConfigured')}</span>
-                    <Button variant="secondary" size="sm">{t('admin.integrations.googleSheets.configure')}</Button>
+                    <Button variant="secondary" size="sm" onClick={() => setModal({ title: 'Google Drive watch setup', body: 'Mock setup panel opened for CV/JD folder watchers and Drive trigger health.' })}>{t('admin.integrations.googleSheets.configure')}</Button>
                   </div>
                   <div className={styles.configDetails}>
                     <span>CV Folder: <code>/Recruitment/CVs/</code></span>
@@ -133,7 +141,7 @@ export default function AdminPage() {
                   </div>
                   <div className={styles.configDetails}>
                     <span>{t('admin.integrations.googleCalendar.calendarId', { id: 'hr-recruitment@company.com' })}</span>
-                    <Button variant="ghost" size="sm">{t('admin.integrations.googleSheets.configure')}</Button>
+                    <Button variant="ghost" size="sm" onClick={() => setModal({ title: 'Calendar configuration', body: 'Mock calendar configuration opened for interviewer availability and meeting-link defaults.' })}>{t('admin.integrations.googleSheets.configure')}</Button>
                   </div>
                 </div>
 
@@ -148,7 +156,7 @@ export default function AdminPage() {
                   </div>
                   <div className={styles.configDetails}>
                     <span>{t('admin.integrations.gmailApi.sendingFrom', { email: 'hr@company.com' })}</span>
-                    <Button variant="ghost" size="sm">{t('admin.integrations.googleSheets.configure')}</Button>
+                    <Button variant="ghost" size="sm" onClick={() => setModal({ title: 'Gmail configuration', body: 'Mock sender configuration opened for reminder templates and delivery audit settings.' })}>{t('admin.integrations.googleSheets.configure')}</Button>
                   </div>
                 </div>
 
@@ -163,7 +171,7 @@ export default function AdminPage() {
                   </div>
                   <div className={styles.configDetails}>
                     <span>{t('admin.integrations.geminiApi.errors', { count: 3 })}</span>
-                    <Button variant="ghost" size="sm">{t('admin.integrations.geminiApi.viewLogs')}</Button>
+                    <Button variant="ghost" size="sm" onClick={() => setModal({ title: 'Gemini API logs', body: 'Latest mock incidents: 3 degraded extraction calls, 1 rate-limit warning, 0 failed final-review decisions.' })}>{t('admin.integrations.geminiApi.viewLogs')}</Button>
                   </div>
                 </div>
               </div>
@@ -272,14 +280,14 @@ export default function AdminPage() {
                     <span className={styles.retentionLabel}>{t('admin.api.dataRetention.cvStorage')}</span>
                     <span className={styles.retentionDesc}>{t('admin.api.dataRetention.cvStorageDuration', { days: 90 })}</span>
                   </div>
-                  <Button variant="ghost" size="sm">{t('admin.api.dataRetention.editPolicy')}</Button>
+                  <Button variant="ghost" size="sm" onClick={() => setFeedback({ variant: 'info', title: 'Retention policy staged', body: 'CV storage retention policy editor opened in mock mode.' })}>{t('admin.api.dataRetention.editPolicy')}</Button>
                 </div>
                 <div className={styles.retentionItem}>
                   <div className={styles.retentionInfo}>
                     <span className={styles.retentionLabel}>{t('admin.api.dataRetention.interviewTranscripts')}</span>
                     <span className={styles.retentionDesc}>{t('admin.api.dataRetention.interviewDuration', { years: 1 })}</span>
                   </div>
-                  <Button variant="ghost" size="sm">{t('admin.api.dataRetention.editPolicy')}</Button>
+                  <Button variant="ghost" size="sm" onClick={() => setFeedback({ variant: 'info', title: 'Retention policy staged', body: 'Interview transcript retention policy editor opened in mock mode.' })}>{t('admin.api.dataRetention.editPolicy')}</Button>
                 </div>
                 <Notice variant="warning" title={t('admin.api.dataRetention.notice.title')}>
                   {t('admin.api.dataRetention.notice.body')}
@@ -416,6 +424,21 @@ export default function AdminPage() {
                   <span className={styles.eventText}>Google Drive file imported: candidates_batch_5.xlsx</span>
                 </div>
               </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+
+      {modal && (
+        <div className={styles.content} role="dialog" aria-modal="true">
+          <Card>
+            <CardHeader title={modal.title} description="Prototype-only configuration surface" />
+            <CardContent>
+              <Notice variant="info" title="Mock action ready">
+                {modal.body}
+              </Notice>
+              <Button variant="primary" onClick={() => setModal(null)}>Close</Button>
             </CardContent>
           </Card>
         </div>

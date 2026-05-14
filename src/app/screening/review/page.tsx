@@ -7,6 +7,7 @@ import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Notice } from '@/components/ui/Notice';
 import { LoadingState, Skeleton } from '@/components/ui/LoadingState';
 import { mockCandidateApplications } from '@/lib/applicationMockData';
 import { mockScreeningEvaluations } from '@/lib/mockData';
@@ -22,12 +23,14 @@ export default function ScreeningReviewPage() {
     mockScreeningEvaluations[0]?.id ?? null
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [evaluations, setEvaluations] = useState(mockScreeningEvaluations);
+  const [feedback, setFeedback] = useState<{ variant: 'success' | 'info' | 'warning'; title: string; body: string } | null>(null);
 
-  const filteredEvaluations = mockScreeningEvaluations.filter(
+  const filteredEvaluations = evaluations.filter(
     e => filter === 'all' || e.status === filter
   );
 
-  const selected = mockScreeningEvaluations.find(e => e.id === selectedEvaluation);
+  const selected = evaluations.find(e => e.id === selectedEvaluation);
   const selectedApplication = selected?.applicationId
     ? mockCandidateApplications.find(application => application.id === selected.applicationId)
     : undefined;
@@ -48,8 +51,48 @@ export default function ScreeningReviewPage() {
   };
 
   const handleBulkAction = (action: 'approve' | 'reject') => {
-    alert(`${action}: ${selectedCandidates.size}`);
+    const selectedIds = Array.from(selectedCandidates);
+    setEvaluations(prev => prev.map(evaluation => (
+      selectedIds.includes(evaluation.id)
+        ? { ...evaluation, status: action === 'approve' ? 'approved' : 'rejected', decision: action }
+        : evaluation
+    )));
+    setFeedback({
+      variant: action === 'approve' ? 'success' : 'warning',
+      title: action === 'approve' ? 'Candidates approved' : 'Candidates rejected',
+      body: `${selectedCandidates.size} screening decision(s) updated locally.`,
+    });
     setSelectedCandidates(new Set());
+  };
+
+  const handleRejectSelected = () => {
+    if (!selected) return;
+
+    setEvaluations(prev => prev.map(evaluation => (
+      evaluation.id === selected.id
+        ? { ...evaluation, status: 'rejected', decision: 'reject' }
+        : evaluation
+    )));
+    setFeedback({
+      variant: 'warning',
+      title: 'Candidate rejected',
+      body: `${selected.candidateName} was moved to rejected screening status.`,
+    });
+  };
+
+  const handleRescreening = () => {
+    if (!selected) return;
+
+    setEvaluations(prev => prev.map(evaluation => (
+      evaluation.id === selected.id
+        ? { ...evaluation, status: 'pending', decision: 'needs_review' }
+        : evaluation
+    )));
+    setFeedback({
+      variant: 'info',
+      title: 'Re-screening requested',
+      body: `${selected.candidateName} was queued for a mock AI re-screening run.`,
+    });
   };
 
   const selectionAnnouncement = selectedCandidates.size > 0
@@ -77,6 +120,12 @@ export default function ScreeningReviewPage() {
         {selectionAnnouncement}
       </div>
 
+      {feedback && (
+        <Notice variant={feedback.variant} title={feedback.title}>
+          {feedback.body}
+        </Notice>
+      )}
+
       <div className={styles.toolbar}>
         <div className={styles.filterTabs} role="tablist" aria-label={t('screening.review.aria.filterTabs')}>
           {(['pending', 'approved', 'rejected', 'all'] as FilterStatus[]).map(status => (
@@ -90,8 +139,8 @@ export default function ScreeningReviewPage() {
               {t(`screening.review.filter.${status}`)}
               <span className={styles.filterCount}>
                 {status === 'all'
-                  ? mockScreeningEvaluations.length
-                  : mockScreeningEvaluations.filter(e => e.status === status).length}
+                  ? evaluations.length
+                  : evaluations.filter(e => e.status === status).length}
               </span>
             </button>
           ))}
@@ -331,10 +380,10 @@ export default function ScreeningReviewPage() {
                 </div>
               </CardContent>
               <div className={styles.actionButtons}>
-                <Button variant="danger" onClick={() => alert(t('screening.review.actions.reject'))} aria-keyshortcuts="Enter">
+                <Button variant="danger" onClick={handleRejectSelected} aria-keyshortcuts="Enter">
                   {t('screening.review.actions.reject')}
                 </Button>
-                <Button variant="secondary">
+                <Button variant="secondary" onClick={handleRescreening}>
                   {t('screening.review.actions.rescreening')}
                 </Button>
                 <Link href="/interviews/schedule-approval">

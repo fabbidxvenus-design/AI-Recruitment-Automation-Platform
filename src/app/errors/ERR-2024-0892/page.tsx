@@ -39,22 +39,45 @@ export default function ErrorDetailPage() {
   const [showRetryModal, setShowRetryModal] = useState(false);
   const [showEscalateModal, setShowEscalateModal] = useState(false);
   const [retryReason, setRetryReason] = useState('');
+  const [escalateReason, setEscalateReason] = useState('');
   const [retryBackoff, setRetryBackoff] = useState(60);
+  const [assignee, setAssignee] = useState(error.assignee || 'Backend On-call');
+  const [feedback, setFeedback] = useState<{ variant: 'success' | 'info' | 'warning'; title: string; body: string } | null>(null);
 
   const severityClass = styles[error.severity] || '';
 
   const handleRetry = () => {
     if (retryReason.trim()) {
-      alert(`Retry initiated with ${retryBackoff}s backoff. Reason: ${retryReason}`);
       setShowRetryModal(false);
       setRetryReason('');
       setCurrentStep(3);
+      setFeedback({
+        variant: 'success',
+        title: 'Manual retry started',
+        body: `Retry queued with ${retryBackoff}s backoff and the resolution timeline advanced locally.`,
+      });
     }
   };
 
   const handleEscalate = () => {
-    alert('Escalated to engineering team. Engineering Manager has been notified.');
     setShowEscalateModal(false);
+    setEscalateReason('');
+    setAssignee('Engineering Manager');
+    setFeedback({
+      variant: 'warning',
+      title: 'Escalated to engineering',
+      body: 'Engineering Manager has been assigned in this prototype incident workflow.',
+    });
+  };
+
+  const handleReassign = () => {
+    const nextAssignee = assignee === 'Backend On-call' ? 'Platform Reliability Lead' : 'Backend On-call';
+    setAssignee(nextAssignee);
+    setFeedback({
+      variant: 'info',
+      title: 'Incident reassigned',
+      body: `${error.errorCode} is now assigned to ${nextAssignee}.`,
+    });
   };
 
   const elapsedMinutes = 187;
@@ -106,6 +129,12 @@ export default function ErrorDetailPage() {
       <Notice variant="blocker" title={t('errors.detail.notice.title')}>
         {t('errors.detail.notice.body')}
       </Notice>
+
+      {feedback && (
+        <Notice variant={feedback.variant} title={feedback.title}>
+          {feedback.body}
+        </Notice>
+      )}
 
       <div className={styles.mainContent}>
         <div className={styles.contentLeft}>
@@ -305,10 +334,10 @@ export default function ErrorDetailPage() {
                 <div className={styles.assigneeSection}>
                   <div className={styles.assigneeAvatar}>👥</div>
                   <div className={styles.assigneeInfo}>
-                    <span className={styles.assigneeName}>{error.assignee || 'Unassigned'}</span>
+                    <span className={styles.assigneeName}>{assignee}</span>
                     <span className={styles.assigneeRole}>{t('errors.detail.assignment.backendRole')}</span>
                   </div>
-                  <Button variant="secondary" size="sm">{t('errors.detail.assignment.reassign')}</Button>
+                  <Button variant="secondary" size="sm" onClick={handleReassign}>{t('errors.detail.assignment.reassign')}</Button>
                 </div>
               </div>
             </CardContent>
@@ -421,6 +450,8 @@ export default function ErrorDetailPage() {
                   id="escalateReason"
                   className={styles.textarea}
                   rows={4}
+                  value={escalateReason}
+                  onChange={(e) => setEscalateReason(e.target.value)}
                   placeholder={t('errors.detail.escalateModal.reasonPlaceholder')}
                   required
                 />
@@ -428,7 +459,7 @@ export default function ErrorDetailPage() {
             </div>
             <div className={styles.modalFooter}>
               <Button variant="ghost" onClick={() => setShowEscalateModal(false)}>{t('errors.detail.escalateModal.cancel')}</Button>
-              <Button variant="danger" onClick={handleEscalate}>
+              <Button variant="danger" onClick={handleEscalate} disabled={!escalateReason.trim()}>
                 {t('errors.detail.escalateModal.confirm')}
               </Button>
             </div>

@@ -83,6 +83,7 @@ export default function JobIntakePage() {
   const [source, setSource] = useState<IntakeSource>('manual');
   const [loading, setLoading] = useState(false);
   const [selectedRequisitionId, setSelectedRequisitionId] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<{ variant: 'success' | 'warning'; title: string; body: string } | null>(null);
   const [jobData, setJobData] = useState<JobFormData>({
     title: '',
     department: '',
@@ -101,6 +102,16 @@ export default function JobIntakePage() {
 
   const handleSourceChange = (nextSource: IntakeSource): void => {
     setSource(nextSource);
+  };
+
+  const handleImportSheet = (): void => {
+    const requisition = requisitionPreviews.find((item) => item.sourceKey === 'requisitionSheet') ?? requisitionPreviews[0];
+    handleImportRequisition(requisition);
+    setFeedback({
+      variant: 'success',
+      title: 'Sheet imported',
+      body: `${requisition.title} was loaded from the mock requisition sheet for HR review.`,
+    });
   };
 
   const handleImportRequisition = (requisition: RequisitionPreview): void => {
@@ -123,14 +134,26 @@ export default function JobIntakePage() {
       });
 
       if (response.success) {
-        window.alert(t('tools.jobIntake.messages.created'));
+        setFeedback({
+          variant: 'success',
+          title: t('tools.jobIntake.messages.created'),
+          body: `${jobData.title} is now staged as an approved mock JD profile.`,
+        });
         setJobData({ title: '', department: '', location: '', content: '' });
         setSelectedRequisitionId(null);
       } else {
-        window.alert(t('tools.jobIntake.messages.error', { error: response.error }));
+        setFeedback({
+          variant: 'warning',
+          title: t('tools.jobIntake.messages.error', { error: response.error }),
+          body: 'Review required fields before creating this mock job.',
+        });
       }
     } catch (error: unknown) {
-      window.alert(t('tools.jobIntake.messages.unexpected'));
+      setFeedback({
+        variant: 'warning',
+        title: t('tools.jobIntake.messages.unexpected'),
+        body: 'The prototype kept your draft so you can retry without losing JD content.',
+      });
     } finally {
       setLoading(false);
     }
@@ -146,6 +169,12 @@ export default function JobIntakePage() {
       <Notice variant="info" title={t('tools.jobIntake.notice.title')}>
         {t('tools.jobIntake.notice.description')}
       </Notice>
+
+      {feedback && (
+        <Notice variant={feedback.variant} title={feedback.title}>
+          {feedback.body}
+        </Notice>
+      )}
 
       {selectedRequisitionId && (
         <Notice variant="success" title={t('tools.jobIntake.connector.importedTitle')}>
@@ -175,6 +204,9 @@ export default function JobIntakePage() {
           <div className={styles.mockUploadBox}>
             <strong>{t('tools.jobIntake.sheet.dropzone')}</strong>
             <span>{t('tools.jobIntake.sheet.supportedFormats')}</span>
+            <Button variant="secondary" onClick={handleImportSheet}>
+              Import mock requisition sheet
+            </Button>
           </div>
         </Card>
       )}
