@@ -40,12 +40,7 @@ const navSectionsMeta: { titleKey: string; items: NavItem[] }[] = [
   },
   {
     titleKey: 'nav.tools',
-    items: [
-      { labelKey: 'nav.aiTools', href: '/tools', icon: '🛠️' },
-      { labelKey: 'nav.cvEvidence', href: '/tools/cv-evidence', icon: '📄' },
-      { labelKey: 'nav.cvTranslation', href: '/tools/cv-translation', icon: '🌐' },
-      { labelKey: 'nav.interviewTranslation', href: '/tools/interview-translation', icon: '🗣️' },
-    ],
+    items: [{ labelKey: 'nav.aiTools', href: '/tools', icon: '🛠️' }],
   },
   {
     titleKey: 'nav.admin',
@@ -86,7 +81,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <h2 className={styles.navSectionTitle}>{t(section.titleKey)}</h2>
               <ul className={styles.navList}>
                 {section.items.map((item) => {
-                  const isActive = pathname === item.href;
+                  const isActive = pathname === item.href || (item.href === '/tools' && pathname.startsWith('/tools/'));
                   return (
                     <li key={item.href}>
                       <Link
