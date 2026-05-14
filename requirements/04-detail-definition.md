@@ -106,7 +106,7 @@ Upstream: `03-business-definition.md/json`
 | Loading State | Show slot calculation progress. |
 | Error State | Show no slot, Calendar unavailable, or availability missing. |
 | Success State | Show ranked suggested slots and approval actions. |
-| Accessibility Requirements | Timezones displayed with labels; Slot options selectable by keyboard; Conflict warnings not color-only |
+| Accessibility Requirements | Semantic headings and regions; timezone, candidate, interviewer, and slot labels are exposed as text; slot options and approval actions are keyboard operable with visible focus states; form errors and conflict warnings are linked to fields with aria-describedby and aria-invalid where applicable; status/conflict updates use text and polite aria-live announcements, not color alone; tables/lists have accessible names; interactive targets are at least 44x44px. |
 | Source UC/BP/BR IDs | BP-003; BR-001; BR-007; BR-008; BR-024; UC-004 |
 
 #### UI Elements
@@ -181,7 +181,7 @@ Upstream: `03-business-definition.md/json`
 | Loading State | Show evidence package loading. |
 | Error State | Show incomplete or conflicting evidence warning. |
 | Success State | Show final decision confirmation and audit event. |
-| Accessibility Requirements | Decision controls require clear confirmation; Evidence sections have headings; Conflict warnings are text-based |
+| Accessibility Requirements | Semantic headings and regions for evidence, decision, and audit sections; decision controls are keyboard operable, have clear labels, visible focus states, and require confirmation; override/defer reason inputs have labels plus aria-describedby/aria-invalid errors; evidence tables/lists have accessible names; missing/conflicting evidence warnings use text and polite aria-live announcements, not color alone; final status contrast meets accessible status-color expectations; interactive targets are at least 44x44px. |
 | Source UC/BP/BR IDs | BP-006; BP-009; BR-001; BR-012; BR-022; UC-007; UC-009 |
 
 #### UI Elements
@@ -1101,6 +1101,8 @@ Scope constraints: standalone Phase 2 prototype utility modules, not MVP core pi
 | SCREEN-012 | CV Translation Workspace | Language selection, translation display, original CV side-by-side, approval. | Generate CV translation draft for vi/en/ja. | Translation references original cvId; side-by-side review; HR approval before external use. | BP-014; BP-016; BR-030; BR-031; UC-014 | REQ-F-090; REQ-F-091; REQ-F-092; REQ-F-093; REQ-F-094; REQ-F-095; REQ-D-013; REQ-I-007; REQ-C-009; REQ-C-010; REQ-C-011; REQ-C-012 |
 | SCREEN-013 | Interview Translation Workspace | Notes/transcript input, language selection, translation display, approval. | Translate interview notes/transcript to vi/en/ja. | Translation references original interviewId; HR approval before external use. | BP-015; BP-016; BR-032; BR-033; UC-015 | REQ-F-100; REQ-F-101; REQ-F-102; REQ-D-014; REQ-I-007; REQ-C-009; REQ-C-010; REQ-C-011; REQ-C-012 |
 
+Accessibility baseline for SCREEN-009..013: each Phase 2 utility screen uses semantic headings/regions, keyboard-operable form controls and approval actions with visible focus states, explicit labels and inline error messages tied with aria-describedby/aria-invalid, accessible names for generated artifact lists and side-by-side review panels, text plus status-color contrast for pending/approved/rejected states, polite aria-live announcements for validation/generation/approval status changes, and no motion-only dependency for mock generation or translation feedback.
+
 ### Phase 2 Data Entities
 
 | ID | Entity | Required Fields | Validation / Behavior | Source IDs | Requirement IDs |
@@ -1177,6 +1179,8 @@ Scope constraints: prototype-only mock/local state for UAT; no real API persiste
 | ID | Screen | Purpose | Primary Action | Key Behaviors | Source IDs | Requirement IDs |
 | --- | --- | --- | --- | --- | --- | --- |
 | SCREEN-ASSESS-001 | Assessment Plan Setup | Configure shared evaluation setup for an approved Job/JD criteria version. | Select job/JD criteria version, tune shared rubric/weights, choose interview question set version, choose test definition version, and save local draft/approved state. | Shows jobId, jdVersionId, parsedCriteriaVersion, assessmentPlanId, assessmentPlanVersionId, rubricVersionId, interviewQuestionSetVersionId, and testDefinitionVersionId; marks all data as prototype mock/local state. | BP-ASSESS-001; BR-ASSESS-001; BR-ASSESS-002; BR-ASSESS-003; UC-ASSESS-001 | REQ-F-120; REQ-F-121; REQ-F-122; REQ-F-123; REQ-F-124; REQ-D-020; REQ-C-021; REQ-C-022 |
+
+Accessibility baseline for SCREEN-ASSESS-001: setup sections use semantic headings/regions; plan selector, rubric controls, and local draft/approval actions are keyboard operable with visible focus states; criteria and traceability lists have accessible names; labels and inline validation messages are tied with aria-describedby/aria-invalid; approval/draft status changes are announced with polite aria-live text and not color alone; trace IDs remain readable text; interactive targets are at least 44x44px.
 
 ### Assessment Plan Data Entities
 

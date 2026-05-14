@@ -64,20 +64,30 @@ Generated: 2026-05-14T00:00:00Z
 | RAW-049 | REQ-F-120, REQ-F-121, REQ-F-122, REQ-F-123, REQ-D-020, REQ-C-022 | BP-ASSESS-001, BR-ASSESS-001, BR-ASSESS-002, UC-ASSESS-001 | SCREEN-ASSESS-001, DATA-ASSESS-001, DATA-ASSESS-002, DATA-ASSESS-003, DATA-007, DATA-008, TEST-ASSESS-002 | TEST-ASSESS-002 | complete | Interview and test outputs trace to assessment plan, rubric, question set, and test definition versions |
 | RAW-050 | REQ-F-121, REQ-F-122, REQ-F-123, REQ-D-020, REQ-C-022 | BP-ASSESS-001, BR-ASSESS-002, UC-ASSESS-001 | DATA-ASSESS-002, DATA-ASSESS-003, DATA-ASSESS-004, DATA-ASSESS-005, VAL-ASSESS-002, EDGE-ASSESS-001, TEST-ASSESS-001, TEST-ASSESS-002 | TEST-ASSESS-001, TEST-ASSESS-002 | complete | Shared rubric/weights are versioned and inherited by AI Interview and Test/Assignment setup |
 
-## 2. CV Intake and Job/JD Intake Traceability Notes
+## 2. Stakeholder-Facing Traceability Summary
 
-- Candidate/CV Intake traces RAW-001/002/003/005/042/043 through REQ-F/REQ-D/REQ-I/REQ-C to BP-CV/BR-CV/UC-CV and SCREEN-002/API-001/API-002/DATA-CV details.
-- Job/JD Intake traces RAW-004/044/045/046/047 through REQ-F/REQ-D/REQ-I/REQ-C to BP-JOB/BR-JOB/UC-JOB and SCREEN-JOB/API-JOB/DATA-JOB details.
-- Cross-domain screening traces RAW-006/007 through REQ-F-078 and BR-SCR-001 to DATA-APP-001, API-003, VAL-SCR-001, and TEST-SCR-TRACE.
-- Unified Assessment Plan Setup traces RAW-048/049/050 through REQ-F-120..124, REQ-D-020, REQ-C-021/022, BP/BR/UC-ASSESS IDs, SCREEN-ASSESS-001, DATA-ASSESS-001..005, and TEST-ASSESS-001/002.
+- **Candidate/CV intake**: RAW-001/002/003/005/042/043 trace from intake requirements to BP-CV/BR-CV/UC-CV business definitions, then to SCREEN-002, DATA-CV-001..003, API-001/API-002, validation rules, and smoke/UAT tests. The prototype keeps the original CV PDF as the source of truth and shows duplicate/invalid/manual re-screen states with mock/local data only.
+- **Job/JD intake and approval**: RAW-004/044/045/046/047 trace to BP-JOB/BR-JOB/UC-JOB definitions, then to job intake, JD approval, JD version history, DATA-JOB records, API-JOB placeholders, and TEST-JOB coverage. External job source connectors remain prototype-only mock status UI.
+- **Screening traceability**: RAW-006/007/045 connect CandidateProfile/CVVersion, approved ParsedJDProfile, JDVersion, and ParsedCriteriaVersion into screening results, review UI, VAL-SCR-001, and TEST-SCR-TRACE so scores and summaries remain reproducible in the prototype.
+- **Unified assessment setup**: RAW-048/049/050 trace through REQ-F-120..124, REQ-D-020, REQ-C-021/022, BP-ASSESS/BR-ASSESS/UC-ASSESS IDs, SCREEN-ASSESS-001, DATA-ASSESS-001..005, and TEST-ASSESS-001/002. The assessment plan, version, rubric, interview question set, and test definition IDs are inherited by AI Interview and Test/Assignment outputs.
+- **Phase 2 utility AI screens**: RAW-026a/026b/027a/027b/028a/028b/029a/041 trace to SCREEN-009..013, BP-011..016, BR-025..033, UC-011..015, BAC-005..008, and TEST-021..027. These flows remain mock/local prototype surfaces with approval, source-of-truth, and policy notices instead of real LLM, OCR, file parser, calendar, coding sandbox, or backend integrations.
 
-## 3. Validation Summary
+## 3. Gate 3 Business Traceability Summary
 
-- **Count**: 6
-- **Length**: 6
-- **LongLength**: 6
-- **Rank**: 1
-- **SyncRoot**:      
-- **IsReadOnly**: False
-- **IsFixedSize**: True
-- **IsSynchronized**: False
+- Gate 3 maps business objectives, stakeholders, roles, business processes, rules, use cases, acceptance criteria, risks, and blocking questions back to Gate 2 requirement IDs.
+- Core recruiting workflow coverage includes CV intake, screening, interview scheduling, async AI interview, test/assignment review, final decision, admin/audit controls, and integration handoff constraints.
+- Phase 2 business coverage is represented by BP-011..016, BR-025..033, UC-011..015, BAC-005..008, RISK-007..011, and BQ policy placeholders; unresolved policy decisions remain blockers for production handoff, not prototype implementation tasks.
+
+## 4. Gate 4 Detail Traceability Summary
+
+- Gate 4 maps each covered requirement to concrete prototype artifacts: screen IDs, data contracts, API placeholders, validation rules, security/privacy notices, edge cases, and test IDs.
+- Prototype route coverage is centered on the approved Gate 4 screens plus Error Remediation and Assessment Plan Setup; out-of-scope backend/API implementation is intentionally excluded.
+- Detail traceability preserves source-of-truth chains for CV PDF versions, JD/criteria versions, assessment plan/rubric versions, interview question sets, test definitions, and downstream review outputs.
+
+## 5. Validation Summary
+
+- **Gate 1 Requirement**: PASS — raw requirements are captured and versioned.
+- **Gate 2 Requirement Definition**: CONDITIONAL_PASS — discovery/BA refinement accepted; production handoff remains blocked by policy and contract questions.
+- **Gate 3 Business Definition**: CONDITIONAL_PASS — business definitions are traced; open blocking questions remain explicit.
+- **P0 Contract Closure**: CONDITIONAL — use-case, state machine, approval, AI result, integration, and file/OCR contracts remain handoff prerequisites.
+- **Gate 4 Detail Definition**: CONDITIONAL_PASS — detail screens, data contracts, validation rules, prototype tests, and blocker notices are documented; seven policy questions remain non-prototype blockers.

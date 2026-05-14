@@ -15,6 +15,8 @@ const routes = [
   { path: '/errors/ERR-2024-0892', text: /Error Remediation|Xử lý sự cố/ },
 ];
 
+const sharedAssessmentTraceabilityValues = ['job-001', 'jd-ver-001-v2', 'assess-plan-001', 'assess-plan-ver-001', 'rubric-ver-001'];
+
 test.describe('prototype route smoke coverage', () => {
   for (const route of routes) {
     test(`${route.path} renders`, async ({ page }) => {
@@ -45,18 +47,33 @@ test('screening review shows traceability after selecting candidate', async ({ p
 test('assessment setup shows shared assessment traceability', async ({ page }) => {
   await page.goto('/assessments/setup');
 
-  await expect(page.getByText('assess-plan-001').first()).toBeVisible();
-  await expect(page.getByText('assess-plan-ver-001').first()).toBeVisible();
-  await expect(page.getByText('rubric-ver-001').first()).toBeVisible();
-  await expect(page.getByText('iqs-ver-001').first()).toBeVisible();
-  await expect(page.getByText('test-def-ver-001').first()).toBeVisible();
+  for (const value of [...sharedAssessmentTraceabilityValues, 'iqs-ver-001', 'test-def-ver-001']) {
+    await expect(page.getByText(value).first()).toBeVisible();
+  }
+
+  const parsedCriteriaRow = page
+    .locator('dt', { hasText: /Parsed Criteria Version|Phiên bản tiêu chí/i })
+    .first()
+    .locator('xpath=..');
+  await expect(parsedCriteriaRow.locator('dd')).toHaveText('2');
 });
 
-test('test grading shows assessment traceability for selected result', async ({ page }) => {
-  await page.goto('/tests/grading');
-  await page.getByText('Sarah Chen').first().click();
+test('interview portal shows assessment traceability for default mock session', async ({ page }) => {
+  await page.goto('/portal/interview/demo-token');
 
+  await expect(page.getByRole('heading', { name: /Assessment Traceability|Truy vết kế hoạch đánh giá/ })).toBeVisible();
+  for (const value of [...sharedAssessmentTraceabilityValues, 'iqs-ver-001']) {
+    await expect(page.getByText(value).first()).toBeVisible();
+  }
+});
+
+test('test grading shows assessment traceability for default selected result', async ({ page }) => {
+  await page.goto('/tests/grading');
+
+  await expect(page.getByText('JavaScript Fundamentals').first()).toBeVisible();
+  await expect(page.getByText('Sarah Chen').first()).toBeVisible();
   await expect(page.getByText(/Assessment Traceability|Truy vết kế hoạch đánh giá/)).toBeVisible();
-  await expect(page.getByText('assess-plan-001').first()).toBeVisible();
-  await expect(page.getByText('test-def-ver-001').first()).toBeVisible();
+  for (const value of [...sharedAssessmentTraceabilityValues, 'test-def-ver-001']) {
+    await expect(page.getByText(value).first()).toBeVisible();
+  }
 });
