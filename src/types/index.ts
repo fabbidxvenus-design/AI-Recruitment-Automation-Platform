@@ -196,3 +196,5 @@ export { isSuccess, isFailure, successResponse, failureResponse, paginatedRespon
 export type { CVEvidenceExtraction, CVStructuredData, ContactInfo, EducationEntry, ExperienceEntry } from './cv-evidence';
 export type { CVTranslation, CVTranslationRequest } from './cv-translation';
 export type { InterviewTranslation, InterviewTranslationRequest } from './interview-translation';
+export type { CandidateCV, CVVersion, CVExtractionResult, CandidateApplication } from './cv-intake';
+export type { Job as JobIntake, OriginalJDDocument, JDVersion, ParsedJDProfile, JobStatus, JDSourceType } from './job-intake';
