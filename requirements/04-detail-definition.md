@@ -1168,6 +1168,56 @@ Scope constraints: standalone Phase 2 prototype utility modules, not MVP core pi
 | TEST-026; EDGE-015; VAL-021; SEC-020; SEC-021 | BP-016; BR-026; BR-028; BR-031; BR-033; UC-011; UC-012; UC-014; UC-015 | REQ-C-012 |
 | EDGE-016 | BP-011; BP-012 | REQ-I-005; REQ-I-006; REQ-C-013 |
 
+## 11B. Unified Assessment Plan Setup Detail Addendum
+
+Scope constraints: prototype-only mock/local state for UAT; no real API persistence, LLM generation, OCR, file parsing, ATS/job board/career site integration, or external assessment provider integration. Assessment setup is the shared versioned source of truth for AI Interview and Test/Assignment prototype flows.
+
+### Assessment Plan Screen
+
+| ID | Screen | Purpose | Primary Action | Key Behaviors | Source IDs | Requirement IDs |
+| --- | --- | --- | --- | --- | --- | --- |
+| SCREEN-ASSESS-001 | Assessment Plan Setup | Configure shared evaluation setup for an approved Job/JD criteria version. | Select job/JD criteria version, tune shared rubric/weights, choose interview question set version, choose test definition version, and save local draft/approved state. | Shows jobId, jdVersionId, parsedCriteriaVersion, assessmentPlanId, assessmentPlanVersionId, rubricVersionId, interviewQuestionSetVersionId, and testDefinitionVersionId; marks all data as prototype mock/local state. | BP-ASSESS-001; BR-ASSESS-001; BR-ASSESS-002; BR-ASSESS-003; UC-ASSESS-001 | REQ-F-120; REQ-F-121; REQ-F-122; REQ-F-123; REQ-F-124; REQ-D-020; REQ-C-021; REQ-C-022 |
+
+### Assessment Plan Data Entities
+
+| ID | Entity | Required Fields | Validation / Behavior | Source IDs | Requirement IDs |
+| --- | --- | --- | --- | --- | --- |
+| DATA-ASSESS-001 | AssessmentPlan | assessmentPlanId, jobId, jdVersionId, parsedCriteriaVersion, currentVersionId, status | Plan links to an approved Job/JD criteria version before interview/test setup is usable. | BP-ASSESS-001; BR-ASSESS-001; UC-ASSESS-001 | REQ-F-120; REQ-D-020; REQ-C-022 |
+| DATA-ASSESS-002 | AssessmentPlanVersion | assessmentPlanVersionId, assessmentPlanId, rubricVersionId, interviewQuestionSetVersionId, testDefinitionVersionId, createdAt, createdBy | Version changes preserve prior interview/test traceability. | BR-ASSESS-001; BR-ASSESS-002 | REQ-F-121; REQ-F-122; REQ-F-123; REQ-D-020 |
+| DATA-ASSESS-003 | RubricVersion | rubricVersionId, criteria, weights, scoringScale | Criteria weights must total 100 and are inherited by interview/test unless a visible override is versioned. | BR-ASSESS-002 | REQ-F-121; REQ-D-020 |
+| DATA-ASSESS-004 | InterviewQuestionSetVersion | interviewQuestionSetVersionId, questions, language, followUpPolicy | Question set belongs to the selected assessment plan version and is displayed in interview traceability. | BR-ASSESS-002; UC-ASSESS-001 | REQ-F-122; REQ-D-020 |
+| DATA-ASSESS-005 | TestDefinitionVersion | testDefinitionVersionId, testType, sections, answerKeyOrRubric | Test definition belongs to the selected assessment plan version and is displayed in test grading traceability. | BR-ASSESS-002; UC-ASSESS-001 | REQ-F-123; REQ-D-020 |
+
+### Assessment Plan Interface Contracts
+
+| ID | Method | Path | Request | Response | Source IDs | Requirement IDs |
+| --- | --- | --- | --- | --- | --- | --- |
+| API-ASSESS-001 | prototype/local | /assessments/setup | jobId, jdVersionId, parsedCriteriaVersion, rubricVersionId, interviewQuestionSetVersionId, testDefinitionVersionId | assessmentPlanId, assessmentPlanVersionId, traceability preview | BP-ASSESS-001; BR-ASSESS-003; UC-ASSESS-001 | REQ-F-120; REQ-F-121; REQ-F-122; REQ-F-123; REQ-F-124 |
+
+### Assessment Traceability Extensions
+
+| Target Detail | Added Trace Fields | Expected Behavior | Source IDs | Requirement IDs |
+| --- | --- | --- | --- | --- |
+| DATA-007 Async Interview Transcript and Evaluation | assessmentPlanId, assessmentPlanVersionId, rubricVersionId, interviewQuestionSetVersionId, jobId, jdVersionId, parsedCriteriaVersion | Candidate interview session displays and stores the approved assessment setup version used for questions and evaluation rubric. | BR-ASSESS-001; BR-ASSESS-002; UC-005 | REQ-F-122; REQ-C-022 |
+| DATA-008 Test Definition and Submission | assessmentPlanId, assessmentPlanVersionId, rubricVersionId, testDefinitionVersionId, jobId, jdVersionId, parsedCriteriaVersion | Test grading displays and stores the approved assessment setup version used for answer key/rubric and report. | BR-ASSESS-001; BR-ASSESS-002; UC-006 | REQ-F-123; REQ-C-022 |
+
+### Assessment Plan Validation, Edge, and Test Details
+
+| ID | Type | Detail | Expected Behavior | Source IDs | Requirement IDs |
+| --- | --- | --- | --- | --- | --- |
+| VAL-ASSESS-001 | validation | Assessment plan requires approved Job/JD criteria version. | Missing jobId, jdVersionId, or parsedCriteriaVersion blocks approved state. | BR-ASSESS-001 | REQ-F-120; REQ-C-022 |
+| VAL-ASSESS-002 | validation | Rubric weights must total 100. | Invalid weights show an inline validation warning and preserve draft state. | BR-ASSESS-002 | REQ-F-121 |
+| EDGE-ASSESS-001 | edge | Existing interview/test output uses prior assessment version. | Prior outputs retain their original assessmentPlanVersionId and are not rewritten. | BR-ASSESS-001; BR-ASSESS-002 | REQ-F-121; REQ-C-022 |
+| TEST-ASSESS-001 | test | Assessment setup route renders shared plan and traceability preview. | Open setup route; verify Job/JD criteria version, rubric, interview setup, test setup, and trace IDs are visible. | UC-ASSESS-001 | REQ-F-120; REQ-F-121; REQ-F-122; REQ-F-123; REQ-F-124 |
+| TEST-ASSESS-002 | test | Interview/test surfaces expose assessment plan traceability. | Open interview demo and test grading; verify assessmentPlanId, assessmentPlanVersionId, rubricVersionId, and question/test definition version IDs are visible. | UC-005; UC-006; BR-ASSESS-002 | REQ-F-122; REQ-F-123; REQ-C-022 |
+
+### Assessment Plan Traceability Matrix Addendum
+
+| Detail ID Range | Upstream Business IDs | Requirement IDs |
+| --- | --- | --- |
+| SCREEN-ASSESS-001; DATA-ASSESS-001..005; API-ASSESS-001; VAL-ASSESS-001; VAL-ASSESS-002; EDGE-ASSESS-001; TEST-ASSESS-001 | BP-ASSESS-001; BR-ASSESS-001; BR-ASSESS-002; BR-ASSESS-003; UC-ASSESS-001 | REQ-F-120; REQ-F-121; REQ-F-122; REQ-F-123; REQ-F-124; REQ-D-020; REQ-C-021; REQ-C-022 |
+| DATA-007; DATA-008; TEST-ASSESS-002 | BR-ASSESS-001; BR-ASSESS-002; UC-005; UC-006 | REQ-F-122; REQ-F-123; REQ-C-022 |
+
 ## 12. Validation Gate 4
 
 | Check | Status | Notes |

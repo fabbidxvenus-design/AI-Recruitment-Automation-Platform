@@ -1,1315 +1,1364 @@
 {
-    "metadata":  {
-                     "productName":  "RecruitAI",
-                     "projectType":  "data-ai",
-                     "language":  "bilingual",
-                     "version":  "2.2",
-                     "generatedAt":  "2026-05-14T00:00:00Z",
-                     "inputSources":  [
-                                          {
-                                              "type":  "pasted-text",
-                                              "path":  "",
-                                              "description":  "User input"
-                                          },
-                                          {
-                                              "type":  "file",
-                                              "path":  "Há»‡ thá»‘ng recruitment.jpg",
-                                              "description":  "System diagram"
-                                          },
-                                          {
-                                              "type":  "interactive",
-                                              "path":  "",
-                                              "description":  "Q\u0026A + review comments"
-                                          },
-                                          {
-                                              "type":  "scope-decision",
-                                              "path":  "",
-                                              "description":  "Explicit scope decisions for Phase 2 prototype modules"
-                                          }
-                                      ]
-                 },
-    "context":  {
-                    "productName":  "RecruitAI â€” Há»‡ thá»‘ng Recruitment AI Automation",
-                    "businessDomain":  "Human Resources / Recruitment",
-                    "targetUsers":  [
-                                        "Internal HR Team"
-                                    ],
-                    "stakeholders":  [
-                                         "HR Manager",
-                                         "Hiring Manager",
-                                         "Interviewer",
-                                         "IT Admin"
-                                     ],
-                    "scopeBoundaryKnown":  "yes"
-                },
-    "rawRequirements":  [
-                            {
-                                "id":  "RAW-001",
-                                "text":  "Batch import CV PDF files as candidate source; primary path is Google Drive folder trigger/scan and secondary path is multi-file PDF upload; Excel is optional metadata support only",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED] Candidate = CV; CV PDF is primary source"
-                            },
-                            {
-                                "id":  "RAW-002",
-                                "text":  "Manual candidate creation uses single CV PDF upload with optional metadata; manual job creation belongs to the separate Job/JD Intake domain",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED] Split Candidate/CV Intake from Job/JD Intake"
-                            },
-                            {
-                                "id":  "RAW-003",
-                                "text":  "Google Drive CV intake watches or scans configured Drive folders for new PDF CV files and flags invalid files/subfolders as import errors for HR review",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED] Drive folder trigger/scan is primary CV import path"
-                            },
-                            {
-                                "id":  "RAW-004",
-                                "text":  "Job/JD Intake supports manual job creation, JD text input, JD PDF/DOCX upload, Google Drive JD import, and Sheet/Excel job requisition import",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED] Job/JD Intake is separate from Candidate/CV Intake"
-                            },
-                            {
-                                "id":  "RAW-005",
-                                "text":  "The system uses LLM extraction on text-native PDF CV content to create candidate profiles; OCR is excluded from MVP",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED] LLM extract, no OCR"
-                            },
-                            {
-                                "id":  "RAW-006",
-                                "text":  "AI matching compares the extracted CandidateProfile and CV version against the HR-approved ParsedJDProfile and parsed criteria version",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED] Screening links CV and JD versions"
-                            },
-                            {
-                                "id":  "RAW-007",
-                                "text":  "Screening score and summary must trace to candidateId, cvVersionId, jobId, jdVersionId, and parsedCriteriaVersion",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED] Cross-domain screening traceability"
-                            },
-                            {
-                                "id":  "RAW-008",
-                                "text":  "Output: Risk flags (Ä‘iá»ƒm khÃ´ng phÃ¹ há»£p nghiÃªm trá»ng)",
-                                "source":  "Q\u0026A",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A]"
-                            },
-                            {
-                                "id":  "RAW-009",
-                                "text":  "Output: Missing skills list",
-                                "source":  "Q\u0026A",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A]"
-                            },
-                            {
-                                "id":  "RAW-010",
-                                "text":  "HR Manager approve káº¿t quï¿½ï¿½ï¿½ sÃ ng lá»c trÆ°á»›c khi chuyá»ƒn bÆ°á»›c",
-                                "source":  "User input + Q\u0026A",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A] Single approve, há»— trá»£ bulk"
-                            },
-                            {
-                                "id":  "RAW-011",
-                                "text":  "CV format: PDF + DOCX only (khÃ´ng cáº§n OCR áº£nh)",
-                                "source":  "Q\u0026A",
-                                "stakeholder":  "HR Manager",
-                                "type":  "constraint",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A]"
-                            },
-                            {
-                                "id":  "RAW-041",
-                                "text":  "CV Evidence Viewer: Cho phÃ©p HR xem CV gá»‘c, text trÃ­ch xuáº¥t, vÃ  cÃ¡c evidence spans Ä‘Æ°á»£c link vá»›i tiÃªu chÃ­ JD/screening (tÃ­ch há»£p vá»›i mÃ n hÃ¬nh sÃ ng lá»c/final review â€” evidence detail lÃ  Phase 2 prototype utility)",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "Phase 2 prototype utility module"
-                            },
-                            {
-                                "id":  "RAW-012",
-                                "text":  "Tá»± Ä‘á»™ng thu tháº­p availability á»©ng viÃªn + ngÆ°á»i phá»ng váº¥n",
-                                "source":  "User input",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  ""
-                            },
-                            {
-                                "id":  "RAW-013",
-                                "text":  "Há»‡ thá»‘ng suggest lá»‹ch, HR Manager approve trÆ°á»›c khi confirm",
-                                "source":  "User input",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A]"
-                            },
-                            {
-                                "id":  "RAW-014",
-                                "text":  "LÃªn lá»‹ch tá»± Ä‘á»™ng qua Google Calendar",
-                                "source":  "User input",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A]"
-                            },
-                            {
-                                "id":  "RAW-015",
-                                "text":  "Gá»­i email tá»± Ä‘á»™ng qua shared HR mailbox (Gmail API)",
-                                "source":  "User input + Q\u0026A",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A]"
-                            },
-                            {
-                                "id":  "RAW-016",
-                                "text":  "Nháº¯c lá»‹ch phá»ng váº¥n qua email",
-                                "source":  "User input",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "medium",
-                                "notes":  ""
-                            },
-                            {
-                                "id":  "RAW-017",
-                                "text":  "Timezone support cho á»©ng viÃªn/interviewer á»Ÿ nÆ°á»›c ngoÃ i",
-                                "source":  "Review",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "medium",
-                                "notes":  ""
-                            },
-                            {
-                                "id":  "RAW-018",
-                                "text":  "Phá»ng váº¥n async qua text message",
-                                "source":  "User input + Q\u0026A",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A]"
-                            },
-                            {
-                                "id":  "RAW-019",
-                                "text":  "Hybrid: cÃ¢u há»i cá»‘ Ä‘á»‹nh + AI táº¡o follow-up dá»±a trÃªn cÃ¢u tráº£ lá»i",
-                                "source":  "Q\u0026A",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A]"
-                            },
-                            {
-                                "id":  "RAW-020",
-                                "text":  "AI Ä‘Ã¡nh giÃ¡ nÄƒng lá»±c á»©ng viÃªn vÃ  táº¡o report",
-                                "source":  "User input",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  ""
-                            },
-                            {
-                                "id":  "RAW-021",
-                                "text":  "Há»— trá»£ Ä‘a ngÃ´n ngá»¯: Viá»‡t, Nháº­t, Anh",
-                                "source":  "Q\u0026A",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A]"
-                            },
-                            {
-                                "id":  "RAW-022",
-                                "text":  "Import bÃ i test + Ä‘Ã¡p Ã¡n Ä‘á»ƒ cháº¥m Ä‘iá»ƒm (LLM)",
-                                "source":  "User input",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  ""
-                            },
-                            {
-                                "id":  "RAW-023",
-                                "text":  "Há»— trá»£ multiple choice (cháº¥m tá»± Ä‘á»™ng theo Ä‘Ã¡p Ã¡n)",
-                                "source":  "Q\u0026A",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A]"
-                            },
-                            {
-                                "id":  "RAW-024",
-                                "text":  "Há»— trá»£ essay (AI Ä‘Ã¡nh giÃ¡ theo rubric)",
-                                "source":  "Q\u0026A",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A]"
-                            },
-                            {
-                                "id":  "RAW-025",
-                                "text":  "Há»— trá»£ coding challenge (test cases + code quality)",
-                                "source":  "Q\u0026A",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A]"
-                            },
-                            {
-                                "id":  "RAW-026",
-                                "text":  "Táº¡o content tuyá»ƒn dá»¥ng dáº¡ng gá»£i Ã½ (LLM): plain text, copyable, ho trá»£ export file, ho trá»£ channel integration",
-                                "source":  "User input + scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "Phase 2 prototype standalone"
-                            },
-                            {
-                                "id":  "RAW-026a",
-                                "text":  "Content publishing: Há»— trá»£ thá»§ cÃ´ng copy, export file, vÃ  tÃ­ch há»£p channel (LinkedIn, Facebook, job boards...)",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A] All 3 supported"
-                            },
-                            {
-                                "id":  "RAW-026b",
-                                "text":  "Generated content pháº£i Ä‘Æ°á»£c HR review/approve trÆ°á»›c khi publish/export/use",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "constraint",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A]"
-                            },
-                            {
-                                "id":  "RAW-027",
-                                "text":  "Thiáº¿t káº¿ áº£nh tuyá»ƒn dá»¥ng Ä‘Æ¡n giáº£n (LLM) dáº¡ng gá»£i Ã½: mock image prototype â€” khÃ´ng báº¯t buá»™c tÃ­ch há»£p image provider tháº­t",
-                                "source":  "User input + scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "idea",
-                                "confidence":  "high",
-                                "notes":  "Phase 2 prototype standalone"
-                            },
-                            {
-                                "id":  "RAW-027a",
-                                "text":  "Design scope: mock/preview, creative suggestions, banner, poster, social asset â€” khÃ´ng cáº§n integration tháº­t",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A] Not real image generation"
-                            },
-                            {
-                                "id":  "RAW-027b",
-                                "text":  "Generated design pháº£i Ä‘Æ°á»£c HR review/approve trÆ°á»›c khi sá»­ dá»¥ng",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "constraint",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A]"
-                            },
-                            {
-                                "id":  "RAW-028",
-                                "text":  "Dá»‹ch CV tiáº¿ng Viá»‡t / Nháº­t / Anh (LLM)",
-                                "source":  "User input + scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "vi/en/ja"
-                            },
-                            {
-                                "id":  "RAW-028a",
-                                "text":  "CV translation: Há»— trá»£ HR review vÃ  related workflows, nhÆ°ng CV gá»‘c lÃ  nguá»“n chuáº©n duy nháº¥t",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "constraint",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A] Original CV is source of truth"
-                            },
-                            {
-                                "id":  "RAW-028b",
-                                "text":  "Screening decisions pháº£i cÃ³ traceback to original CV",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "constraint",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A]"
-                            },
-                            {
-                                "id":  "RAW-029",
-                                "text":  "Nháº­n xÃ©t phá»ng váº¥n tiáº¿ng Nháº­t (LLM)",
-                                "source":  "User input",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "Phase 2 prototype standalone"
-                            },
-                            {
-                                "id":  "RAW-029a",
-                                "text":  "Translated notes: Há»— trá»£ HR review vÃ  related workflows",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A]"
-                            },
-                            {
-                                "id":  "RAW-030",
-                                "text":  "Pipeline auto: Táº¡o nguá»“n â†’ SÃ ng lá»c â†’ Set lá»‹ch â†’ Phá»ng váº¥n â†’ Cháº¥m bÃ i",
-                                "source":  "User input",
-                                "stakeholder":  "HR Manager",
-                                "type":  "goal",
-                                "confidence":  "high",
-                                "notes":  ""
-                            },
-                            {
-                                "id":  "RAW-031",
-                                "text":  "Human approve báº¯t buá»™c á»Ÿ bÆ°á»›c sÃ ng lá»c vÃ  set lá»‹ch",
-                                "source":  "Q\u0026A",
-                                "stakeholder":  "HR Manager",
-                                "type":  "constraint",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A]"
-                            },
-                            {
-                                "id":  "RAW-032",
-                                "text":  "Content/Design/Translation lÃ  cÃ¡c Phase 2 prototype standalone module, KHÃ”NG náº±m trong core pipeline",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "constraint",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A] Updated wording"
-                            },
-                            {
-                                "id":  "RAW-033",
-                                "text":  "Approval timeout: chá»‰ reminder, khÃ´ng auto cancel/skip",
-                                "source":  "Q\u0026A",
-                                "stakeholder":  "HR Manager",
-                                "type":  "constraint",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A]"
-                            },
-                            {
-                                "id":  "RAW-034",
-                                "text":  "MVP = full pipeline chÃ­nh (Phase 1); Content/Design/Translation lÃ  Phase 2 prototype standalone",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "constraint",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A] Updated wording"
-                            },
-                            {
-                                "id":  "RAW-035",
-                                "text":  "Quy mÃ´ lá»›n: \u003e 200 job/thÃ¡ng",
-                                "source":  "Q\u0026A",
-                                "stakeholder":  "HR Manager",
-                                "type":  "constraint",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED via Q\u0026A]"
-                            },
-                            {
-                                "id":  "RAW-036",
-                                "text":  "Há»— trá»£ Ä‘a ngÃ´n ngá»¯: Viá»‡t, Nháº­t, Anh",
-                                "source":  "Q\u0026A",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  ""
-                            },
-                            {
-                                "id":  "RAW-037",
-                                "text":  "KhÃ´ng rÃ ng buá»™c tech stack",
-                                "source":  "Q\u0026A",
-                                "stakeholder":  "IT Admin",
-                                "type":  "constraint",
-                                "confidence":  "high",
-                                "notes":  ""
-                            },
-                            {
-                                "id":  "RAW-038",
-                                "text":  "Báº£o máº­t dá»¯ liá»‡u á»©ng viÃªn má»©c cÆ¡ báº£n",
-                                "source":  "Q\u0026A",
-                                "stakeholder":  "HR Manager",
-                                "type":  "constraint",
-                                "confidence":  "medium",
-                                "notes":  ""
-                            },
-                            {
-                                "id":  "RAW-039",
-                                "text":  "TÃ­ch há»£p Google Workspace: Calendar, Gmail, Drive",
-                                "source":  "Q\u0026A",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  ""
-                            },
-                            {
-                                "id":  "RAW-040",
-                                "text":  "Há»‡ thá»‘ng chá»‰ phá»¥c vá»¥ HR ná»™i bá»™, khÃ´ng multi-tenant",
-                                "source":  "Q\u0026A",
-                                "stakeholder":  "HR Manager",
-                                "type":  "constraint",
-                                "confidence":  "high",
-                                "notes":  ""
-                            },
-                            {
-                                "id":  "RAW-042",
-                                "text":  "CV versioning is required; new CV files create a new CV version and flag HR for manual re-screen decision without automatic re-screening",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "constraint",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED] Manual re-screen trigger only"
-                            },
-                            {
-                                "id":  "RAW-043",
-                                "text":  "The original CV PDF is the source of truth for candidate information; extracted profiles and translations are derived artifacts",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "constraint",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED] CV source of truth"
-                            },
-                            {
-                                "id":  "RAW-044",
-                                "text":  "HR-approved parsed JD profile is the operational source of truth for matching; original JD text/file is retained as evidence/reference",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "constraint",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED] JD source of truth"
-                            },
-                            {
-                                "id":  "RAW-045",
-                                "text":  "Job/JD versioning is required; JD document updates create JD versions and criteria tuning may create a new parsedCriteriaVersion without changing the original JD document",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "constraint",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED] Hybrid criteria versioning"
-                            },
-                            {
-                                "id":  "RAW-046",
-                                "text":  "External ATS, job board, and career site job source connectors are prototype-only mock UI/status previews with no real external API integration in MVP",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "constraint",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED] Prototype-only external connectors"
-                            },
-                            {
-                                "id":  "RAW-047",
-                                "text":  "If HR rejects an AI-parsed JD profile, HR can either edit parsed fields and resubmit for approval or re-upload/re-parse corrected JD source",
-                                "source":  "Scope decision",
-                                "stakeholder":  "HR Manager",
-                                "type":  "need",
-                                "confidence":  "high",
-                                "notes":  "[CLARIFIED] JD rejection recovery"
-                            }
-                        ],
-    "useCases":  [
-                     {
-                         "id":  "UC-SRC",
-                         "name":  "Candidate Sourcing",
-                         "actor":  [
-                                       "HR Recruiter",
-                                       "System"
-                                   ],
-                         "trigger":  "HR upload file / HR táº¡o thá»§ cÃ´ng / File má»›i trÃªn Google Drive",
-                         "input":  [
-                                       "Excel file (batch)",
-                                       "Manual form data",
-                                       "Google Drive files"
-                                   ],
-                         "process":  [
-                                         "Validate file format",
-                                         "Parse data (job/candidate)",
-                                         "Create records",
-                                         "Set state = CV_IMPORTED"
-                                     ],
-                         "output":  [
-                                        "Job records",
-                                        "Candidate records with status",
-                                        "Import error/warning report (visible per invalid item)"
-                                    ],
-                         "exception":  [
-                                           "File format invalid",
-                                           "Duplicate candidate",
-                                           "Missing required fields",
-                                           "Non-PDF files in Drive scan",
-                                           "Nested subfolders in Drive scan (each flagged individually)"
-                                       ]
-                     },
-                     {
-                         "id":  "UC-SCR",
-                         "name":  "CV Screening",
-                         "actor":  [
-                                       "HR Recruiter (trigger)",
-                                       "System (process)",
-                                       "HR Manager (approve)"
-                                   ],
-                         "trigger":  "HR trigger screening / Auto after CV_IMPORTED",
-                         "input":  [
-                                       "JD (text or PDF/DOCX)",
-                                       "CV file (PDF/DOCX)"
-                                   ],
-                         "process":  [
-                                         "Extract text from CV",
-                                         "Parse JD requirements",
-                                         "Extract skills/experience/education/language",
-                                         "Match CV vs JD",
-                                         "Generate score + summary + flags"
-                                     ],
-                         "output":  [
-                                        "Matching score (0-100)",
-                                        "Summary",
-                                        "Risk flags",
-                                        "Missing skills",
-                                        "Recommendation",
-                                        "Parsed JD profile"
-                                    ],
-                         "exception":  [
-                                           "File corrupted",
-                                           "Cannot parse CV",
-                                           "JD missing criteria",
-                                           "HR rejects AI-parsed JD profile (recovery: edit parsed fields + resubmit OR re-parse/re-upload corrected JD source)"
-                                       ],
-                         "approval":  "HR Manager single approve (bulk supported). Reminder only, no timeout.",
-                         "note":  "Manual re-screen trigger if new CV version uploaded for later-stage candidate"
-                     },
-                     {
-                         "id":  "UC-CVIEW",
-                         "name":  "CV Evidence Viewer",
-                         "actor":  [
-                                       "HR Recruiter",
-                                       "HR Manager"
-                                   ],
-                         "trigger":  "Manual request from screening results",
-                         "input":  [
-                                       "CV file",
-                                       "Extracted text",
-                                       "Evidence spans from screening"
-                                   ],
-                         "process":  [
-                                         "Display original CV",
-                                         "Display extracted text",
-                                         "Highlight/link evidence spans to JD criteria",
-                                         "Allow navigation between evidence and criteria"
-                                     ],
-                         "output":  [
-                                        "Unified view: original CV + text + linked evidence"
-                                    ],
-                         "note":  "Phase 2 prototype utility module; co the tich hop voi man hinh sang loc/final review nhung evidence detail khong thuoc MVP scope"
-                     },
-                     {
-                         "id":  "UC-SCH",
-                         "name":  "Interview Scheduling",
-                         "actor":  [
-                                       "System (suggest)",
-                                       "HR Manager (approve)",
-                                       "Candidate",
-                                       "Interviewer"
-                                   ],
-                         "trigger":  "Candidate state = SCREENING_APPROVED",
-                         "input":  [
-                                       "Candidate availability",
-                                       "Interviewer GCal free/busy",
-                                       "Scheduling rules"
-                                   ],
-                         "process":  [
-                                         "Collect availability",
-                                         "Read GCal free/busy",
-                                         "Find optimal slots",
-                                         "Suggest to HR Manager",
-                                         "HR Manager approve",
-                                         "Create GCal event",
-                                         "Send confirmation email"
-                                     ],
-                         "output":  [
-                                        "Calendar event",
-                                        "Confirmation emails"
-                                    ],
-                         "exception":  [
-                                           "No available slots",
-                                           "GCal not accessible",
-                                           "Candidate not responding"
-                                       ],
-                         "approval":  "HR Manager single approve. Reminder only, no timeout."
-                     },
-                     {
-                         "id":  "UC-INT",
-                         "name":  "AI Interview (Async)",
-                         "actor":  [
-                                       "System (AI)",
-                                       "Candidate"
-                                   ],
-                         "trigger":  "Candidate state = INTERVIEW_CONFIRMED",
-                         "input":  [
-                                       "JD",
-                                       "Candidate profile",
-                                       "Interview question template"
-                                   ],
-                         "process":  [
-                                         "Generate interview link",
-                                         "Send link via email",
-                                         "Candidate answers (text async)",
-                                         "Hybrid: fixed + follow-up questions",
-                                         "AI evaluates",
-                                         "Generate report"
-                                     ],
-                         "output":  [
-                                        "Interview transcript",
-                                        "AI evaluation report",
-                                        "Score",
-                                        "Recommendation"
-                                    ],
-                         "exception":  [
-                                           "Candidate not responding",
-                                           "Link expired",
-                                           "AI evaluation uncertain"
-                                       ]
-                     },
-                     {
-                         "id":  "UC-TST",
-                         "name":  "Test Grading",
-                         "actor":  [
-                                       "HR Recruiter (setup)",
-                                       "System (grade)",
-                                       "Candidate"
-                                   ],
-                         "trigger":  "Candidate state = INTERVIEW_COMPLETED",
-                         "input":  [
-                                       "Test definition + answer key/rubric",
-                                       "Candidate submission"
-                                   ],
-                         "process":  [
-                                         "Send test to candidate",
-                                         "Candidate submits",
-                                         "Grade: MCQ auto, essay AI+rubric, coding test cases+quality",
-                                         "Generate score report"
-                                     ],
-                         "output":  [
-                                        "Score per section",
-                                        "Total score",
-                                        "Detailed feedback",
-                                        "Pass/fail"
-                                    ],
-                         "exception":  [
-                                           "Submission timeout",
-                                           "Plagiarism detected",
-                                           "Coding env error"
-                                       ]
-                     },
-                     {
-                         "id":  "UC-TRL",
-                         "name":  "CV Translation (Phase 2 Prototype)",
-                         "actor":  [
-                                       "HR Recruiter"
-                                   ],
-                         "trigger":  "Manual request",
-                         "input":  [
-                                       "CV file",
-                                       "Target language (vi/en/ja)"
-                                   ],
-                         "process":  [
-                                         "Extract text",
-                                         "Translate via LLM",
-                                         "Format output"
-                                     ],
-                         "output":  [
-                                        "Translated document (Viá»‡t/Nháº­t/Anh)"
-                                    ],
-                         "exception":  [
-                                           "Unsupported language",
-                                           "File parse error"
-                                       ],
-                         "note":  "Phase 2 prototype; original CV remains source of truth",
-                         "policy":  "Screening decisions must trace back to original CV"
-                     },
-                     {
-                         "id":  "UC-INTL",
-                         "name":  "Interview Notes Translation (Phase 2 Prototype)",
-                         "actor":  [
-                                       "HR Recruiter"
-                                   ],
-                         "trigger":  "Manual request",
-                         "input":  [
-                                       "Notes",
-                                       "Target language"
-                                   ],
-                         "process":  [
-                                         "Extract text",
-                                         "Translate via LLM",
-                                         "Format output"
-                                     ],
-                         "output":  [
-                                        "Translated notes"
-                                    ],
-                         "exception":  [
-                                           "Unsupported language",
-                                           "Parse error"
-                                       ],
-                         "note":  "Phase 2 prototype"
-                     },
-                     {
-                         "id":  "UC-CNT",
-                         "name":  "Content Generation (Phase 2 Prototype)",
-                         "actor":  [
-                                       "HR Recruiter"
-                                   ],
-                         "trigger":  "Manual request",
-                         "input":  [
-                                       "Job info",
-                                       "Tone/style preferences",
-                                       "Output format preference"
-                                   ],
-                         "process":  [
-                                         "Generate content via LLM",
-                                         "Present as suggestions",
-                                         "HR edits",
-                                         "HR chooses output method (copy/export/integration)"
-                                     ],
-                         "output":  [
-                                        "Content suggestions (text)",
-                                        "Export options"
-                                    ],
-                         "outputOptions":  [
-                                               "Manual copy (plain text)",
-                                               "Export file",
-                                               "Channel integration"
-                                           ],
-                         "exception":  [
-                                           "Content inappropriate",
-                                           "Generation failed"
-                                       ],
-                         "review":  "HR must review/approve before publish/export/use",
-                         "note":  "Phase 2 prototype standalone utility module"
-                     },
-                     {
-                         "id":  "UC-DSG",
-                         "name":  "Design Generation (Phase 2 Prototype)",
-                         "actor":  [
-                                       "HR Recruiter"
-                                   ],
-                         "trigger":  "Manual request",
-                         "input":  [
-                                       "Job info",
-                                       "Design type preference"
-                                   ],
-                         "process":  [
-                                         "Generate design suggestion via LLM (mock image)",
-                                         "Present as preview",
-                                         "HR reviews"
-                                     ],
-                         "output":  [
-                                        "Mock/preview design suggestions (banner, poster, social asset...)"
-                                    ],
-                         "scope":  "Mock image prototype, not real image provider integration",
-                         "exception":  [
-                                           "Generation failed"
-                                       ],
-                         "review":  "HR must review/approve before use",
-                         "note":  "Phase 2 prototype standalone utility module"
-                     },
-                     {
-                         "id":  "UC-CVINTAKE",
-                         "name":  "Candidate/CV Intake",
-                         "actor":  "HR Recruiter, HR Manager, System",
-                         "goal":  "HR imports candidate CV PDFs through Drive folder trigger/scan, multi-file upload, or single CV upload with optional metadata.",
-                         "phase":  "MVP/Prototype as specified",
-                         "notes":  "Added for CV Intake + Job/JD Intake separation"
-                     },
-                     {
-                         "id":  "UC-JDINTAKE",
-                         "name":  "Job/JD Intake",
-                         "actor":  "HR Recruiter, HR Manager, System",
-                         "goal":  "HR creates/imports Job/JD from manual form, text, PDF/DOCX, Drive, or Sheet/Excel requisition.",
-                         "phase":  "MVP/Prototype as specified",
-                         "notes":  "Added for CV Intake + Job/JD Intake separation"
-                     },
-                     {
-                         "id":  "UC-JDAPPROVAL",
-                         "name":  "Parsed JD Review and Approval",
-                         "actor":  "HR Recruiter, HR Manager, System",
-                         "goal":  "HR reviews, edits/re-parses, and approves ParsedJDProfile before it becomes matching source of truth.",
-                         "phase":  "MVP/Prototype as specified",
-                         "notes":  "Added for CV Intake + Job/JD Intake separation"
-                     },
-                     {
-                         "id":  "UC-JOBCONNMOCK",
-                         "name":  "External Job Source Connector Mock",
-                         "actor":  "HR Recruiter, HR Manager, System",
-                         "goal":  "HR previews prototype-only ATS/job board/career site connector status and mock requisition data.",
-                         "phase":  "MVP/Prototype as specified",
-                         "notes":  "Added for CV Intake + Job/JD Intake separation"
-                     }
-                 ],
-    "candidateStateMachine":  {
-                                  "states":  [
-                                                 "NEW",
-                                                 "CV_IMPORTED",
-                                                 "SCREENING_IN_PROGRESS",
-                                                 "SCREENING_COMPLETED",
-                                                 "SCREENING_APPROVED",
-                                                 "SCREENING_REJECTED",
-                                                 "INTERVIEW_SCHEDULING",
-                                                 "INTERVIEW_CONFIRMED",
-                                                 "INTERVIEW_IN_PROGRESS",
-                                                 "INTERVIEW_COMPLETED",
-                                                 "TEST_PENDING",
-                                                 "TEST_IN_PROGRESS",
-                                                 "TEST_COMPLETED",
-                                                 "PASSED",
-                                                 "FAILED",
-                                                 "WITHDRAWN"
-                                             ],
-                                  "autoTransitions":  [
-                                                          "CV_IMPORTED",
-                                                          "SCREENING_IN_PROGRESS",
-                                                          "SCREENING_COMPLETED",
-                                                          "INTERVIEW_SCHEDULING",
-                                                          "INTERVIEW_IN_PROGRESS",
-                                                          "INTERVIEW_COMPLETED",
-                                                          "TEST_PENDING",
-                                                          "TEST_IN_PROGRESS",
-                                                          "TEST_COMPLETED"
-                                                      ],
-                                  "humanApproveRequired":  [
-                                                               "SCREENING_APPROVED",
-                                                               "INTERVIEW_CONFIRMED"
-                                                           ],
-                                  "terminalStates":  [
-                                                         "PASSED",
-                                                         "FAILED",
-                                                         "SCREENING_REJECTED",
-                                                         "WITHDRAWN"
-                                                     ]
-                              },
-    "approvalWorkflow":  {
-                             "screening":  {
-                                               "approver":  "HR Manager",
-                                               "type":  "single",
-                                               "bulkSupport":  true,
-                                               "timeout":  "none",
-                                               "reminder":  "24h",
-                                               "escalation":  "none",
-                                               "actions":  [
-                                                               "Approve",
-                                                               "Reject",
-                                                               "Request re-screen"
-                                                           ]
-                                           },
-                             "scheduling":  {
-                                                "approver":  "HR Manager",
-                                                "type":  "single",
-                                                "bulkSupport":  true,
-                                                "timeout":  "none",
-                                                "reminder":  "24h",
-                                                "escalation":  "none",
-                                                "actions":  [
-                                                                "Approve",
-                                                                "Reject",
-                                                                "Suggest alternative"
-                                                            ]
-                                            },
-                             "phase2Utilities":  {
-                                                     "approver":  "HR Manager",
-                                                     "type":  "review_required",
-                                                     "scope":  "Content/Design/Translation output only",
-                                                     "note":  "Not part of core pipeline, separate approval flow"
-                                                 }
-                         },
-    "businessRules":  {
-                          "aiMatchingWeights":  {
-                                                    "skills":  0.40,
-                                                    "experience":  0.30,
-                                                    "language":  0.20,
-                                                    "education":  0.10,
-                                                    "configurable":  true,
-                                                    "parsedCriteriaVersionNote":  "Default tied to jdVersionId, but tuning weighting can create a new parsedCriteriaVersion without changing original JD"
-                                                },
-                          "scheduling":  {
-                                             "priority":  "earliest_available_slot",
-                                             "buffer":  "30min_between_interviews",
-                                             "workingHours":  "09:00-18:00_local",
-                                             "advanceNotice":  "24h_minimum",
-                                             "timezone":  "multi_timezone_support"
-                                         },
-                          "aiInterview":  {
-                                              "format":  "async_text",
-                                              "questions":  "hybrid_5-7_fixed_plus_2-3_followup",
-                                              "timeLimit":  "72h",
-                                              "reminder":  "24h_before_deadline",
-                                              "language":  "match_jd_language"
-                                          },
-                          "testGrading":  {
-                                              "multipleChoice":  "auto_grade_against_key",
-                                              "essay":  "ai_grade_with_rubric_0-100",
-                                              "coding":  "test_cases_plus_code_quality",
-                                              "passThreshold":  "configurable_default_60_percent"
-                                          },
-                          "phase2Prototype":  {
-                                                  "content":  "HR review required before publish/export/use",
-                                                  "design":  "HR review required before use (mock prototype)",
-                                                  "cvTranslation":  "Original CV remains source of truth; screening must trace back"
-                                              }
-                      },
-    "nonFunctionalRequirements":  {
-                                      "performance":  {
-                                                          "jobsPerMonth":  "\u003e200",
-                                                          "cvPerMonth":  "~10000_estimated",
-                                                          "singleCvScreeningTime":  "\u003c30s",
-                                                          "concurrentUsers":  "50+",
-                                                          "apiResponseTime":  "\u003c2s_p95_non_ai"
-                                                      },
-                                      "security":  {
-                                                       "encryption":  "at_rest_and_in_transit_TLS1.2+",
-                                                       "accessControl":  "role_based",
-                                                       "roles":  [
-                                                                     "HR Recruiter",
-                                                                     "HR Manager",
-                                                                     "Interviewer",
-                                                                     "Admin"
-                                                                 ],
-                                                       "auditLog":  "all_actions_logged",
-                                                       "cvStorage":  "encrypted_access_controlled"
-                                                   },
-                                      "availability":  {
-                                                           "uptime":  "99%",
-                                                           "aiErrorTracking":  true,
-                                                           "apiFailureAlerts":  true,
-                                                           "costMonitoring":  "track_llm_token_usage"
-                                                       }
-                                  },
-    "integrationRequirements":  {
-                                    "gmail":  {
-                                                  "sendFrom":  "shared_hr_mailbox",
-                                                  "features":  [
-                                                                   "invitations",
-                                                                   "reminders",
-                                                                   "results"
-                                                               ],
-                                                  "templates":  "configurable_in_system",
-                                                  "auth":  "OAuth2"
-                                              },
-                                    "googleCalendar":  {
-                                                           "read":  "free_busy_status",
-                                                           "write":  "create_interview_events",
-                                                           "timezone":  "multi_timezone",
-                                                           "auth":  "OAuth2"
-                                                       },
-                                    "googleDrive":  {
-                                                        "watch":  "specific_folders_configured_by_admin",
-                                                        "trigger":  "new_file_auto_import",
-                                                        "fileTypes":  [
-                                                                          "xlsx",
-                                                                          "pdf",
-                                                                          "docx"
-                                                                      ],
-                                                        "auth":  "OAuth2"
-                                                    },
-                                    "externalConnectorMock":  {
-                                                                  "scope":  "placeholder_for_phase_2",
-                                                                  "defaultPreviewFields":  [
-                                                                                               "Requisition ID",
-                                                                                               "Job Title",
-                                                                                               "Department",
-                                                                                               "Location",
-                                                                                               "Work Mode",
-                                                                                               "Employment Type",
-                                                                                               "Seniority",
-                                                                                               "Language",
-                                                                                               "Compensation Range",
-                                                                                               "Hiring Manager",
-                                                                                               "Headcount",
-                                                                                               "Source",
-                                                                                               "Last Sync Status",
-                                                                                               "JD Text/Summary"
-                                                                                           ]
-                                                              },
-                                    "contentChannel":  {
-                                                           "scope":  "placeholder_for_phase_2",
-                                                           "channels":  [
-                                                                            "LinkedIn",
-                                                                            "Facebook",
-                                                                            "local_job_boards"
-                                                                        ],
-                                                           "implementation":  "placeholder_UI_only",
-                                                           "note":  "Not real integration in Phase 2"
-                                                       }
-                                },
-    "fileFormatRequirements":  {
-                                   "cv":  [
-                                              "PDF",
-                                              "DOCX"
-                                          ],
-                                   "jd":  [
-                                              "text_input",
-                                              "PDF",
-                                              "DOCX"
-                                          ],
-                                   "testImport":  [
-                                                      "Excel_xlsx",
-                                                      "JSON"
-                                                  ],
-                                   "batchImport":  [
-                                                       "Excel_xlsx"
-                                                   ]
-                               },
-    "successMetrics":  [
-                           {
-                               "module":  "Screening",
-                               "metric":  "CV processing time",
-                               "target":  "\u003c30s"
-                           },
-                           {
-                               "module":  "Screening",
-                               "metric":  "Matching accuracy",
-                               "target":  "\u003e80% human agreement"
-                           },
-                           {
-                               "module":  "Scheduling",
-                               "metric":  "Calendar conflict rate",
-                               "target":  "\u003c1%"
-                           },
-                           {
-                               "module":  "Scheduling",
-                               "metric":  "Time to confirmed",
-                               "target":  "\u003c1 hour"
-                           },
-                           {
-                               "module":  "AI Interview",
-                               "metric":  "Completion rate",
-                               "target":  "\u003e70%"
-                           },
-                           {
-                               "module":  "AI Interview",
-                               "metric":  "Evaluation consistency",
-                               "target":  "\u003e85% human agreement"
-                           },
-                           {
-                               "module":  "Test Grading",
-                               "metric":  "MCQ accuracy",
-                               "target":  "100%"
-                           },
-                           {
-                               "module":  "Test Grading",
-                               "metric":  "Essay AI correlation",
-                               "target":  "\u003e75%"
-                           },
-                           {
-                               "module":  "Pipeline",
-                               "metric":  "End-to-end time",
-                               "target":  "\u003c7 days"
-                           }
-                       ],
-    "scope":  {
-                  "mvp":  [
-                              "Candidate Sourcing",
-                              "CV Screening",
-                              "Interview Scheduling",
-                              "AI Interview",
-                              "Test Grading",
-                              "Approval Workflow",
-                              "Google Integration"
-                          ],
-                  "phase2":  [
-                                 "CV Evidence Viewer (prototype utility)",
-                                 "Content Generation",
-                                 "Design Generation (mock)",
-                                 "CV Translation",
-                                 "Interview Notes Translation"
-                             ],
-                  "phase2Clarifications":  {
-                                               "contentOutput":  [
-                                                                     "Manual copy",
-                                                                     "Export file",
-                                                                     "Channel integration"
-                                                                 ],
-                                               "designScope":  "Mock image prototype",
-                                               "cvLanguages":  [
-                                                                   "vi",
-                                                                   "en",
-                                                                   "ja"
-                                                               ],
-                                               "cvPolicy":  "Original CV is source of truth"
-                                           },
-                  "outOfScope":  [
-                                     "Multi-tenant/agency",
-                                     "Video/voice realtime interview",
-                                     "Third-party ATS/CRM integration",
-                                     "Mobile native app",
-                                     "Onboarding workflow"
-                                 ]
-              },
-    "validation":  {
-                       "gate":  "Gate 1 Requirement",
-                       "status":  "PASS",
-                       "checks":  [
-                                      {
-                                          "check":  "Every raw requirement has ID",
-                                          "status":  "PASS"
-                                      },
-                                      {
-                                          "check":  "Source/stakeholder captured",
-                                          "status":  "PASS"
-                                      },
-                                      {
-                                          "check":  "Classified by type",
-                                          "status":  "PASS"
-                                      },
-                                      {
-                                          "check":  "Ambiguity flagged",
-                                          "status":  "PASS"
-                                      },
-                                      {
-                                          "check":  "Duplicates handled",
-                                          "status":  "PASS"
-                                      },
-                                      {
-                                          "check":  "Product/system context present",
-                                          "status":  "PASS"
-                                      },
-                                      {
-                                          "check":  "Use-case details per module",
-                                          "status":  "PASS"
-                                      },
-                                      {
-                                          "check":  "Candidate state machine",
-                                          "status":  "PASS"
-                                      },
-                                      {
-                                          "check":  "Approval workflow",
-                                          "status":  "PASS"
-                                      },
-                                      {
-                                          "check":  "Business rules",
-                                          "status":  "PASS"
-                                      },
-                                      {
-                                          "check":  "Non-functional requirements",
-                                          "status":  "PASS"
-                                      },
-                                      {
-                                          "check":  "Integration requirements",
-                                          "status":  "PASS"
-                                      },
-                                      {
-                                          "check":  "File format requirements",
-                                          "status":  "PASS"
-                                      },
-                                      {
-                                          "check":  "Success metrics",
-                                          "status":  "PASS"
-                                      },
-                                      {
-                                          "check":  "Scope/phasing",
-                                          "status":  "PASS"
-                                      }
-                                  ]
-                   },
-    "openQuestions":  [
-                          {
-                              "id":  "Q-001",
-                              "question":  "AI matching weights (40/30/20/10) cÃ³ phÃ¹ há»£p?",
-                              "owner":  "HR Manager",
-                              "blocksNextStep":  false
-                          },
-                          {
-                              "id":  "Q-002",
-                              "question":  "Nháº¯c lá»‹ch: trÆ°á»›c 24h, 1h, hay cáº£ hai?",
-                              "owner":  "HR Manager",
-                              "blocksNextStep":  false
-                          },
-                          {
-                              "id":  "Q-003",
-                              "question":  "Coding test: sandbox environment nÃ o?",
-                              "owner":  "IT Admin",
-                              "blocksNextStep":  false
-                          },
-                          {
-                              "id":  "Q-004",
-                              "question":  "Sá»‘ lÆ°á»£ng cÃ¢u há»i phá»ng váº¥n chÃ­nh xÃ¡c?",
-                              "owner":  "HR Manager",
-                              "blocksNextStep":  false
-                          },
-                          {
-                              "id":  "Q-005",
-                              "question":  "Google Drive: folder nÃ o watch? Naming convention?",
-                              "owner":  "IT Admin",
-                              "blocksNextStep":  false
-                          },
-                          {
-                              "id":  "Q-006",
-                              "question":  "Email template: ai táº¡o vÃ  quáº£n lÃ½?",
-                              "owner":  "HR Manager",
-                              "blocksNextStep":  false
-                          },
-                          {
-                              "id":  "Q-007",
-                              "question":  "Channel integration: integration nÃ o thá»±c táº¿ trong Phase 2?",
-                              "owner":  "HR Manager",
-                              "blocksNextStep":  false
-                          }
-                      ],
-    "constraints":  [
-                        {
-                            "id":  "CON-013",
-                            "text":  "CV original PDF is source of truth for candidate information",
-                            "source":  "RAW-043"
-                        },
-                        {
-                            "id":  "CON-014",
-                            "text":  "CV intake accepts text-native PDF only in MVP; OCR is excluded",
-                            "source":  "RAW-005, RAW-043"
-                        },
-                        {
-                            "id":  "CON-015",
-                            "text":  "CV versioning is required and new versions trigger HR manual re-screen decision only",
-                            "source":  "RAW-042"
-                        },
-                        {
-                            "id":  "CON-016",
-                            "text":  "Excel is optional metadata support for CV intake, not the primary candidate source",
-                            "source":  "RAW-001"
-                        },
-                        {
-                            "id":  "CON-017",
-                            "text":  "HR-approved parsed JD profile is source of truth for matching; original JD is evidence/reference",
-                            "source":  "RAW-044"
-                        },
-                        {
-                            "id":  "CON-018",
-                            "text":  "Job/JD versioning and parsed criteria versioning are required for screening reproducibility",
-                            "source":  "RAW-045"
-                        },
-                        {
-                            "id":  "CON-019",
-                            "text":  "External job source connectors are prototype-only mock UI/status and not real integrations in MVP",
-                            "source":  "RAW-046"
-                        }
-                    ]
+  "metadata": {
+    "productName": "RecruitAI",
+    "projectType": "data-ai",
+    "language": "bilingual",
+    "version": "2.2",
+    "generatedAt": "2026-05-14T00:00:00Z",
+    "inputSources": [
+      {
+        "type": "pasted-text",
+        "path": "",
+        "description": "User input"
+      },
+      {
+        "type": "file",
+        "path": "Há»‡ thá»‘ng recruitment.jpg",
+        "description": "System diagram"
+      },
+      {
+        "type": "interactive",
+        "path": "",
+        "description": "Q&A + review comments"
+      },
+      {
+        "type": "scope-decision",
+        "path": "",
+        "description": "Explicit scope decisions for Phase 2 prototype modules"
+      }
+    ]
+  },
+  "context": {
+    "productName": "RecruitAI â€” Há»‡ thá»‘ng Recruitment AI Automation",
+    "businessDomain": "Human Resources / Recruitment",
+    "targetUsers": [
+      "Internal HR Team"
+    ],
+    "stakeholders": [
+      "HR Manager",
+      "Hiring Manager",
+      "Interviewer",
+      "IT Admin"
+    ],
+    "scopeBoundaryKnown": "yes"
+  },
+  "rawRequirements": [
+    {
+      "id": "RAW-001",
+      "text": "Batch import CV PDF files as candidate source; primary path is Google Drive folder trigger/scan and secondary path is multi-file PDF upload; Excel is optional metadata support only",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED] Candidate = CV; CV PDF is primary source"
+    },
+    {
+      "id": "RAW-002",
+      "text": "Manual candidate creation uses single CV PDF upload with optional metadata; manual job creation belongs to the separate Job/JD Intake domain",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED] Split Candidate/CV Intake from Job/JD Intake"
+    },
+    {
+      "id": "RAW-003",
+      "text": "Google Drive CV intake watches or scans configured Drive folders for new PDF CV files and flags invalid files/subfolders as import errors for HR review",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED] Drive folder trigger/scan is primary CV import path"
+    },
+    {
+      "id": "RAW-004",
+      "text": "Job/JD Intake supports manual job creation, JD text input, JD PDF/DOCX upload, Google Drive JD import, and Sheet/Excel job requisition import",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED] Job/JD Intake is separate from Candidate/CV Intake"
+    },
+    {
+      "id": "RAW-005",
+      "text": "The system uses LLM extraction on text-native PDF CV content to create candidate profiles; OCR is excluded from MVP",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED] LLM extract, no OCR"
+    },
+    {
+      "id": "RAW-006",
+      "text": "AI matching compares the extracted CandidateProfile and CV version against the HR-approved ParsedJDProfile and parsed criteria version",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED] Screening links CV and JD versions"
+    },
+    {
+      "id": "RAW-007",
+      "text": "Screening score and summary must trace to candidateId, cvVersionId, jobId, jdVersionId, and parsedCriteriaVersion",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED] Cross-domain screening traceability"
+    },
+    {
+      "id": "RAW-008",
+      "text": "Output: Risk flags (Ä‘iá»ƒm khÃ´ng phÃ¹ há»£p nghiÃªm trá»ng)",
+      "source": "Q&A",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A]"
+    },
+    {
+      "id": "RAW-009",
+      "text": "Output: Missing skills list",
+      "source": "Q&A",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A]"
+    },
+    {
+      "id": "RAW-010",
+      "text": "HR Manager approve káº¿t quï¿½ï¿½ï¿½ sÃ ng lá»c trÆ°á»›c khi chuyá»ƒn bÆ°á»›c",
+      "source": "User input + Q&A",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A] Single approve, há»— trá»£ bulk"
+    },
+    {
+      "id": "RAW-011",
+      "text": "CV format: PDF + DOCX only (khÃ´ng cáº§n OCR áº£nh)",
+      "source": "Q&A",
+      "stakeholder": "HR Manager",
+      "type": "constraint",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A]"
+    },
+    {
+      "id": "RAW-041",
+      "text": "CV Evidence Viewer: Cho phÃ©p HR xem CV gá»‘c, text trÃ­ch xuáº¥t, vÃ  cÃ¡c evidence spans Ä‘Æ°á»£c link vá»›i tiÃªu chÃ­ JD/screening (tÃ­ch há»£p vá»›i mÃ n hÃ¬nh sÃ ng lá»c/final review â€” evidence detail lÃ  Phase 2 prototype utility)",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "Phase 2 prototype utility module"
+    },
+    {
+      "id": "RAW-012",
+      "text": "Tá»± Ä‘á»™ng thu tháº­p availability á»©ng viÃªn + ngÆ°á»i phá»ng váº¥n",
+      "source": "User input",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": ""
+    },
+    {
+      "id": "RAW-013",
+      "text": "Há»‡ thá»‘ng suggest lá»‹ch, HR Manager approve trÆ°á»›c khi confirm",
+      "source": "User input",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A]"
+    },
+    {
+      "id": "RAW-014",
+      "text": "LÃªn lá»‹ch tá»± Ä‘á»™ng qua Google Calendar",
+      "source": "User input",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A]"
+    },
+    {
+      "id": "RAW-015",
+      "text": "Gá»­i email tá»± Ä‘á»™ng qua shared HR mailbox (Gmail API)",
+      "source": "User input + Q&A",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A]"
+    },
+    {
+      "id": "RAW-016",
+      "text": "Nháº¯c lá»‹ch phá»ng váº¥n qua email",
+      "source": "User input",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "medium",
+      "notes": ""
+    },
+    {
+      "id": "RAW-017",
+      "text": "Timezone support cho á»©ng viÃªn/interviewer á»Ÿ nÆ°á»›c ngoÃ i",
+      "source": "Review",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "medium",
+      "notes": ""
+    },
+    {
+      "id": "RAW-018",
+      "text": "Phá»ng váº¥n async qua text message",
+      "source": "User input + Q&A",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A]"
+    },
+    {
+      "id": "RAW-019",
+      "text": "Hybrid: cÃ¢u há»i cá»‘ Ä‘á»‹nh + AI táº¡o follow-up dá»±a trÃªn cÃ¢u tráº£ lá»i",
+      "source": "Q&A",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A]"
+    },
+    {
+      "id": "RAW-020",
+      "text": "AI Ä‘Ã¡nh giÃ¡ nÄƒng lá»±c á»©ng viÃªn vÃ  táº¡o report",
+      "source": "User input",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": ""
+    },
+    {
+      "id": "RAW-021",
+      "text": "Há»— trá»£ Ä‘a ngÃ´n ngá»¯: Viá»‡t, Nháº­t, Anh",
+      "source": "Q&A",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A]"
+    },
+    {
+      "id": "RAW-022",
+      "text": "Import bÃ i test + Ä‘Ã¡p Ã¡n Ä‘á»ƒ cháº¥m Ä‘iá»ƒm (LLM)",
+      "source": "User input",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": ""
+    },
+    {
+      "id": "RAW-023",
+      "text": "Há»— trá»£ multiple choice (cháº¥m tá»± Ä‘á»™ng theo Ä‘Ã¡p Ã¡n)",
+      "source": "Q&A",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A]"
+    },
+    {
+      "id": "RAW-024",
+      "text": "Há»— trá»£ essay (AI Ä‘Ã¡nh giÃ¡ theo rubric)",
+      "source": "Q&A",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A]"
+    },
+    {
+      "id": "RAW-025",
+      "text": "Há»— trá»£ coding challenge (test cases + code quality)",
+      "source": "Q&A",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A]"
+    },
+    {
+      "id": "RAW-026",
+      "text": "Táº¡o content tuyá»ƒn dá»¥ng dáº¡ng gá»£i Ã½ (LLM): plain text, copyable, ho trá»£ export file, ho trá»£ channel integration",
+      "source": "User input + scope decision",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "Phase 2 prototype standalone"
+    },
+    {
+      "id": "RAW-026a",
+      "text": "Content publishing: Há»— trá»£ thá»§ cÃ´ng copy, export file, vÃ  tÃ­ch há»£p channel (LinkedIn, Facebook, job boards...)",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A] All 3 supported"
+    },
+    {
+      "id": "RAW-026b",
+      "text": "Generated content pháº£i Ä‘Æ°á»£c HR review/approve trÆ°á»›c khi publish/export/use",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "constraint",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A]"
+    },
+    {
+      "id": "RAW-027",
+      "text": "Thiáº¿t káº¿ áº£nh tuyá»ƒn dá»¥ng Ä‘Æ¡n giáº£n (LLM) dáº¡ng gá»£i Ã½: mock image prototype â€” khÃ´ng báº¯t buá»™c tÃ­ch há»£p image provider tháº­t",
+      "source": "User input + scope decision",
+      "stakeholder": "HR Manager",
+      "type": "idea",
+      "confidence": "high",
+      "notes": "Phase 2 prototype standalone"
+    },
+    {
+      "id": "RAW-027a",
+      "text": "Design scope: mock/preview, creative suggestions, banner, poster, social asset â€” khÃ´ng cáº§n integration tháº­t",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A] Not real image generation"
+    },
+    {
+      "id": "RAW-027b",
+      "text": "Generated design pháº£i Ä‘Æ°á»£c HR review/approve trÆ°á»›c khi sá»­ dá»¥ng",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "constraint",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A]"
+    },
+    {
+      "id": "RAW-028",
+      "text": "Dá»‹ch CV tiáº¿ng Viá»‡t / Nháº­t / Anh (LLM)",
+      "source": "User input + scope decision",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "vi/en/ja"
+    },
+    {
+      "id": "RAW-028a",
+      "text": "CV translation: Há»— trá»£ HR review vÃ  related workflows, nhÆ°ng CV gá»‘c lÃ  nguá»“n chuáº©n duy nháº¥t",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "constraint",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A] Original CV is source of truth"
+    },
+    {
+      "id": "RAW-028b",
+      "text": "Screening decisions pháº£i cÃ³ traceback to original CV",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "constraint",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A]"
+    },
+    {
+      "id": "RAW-029",
+      "text": "Nháº­n xÃ©t phá»ng váº¥n tiáº¿ng Nháº­t (LLM)",
+      "source": "User input",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "Phase 2 prototype standalone"
+    },
+    {
+      "id": "RAW-029a",
+      "text": "Translated notes: Há»— trá»£ HR review vÃ  related workflows",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A]"
+    },
+    {
+      "id": "RAW-030",
+      "text": "Pipeline auto: Táº¡o nguá»“n â†’ SÃ ng lá»c â†’ Set lá»‹ch â†’ Phá»ng váº¥n â†’ Cháº¥m bÃ i",
+      "source": "User input",
+      "stakeholder": "HR Manager",
+      "type": "goal",
+      "confidence": "high",
+      "notes": ""
+    },
+    {
+      "id": "RAW-031",
+      "text": "Human approve báº¯t buá»™c á»Ÿ bÆ°á»›c sÃ ng lá»c vÃ  set lá»‹ch",
+      "source": "Q&A",
+      "stakeholder": "HR Manager",
+      "type": "constraint",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A]"
+    },
+    {
+      "id": "RAW-032",
+      "text": "Content/Design/Translation lÃ  cÃ¡c Phase 2 prototype standalone module, KHÃ”NG náº±m trong core pipeline",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "constraint",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A] Updated wording"
+    },
+    {
+      "id": "RAW-033",
+      "text": "Approval timeout: chá»‰ reminder, khÃ´ng auto cancel/skip",
+      "source": "Q&A",
+      "stakeholder": "HR Manager",
+      "type": "constraint",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A]"
+    },
+    {
+      "id": "RAW-034",
+      "text": "MVP = full pipeline chÃ­nh (Phase 1); Content/Design/Translation lÃ  Phase 2 prototype standalone",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "constraint",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A] Updated wording"
+    },
+    {
+      "id": "RAW-035",
+      "text": "Quy mÃ´ lá»›n: > 200 job/thÃ¡ng",
+      "source": "Q&A",
+      "stakeholder": "HR Manager",
+      "type": "constraint",
+      "confidence": "high",
+      "notes": "[CLARIFIED via Q&A]"
+    },
+    {
+      "id": "RAW-036",
+      "text": "Há»— trá»£ Ä‘a ngÃ´n ngá»¯: Viá»‡t, Nháº­t, Anh",
+      "source": "Q&A",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": ""
+    },
+    {
+      "id": "RAW-037",
+      "text": "KhÃ´ng rÃ ng buá»™c tech stack",
+      "source": "Q&A",
+      "stakeholder": "IT Admin",
+      "type": "constraint",
+      "confidence": "high",
+      "notes": ""
+    },
+    {
+      "id": "RAW-038",
+      "text": "Báº£o máº­t dá»¯ liá»‡u á»©ng viÃªn má»©c cÆ¡ báº£n",
+      "source": "Q&A",
+      "stakeholder": "HR Manager",
+      "type": "constraint",
+      "confidence": "medium",
+      "notes": ""
+    },
+    {
+      "id": "RAW-039",
+      "text": "TÃ­ch há»£p Google Workspace: Calendar, Gmail, Drive",
+      "source": "Q&A",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": ""
+    },
+    {
+      "id": "RAW-040",
+      "text": "Há»‡ thá»‘ng chá»‰ phá»¥c vá»¥ HR ná»™i bá»™, khÃ´ng multi-tenant",
+      "source": "Q&A",
+      "stakeholder": "HR Manager",
+      "type": "constraint",
+      "confidence": "high",
+      "notes": ""
+    },
+    {
+      "id": "RAW-042",
+      "text": "CV versioning is required; new CV files create a new CV version and flag HR for manual re-screen decision without automatic re-screening",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "constraint",
+      "confidence": "high",
+      "notes": "[CLARIFIED] Manual re-screen trigger only"
+    },
+    {
+      "id": "RAW-043",
+      "text": "The original CV PDF is the source of truth for candidate information; extracted profiles and translations are derived artifacts",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "constraint",
+      "confidence": "high",
+      "notes": "[CLARIFIED] CV source of truth"
+    },
+    {
+      "id": "RAW-044",
+      "text": "HR-approved parsed JD profile is the operational source of truth for matching; original JD text/file is retained as evidence/reference",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "constraint",
+      "confidence": "high",
+      "notes": "[CLARIFIED] JD source of truth"
+    },
+    {
+      "id": "RAW-045",
+      "text": "Job/JD versioning is required; JD document updates create JD versions and criteria tuning may create a new parsedCriteriaVersion without changing the original JD document",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "constraint",
+      "confidence": "high",
+      "notes": "[CLARIFIED] Hybrid criteria versioning"
+    },
+    {
+      "id": "RAW-046",
+      "text": "External ATS, job board, and career site job source connectors are prototype-only mock UI/status previews with no real external API integration in MVP",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "constraint",
+      "confidence": "high",
+      "notes": "[CLARIFIED] Prototype-only external connectors"
+    },
+    {
+      "id": "RAW-047",
+      "text": "If HR rejects an AI-parsed JD profile, HR can either edit parsed fields and resubmit for approval or re-upload/re-parse corrected JD source",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED] JD rejection recovery"
+    },
+    {
+      "id": "RAW-048",
+      "text": "Unified Assessment Plan Setup groups AI Interview Setup, Test/Assignment Setup, and Shared Evaluation Criteria/Rubric/Weights under one parent module per Job/JD criteria version",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "Prototype-only setup with mock data/local state; no real AI/API integration"
+    },
+    {
+      "id": "RAW-049",
+      "text": "Assessment Plan outputs must trace jobId, jdVersionId, parsedCriteriaVersion, assessmentPlanId, assessmentPlanVersionId, rubricVersionId, interviewQuestionSetVersionId, and testDefinitionVersionId",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "constraint",
+      "confidence": "high",
+      "notes": "[CLARIFIED] Interview and test execution share the same approved evaluation setup"
+    },
+    {
+      "id": "RAW-050",
+      "text": "Shared rubric and weights are versioned at Assessment Plan level and inherited by AI Interview and Test/Assignment grading unless a visible override is configured",
+      "source": "Scope decision",
+      "stakeholder": "HR Manager",
+      "type": "need",
+      "confidence": "high",
+      "notes": "[CLARIFIED] Unified assessment source of truth for interview/test evaluation"
+    }
+  ],
+  "useCases": [
+    {
+      "id": "UC-SRC",
+      "name": "Candidate Sourcing",
+      "actor": [
+        "HR Recruiter",
+        "System"
+      ],
+      "trigger": "HR upload file / HR táº¡o thá»§ cÃ´ng / File má»›i trÃªn Google Drive",
+      "input": [
+        "Excel file (batch)",
+        "Manual form data",
+        "Google Drive files"
+      ],
+      "process": [
+        "Validate file format",
+        "Parse data (job/candidate)",
+        "Create records",
+        "Set state = CV_IMPORTED"
+      ],
+      "output": [
+        "Job records",
+        "Candidate records with status",
+        "Import error/warning report (visible per invalid item)"
+      ],
+      "exception": [
+        "File format invalid",
+        "Duplicate candidate",
+        "Missing required fields",
+        "Non-PDF files in Drive scan",
+        "Nested subfolders in Drive scan (each flagged individually)"
+      ]
+    },
+    {
+      "id": "UC-SCR",
+      "name": "CV Screening",
+      "actor": [
+        "HR Recruiter (trigger)",
+        "System (process)",
+        "HR Manager (approve)"
+      ],
+      "trigger": "HR trigger screening / Auto after CV_IMPORTED",
+      "input": [
+        "JD (text or PDF/DOCX)",
+        "CV file (PDF/DOCX)"
+      ],
+      "process": [
+        "Extract text from CV",
+        "Parse JD requirements",
+        "Extract skills/experience/education/language",
+        "Match CV vs JD",
+        "Generate score + summary + flags"
+      ],
+      "output": [
+        "Matching score (0-100)",
+        "Summary",
+        "Risk flags",
+        "Missing skills",
+        "Recommendation",
+        "Parsed JD profile"
+      ],
+      "exception": [
+        "File corrupted",
+        "Cannot parse CV",
+        "JD missing criteria",
+        "HR rejects AI-parsed JD profile (recovery: edit parsed fields + resubmit OR re-parse/re-upload corrected JD source)"
+      ],
+      "approval": "HR Manager single approve (bulk supported). Reminder only, no timeout.",
+      "note": "Manual re-screen trigger if new CV version uploaded for later-stage candidate"
+    },
+    {
+      "id": "UC-CVIEW",
+      "name": "CV Evidence Viewer",
+      "actor": [
+        "HR Recruiter",
+        "HR Manager"
+      ],
+      "trigger": "Manual request from screening results",
+      "input": [
+        "CV file",
+        "Extracted text",
+        "Evidence spans from screening"
+      ],
+      "process": [
+        "Display original CV",
+        "Display extracted text",
+        "Highlight/link evidence spans to JD criteria",
+        "Allow navigation between evidence and criteria"
+      ],
+      "output": [
+        "Unified view: original CV + text + linked evidence"
+      ],
+      "note": "Phase 2 prototype utility module; co the tich hop voi man hinh sang loc/final review nhung evidence detail khong thuoc MVP scope"
+    },
+    {
+      "id": "UC-SCH",
+      "name": "Interview Scheduling",
+      "actor": [
+        "System (suggest)",
+        "HR Manager (approve)",
+        "Candidate",
+        "Interviewer"
+      ],
+      "trigger": "Candidate state = SCREENING_APPROVED",
+      "input": [
+        "Candidate availability",
+        "Interviewer GCal free/busy",
+        "Scheduling rules"
+      ],
+      "process": [
+        "Collect availability",
+        "Read GCal free/busy",
+        "Find optimal slots",
+        "Suggest to HR Manager",
+        "HR Manager approve",
+        "Create GCal event",
+        "Send confirmation email"
+      ],
+      "output": [
+        "Calendar event",
+        "Confirmation emails"
+      ],
+      "exception": [
+        "No available slots",
+        "GCal not accessible",
+        "Candidate not responding"
+      ],
+      "approval": "HR Manager single approve. Reminder only, no timeout."
+    },
+    {
+      "id": "UC-INT",
+      "name": "AI Interview (Async)",
+      "actor": [
+        "System (AI)",
+        "Candidate"
+      ],
+      "trigger": "Candidate state = INTERVIEW_CONFIRMED",
+      "input": [
+        "JD",
+        "Candidate profile",
+        "Interview question template"
+      ],
+      "process": [
+        "Generate interview link",
+        "Send link via email",
+        "Candidate answers (text async)",
+        "Hybrid: fixed + follow-up questions",
+        "AI evaluates",
+        "Generate report"
+      ],
+      "output": [
+        "Interview transcript",
+        "AI evaluation report",
+        "Score",
+        "Recommendation"
+      ],
+      "exception": [
+        "Candidate not responding",
+        "Link expired",
+        "AI evaluation uncertain"
+      ]
+    },
+    {
+      "id": "UC-TST",
+      "name": "Test Grading",
+      "actor": [
+        "HR Recruiter (setup)",
+        "System (grade)",
+        "Candidate"
+      ],
+      "trigger": "Candidate state = INTERVIEW_COMPLETED",
+      "input": [
+        "Test definition + answer key/rubric",
+        "Candidate submission"
+      ],
+      "process": [
+        "Send test to candidate",
+        "Candidate submits",
+        "Grade: MCQ auto, essay AI+rubric, coding test cases+quality",
+        "Generate score report"
+      ],
+      "output": [
+        "Score per section",
+        "Total score",
+        "Detailed feedback",
+        "Pass/fail"
+      ],
+      "exception": [
+        "Submission timeout",
+        "Plagiarism detected",
+        "Coding env error"
+      ]
+    },
+    {
+      "id": "UC-TRL",
+      "name": "CV Translation (Phase 2 Prototype)",
+      "actor": [
+        "HR Recruiter"
+      ],
+      "trigger": "Manual request",
+      "input": [
+        "CV file",
+        "Target language (vi/en/ja)"
+      ],
+      "process": [
+        "Extract text",
+        "Translate via LLM",
+        "Format output"
+      ],
+      "output": [
+        "Translated document (Viá»‡t/Nháº­t/Anh)"
+      ],
+      "exception": [
+        "Unsupported language",
+        "File parse error"
+      ],
+      "note": "Phase 2 prototype; original CV remains source of truth",
+      "policy": "Screening decisions must trace back to original CV"
+    },
+    {
+      "id": "UC-INTL",
+      "name": "Interview Notes Translation (Phase 2 Prototype)",
+      "actor": [
+        "HR Recruiter"
+      ],
+      "trigger": "Manual request",
+      "input": [
+        "Notes",
+        "Target language"
+      ],
+      "process": [
+        "Extract text",
+        "Translate via LLM",
+        "Format output"
+      ],
+      "output": [
+        "Translated notes"
+      ],
+      "exception": [
+        "Unsupported language",
+        "Parse error"
+      ],
+      "note": "Phase 2 prototype"
+    },
+    {
+      "id": "UC-CNT",
+      "name": "Content Generation (Phase 2 Prototype)",
+      "actor": [
+        "HR Recruiter"
+      ],
+      "trigger": "Manual request",
+      "input": [
+        "Job info",
+        "Tone/style preferences",
+        "Output format preference"
+      ],
+      "process": [
+        "Generate content via LLM",
+        "Present as suggestions",
+        "HR edits",
+        "HR chooses output method (copy/export/integration)"
+      ],
+      "output": [
+        "Content suggestions (text)",
+        "Export options"
+      ],
+      "outputOptions": [
+        "Manual copy (plain text)",
+        "Export file",
+        "Channel integration"
+      ],
+      "exception": [
+        "Content inappropriate",
+        "Generation failed"
+      ],
+      "review": "HR must review/approve before publish/export/use",
+      "note": "Phase 2 prototype standalone utility module"
+    },
+    {
+      "id": "UC-DSG",
+      "name": "Design Generation (Phase 2 Prototype)",
+      "actor": [
+        "HR Recruiter"
+      ],
+      "trigger": "Manual request",
+      "input": [
+        "Job info",
+        "Design type preference"
+      ],
+      "process": [
+        "Generate design suggestion via LLM (mock image)",
+        "Present as preview",
+        "HR reviews"
+      ],
+      "output": [
+        "Mock/preview design suggestions (banner, poster, social asset...)"
+      ],
+      "scope": "Mock image prototype, not real image provider integration",
+      "exception": [
+        "Generation failed"
+      ],
+      "review": "HR must review/approve before use",
+      "note": "Phase 2 prototype standalone utility module"
+    },
+    {
+      "id": "UC-CVINTAKE",
+      "name": "Candidate/CV Intake",
+      "actor": "HR Recruiter, HR Manager, System",
+      "goal": "HR imports candidate CV PDFs through Drive folder trigger/scan, multi-file upload, or single CV upload with optional metadata.",
+      "phase": "MVP/Prototype as specified",
+      "notes": "Added for CV Intake + Job/JD Intake separation"
+    },
+    {
+      "id": "UC-JDINTAKE",
+      "name": "Job/JD Intake",
+      "actor": "HR Recruiter, HR Manager, System",
+      "goal": "HR creates/imports Job/JD from manual form, text, PDF/DOCX, Drive, or Sheet/Excel requisition.",
+      "phase": "MVP/Prototype as specified",
+      "notes": "Added for CV Intake + Job/JD Intake separation"
+    },
+    {
+      "id": "UC-JDAPPROVAL",
+      "name": "Parsed JD Review and Approval",
+      "actor": "HR Recruiter, HR Manager, System",
+      "goal": "HR reviews, edits/re-parses, and approves ParsedJDProfile before it becomes matching source of truth.",
+      "phase": "MVP/Prototype as specified",
+      "notes": "Added for CV Intake + Job/JD Intake separation"
+    },
+    {
+      "id": "UC-JOBCONNMOCK",
+      "name": "External Job Source Connector Mock",
+      "actor": "HR Recruiter, HR Manager, System",
+      "goal": "HR previews prototype-only ATS/job board/career site connector status and mock requisition data.",
+      "phase": "MVP/Prototype as specified",
+      "notes": "Added for CV Intake + Job/JD Intake separation"
+    },
+    {
+      "id": "UC-ASSESSSETUP",
+      "name": "Assessment Plan Setup",
+      "actor": "HR Recruiter, HR Manager",
+      "goal": "HR configures a unified assessment plan for an approved Job/JD criteria version, including shared rubric/weights, interview question set, and test definition versions.",
+      "phaseNotes": "MVP/Prototype as specified"
+    }
+  ],
+  "candidateStateMachine": {
+    "states": [
+      "NEW",
+      "CV_IMPORTED",
+      "SCREENING_IN_PROGRESS",
+      "SCREENING_COMPLETED",
+      "SCREENING_APPROVED",
+      "SCREENING_REJECTED",
+      "INTERVIEW_SCHEDULING",
+      "INTERVIEW_CONFIRMED",
+      "INTERVIEW_IN_PROGRESS",
+      "INTERVIEW_COMPLETED",
+      "TEST_PENDING",
+      "TEST_IN_PROGRESS",
+      "TEST_COMPLETED",
+      "PASSED",
+      "FAILED",
+      "WITHDRAWN"
+    ],
+    "autoTransitions": [
+      "CV_IMPORTED",
+      "SCREENING_IN_PROGRESS",
+      "SCREENING_COMPLETED",
+      "INTERVIEW_SCHEDULING",
+      "INTERVIEW_IN_PROGRESS",
+      "INTERVIEW_COMPLETED",
+      "TEST_PENDING",
+      "TEST_IN_PROGRESS",
+      "TEST_COMPLETED"
+    ],
+    "humanApproveRequired": [
+      "SCREENING_APPROVED",
+      "INTERVIEW_CONFIRMED"
+    ],
+    "terminalStates": [
+      "PASSED",
+      "FAILED",
+      "SCREENING_REJECTED",
+      "WITHDRAWN"
+    ]
+  },
+  "approvalWorkflow": {
+    "screening": {
+      "approver": "HR Manager",
+      "type": "single",
+      "bulkSupport": true,
+      "timeout": "none",
+      "reminder": "24h",
+      "escalation": "none",
+      "actions": [
+        "Approve",
+        "Reject",
+        "Request re-screen"
+      ]
+    },
+    "scheduling": {
+      "approver": "HR Manager",
+      "type": "single",
+      "bulkSupport": true,
+      "timeout": "none",
+      "reminder": "24h",
+      "escalation": "none",
+      "actions": [
+        "Approve",
+        "Reject",
+        "Suggest alternative"
+      ]
+    },
+    "phase2Utilities": {
+      "approver": "HR Manager",
+      "type": "review_required",
+      "scope": "Content/Design/Translation output only",
+      "note": "Not part of core pipeline, separate approval flow"
+    }
+  },
+  "businessRules": {
+    "aiMatchingWeights": {
+      "skills": 0.4,
+      "experience": 0.3,
+      "language": 0.2,
+      "education": 0.1,
+      "configurable": true,
+      "parsedCriteriaVersionNote": "Default tied to jdVersionId, but tuning weighting can create a new parsedCriteriaVersion without changing original JD"
+    },
+    "scheduling": {
+      "priority": "earliest_available_slot",
+      "buffer": "30min_between_interviews",
+      "workingHours": "09:00-18:00_local",
+      "advanceNotice": "24h_minimum",
+      "timezone": "multi_timezone_support"
+    },
+    "aiInterview": {
+      "format": "async_text",
+      "questions": "hybrid_5-7_fixed_plus_2-3_followup",
+      "timeLimit": "72h",
+      "reminder": "24h_before_deadline",
+      "language": "match_jd_language"
+    },
+    "testGrading": {
+      "multipleChoice": "auto_grade_against_key",
+      "essay": "ai_grade_with_rubric_0-100",
+      "coding": "test_cases_plus_code_quality",
+      "passThreshold": "configurable_default_60_percent"
+    },
+    "phase2Prototype": {
+      "content": "HR review required before publish/export/use",
+      "design": "HR review required before use (mock prototype)",
+      "cvTranslation": "Original CV remains source of truth; screening must trace back"
+    }
+  },
+  "nonFunctionalRequirements": {
+    "performance": {
+      "jobsPerMonth": ">200",
+      "cvPerMonth": "~10000_estimated",
+      "singleCvScreeningTime": "<30s",
+      "concurrentUsers": "50+",
+      "apiResponseTime": "<2s_p95_non_ai"
+    },
+    "security": {
+      "encryption": "at_rest_and_in_transit_TLS1.2+",
+      "accessControl": "role_based",
+      "roles": [
+        "HR Recruiter",
+        "HR Manager",
+        "Interviewer",
+        "Admin"
+      ],
+      "auditLog": "all_actions_logged",
+      "cvStorage": "encrypted_access_controlled"
+    },
+    "availability": {
+      "uptime": "99%",
+      "aiErrorTracking": true,
+      "apiFailureAlerts": true,
+      "costMonitoring": "track_llm_token_usage"
+    }
+  },
+  "integrationRequirements": {
+    "gmail": {
+      "sendFrom": "shared_hr_mailbox",
+      "features": [
+        "invitations",
+        "reminders",
+        "results"
+      ],
+      "templates": "configurable_in_system",
+      "auth": "OAuth2"
+    },
+    "googleCalendar": {
+      "read": "free_busy_status",
+      "write": "create_interview_events",
+      "timezone": "multi_timezone",
+      "auth": "OAuth2"
+    },
+    "googleDrive": {
+      "watch": "specific_folders_configured_by_admin",
+      "trigger": "new_file_auto_import",
+      "fileTypes": [
+        "xlsx",
+        "pdf",
+        "docx"
+      ],
+      "auth": "OAuth2"
+    },
+    "externalConnectorMock": {
+      "scope": "placeholder_for_phase_2",
+      "defaultPreviewFields": [
+        "Requisition ID",
+        "Job Title",
+        "Department",
+        "Location",
+        "Work Mode",
+        "Employment Type",
+        "Seniority",
+        "Language",
+        "Compensation Range",
+        "Hiring Manager",
+        "Headcount",
+        "Source",
+        "Last Sync Status",
+        "JD Text/Summary"
+      ]
+    },
+    "contentChannel": {
+      "scope": "placeholder_for_phase_2",
+      "channels": [
+        "LinkedIn",
+        "Facebook",
+        "local_job_boards"
+      ],
+      "implementation": "placeholder_UI_only",
+      "note": "Not real integration in Phase 2"
+    }
+  },
+  "fileFormatRequirements": {
+    "cv": [
+      "PDF",
+      "DOCX"
+    ],
+    "jd": [
+      "text_input",
+      "PDF",
+      "DOCX"
+    ],
+    "testImport": [
+      "Excel_xlsx",
+      "JSON"
+    ],
+    "batchImport": [
+      "Excel_xlsx"
+    ]
+  },
+  "successMetrics": [
+    {
+      "module": "Screening",
+      "metric": "CV processing time",
+      "target": "<30s"
+    },
+    {
+      "module": "Screening",
+      "metric": "Matching accuracy",
+      "target": ">80% human agreement"
+    },
+    {
+      "module": "Scheduling",
+      "metric": "Calendar conflict rate",
+      "target": "<1%"
+    },
+    {
+      "module": "Scheduling",
+      "metric": "Time to confirmed",
+      "target": "<1 hour"
+    },
+    {
+      "module": "AI Interview",
+      "metric": "Completion rate",
+      "target": ">70%"
+    },
+    {
+      "module": "AI Interview",
+      "metric": "Evaluation consistency",
+      "target": ">85% human agreement"
+    },
+    {
+      "module": "Test Grading",
+      "metric": "MCQ accuracy",
+      "target": "100%"
+    },
+    {
+      "module": "Test Grading",
+      "metric": "Essay AI correlation",
+      "target": ">75%"
+    },
+    {
+      "module": "Pipeline",
+      "metric": "End-to-end time",
+      "target": "<7 days"
+    }
+  ],
+  "scope": {
+    "mvp": [
+      "Candidate Sourcing",
+      "CV Screening",
+      "Interview Scheduling",
+      "AI Interview",
+      "Test Grading",
+      "Approval Workflow",
+      "Google Integration"
+    ],
+    "phase2": [
+      "CV Evidence Viewer (prototype utility)",
+      "Content Generation",
+      "Design Generation (mock)",
+      "CV Translation",
+      "Interview Notes Translation"
+    ],
+    "phase2Clarifications": {
+      "contentOutput": [
+        "Manual copy",
+        "Export file",
+        "Channel integration"
+      ],
+      "designScope": "Mock image prototype",
+      "cvLanguages": [
+        "vi",
+        "en",
+        "ja"
+      ],
+      "cvPolicy": "Original CV is source of truth"
+    },
+    "outOfScope": [
+      "Multi-tenant/agency",
+      "Video/voice realtime interview",
+      "Third-party ATS/CRM integration",
+      "Mobile native app",
+      "Onboarding workflow"
+    ]
+  },
+  "validation": {
+    "gate": "Gate 1 Requirement",
+    "status": "PASS",
+    "checks": [
+      {
+        "check": "Every raw requirement has ID",
+        "status": "PASS"
+      },
+      {
+        "check": "Source/stakeholder captured",
+        "status": "PASS"
+      },
+      {
+        "check": "Classified by type",
+        "status": "PASS"
+      },
+      {
+        "check": "Ambiguity flagged",
+        "status": "PASS"
+      },
+      {
+        "check": "Duplicates handled",
+        "status": "PASS"
+      },
+      {
+        "check": "Product/system context present",
+        "status": "PASS"
+      },
+      {
+        "check": "Use-case details per module",
+        "status": "PASS"
+      },
+      {
+        "check": "Candidate state machine",
+        "status": "PASS"
+      },
+      {
+        "check": "Approval workflow",
+        "status": "PASS"
+      },
+      {
+        "check": "Business rules",
+        "status": "PASS"
+      },
+      {
+        "check": "Non-functional requirements",
+        "status": "PASS"
+      },
+      {
+        "check": "Integration requirements",
+        "status": "PASS"
+      },
+      {
+        "check": "File format requirements",
+        "status": "PASS"
+      },
+      {
+        "check": "Success metrics",
+        "status": "PASS"
+      },
+      {
+        "check": "Scope/phasing",
+        "status": "PASS"
+      }
+    ]
+  },
+  "openQuestions": [
+    {
+      "id": "Q-001",
+      "question": "AI matching weights (40/30/20/10) cÃ³ phÃ¹ há»£p?",
+      "owner": "HR Manager",
+      "blocksNextStep": false
+    },
+    {
+      "id": "Q-002",
+      "question": "Nháº¯c lá»‹ch: trÆ°á»›c 24h, 1h, hay cáº£ hai?",
+      "owner": "HR Manager",
+      "blocksNextStep": false
+    },
+    {
+      "id": "Q-003",
+      "question": "Coding test: sandbox environment nÃ o?",
+      "owner": "IT Admin",
+      "blocksNextStep": false
+    },
+    {
+      "id": "Q-004",
+      "question": "Sá»‘ lÆ°á»£ng cÃ¢u há»i phá»ng váº¥n chÃ­nh xÃ¡c?",
+      "owner": "HR Manager",
+      "blocksNextStep": false
+    },
+    {
+      "id": "Q-005",
+      "question": "Google Drive: folder nÃ o watch? Naming convention?",
+      "owner": "IT Admin",
+      "blocksNextStep": false
+    },
+    {
+      "id": "Q-006",
+      "question": "Email template: ai táº¡o vÃ  quáº£n lÃ½?",
+      "owner": "HR Manager",
+      "blocksNextStep": false
+    },
+    {
+      "id": "Q-007",
+      "question": "Channel integration: integration nÃ o thá»±c táº¿ trong Phase 2?",
+      "owner": "HR Manager",
+      "blocksNextStep": false
+    }
+  ],
+  "constraints": [
+    {
+      "id": "CON-013",
+      "text": "CV original PDF is source of truth for candidate information",
+      "source": "RAW-043"
+    },
+    {
+      "id": "CON-014",
+      "text": "CV intake accepts text-native PDF only in MVP; OCR is excluded",
+      "source": "RAW-005, RAW-043"
+    },
+    {
+      "id": "CON-015",
+      "text": "CV versioning is required and new versions trigger HR manual re-screen decision only",
+      "source": "RAW-042"
+    },
+    {
+      "id": "CON-016",
+      "text": "Excel is optional metadata support for CV intake, not the primary candidate source",
+      "source": "RAW-001"
+    },
+    {
+      "id": "CON-017",
+      "text": "HR-approved parsed JD profile is source of truth for matching; original JD is evidence/reference",
+      "source": "RAW-044"
+    },
+    {
+      "id": "CON-018",
+      "text": "Job/JD versioning and parsed criteria versioning are required for screening reproducibility",
+      "source": "RAW-045"
+    },
+    {
+      "id": "CON-019",
+      "text": "External job source connectors are prototype-only mock UI/status and not real integrations in MVP",
+      "source": "RAW-046"
+    },
+    {
+      "id": "CON-020",
+      "constraint": "Assessment Plan Setup is prototype-only mock/local state for UAT and must not imply real AI/API persistence.",
+      "source": "RAW-048"
+    },
+    {
+      "id": "CON-021",
+      "constraint": "Interview and test outputs must retain shared assessment plan traceability IDs for reproducibility.",
+      "source": "RAW-049, RAW-050"
+    }
+  ],
+  "assessmentPlanSetupTraceability": [
+    "Assessment Plan Setup is configured per approved Job/JD criteria version.",
+    "The shared assessment plan groups AI Interview Setup, Test/Assignment Setup, and Shared Evaluation Criteria/Rubric/Weights.",
+    "Interview and test outputs must trace jobId, jdVersionId, parsedCriteriaVersion, assessmentPlanId, assessmentPlanVersionId, rubricVersionId, interviewQuestionSetVersionId, and testDefinitionVersionId."
+  ]
 }

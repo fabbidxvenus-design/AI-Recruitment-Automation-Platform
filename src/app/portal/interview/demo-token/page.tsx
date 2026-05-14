@@ -24,6 +24,7 @@ export default function InterviewPage() {
 
   const session = mockInterviewSessions[0];
   const currentQuestion = session.questions[currentQuestionIndex];
+  const assessmentTraceability = session.assessmentTraceability;
   const progress = ((currentQuestionIndex + (answers[currentQuestion.id] ? 1 : 0)) / session.questions.length) * 100;
 
   // Check reduced motion preference - initialize with current value then subscribe for changes
@@ -73,6 +74,46 @@ export default function InterviewPage() {
     alert('Progress saved. You can return later to complete the interview.');
   };
 
+  const renderAssessmentTraceability = () => {
+    if (!assessmentTraceability) return null;
+
+    return (
+      <div className={styles.traceabilityPanel}>
+        <h3>{t('portal.interview.traceability.title')}</h3>
+        <dl className={styles.traceabilityGrid}>
+          <div>
+            <dt>{t('portal.interview.traceability.jobId')}</dt>
+            <dd>{assessmentTraceability.jobId}</dd>
+          </div>
+          <div>
+            <dt>{t('portal.interview.traceability.jdVersionId')}</dt>
+            <dd>{assessmentTraceability.jdVersionId}</dd>
+          </div>
+          <div>
+            <dt>{t('portal.interview.traceability.parsedCriteriaVersion')}</dt>
+            <dd>{assessmentTraceability.parsedCriteriaVersion}</dd>
+          </div>
+          <div>
+            <dt>{t('portal.interview.traceability.assessmentPlanId')}</dt>
+            <dd>{assessmentTraceability.assessmentPlanId}</dd>
+          </div>
+          <div>
+            <dt>{t('portal.interview.traceability.assessmentPlanVersionId')}</dt>
+            <dd>{assessmentTraceability.assessmentPlanVersionId}</dd>
+          </div>
+          <div>
+            <dt>{t('portal.interview.traceability.rubricVersionId')}</dt>
+            <dd>{assessmentTraceability.rubricVersionId}</dd>
+          </div>
+          <div>
+            <dt>{t('portal.interview.traceability.interviewQuestionSetVersionId')}</dt>
+            <dd>{assessmentTraceability.interviewQuestionSetVersionId ?? t('common.notAvailable')}</dd>
+          </div>
+        </dl>
+      </div>
+    );
+  };
+
   const timeRemaining = '68h 42m';
 
   if (isExpired) {
@@ -105,7 +146,7 @@ export default function InterviewPage() {
               <div className={styles.consentContent}>
                 <div className={styles.consentSection}>
                   <h3>{t('portal.interview.aboutThisInterview')}</h3>
-                  <p>{t('portal.interview.aboutThisInterview')}</p>
+                  <p>{t('portal.interview.aboutThisInterviewBody')}</p>
                 </div>
 
                 <div className={styles.consentSection}>
@@ -128,13 +169,15 @@ export default function InterviewPage() {
                   <div className={styles.deadlineDisplay}>
                     <span className={styles.deadlineIcon} aria-hidden="true">⏱️</span>
                     <span className={styles.deadlineValue}>{t('portal.interview.timeRemaining', { time: timeRemaining })}</span>
-                    <span className={styles.deadlineDate}>{t('portal.interview.deadlineDate', { date: 'May 15, 2024 at 11:59 PM' })}</span>
+                    <span className={styles.deadlineDate}>{t('portal.interview.deadlineDate', { date: 'May 15, 2026 at 11:59 PM' })}</span>
                   </div>
                 </div>
 
-                <Notice variant="info" title="Reminder">
+                <Notice variant="info" title={t('portal.interview.reminderTitle')}>
                   {t('portal.interview.reminderEmail')}
                 </Notice>
+
+                {renderAssessmentTraceability()}
               </div>
             </CardContent>
             <div className={styles.consentActions}>
@@ -182,6 +225,8 @@ export default function InterviewPage() {
           {t('portal.interview.progress.questionCount', { current: currentQuestionIndex + 1, total: session.questions.length })}
         </span>
       </div>
+
+      {renderAssessmentTraceability()}
 
       <Card className={styles.questionCard}>
         <CardContent>

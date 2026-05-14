@@ -11091,5 +11091,127 @@
         "BR-015"
       ]
     }
-  ]
+  ],
+  "assessmentPlanSetupAddendum": {
+    "scopeConstraints": "Prototype-only mock/local state for UAT; no real API persistence, LLM generation, OCR, file parsing, ATS/job board/career site integration, or external assessment provider integration.",
+    "screens": [
+      {
+        "id": "SCREEN-ASSESS-001",
+        "screen": "Assessment Plan Setup",
+        "purpose": "Configure shared evaluation setup for an approved Job/JD criteria version.",
+        "primaryAction": "Select job/JD criteria version, tune shared rubric/weights, choose interview question set version, choose test definition version, and save local draft/approved state.",
+        "keyBehaviors": "Shows jobId, jdVersionId, parsedCriteriaVersion, assessmentPlanId, assessmentPlanVersionId, rubricVersionId, interviewQuestionSetVersionId, and testDefinitionVersionId; marks all data as prototype mock/local state.",
+        "sourceIds": [
+          "BP-ASSESS-001",
+          "BR-ASSESS-001",
+          "BR-ASSESS-002",
+          "BR-ASSESS-003",
+          "UC-ASSESS-001"
+        ],
+        "requirementIds": [
+          "REQ-F-120",
+          "REQ-F-121",
+          "REQ-F-122",
+          "REQ-F-123",
+          "REQ-F-124",
+          "REQ-D-020",
+          "REQ-C-021",
+          "REQ-C-022"
+        ]
+      }
+    ],
+    "dataEntities": [
+      {
+        "id": "DATA-ASSESS-001",
+        "entity": "AssessmentPlan",
+        "requiredFields": [
+          "assessmentPlanId",
+          "jobId",
+          "jdVersionId",
+          "parsedCriteriaVersion",
+          "currentVersionId",
+          "status"
+        ]
+      },
+      {
+        "id": "DATA-ASSESS-002",
+        "entity": "AssessmentPlanVersion",
+        "requiredFields": [
+          "assessmentPlanVersionId",
+          "assessmentPlanId",
+          "rubricVersionId",
+          "interviewQuestionSetVersionId",
+          "testDefinitionVersionId",
+          "createdAt",
+          "createdBy"
+        ]
+      },
+      {
+        "id": "DATA-ASSESS-003",
+        "entity": "RubricVersion",
+        "requiredFields": [
+          "rubricVersionId",
+          "criteria",
+          "weights",
+          "scoringScale"
+        ]
+      },
+      {
+        "id": "DATA-ASSESS-004",
+        "entity": "InterviewQuestionSetVersion",
+        "requiredFields": [
+          "interviewQuestionSetVersionId",
+          "questions",
+          "language",
+          "followUpPolicy"
+        ]
+      },
+      {
+        "id": "DATA-ASSESS-005",
+        "entity": "TestDefinitionVersion",
+        "requiredFields": [
+          "testDefinitionVersionId",
+          "testType",
+          "sections",
+          "answerKeyOrRubric"
+        ]
+      }
+    ],
+    "interfaceContracts": [
+      {
+        "id": "API-ASSESS-001",
+        "method": "prototype/local",
+        "path": "/assessments/setup",
+        "request": "jobId, jdVersionId, parsedCriteriaVersion, rubricVersionId, interviewQuestionSetVersionId, testDefinitionVersionId",
+        "response": "assessmentPlanId, assessmentPlanVersionId, traceability preview"
+      }
+    ],
+    "validationAndTests": [
+      {
+        "id": "VAL-ASSESS-001",
+        "type": "validation",
+        "detail": "Assessment plan requires approved Job/JD criteria version."
+      },
+      {
+        "id": "VAL-ASSESS-002",
+        "type": "validation",
+        "detail": "Rubric weights must total 100."
+      },
+      {
+        "id": "EDGE-ASSESS-001",
+        "type": "edge",
+        "detail": "Existing interview/test output uses prior assessment version."
+      },
+      {
+        "id": "TEST-ASSESS-001",
+        "type": "test",
+        "detail": "Assessment setup route renders shared plan and traceability preview."
+      },
+      {
+        "id": "TEST-ASSESS-002",
+        "type": "test",
+        "detail": "Interview/test surfaces expose assessment plan traceability."
+      }
+    ]
+  }
 }

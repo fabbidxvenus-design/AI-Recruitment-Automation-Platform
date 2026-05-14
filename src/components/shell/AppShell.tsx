@@ -42,6 +42,7 @@ const navSectionsMeta: { titleKey: string; items: NavItem[] }[] = [
   {
     titleKey: 'nav.assessment',
     items: [
+      { labelKey: 'nav.assessmentSetup', href: '/assessments/setup', icon: '🧩' },
       { labelKey: 'nav.testGrading', href: '/tests/grading', icon: '📝' },
       { labelKey: 'nav.finalReview', href: '/final-review', icon: '🎯' },
     ],

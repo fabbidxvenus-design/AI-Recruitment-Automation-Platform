@@ -124,6 +124,11 @@ Upstream: $(@{metadata=; summary=; scope=; functionalRequirements=System.Object[
 | REQ-F-076 | The system shall support Job/JD versioning and ParsedCriteriaVersion history for screening reproducibility | P0 | Screening results must be reproducible across JD and criteria changes | Given JD is updated, Then a new JD version is created<br>Given weights or criteria are tuned without changing original JD, Then a new parsedCriteriaVersion is created | RAW-045 |
 | REQ-F-077 | The system shall display prototype-only mock connector status and import previews for ATS, job board, and career site job sources without real external API integration | P0 | External sources are useful for prototype demonstration but not real MVP integration | Given HR opens external source connectors, Then mock status and requisition preview fields are visible and clearly marked as mock | RAW-046 |
 | REQ-F-078 | The system shall store screening trace references to candidateId, cvVersionId, jobId, jdVersionId, and parsedCriteriaVersion | P0 | Cross-domain traceability connects CV source and JD source for every screening result | Given screening result is generated, Then all CV/JD version reference fields are stored with the result | RAW-006, RAW-007, RAW-045 |
+| REQ-F-120 | The system shall provide a unified Assessment Plan Setup module per approved Job/JD criteria version | P0 | Interview and test setup must share one evaluation source of truth | Given an approved ParsedJDProfile, When HR opens Assessment Setup, Then the plan shows jobId, jdVersionId, parsedCriteriaVersion, shared rubric, interview setup, and test setup | RAW-048, RAW-049 |
+| REQ-F-121 | The system shall support versioned shared evaluation rubric and weights at assessment plan level | P0 | Interview and test grading must remain reproducible and comparable | Given HR edits criteria or weights, When saved as a new version, Then assessmentPlanVersionId and rubricVersionId change while prior outputs remain traceable | RAW-049, RAW-050 |
+| REQ-F-122 | The system shall configure AI Interview question set version inside the assessment plan | P0 | Candidate interview execution must trace to the approved setup version | Given HR selects interview questions, When plan is approved, Then interview sessions store interviewQuestionSetVersionId and shared assessment trace IDs | RAW-048, RAW-049 |
+| REQ-F-123 | The system shall configure Test/Assignment definition version inside the assessment plan | P0 | Test grading must trace to the approved setup version | Given HR selects test definition, When plan is approved, Then test submissions and grading results store testDefinitionVersionId and shared assessment trace IDs | RAW-048, RAW-049 |
+| REQ-F-124 | The system shall display prototype-only local/mock state for assessment setup without real API, LLM, OCR, or external integrations | P0 | UAT needs visible coverage without production integration behavior | Given HR changes setup values, When previewing the prototype, Then the UI updates locally and clearly represents mock setup data only | RAW-048 |
 
 ## 4. Non-Functional Requirements
 
@@ -165,6 +170,7 @@ Upstream: $(@{metadata=; summary=; scope=; functionalRequirements=System.Object[
 | REQ-D-017 | JobRequisitionImport | Sheet/Excel requisition import records for Job/JD Intake | HR Recruiter | internal | RAW-004 |
 | REQ-D-018 | ExternalJobSourceConnectorMock | Prototype-only ATS/job board/career site connector status and preview data | System | internal | RAW-046 |
 | REQ-D-019 | CandidateApplication | Canonical relationship between candidate and job for screening/application tracking | System | internal | RAW-006, RAW-007 |
+| REQ-D-020 | AssessmentPlan, AssessmentPlanVersion, RubricVersion, InterviewQuestionSetVersion, and TestDefinitionVersion | Unified assessment setup source of truth and versioned traceability for interview/test execution | HR Recruiter, HR Manager | internal | RAW-048, RAW-049, RAW-050 |
 
 ## 6. Integration Requirements
 
@@ -204,6 +210,8 @@ Upstream: $(@{metadata=; summary=; scope=; functionalRequirements=System.Object[
 | REQ-C-018 | Screening results must store candidateId, cvVersionId, jobId, jdVersionId, and parsedCriteriaVersion | data | Cross-domain traceability requirement | RAW-006, RAW-007, RAW-045 |
 | REQ-C-019 | ATS, job board, and career site connectors are prototype-only mock UI/status previews with no real external API integration in MVP | scope | Avoids implying production external integrations | RAW-046 |
 | REQ-C-020 | A ParsedJDProfile must be HR-approved before the JD can be used for screening/matching | business | Human oversight for AI-parsed job criteria | RAW-044, RAW-047 |
+| REQ-C-021 | Assessment Plan Setup is prototype-only local/mock state in this phase and must not imply real persistence, LLM generation, OCR, or external integration | scope | Keeps UAT coverage separate from production API/integration commitments | RAW-048 |
+| REQ-C-022 | Interview and test outputs must store assessmentPlanId, assessmentPlanVersionId, rubricVersionId, and the relevant question/test definition version IDs | data | Preserves reproducibility from approved JD criteria through candidate assessment outputs | RAW-049, RAW-050 |
 
 ## 8. Open Questions
 

@@ -19,11 +19,11 @@ export default function TestGradingPage() {
   const { t } = useTranslation();
   const { locale } = useLanguage();
   const [activeTab, setActiveTab] = useState<TabType>('all');
-  const [selectedTest, setSelectedTest] = useState<string | null>(null);
+  const [selectedTest, setSelectedTest] = useState<string | null>(mockTestResults[0]?.id ?? null);
   const [overrideModalOpen, setOverrideModalOpen] = useState(false);
   const [overrideReason, setOverrideReason] = useState('');
 
-  const selected = mockTestResults.find(t => t.id === selectedTest);
+  const selected = mockTestResults.find(test => test.id === selectedTest);
 
   const filteredTests = mockTestResults.filter(test => {
     if (activeTab === 'all') return true;
@@ -157,6 +157,42 @@ export default function TestGradingPage() {
                       </div>
                     </div>
                   </div>
+
+                  {selected.assessmentTraceability && (
+                    <div className={styles.detailSection}>
+                      <h3 className={styles.sectionTitle}>{t('tests.grading.traceability.title')}</h3>
+                      <dl className={styles.traceabilityGrid}>
+                        <div>
+                          <dt>{t('tests.grading.traceability.jobId')}</dt>
+                          <dd>{selected.assessmentTraceability.jobId}</dd>
+                        </div>
+                        <div>
+                          <dt>{t('tests.grading.traceability.jdVersionId')}</dt>
+                          <dd>{selected.assessmentTraceability.jdVersionId}</dd>
+                        </div>
+                        <div>
+                          <dt>{t('tests.grading.traceability.parsedCriteriaVersion')}</dt>
+                          <dd>{selected.assessmentTraceability.parsedCriteriaVersion}</dd>
+                        </div>
+                        <div>
+                          <dt>{t('tests.grading.traceability.assessmentPlanId')}</dt>
+                          <dd>{selected.assessmentTraceability.assessmentPlanId}</dd>
+                        </div>
+                        <div>
+                          <dt>{t('tests.grading.traceability.assessmentPlanVersionId')}</dt>
+                          <dd>{selected.assessmentTraceability.assessmentPlanVersionId}</dd>
+                        </div>
+                        <div>
+                          <dt>{t('tests.grading.traceability.rubricVersionId')}</dt>
+                          <dd>{selected.assessmentTraceability.rubricVersionId}</dd>
+                        </div>
+                        <div>
+                          <dt>{t('tests.grading.traceability.testDefinitionVersionId')}</dt>
+                          <dd>{selected.assessmentTraceability.testDefinitionVersionId ?? t('common.notAvailable')}</dd>
+                        </div>
+                      </dl>
+                    </div>
+                  )}
 
                   <div className={styles.detailSection}>
                     <h3 className={styles.sectionTitle}>{t('tests.grading.scoreBreakdown.title')}</h3>

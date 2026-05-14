@@ -1,5 +1,7 @@
 // Core entity types for RecruitAI
 
+import type { AssessmentTraceability } from './assessment-plan';
+
 export interface Candidate {
   id: string;
   firstName: string;
@@ -94,6 +96,7 @@ export interface InterviewSession {
   status: 'not_started' | 'in_progress' | 'completed' | 'failed';
   startedAt?: string;
   completedAt?: string;
+  assessmentTraceability?: AssessmentTraceability;
   questions: InterviewQuestion[];
   responses: InterviewResponse[];
   overallScore?: number;
@@ -117,6 +120,7 @@ export interface TestResult {
   gradedAt: string;
   gradedBy: 'ai' | 'human' | 'override';
   status: 'pending' | 'approved' | 'flagged' | 'overridden';
+  assessmentTraceability?: AssessmentTraceability;
   aiGrade?: string;
   humanGrade?: string;
   overrideReason?: string;
@@ -208,3 +212,15 @@ export type { CVTranslation, CVTranslationRequest } from './cv-translation';
 export type { InterviewTranslation, InterviewTranslationRequest } from './interview-translation';
 export type { CandidateCV, CVVersion, CVExtractionResult, CandidateApplication } from './cv-intake';
 export type { Job as JobIntake, OriginalJDDocument, JDVersion, ParsedJDProfile, JobStatus, JDSourceType } from './job-intake';
+export type {
+  AssessmentPlan,
+  AssessmentPlanStatus,
+  AssessmentPlanVersion,
+  AssessmentCriterion,
+  AssessmentCriteriaCategory,
+  AssessmentTraceability,
+  InterviewQuestionSetVersion,
+  RubricVersion,
+  TestDefinitionType,
+  TestDefinitionVersion,
+} from './assessment-plan';

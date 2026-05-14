@@ -56,6 +56,7 @@ Review status:
 | BP-CV-001 | Candidate/CV Intake | HR Recruiter, System | Import candidate CV PDFs through Drive folder trigger/scan, multi-file upload, or single CV upload, then create CV versions and extracted candidate profiles | REQ-F-001, REQ-F-002, REQ-F-003, REQ-F-005, REQ-F-010, REQ-D-001, REQ-D-002, REQ-D-015, REQ-D-016, REQ-I-001, REQ-C-002, REQ-C-009, REQ-C-014, REQ-C-015 |
 | BP-JOB-001 | Job/JD Intake | HR Recruiter, HR Manager, System | Create/import Job/JD from manual entry, JD text/file, Drive, or Sheet/Excel requisition, parse JD, and approve ParsedJDProfile before matching | REQ-F-004, REQ-F-006, REQ-F-068, REQ-F-069, REQ-F-076, REQ-D-003, REQ-D-017, REQ-I-001, REQ-I-008, REQ-C-016, REQ-C-017, REQ-C-020 |
 | BP-JOB-002 | External Job Source Mock Preview | HR Recruiter, System | Show prototype-only ATS/job board/career site connector status and mock requisition previews without real external integration | REQ-F-077, REQ-D-018, REQ-I-009, REQ-C-019 |
+| BP-ASSESS-001 | Unified Assessment Plan Setup | HR Recruiter, HR Manager | Configure one versioned assessment plan per approved Job/JD criteria version, grouping shared rubric/weights, AI interview setup, and test/assignment setup | REQ-F-120, REQ-F-121, REQ-F-122, REQ-F-123, REQ-F-124, REQ-D-020, REQ-C-021, REQ-C-022 |
 
 ## 5. Business Rules
 
@@ -103,6 +104,9 @@ Review status:
 | BR-JOB-003 | JD and criteria versioning preserves reproducibility | audit | JD updates create JD versions; criteria tuning may create new ParsedCriteriaVersion without changing the original JD document version, and screening remains tied to the versions used. | REQ-F-076, REQ-C-017, REQ-C-018 |
 | BR-JOB-004 | External job connectors are mock-only | scope | ATS, job board, and career site connectors are prototype-only mock UI/status previews and must not imply real external integration in MVP. | REQ-F-077, REQ-C-019, REQ-I-009 |
 | BR-SCR-001 | Screening must trace CV and JD versions | audit | Every screening result must store candidateId, cvVersionId, jobId, jdVersionId, and parsedCriteriaVersion. | REQ-F-078, REQ-D-004, REQ-D-019, REQ-C-018 |
+| BR-ASSESS-001 | Assessment plan follows approved JD criteria version | audit | AssessmentPlan must link to jobId, jdVersionId, and parsedCriteriaVersion before interview or test setup is considered usable. | REQ-F-120, REQ-D-020, REQ-C-022 |
+| BR-ASSESS-002 | Shared rubric version is the assessment source of truth | assessment | AI interview and test grading inherit the approved rubricVersionId and weights unless a visible override is configured and versioned. | REQ-F-121, REQ-F-122, REQ-F-123, REQ-D-020 |
+| BR-ASSESS-003 | Prototype assessment setup has no real integration side effects | scope | Setup changes in this prototype use mock/local state only and must not imply real API persistence, LLM generation, OCR, or external connector behavior. | REQ-F-124, REQ-C-021 |
 
 ## 6. Use Cases
 
@@ -130,6 +134,7 @@ Review status:
 | UC-JOB-003 | Manage JD and criteria versions | HR Manager | JD updates create JDVersion<br>Criteria tuning creates ParsedCriteriaVersion when needed<br>Prior screening remains tied to prior versions | REQ-F-076, REQ-C-017, REQ-C-018 |
 | UC-JOB-004 | Preview external job source mock connectors | HR Recruiter | Connector cards show mock status<br>Preview includes full mock requisition fields<br>UI clearly marks no real integration | REQ-F-077, REQ-I-009, REQ-C-019 |
 | UC-SCR-TRACE | Run traceable CV/JD screening | System, HR Manager | Screening uses CandidateProfile/CVVersion and approved ParsedJDProfile/ParsedCriteriaVersion<br>Result stores candidateId, cvVersionId, jobId, jdVersionId, parsedCriteriaVersion<br>HR can audit CV and JD source references | REQ-F-011, REQ-F-078, REQ-D-004, REQ-D-019 |
+| UC-ASSESS-001 | Configure unified assessment plan | HR Recruiter / HR Manager | HR selects an approved Job/JD criteria version<br>HR configures shared rubric and weights<br>HR selects interview question set version and test definition version<br>Prototype preview shows the traceability IDs used by interview and test outputs | REQ-F-120, REQ-F-121, REQ-F-122, REQ-F-123, REQ-F-124, REQ-D-020, REQ-C-021, REQ-C-022 |
 
 ## 7. Business Acceptance Criteria
 
@@ -143,6 +148,7 @@ Review status:
 | BAC-006 | Generated recruitment content and mock design assets require recorded HR approval before export, publishing, or use. | REQ-F-074, REQ-F-083, REQ-C-007, REQ-C-008, REQ-C-011 |
 | BAC-007 | CV and interview translations preserve source linkage, access control, and source-of-truth warnings. | REQ-F-092, REQ-F-093, REQ-F-094, REQ-F-095, REQ-F-101, REQ-F-102, REQ-C-009, REQ-C-010 |
 | BAC-008 | CV evidence detail supports HR review with original/extracted/evidence context and does not introduce OCR or a new automated decision gate. | REQ-F-110, REQ-F-111, REQ-F-112, REQ-C-013 |
+| BAC-009 | Assessment setup provides one shared, versioned evaluation source of truth for AI Interview and Test/Assignment prototype flows. | REQ-F-120, REQ-F-121, REQ-F-122, REQ-F-123, REQ-D-020, REQ-C-022 |
 
 ## 8. Risks
 

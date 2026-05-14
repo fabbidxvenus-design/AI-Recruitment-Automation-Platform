@@ -18,6 +18,7 @@ RecruitAI là nguyên mẫu tự động hóa tuyển dụng được xây dựn
 - Dữ liệu mock tĩnh trong `src/lib/mockData.ts`
 - Mock fixtures cho AI Tools trong `src/lib/mock-content-data.ts` và `src/lib/ai-design-mock.ts`
 - Mock fixtures cho CV/Job Intake trong `src/lib/cvIntakeMockData.ts` và `src/lib/jobIntakeMockData.ts`
+- Mock fixtures cho Assessment Plan Setup trong `src/lib/assessmentPlanMockData.ts`
 
 ## Chạy dự án
 
@@ -50,8 +51,9 @@ npm run typecheck  # kiểm tra TypeScript
 | SCREEN-002 Candidate Sourcing and Import | `/candidates/import` | Nhập CV thủ công/Drive/batch bằng mock data, trạng thái validation, versioning và re-screen thủ công |
 | SCREEN-003 Screening Review and Approval | `/screening/review` | Điểm screening AI, bằng chứng, traceability CV/JD version, provenance và thao tác phê duyệt |
 | SCREEN-004 Interview Scheduling Approval | `/interviews/schedule-approval` | Gợi ý lịch, trạng thái rảnh/bận, xung đột, phê duyệt lịch |
-| SCREEN-005 Async AI Interview Workspace | `/portal/interview/demo-token` | Luồng phỏng vấn async cho ứng viên |
-| SCREEN-006 Test Grading Review and Override | `/tests/grading` | Kết quả bài test, trạng thái chấm điểm, override thủ công |
+| SCREEN-005 Async AI Interview Workspace | `/portal/interview/demo-token` | Luồng phỏng vấn async cho ứng viên, kế thừa traceability từ assessment plan |
+| SCREEN-ASSESS-001 Assessment Plan Setup | `/assessments/setup` | Thiết lập rubric/weights chung, AI Interview Setup và Test/Assignment Setup theo Job/JD criteria version |
+| SCREEN-006 Test Grading Review and Override | `/tests/grading` | Kết quả bài test, trạng thái chấm điểm, override thủ công, traceability assessment plan |
 | SCREEN-007 Final Review and Decision | `/final-review` | Tổng hợp bằng chứng và quyết định pass/fail cuối cùng |
 | SCREEN-008 Admin Configuration and Monitoring | `/admin` | Cấu hình Google, giám sát, placeholder retention/escalation |
 | Error Remediation Queue Detail | `/errors/ERR-2024-0892` | Retry backoff, phân công owner, escalation, review thủ công |
@@ -121,8 +123,10 @@ Các màn AI Tools bổ sung từ Stitch project `8539967708489554875`:
 - Yêu cầu liên quan: `REQ-F-080` đến `REQ-F-083`, `BR-026`, `BR-027`, `BR-028`, `BR-033`.
 - Tích hợp hiện tại: mock generation hybrid/deterministic, export local-only, tab/section fallback thay cho Design Export integration thật.
 
-## Mở rộng prototype CV/Job Intake
+## Mở rộng prototype CV/Job Intake và Assessment Plan
 
+- `/assessments/setup` dùng mock data/local state để cấu hình một Assessment Plan chung theo Job/JD criteria version, gồm shared rubric/weights, AI Interview question set version và Test/Assignment definition version.
+- `/portal/interview/demo-token` và `/tests/grading` hiển thị traceability assessment plan gồm `jobId`, `jdVersionId`, `parsedCriteriaVersion`, `assessmentPlanId`, `assessmentPlanVersionId`, `rubricVersionId` và version ID tương ứng cho question set/test definition.
 - `/jobs/intake` dùng mock service/local state để demo các nguồn Job/JD: form thủ công, paste text, PDF/DOCX, Drive, Sheet/Excel và connector ATS/job board/career site giả lập.
 - `/jobs/approval` hiển thị validation gate cho JD đã parse, cảnh báo thiếu tiêu chí tối thiểu, trạng thái approved/rejected/incomplete/pending và AI provenance mock.
 - `/jobs/versions` hiển thị lịch sử phiên bản JD, source document/source type, parsed criteria version và so sánh thay đổi giữa phiên bản.
@@ -138,10 +142,11 @@ Luồng UAT gợi ý:
 2. Mở màn nhập CV ở `/candidates/import` để xem validation mock, CV versioning và re-screen thủ công.
 3. Mở `/jobs/intake`, `/jobs/approval` và `/jobs/versions` để demo Job/JD intake, approval gate và version history.
 4. Review screening ở `/screening/review` để kiểm tra traceability CV/JD và provenance.
-5. Phê duyệt lịch ở `/interviews/schedule-approval`.
-5. Chạy luồng phỏng vấn ứng viên ở `/portal/interview/demo-token`.
-6. Review chấm bài test ở `/tests/grading`.
-7. Ra quyết định cuối ở `/final-review`.
+5. Cấu hình `/assessments/setup` để xem Assessment Plan, rubric/weights, interview question set và test definition version.
+6. Phê duyệt lịch ở `/interviews/schedule-approval`.
+7. Chạy luồng phỏng vấn ứng viên ở `/portal/interview/demo-token` và kiểm tra traceability assessment plan.
+8. Review chấm bài test ở `/tests/grading` và kiểm tra traceability assessment plan.
+9. Ra quyết định cuối ở `/final-review`.
 8. Kiểm tra admin monitoring ở `/admin`.
 9. Mở chi tiết xử lý lỗi ở `/errors/ERR-2024-0892`.
 10. Mở AI Tools hub ở `/tools`.

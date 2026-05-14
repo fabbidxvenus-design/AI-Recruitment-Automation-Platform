@@ -8,6 +8,7 @@ const routes = [
   { path: '/jobs/versions', text: /JD Version History|Lịch sử phiên bản JD/ },
   { path: '/screening/review', text: /Screening Review & Approval|Xem xét & Phê duyệt sàng lọc/ },
   { path: '/interviews/schedule-approval', text: /Phê duyệt lịch phỏng vấn|Schedule Approval/ },
+  { path: '/assessments/setup', text: /Assessment Plan Setup|Thiết lập kế hoạch đánh giá/ },
   { path: '/tests/grading', text: /Test Grading|Chấm điểm bài kiểm tra/ },
   { path: '/final-review', text: /Final Review|Xem xét cuối cùng/ },
   { path: '/admin', text: /Admin Configuration|Cấu hình/ },
@@ -39,4 +40,23 @@ test('screening review shows traceability after selecting candidate', async ({ p
   await expect(page.getByText('app-001')).toBeVisible();
   await expect(page.getByText('cv-ver-001').first()).toBeVisible();
   await expect(page.getByText('jd-ver-001').first()).toBeVisible();
+});
+
+test('assessment setup shows shared assessment traceability', async ({ page }) => {
+  await page.goto('/assessments/setup');
+
+  await expect(page.getByText('assess-plan-001').first()).toBeVisible();
+  await expect(page.getByText('assess-plan-ver-001').first()).toBeVisible();
+  await expect(page.getByText('rubric-ver-001').first()).toBeVisible();
+  await expect(page.getByText('iqs-ver-001').first()).toBeVisible();
+  await expect(page.getByText('test-def-ver-001').first()).toBeVisible();
+});
+
+test('test grading shows assessment traceability for selected result', async ({ page }) => {
+  await page.goto('/tests/grading');
+  await page.getByText('Sarah Chen').first().click();
+
+  await expect(page.getByText(/Assessment Traceability|Truy vết kế hoạch đánh giá/)).toBeVisible();
+  await expect(page.getByText('assess-plan-001').first()).toBeVisible();
+  await expect(page.getByText('test-def-ver-001').first()).toBeVisible();
 });

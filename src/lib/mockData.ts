@@ -11,6 +11,7 @@ import type {
   ErrorRemediationItem,
   BQBlocker,
 } from '@/types';
+import { defaultAssessmentPlan, defaultAssessmentPlanVersion } from './assessmentPlanMockData';
 
 // BQ Blockers for blocked requirements
 export const bqBlockers: BQBlocker[] = [
@@ -299,6 +300,17 @@ export const mockScheduleSlots: ScheduleSlot[] = [
   },
 ];
 
+const defaultAssessmentTraceability = {
+  jobId: defaultAssessmentPlan.jobId,
+  jdVersionId: defaultAssessmentPlan.jdVersionId,
+  parsedCriteriaVersion: defaultAssessmentPlan.parsedCriteriaVersion,
+  assessmentPlanId: defaultAssessmentPlan.id,
+  assessmentPlanVersionId: defaultAssessmentPlanVersion.id,
+  rubricVersionId: defaultAssessmentPlanVersion.rubricVersionId,
+  interviewQuestionSetVersionId: defaultAssessmentPlanVersion.interviewQuestionSetVersionId,
+  testDefinitionVersionId: defaultAssessmentPlanVersion.testDefinitionVersionId,
+};
+
 // Mock interview sessions
 export const mockInterviewSessions: InterviewSession[] = [
   {
@@ -307,6 +319,7 @@ export const mockInterviewSessions: InterviewSession[] = [
     candidateName: 'Sarah Chen',
     status: 'in_progress',
     startedAt: '2024-04-23T09:00:00Z',
+    assessmentTraceability: defaultAssessmentTraceability,
     questions: [
       { id: 'q1', text: 'Tell me about your experience with React Hooks.', category: 'Technical', expectedDuration: 3, difficulty: 'medium' },
       { id: 'q2', text: 'Describe a challenging bug you debugged recently.', category: 'Problem Solving', expectedDuration: 4, difficulty: 'medium' },
@@ -343,6 +356,7 @@ export const mockTestResults: TestResult[] = [
     gradedAt: '2024-04-20T16:30:00Z',
     gradedBy: 'ai',
     status: 'approved',
+    assessmentTraceability: defaultAssessmentTraceability,
     aiGrade: 'Excellent performance with strong understanding of JavaScript concepts.',
   },
   {

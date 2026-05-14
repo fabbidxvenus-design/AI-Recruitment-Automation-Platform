@@ -60,12 +60,16 @@ Generated: 2026-05-14T00:00:00Z
 | RAW-045 | REQ-F-076, REQ-F-078, REQ-D-003, REQ-C-017, REQ-C-018 | BR-JOB-003, BR-SCR-001, UC-JOB-003, UC-SCR-TRACE | SCREEN-JOB-003, DATA-JOB-003, DATA-JOB-004, DATA-APP-001, VAL-SCR-001, TEST-JOB-003 | TEST-JOB-003 | complete | JDVersion and ParsedCriteriaVersion preserve screening reproducibility |
 | RAW-046 | REQ-F-077, REQ-D-018, REQ-I-009, REQ-C-019 | BP-JOB-002, BR-JOB-004, UC-JOB-004, RISK-016 | SCREEN-JOB-001, API-JOB-003, TEST-JOB-004 | TEST-JOB-004 | complete | External job source connectors are prototype-only mock UI/status |
 | RAW-047 | REQ-F-068, REQ-F-069, REQ-C-016, REQ-C-020 | BR-JOB-001, BR-JOB-002, UC-JOB-002 | SCREEN-JOB-002, API-JOB-002, VAL-JOB-001, VAL-JOB-002, TEST-JOB-001 | TEST-JOB-001 | complete | JD rejection recovery supports edit/resubmit or re-upload/re-parse |
+| RAW-048 | REQ-F-120, REQ-F-122, REQ-F-123, REQ-F-124, REQ-D-020, REQ-C-021 | BP-ASSESS-001, BR-ASSESS-001, BR-ASSESS-003, UC-ASSESS-001 | SCREEN-ASSESS-001, DATA-ASSESS-001, DATA-ASSESS-002, DATA-ASSESS-004, DATA-ASSESS-005, API-ASSESS-001, VAL-ASSESS-001, TEST-ASSESS-001 | TEST-ASSESS-001 | complete | Unified Assessment Plan Setup groups AI Interview, Test/Assignment, and shared criteria as prototype mock/local state |
+| RAW-049 | REQ-F-120, REQ-F-121, REQ-F-122, REQ-F-123, REQ-D-020, REQ-C-022 | BP-ASSESS-001, BR-ASSESS-001, BR-ASSESS-002, UC-ASSESS-001 | SCREEN-ASSESS-001, DATA-ASSESS-001, DATA-ASSESS-002, DATA-ASSESS-003, DATA-007, DATA-008, TEST-ASSESS-002 | TEST-ASSESS-002 | complete | Interview and test outputs trace to assessment plan, rubric, question set, and test definition versions |
+| RAW-050 | REQ-F-121, REQ-F-122, REQ-F-123, REQ-D-020, REQ-C-022 | BP-ASSESS-001, BR-ASSESS-002, UC-ASSESS-001 | DATA-ASSESS-002, DATA-ASSESS-003, DATA-ASSESS-004, DATA-ASSESS-005, VAL-ASSESS-002, EDGE-ASSESS-001, TEST-ASSESS-001, TEST-ASSESS-002 | TEST-ASSESS-001, TEST-ASSESS-002 | complete | Shared rubric/weights are versioned and inherited by AI Interview and Test/Assignment setup |
 
 ## 2. CV Intake and Job/JD Intake Traceability Notes
 
 - Candidate/CV Intake traces RAW-001/002/003/005/042/043 through REQ-F/REQ-D/REQ-I/REQ-C to BP-CV/BR-CV/UC-CV and SCREEN-002/API-001/API-002/DATA-CV details.
 - Job/JD Intake traces RAW-004/044/045/046/047 through REQ-F/REQ-D/REQ-I/REQ-C to BP-JOB/BR-JOB/UC-JOB and SCREEN-JOB/API-JOB/DATA-JOB details.
 - Cross-domain screening traces RAW-006/007 through REQ-F-078 and BR-SCR-001 to DATA-APP-001, API-003, VAL-SCR-001, and TEST-SCR-TRACE.
+- Unified Assessment Plan Setup traces RAW-048/049/050 through REQ-F-120..124, REQ-D-020, REQ-C-021/022, BP/BR/UC-ASSESS IDs, SCREEN-ASSESS-001, DATA-ASSESS-001..005, and TEST-ASSESS-001/002.
 
 ## 3. Validation Summary
 

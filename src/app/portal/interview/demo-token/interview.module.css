@@ -330,6 +330,42 @@
   background: var(--color-success);
 }
 
+.traceabilityPanel {
+  margin-bottom: var(--space-5);
+  padding: var(--space-4);
+  border: 1px solid var(--color-outline-variant);
+  border-radius: 12px;
+  background: var(--color-surface-container-low);
+}
+
+.traceabilityPanel h3 {
+  margin: 0 0 var(--space-3) 0;
+  color: var(--color-on-surface);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.traceabilityGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+}
+
+.traceabilityGrid dt {
+  color: var(--color-on-surface-variant);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.traceabilityGrid dd {
+  margin: 2px 0 0;
+  color: var(--color-on-surface);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
 .tips {
   padding: var(--space-4);
   background: var(--color-surface-container-low);

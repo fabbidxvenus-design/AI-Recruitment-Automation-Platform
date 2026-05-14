@@ -69,6 +69,9 @@ Project type: data-ai
 | RAW-045 | Job/JD versioning is required; JD document updates create JD versions and criteria tuning may create a new parsedCriteriaVersion without changing the original JD document | Scope decision | constraint | high | [CLARIFIED] Hybrid criteria versioning |
 | RAW-046 | External ATS, job board, and career site job source connectors are prototype-only mock UI/status previews with no real external API integration in MVP | Scope decision | constraint | high | [CLARIFIED] Prototype-only external connectors |
 | RAW-047 | If HR rejects an AI-parsed JD profile, HR can either edit parsed fields and resubmit for approval or re-upload/re-parse corrected JD source | Scope decision | need | high | [CLARIFIED] JD rejection recovery |
+| RAW-048 | Unified Assessment Plan Setup groups AI Interview Setup, Test/Assignment Setup, and Shared Evaluation Criteria/Rubric/Weights under one parent module per Job/JD criteria version | Scope decision | need | high | Prototype-only setup with mock data/local state; no real AI/API integration |
+| RAW-049 | Assessment Plan outputs must trace jobId, jdVersionId, parsedCriteriaVersion, assessmentPlanId, assessmentPlanVersionId, rubricVersionId, interviewQuestionSetVersionId, and testDefinitionVersionId | Scope decision | constraint | high | [CLARIFIED] Interview and test execution share the same approved evaluation setup |
+| RAW-050 | Shared rubric and weights are versioned at Assessment Plan level and inherited by AI Interview and Test/Assignment grading unless a visible override is configured | Scope decision | need | high | [CLARIFIED] Unified assessment source of truth for interview/test evaluation |
 
 ## 3. Constraints
 
@@ -81,6 +84,8 @@ Project type: data-ai
 | CON-017 | HR-approved parsed JD profile is source of truth for matching; original JD is evidence/reference | RAW-044 |
 | CON-018 | Job/JD versioning and parsed criteria versioning are required for screening reproducibility | RAW-045 |
 | CON-019 | External job source connectors are prototype-only mock UI/status and not real integrations in MVP | RAW-046 |
+| CON-020 | Assessment Plan Setup is prototype-only mock/local state for UAT and must not imply real AI/API persistence. | RAW-048 |
+| CON-021 | Interview and test outputs must retain shared assessment plan traceability IDs for reproducibility. | RAW-049, RAW-050 |
 
 ## 4. Use Cases
 
@@ -100,6 +105,7 @@ Project type: data-ai
 | UC-JDINTAKE | Job/JD Intake | HR Recruiter, HR Manager, System | HR creates/imports Job/JD from manual form, text, PDF/DOCX, Drive, or Sheet/Excel requisition. | MVP/Prototype as specified |
 | UC-JDAPPROVAL | Parsed JD Review and Approval | HR Recruiter, HR Manager, System | HR reviews, edits/re-parses, and approves ParsedJDProfile before it becomes matching source of truth. | MVP/Prototype as specified |
 | UC-JOBCONNMOCK | External Job Source Connector Mock | HR Recruiter, HR Manager, System | HR previews prototype-only ATS/job board/career site connector status and mock requisition data. | MVP/Prototype as specified |
+| UC-ASSESSSETUP | Assessment Plan Setup | HR Recruiter, HR Manager | HR configures a unified assessment plan for an approved Job/JD criteria version, including shared rubric/weights, interview question set, and test definition versions. | MVP/Prototype as specified |
 
 ## 5. CV Intake and Job/JD Intake Clarifications
 
@@ -126,3 +132,8 @@ Project type: data-ai
 
 ### Screening Traceability
 - Screening result must trace candidateId, cvVersionId, jobId, jdVersionId, and parsedCriteriaVersion.
+
+### Assessment Plan Setup Traceability
+- Assessment Plan Setup is configured per approved Job/JD criteria version.
+- The shared assessment plan groups AI Interview Setup, Test/Assignment Setup, and Shared Evaluation Criteria/Rubric/Weights.
+- Interview and test outputs must trace jobId, jdVersionId, parsedCriteriaVersion, assessmentPlanId, assessmentPlanVersionId, rubricVersionId, interviewQuestionSetVersionId, and testDefinitionVersionId.
