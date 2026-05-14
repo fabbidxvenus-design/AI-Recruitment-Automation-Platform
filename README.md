@@ -47,8 +47,8 @@ npm run typecheck  # kiểm tra TypeScript
 | Màn Gate 4 | Route | Mục đích |
 |---|---|---|
 | SCREEN-001 Recruitment Pipeline Dashboard | `/dashboard` | KPI pipeline, phê duyệt, hàng đợi lỗi, sức khỏe tích hợp |
-| SCREEN-002 Candidate Sourcing and Import | `/candidates/import` | Nhập thủ công, upload, trạng thái Drive, xử lý trùng lặp |
-| SCREEN-003 Screening Review and Approval | `/screening/review` | Điểm screening AI, bằng chứng, cờ rủi ro, thao tác phê duyệt |
+| SCREEN-002 Candidate Sourcing and Import | `/candidates/import` | Nhập CV thủ công/Drive/batch bằng mock data, trạng thái validation, versioning và re-screen thủ công |
+| SCREEN-003 Screening Review and Approval | `/screening/review` | Điểm screening AI, bằng chứng, traceability CV/JD version, provenance và thao tác phê duyệt |
 | SCREEN-004 Interview Scheduling Approval | `/interviews/schedule-approval` | Gợi ý lịch, trạng thái rảnh/bận, xung đột, phê duyệt lịch |
 | SCREEN-005 Async AI Interview Workspace | `/portal/interview/demo-token` | Luồng phỏng vấn async cho ứng viên |
 | SCREEN-006 Test Grading Review and Override | `/tests/grading` | Kết quả bài test, trạng thái chấm điểm, override thủ công |
@@ -61,7 +61,9 @@ npm run typecheck  # kiểm tra TypeScript
 | CV Evidence Viewer | `/tools/cv-evidence` | Xem dữ liệu cấu trúc trích xuất từ CV bằng AI |
 | AI CV Translation | `/tools/cv-translation` | Dịch CV ứng viên đa ngôn ngữ bằng AI |
 | AI Interview Translation | `/tools/interview-translation` | Dịch bản ghi phỏng vấn và phân đoạn người nói |
-| Job/JD Intake | `/jobs/intake` | Tạo mới Job và nhập Job Description (thủ công, PDF, Drive) |
+| Job/JD Intake | `/jobs/intake` | Tạo mới Job/JD bằng form, paste text, file, Drive, Sheet/Excel và connector mock |
+| Parsed JD Approval | `/jobs/approval` | Review JD đã parse, validation gate, provenance AI mock, phê duyệt/từ chối trước screening |
+| JD Version History | `/jobs/versions` | Xem lịch sử phiên bản JD, source document, parsed criteria version và so sánh thay đổi |
 
 Route gốc `/` tự động chuyển đến `/dashboard`.
 
@@ -119,14 +121,24 @@ Các màn AI Tools bổ sung từ Stitch project `8539967708489554875`:
 - Yêu cầu liên quan: `REQ-F-080` đến `REQ-F-083`, `BR-026`, `BR-027`, `BR-028`, `BR-033`.
 - Tích hợp hiện tại: mock generation hybrid/deterministic, export local-only, tab/section fallback thay cho Design Export integration thật.
 
+## Mở rộng prototype CV/Job Intake
+
+- `/jobs/intake` dùng mock service/local state để demo các nguồn Job/JD: form thủ công, paste text, PDF/DOCX, Drive, Sheet/Excel và connector ATS/job board/career site giả lập.
+- `/jobs/approval` hiển thị validation gate cho JD đã parse, cảnh báo thiếu tiêu chí tối thiểu, trạng thái approved/rejected/incomplete/pending và AI provenance mock.
+- `/jobs/versions` hiển thị lịch sử phiên bản JD, source document/source type, parsed criteria version và so sánh thay đổi giữa phiên bản.
+- `/candidates/import` hiển thị mock validation cho invalid file, non-PDF, nested folder, Drive scan error, duplicate CV/candidate, tạo CV version và yêu cầu re-screen thủ công.
+- `/screening/review` hiển thị traceability từ screening recommendation tới application, candidate, job, CV version, JD version, parsed criteria version và AI provenance mock.
+- Tất cả luồng trên chỉ phục vụ demo/UAT; không gọi Google Drive, ATS, job board, career site, OCR, LLM, API hoặc database thật.
+
 ## Luồng demo đề xuất
 
 Luồng UAT gợi ý:
 
 1. Bắt đầu ở `/dashboard`.
-2. Mở màn nhập ứng viên ở `/candidates/import`.
-3. Review screening ở `/screening/review`.
-4. Phê duyệt lịch ở `/interviews/schedule-approval`.
+2. Mở màn nhập CV ở `/candidates/import` để xem validation mock, CV versioning và re-screen thủ công.
+3. Mở `/jobs/intake`, `/jobs/approval` và `/jobs/versions` để demo Job/JD intake, approval gate và version history.
+4. Review screening ở `/screening/review` để kiểm tra traceability CV/JD và provenance.
+5. Phê duyệt lịch ở `/interviews/schedule-approval`.
 5. Chạy luồng phỏng vấn ứng viên ở `/portal/interview/demo-token`.
 6. Review chấm bài test ở `/tests/grading`.
 7. Ra quyết định cuối ở `/final-review`.

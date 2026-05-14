@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/Button';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { LoadingState, Skeleton } from '@/components/ui/LoadingState';
-import { mockScreeningEvaluations, mockCandidates } from '@/lib/mockData';
+import { mockCandidateApplications } from '@/lib/applicationMockData';
+import { mockScreeningEvaluations } from '@/lib/mockData';
 import styles from './review.module.css';
 
 type FilterStatus = 'all' | 'pending' | 'approved' | 'rejected';
@@ -17,7 +18,9 @@ export default function ScreeningReviewPage() {
   const { t, i18n } = useTranslation();
   const [filter, setFilter] = useState<FilterStatus>('pending');
   const [selectedCandidates, setSelectedCandidates] = useState<Set<string>>(new Set());
-  const [selectedEvaluation, setSelectedEvaluation] = useState<string | null>(null);
+  const [selectedEvaluation, setSelectedEvaluation] = useState<string | null>(
+    mockScreeningEvaluations[0]?.id ?? null
+  );
   const [isLoading, setIsLoading] = useState(false);
 
   const filteredEvaluations = mockScreeningEvaluations.filter(
@@ -25,6 +28,12 @@ export default function ScreeningReviewPage() {
   );
 
   const selected = mockScreeningEvaluations.find(e => e.id === selectedEvaluation);
+  const selectedApplication = selected?.applicationId
+    ? mockCandidateApplications.find(application => application.id === selected.applicationId)
+    : undefined;
+  const confidencePercent = selected?.aiProvenance
+    ? Math.round(selected.aiProvenance.confidence * 100)
+    : undefined;
 
   const toggleSelect = (id: string) => {
     setSelectedCandidates(prev => {
@@ -223,12 +232,46 @@ export default function ScreeningReviewPage() {
                     <h3 className={styles.sectionTitle}>{t('screening.review.detail.aiSummary')}</h3>
                     <p className={styles.aiSummary}>{selected.aiSummary}</p>
                     <div className={styles.aiMeta}>
-                      <span>{t('screening.review.detail.model')}: Gemini Pro</span>
-                      <span>{t('screening.review.detail.prompt')}: v2.1</span>
+                      <span>
+                        {t('screening.review.detail.model')}: {selected.aiProvenance?.model || t('common.notAvailable')}
+                      </span>
+                      <span>
+                        {t('screening.review.detail.prompt')}: {selected.aiProvenance?.promptVersion || t('common.notAvailable')}
+                      </span>
                       <span>
                         <span className="sr-only">{t('screening.review.detail.confidence')}: </span>
-                        {t('screening.review.detail.high')}
+                        {confidencePercent ? `${confidencePercent}%` : t('common.notAvailable')}
                       </span>
+                    </div>
+                  </section>
+
+                  <section className={styles.evaluationSection}>
+                    <h3 className={styles.sectionTitle}>{t('screening.review.detail.traceability')}</h3>
+                    <div className={styles.traceabilityGrid}>
+                      <div className={styles.traceItem}>
+                        <span className={styles.traceLabel}>{t('screening.review.detail.applicationId')}</span>
+                        <span className={styles.traceValue}>{selected.applicationId || t('common.notAvailable')}</span>
+                      </div>
+                      <div className={styles.traceItem}>
+                        <span className={styles.traceLabel}>{t('screening.review.detail.candidateId')}</span>
+                        <span className={styles.traceValue}>{selected.candidateId}</span>
+                      </div>
+                      <div className={styles.traceItem}>
+                        <span className={styles.traceLabel}>{t('screening.review.detail.jobId')}</span>
+                        <span className={styles.traceValue}>{selectedApplication?.jobId || t('common.notAvailable')}</span>
+                      </div>
+                      <div className={styles.traceItem}>
+                        <span className={styles.traceLabel}>{t('screening.review.detail.cvVersion')}</span>
+                        <span className={styles.traceValue}>{selected.cvVersionId || t('common.notAvailable')}</span>
+                      </div>
+                      <div className={styles.traceItem}>
+                        <span className={styles.traceLabel}>{t('screening.review.detail.jdVersion')}</span>
+                        <span className={styles.traceValue}>{selected.jdVersionId || t('common.notAvailable')}</span>
+                      </div>
+                      <div className={styles.traceItem}>
+                        <span className={styles.traceLabel}>{t('screening.review.detail.parsedCriteriaVersion')}</span>
+                        <span className={styles.traceValue}>{selected.parsedCriteriaVersion || t('common.notAvailable')}</span>
+                      </div>
                     </div>
                   </section>
 
@@ -260,16 +303,16 @@ export default function ScreeningReviewPage() {
                     <h3 className={styles.sectionTitle}>{t('screening.review.detail.evidence')}</h3>
                     <div className={styles.evidenceList}>
                       <div className={styles.evidenceItem}>
-                        <span className={styles.evidenceLabel}>CV Version</span>
-                        <span className={styles.evidenceValue}>{selected.cvVersionId || 'N/A'}</span>
+                        <span className={styles.evidenceLabel}>{t('screening.review.detail.cvVersion')}</span>
+                        <span className={styles.evidenceValue}>{selected.cvVersionId || t('common.notAvailable')}</span>
                       </div>
                       <div className={styles.evidenceItem}>
-                        <span className={styles.evidenceLabel}>JD Version</span>
-                        <span className={styles.evidenceValue}>{selected.jdVersionId || 'N/A'}</span>
+                        <span className={styles.evidenceLabel}>{t('screening.review.detail.jdVersion')}</span>
+                        <span className={styles.evidenceValue}>{selected.jdVersionId || t('common.notAvailable')}</span>
                       </div>
                       <div className={styles.evidenceItem}>
-                        <span className={styles.evidenceLabel}>Parsed Criteria Version</span>
-                        <span className={styles.evidenceValue}>{selected.parsedCriteriaVersion || 'N/A'}</span>
+                        <span className={styles.evidenceLabel}>{t('screening.review.detail.parsedCriteriaVersion')}</span>
+                        <span className={styles.evidenceValue}>{selected.parsedCriteriaVersion || t('common.notAvailable')}</span>
                       </div>
                       <div className={styles.evidenceItem}>
                         <span className={styles.evidenceLabel}>{t('screening.review.detail.cvMatch')}</span>

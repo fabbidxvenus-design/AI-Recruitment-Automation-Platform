@@ -25,6 +25,14 @@ const navSectionsMeta: { titleKey: string; items: NavItem[] }[] = [
     ],
   },
   {
+    titleKey: 'nav.jobs',
+    items: [
+      { labelKey: 'nav.jobIntake', href: '/jobs/intake', icon: '📋' },
+      { labelKey: 'nav.jdApproval', href: '/jobs/approval', icon: '🧾' },
+      { labelKey: 'nav.jdVersions', href: '/jobs/versions', icon: '📜' },
+    ],
+  },
+  {
     titleKey: 'nav.interviews',
     items: [
       { labelKey: 'nav.scheduleApproval', href: '/interviews/schedule-approval', icon: '📅' },

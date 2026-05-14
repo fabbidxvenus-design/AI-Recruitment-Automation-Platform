@@ -52,6 +52,12 @@ export interface ScreeningEvaluation {
   cvVersionId?: string; // Linked CV Version
   jdVersionId?: string; // Linked JD Version
   parsedCriteriaVersion?: number; // Linked Parsed JD Profile
+  aiProvenance?: {
+    model: string;
+    promptVersion: string;
+    confidence: number;
+    evaluatedAt: string;
+  };
   overallScore: number;
   decision: 'approve' | 'reject' | 'needs_review';
   aiSummary: string;

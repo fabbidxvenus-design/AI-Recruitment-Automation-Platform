@@ -55,7 +55,8 @@
 
 .uploadCard,
 .driveCard,
-.batchCard {
+.batchCard,
+.validationCard {
   margin-bottom: 2rem;
 }
 
@@ -100,4 +101,36 @@
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
+}
+
+.validationGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.validationItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-surface);
+}
+
+.validationItem p {
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .sourceOptions,
+  .actions {
+    flex-direction: column;
+  }
+
+  .validationGrid {
+    grid-template-columns: 1fr;
+  }
 }

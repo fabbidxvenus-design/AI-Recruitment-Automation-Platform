@@ -10,11 +10,32 @@ import { mockParsedJDProfiles, mockJDVersions, mockJobs } from '@/lib/jobIntakeM
 import styles from './jd-approval.module.css';
 
 type WorkflowStep = 'list' | 'review' | 'approved' | 'rejected';
+type ValidationState = 'approved' | 'rejected' | 'incomplete' | 'pending';
+
+const requiredCriteria: (keyof Pick<ParsedJDProfile, 'skills' | 'responsibilities' | 'requirements' | 'language' | 'education'>)[] = [
+  'skills',
+  'responsibilities',
+  'requirements',
+  'language',
+  'education',
+];
 
 interface JDApprovalItem {
   parsedProfile: ParsedJDProfile;
   jdVersion: JDVersion;
   jobTitle: string;
+}
+
+function getMissingCriteria(profile: ParsedJDProfile): string[] {
+  const missingList = requiredCriteria.filter((criterion) => profile[criterion].length === 0);
+  return profile.seniority.trim() ? missingList : [...missingList, 'seniority'];
+}
+
+function getValidationState(profile: ParsedJDProfile, decision: ValidationState | undefined): ValidationState {
+  if (decision === 'rejected') return 'rejected';
+  if (profile.status === 'approved') return 'approved';
+  if (getMissingCriteria(profile).length > 0) return 'incomplete';
+  return 'pending';
 }
 
 export default function JDApprovalPage() {
@@ -24,6 +45,7 @@ export default function JDApprovalPage() {
   const [selectedItem, setSelectedItem] = useState<JDApprovalItem | null>(null);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
+  const [decisionByProfileId, setDecisionByProfileId] = useState<Record<string, ValidationState>>({});
 
   // Filter pending JD profiles
   const pendingItems: JDApprovalItem[] = mockParsedJDProfiles
@@ -50,13 +72,14 @@ export default function JDApprovalPage() {
       ...selectedItem,
       parsedProfile: { ...selectedItem.parsedProfile, status: 'approved' },
     });
+    setDecisionByProfileId({ ...decisionByProfileId, [selectedItem.parsedProfile.id]: 'approved' });
     setCurrentStep('approved');
   };
 
   const handleReject = (): void => {
     if (!selectedItem || !rejectionReason.trim()) return;
 
-    // Update status to rejected (using draft as fallback since type doesn't have rejected)
+    setDecisionByProfileId({ ...decisionByProfileId, [selectedItem.parsedProfile.id]: 'rejected' });
     setCurrentStep('rejected');
     setShowRejectModal(false);
   };
@@ -67,32 +90,38 @@ export default function JDApprovalPage() {
     setRejectionReason('');
   };
 
+  const selectedDecision = selectedItem ? decisionByProfileId[selectedItem.parsedProfile.id] : undefined;
+  const validationState = selectedItem ? getValidationState(selectedItem.parsedProfile, selectedDecision) : 'pending';
+  const missingCriteria = selectedItem ? getMissingCriteria(selectedItem.parsedProfile) : [];
+  const missingCriteriaLabels = missingCriteria.map((criterion) => t(`jobs.approval.validation.fields.${criterion}`));
+  const canUseForScreening = validationState === 'approved';
+
   return (
     <div className={styles.container}>
       <header className={styles.header}>
         <div className={styles.headerTop}>
-          <a href="/jobs" className={styles.backLink}>
-            ← Jobs
+          <a href="/jobs/intake" className={styles.backLink}>
+            {t('jobs.approval.workflow.backToJobs')}
           </a>
         </div>
-        <h1 className={styles.title}>JD Approval Workflow</h1>
-        <p className={styles.description}>
-          Review and approve AI-parsed job descriptions before they can be used for candidate screening.
-        </p>
+        <h1 className={styles.title}>{t('jobs.approval.workflow.title')}</h1>
+        <p className={styles.description}>{t('jobs.approval.workflow.description')}</p>
       </header>
 
       {currentStep === 'list' && (
         <>
-          <Notice variant="info" title="Approval Gate">
-            All AI-generated JD profiles must be reviewed and approved by HR before they can be used in the screening process.
+          <Notice variant="info" title={t('jobs.approval.workflow.gateTitle')}>
+            {t('jobs.approval.workflow.gateBody')}
           </Notice>
 
           <Card className={styles.listCard}>
-            <h2 className={styles.sectionTitle}>Pending Approvals ({pendingItems.length})</h2>
+            <h2 className={styles.sectionTitle}>
+              {t('jobs.approval.workflow.pendingApprovals', { count: pendingItems.length })}
+            </h2>
 
             {pendingItems.length === 0 ? (
               <div className={styles.emptyState}>
-                <p>No JD profiles pending approval.</p>
+                <p>{t('jobs.approval.workflow.empty')}</p>
               </div>
             ) : (
               <div className={styles.itemList}>
@@ -102,21 +131,23 @@ export default function JDApprovalPage() {
                       <div>
                         <h3 className={styles.itemTitle}>{item.parsedProfile.title}</h3>
                         <p className={styles.itemMeta}>
-                          Job: {item.jobTitle} • Version {item.jdVersion.versionNumber}
+                          {t('jobs.approval.workflow.jobMeta', { jobTitle: item.jobTitle, version: item.jdVersion.versionNumber })}
                         </p>
                       </div>
-                      <StatusBadge variant="warning" label="Pending" />
+                      <StatusBadge variant="warning" label={t('jobs.approval.workflow.pending')} />
                     </div>
                     <div className={styles.itemDetails}>
                       <span className={styles.itemBadge}>{item.parsedProfile.seniority}</span>
-                      <span className={styles.itemBadge}>{item.parsedProfile.skills.length} skills</span>
                       <span className={styles.itemBadge}>
-                        Parsed v{item.parsedProfile.parsedCriteriaVersion}
+                        {t('jobs.approval.workflow.skillsCount', { count: item.parsedProfile.skills.length })}
+                      </span>
+                      <span className={styles.itemBadge}>
+                        {t('jobs.approval.workflow.parsedVersion', { version: item.parsedProfile.parsedCriteriaVersion })}
                       </span>
                     </div>
                     <div className={styles.itemActions}>
                       <Button variant="primary" onClick={() => handleSelectItem(item)}>
-                        Review
+                        {t('jobs.approval.workflow.review')}
                       </Button>
                     </div>
                   </div>
@@ -134,20 +165,23 @@ export default function JDApprovalPage() {
               <div>
                 <h2 className={styles.detailsTitle}>{selectedItem.parsedProfile.title}</h2>
                 <p className={styles.detailsMeta}>
-                  Job: {selectedItem.jobTitle} • Version {selectedItem.jdVersion.versionNumber}
+                  {t('jobs.approval.workflow.jobMeta', { jobTitle: selectedItem.jobTitle, version: selectedItem.jdVersion.versionNumber })}
                 </p>
               </div>
-              <StatusBadge variant={selectedItem.parsedProfile.status === 'approved' ? 'success' : 'warning'} label={selectedItem.parsedProfile.status === 'approved' ? 'Approved' : 'Pending'} />
+              <StatusBadge
+                variant={validationState === 'approved' ? 'success' : validationState === 'rejected' ? 'danger' : 'warning'}
+                label={t(`jobs.approval.validationState.${validationState}`)}
+              />
             </div>
 
             <div className={styles.detailsGrid}>
               <div className={styles.detailsSection}>
-                <h3 className={styles.detailsSectionTitle}>Seniority</h3>
+                <h3 className={styles.detailsSectionTitle}>{t('jobs.approval.details.seniority')}</h3>
                 <p className={styles.detailsText}>{selectedItem.parsedProfile.seniority}</p>
               </div>
 
               <div className={styles.detailsSection}>
-                <h3 className={styles.detailsSectionTitle}>Language Requirements</h3>
+                <h3 className={styles.detailsSectionTitle}>{t('jobs.approval.details.languageRequirements')}</h3>
                 <ul className={styles.detailsList}>
                   {selectedItem.parsedProfile.language.map((lang, idx) => (
                     <li key={idx}>{lang}</li>
@@ -156,7 +190,7 @@ export default function JDApprovalPage() {
               </div>
 
               <div className={styles.detailsSection}>
-                <h3 className={styles.detailsSectionTitle}>Education</h3>
+                <h3 className={styles.detailsSectionTitle}>{t('jobs.approval.details.education')}</h3>
                 <ul className={styles.detailsList}>
                   {selectedItem.parsedProfile.education.map((edu, idx) => (
                     <li key={idx}>{edu}</li>
@@ -165,7 +199,7 @@ export default function JDApprovalPage() {
               </div>
 
               <div className={styles.detailsSection}>
-                <h3 className={styles.detailsSectionTitle}>Skills ({selectedItem.parsedProfile.skills.length})</h3>
+                <h3 className={styles.detailsSectionTitle}>{t('jobs.approval.details.skills', { count: selectedItem.parsedProfile.skills.length })}</h3>
                 <div className={styles.skillsGrid}>
                   {selectedItem.parsedProfile.skills.map((skill, idx) => (
                     <span key={idx} className={styles.skillBadge}>
@@ -176,7 +210,7 @@ export default function JDApprovalPage() {
               </div>
 
               <div className={styles.detailsSection}>
-                <h3 className={styles.detailsSectionTitle}>Responsibilities</h3>
+                <h3 className={styles.detailsSectionTitle}>{t('jobs.approval.details.responsibilities')}</h3>
                 <ul className={styles.detailsList}>
                   {selectedItem.parsedProfile.responsibilities.map((resp, idx) => (
                     <li key={idx}>{resp}</li>
@@ -185,7 +219,7 @@ export default function JDApprovalPage() {
               </div>
 
               <div className={styles.detailsSection}>
-                <h3 className={styles.detailsSectionTitle}>Requirements</h3>
+                <h3 className={styles.detailsSectionTitle}>{t('jobs.approval.details.requirements')}</h3>
                 <ul className={styles.detailsList}>
                   {selectedItem.parsedProfile.requirements.map((req, idx) => (
                     <li key={idx}>{req}</li>
@@ -196,18 +230,53 @@ export default function JDApprovalPage() {
           </Card>
 
           <Card className={styles.provenanceCard}>
-            <h3 className={styles.provenanceTitle}>AI Provenance</h3>
+            <h3 className={styles.provenanceTitle}>{t('jobs.approval.validation.title')}</h3>
+            <div className={styles.validationGrid}>
+              <div className={styles.validationItem}>
+                <span className={styles.provenanceLabel}>{t('jobs.approval.validation.screeningUse')}</span>
+                <span className={styles.provenanceValue}>
+                  {canUseForScreening ? t('jobs.approval.validation.allowed') : t('jobs.approval.validation.blocked')}
+                </span>
+              </div>
+              <div className={styles.validationItem}>
+                <span className={styles.provenanceLabel}>{t('jobs.approval.validation.minimumCriteria')}</span>
+                <span className={styles.provenanceValue}>
+                  {missingCriteria.length === 0 ? t('jobs.approval.validation.complete') : t('jobs.approval.validation.incompleteCount', { count: missingCriteria.length })}
+                </span>
+              </div>
+            </div>
+            {missingCriteria.length > 0 && (
+              <Notice variant="warning" title={t('jobs.approval.validation.valJob002Title')}>
+                {t('jobs.approval.validation.valJob002Body', { fields: missingCriteriaLabels.join(', ') })}
+              </Notice>
+            )}
+          </Card>
+
+          <Card className={styles.provenanceCard}>
+            <h3 className={styles.provenanceTitle}>{t('jobs.approval.provenance.title')}</h3>
             <div className={styles.provenanceMeta}>
               <div className={styles.provenanceItem}>
-                <span className={styles.provenanceLabel}>Parsed Criteria Version:</span>
+                <span className={styles.provenanceLabel}>{t('jobs.approval.provenance.model')}</span>
+                <span className={styles.provenanceValue}>{t('jobs.approval.provenance.modelValue')}</span>
+              </div>
+              <div className={styles.provenanceItem}>
+                <span className={styles.provenanceLabel}>{t('jobs.approval.provenance.promptVersion')}</span>
+                <span className={styles.provenanceValue}>{t('jobs.approval.provenance.promptVersionValue')}</span>
+              </div>
+              <div className={styles.provenanceItem}>
+                <span className={styles.provenanceLabel}>{t('jobs.approval.provenance.confidence')}</span>
+                <span className={styles.provenanceValue}>{missingCriteria.length === 0 ? '94%' : '71%'}</span>
+              </div>
+              <div className={styles.provenanceItem}>
+                <span className={styles.provenanceLabel}>{t('jobs.approval.provenance.parsedCriteriaVersion')}</span>
                 <span className={styles.provenanceValue}>v{selectedItem.parsedProfile.parsedCriteriaVersion}</span>
               </div>
               <div className={styles.provenanceItem}>
-                <span className={styles.provenanceLabel}>JD Version:</span>
+                <span className={styles.provenanceLabel}>{t('jobs.approval.provenance.jdVersion')}</span>
                 <span className={styles.provenanceValue}>{selectedItem.jdVersion.versionNumber}</span>
               </div>
               <div className={styles.provenanceItem}>
-                <span className={styles.provenanceLabel}>Created:</span>
+                <span className={styles.provenanceLabel}>{t('jobs.approval.provenance.created')}</span>
                 <span className={styles.provenanceValue}>
                   {formatDateTime(selectedItem.jdVersion.createdAt, locale)}
                 </span>
@@ -217,19 +286,19 @@ export default function JDApprovalPage() {
 
           {currentStep === 'review' && (
             <>
-              <Notice variant="warning" title="Approval Required">
-                Please review the AI-parsed job description carefully. Once approved, this profile will be used for candidate screening.
+              <Notice variant="warning" title={t('jobs.approval.workflow.approvalRequiredTitle')}>
+                {t('jobs.approval.workflow.approvalRequiredBody')}
               </Notice>
 
               <div className={styles.actions}>
                 <Button variant="secondary" onClick={handleBackToList}>
-                  Back to List
+                  {t('jobs.approval.actions.backToList')}
                 </Button>
                 <Button variant="danger" onClick={() => setShowRejectModal(true)}>
-                  Reject
+                  {t('jobs.approval.actions.reject')}
                 </Button>
                 <Button variant="primary" onClick={handleApprove}>
-                  Approve
+                  {t('jobs.approval.actions.approve')}
                 </Button>
               </div>
             </>
@@ -237,12 +306,12 @@ export default function JDApprovalPage() {
 
           {currentStep === 'approved' && (
             <>
-              <Notice variant="success" title="Approved">
-                This JD profile has been approved and is now ready for candidate screening.
+              <Notice variant="success" title={t('jobs.approval.workflow.approvedTitle')}>
+                {t('jobs.approval.workflow.approvedBody')}
               </Notice>
               <div className={styles.actions}>
                 <Button variant="primary" onClick={handleBackToList}>
-                  Back to List
+                  {t('jobs.approval.actions.backToList')}
                 </Button>
               </div>
             </>
@@ -250,12 +319,12 @@ export default function JDApprovalPage() {
 
           {currentStep === 'rejected' && (
             <>
-              <Notice variant="danger" title="Rejected">
-                This JD profile has been rejected. Reason: {rejectionReason}
+              <Notice variant="danger" title={t('jobs.approval.workflow.rejectedTitle')}>
+                {t('jobs.approval.workflow.rejectedBody', { reason: rejectionReason })}
               </Notice>
               <div className={styles.actions}>
                 <Button variant="primary" onClick={handleBackToList}>
-                  Back to List
+                  {t('jobs.approval.actions.backToList')}
                 </Button>
               </div>
             </>
@@ -267,33 +336,31 @@ export default function JDApprovalPage() {
         <Modal
           isOpen={showRejectModal}
           onClose={() => setShowRejectModal(false)}
-          title="Reject JD Profile"
+          title={t('jobs.approval.modal.title')}
         >
           <div className={styles.modalContent}>
-            <p className={styles.modalDescription}>
-              Please provide a reason for rejecting this JD profile. This will help improve future AI parsing.
-            </p>
+            <p className={styles.modalDescription}>{t('jobs.approval.modal.description')}</p>
             <div className={styles.formGroup}>
-              <label htmlFor="rejectionReason">Rejection Reason *</label>
+              <label htmlFor="rejectionReason">{t('jobs.approval.modal.reasonLabel')}</label>
               <textarea
                 id="rejectionReason"
                 value={rejectionReason}
                 onChange={(e) => setRejectionReason(e.target.value)}
                 className={styles.textarea}
                 rows={4}
-                placeholder="e.g., Missing key skills, incorrect seniority level, incomplete requirements..."
+                placeholder={t('jobs.approval.modal.reasonPlaceholder')}
               />
             </div>
             <div className={styles.modalActions}>
               <Button variant="secondary" onClick={() => setShowRejectModal(false)}>
-                Cancel
+                {t('jobs.approval.modal.cancel')}
               </Button>
               <Button
                 variant="danger"
                 onClick={handleReject}
                 disabled={!rejectionReason.trim()}
               >
-                Confirm Rejection
+                {t('jobs.approval.modal.confirm')}
               </Button>
             </div>
           </div>
