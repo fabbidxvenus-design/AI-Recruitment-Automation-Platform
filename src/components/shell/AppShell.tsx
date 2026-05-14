@@ -42,6 +42,9 @@ const navSectionsMeta: { titleKey: string; items: NavItem[] }[] = [
     titleKey: 'nav.tools',
     items: [
       { labelKey: 'nav.aiTools', href: '/tools', icon: '🛠️' },
+      { labelKey: 'nav.cvEvidence', href: '/tools/cv-evidence', icon: '📄' },
+      { labelKey: 'nav.cvTranslation', href: '/tools/cv-translation', icon: '🌐' },
+      { labelKey: 'nav.interviewTranslation', href: '/tools/interview-translation', icon: '🗣️' },
     ],
   },
   {

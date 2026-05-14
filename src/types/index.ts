@@ -177,3 +177,22 @@ export interface BQBlocker {
   requiresAction: string;
   priority: 'critical' | 'high' | 'medium';
 }
+
+// ---------------------------------------------------------------------------
+// API contract types (Phase 2)
+// ---------------------------------------------------------------------------
+export type {
+  LanguageCode,
+  ApprovalDecision,
+  ApprovalStatus,
+  ApiError,
+  ApiSuccess,
+  ApiFailure,
+  ApiResponse,
+  PaginatedResponse,
+} from './api';
+export { isSuccess, isFailure, successResponse, failureResponse, paginatedResponse } from './api';
+
+export type { CVEvidenceExtraction, CVStructuredData, ContactInfo, EducationEntry, ExperienceEntry } from './cv-evidence';
+export type { CVTranslation, CVTranslationRequest } from './cv-translation';
+export type { InterviewTranslation, InterviewTranslationRequest } from './interview-translation';

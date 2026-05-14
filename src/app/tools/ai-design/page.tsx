@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/i18n';
+import { formatDateTime } from '@/lib/formatDate';
 import {
   Card,
   CardHeader,
@@ -31,6 +33,7 @@ import styles from './ai-design.module.css';
 
 export default function AIDesignPage() {
   const { t } = useTranslation();
+  const { locale } = useLanguage();
 
   const [status, setStatus] = useState<DesignStatus>('empty');
   const [brief, setBrief] = useState<Partial<DesignBrief>>({
@@ -396,7 +399,7 @@ export default function AIDesignPage() {
                           <dt>{t('tools.aiDesign.workspace.confidence')}:</dt>
                           <dd>{(selectedVariant.provenance.confidence * 100).toFixed(1)}%</dd>
                           <dt>{t('tools.aiDesign.workspace.generatedAt')}:</dt>
-                          <dd>{new Date(selectedVariant.provenance.generatedAt).toLocaleString()}</dd>
+                          <dd>{formatDateTime(selectedVariant.provenance.generatedAt, locale)}</dd>
                         </dl>
                       </div>
                     </CardContent>
@@ -439,7 +442,7 @@ export default function AIDesignPage() {
                                     variant={record.status === 'approved' ? 'success' : record.status === 'rejected' ? 'danger' : 'warning'}
                                   />
                                   {record.approver && <span> by {record.approver}</span>}
-                                  <span className={styles.historyTimestamp}> - {new Date(record.timestamp).toLocaleString()}</span>
+                                  <span className={styles.historyTimestamp}> - {formatDateTime(record.timestamp, locale)}</span>
                                   {record.reason && <p className={styles.historyReason}>{record.reason}</p>}
                                 </li>
                               ))}

@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/i18n';
+import { formatDate, formatNumber } from '@/lib/formatDate';
 import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Notice } from '@/components/ui/Notice';
@@ -13,6 +15,7 @@ import styles from './final-review.module.css';
 
 export default function FinalReviewPage() {
   const { t } = useTranslation();
+  const { locale } = useLanguage();
   const [selectedCandidate, setSelectedCandidate] = useState<string | null>(null);
   const [showDecisionModal, setShowDecisionModal] = useState(false);
   const [decision, setDecision] = useState<'PASS' | 'FAIL' | null>(null);
@@ -156,11 +159,11 @@ export default function FinalReviewPage() {
                   <div className={styles.compensationGrid}>
                     <div className={styles.compItem}>
                       <span className={styles.compLabel}>{t('finalReview.sections.requested')}</span>
-                      <span className={styles.compValue}>${selected.compensation.requested.toLocaleString()}</span>
+                      <span className={styles.compValue}>${formatNumber(selected.compensation.requested, locale)}</span>
                     </div>
                     <div className={styles.compItem}>
                       <span className={styles.compLabel}>{t('finalReview.sections.recommended')}</span>
-                      <span className={styles.compValue}>${selected.compensation.recommended.toLocaleString()}</span>
+                      <span className={styles.compValue}>${formatNumber(selected.compensation.recommended, locale)}</span>
                     </div>
                     <div className={styles.compItem}>
                       <span className={styles.compLabel}>{t('finalReview.sections.status')}</span>
@@ -204,7 +207,7 @@ export default function FinalReviewPage() {
                         />
                         {approver.timestamp && (
                           <span className={styles.approverTime}>
-                            {new Date(approver.timestamp).toLocaleDateString()}
+                            {formatDate(approver.timestamp, locale)}
                           </span>
                         )}
                       </div>

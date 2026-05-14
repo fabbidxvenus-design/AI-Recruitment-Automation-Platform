@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/i18n';
+import { formatDate, formatDateTime } from '@/lib/formatDate';
 import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Notice } from '@/components/ui/Notice';
@@ -15,6 +17,7 @@ type TabType = 'all' | 'mcq' | 'essay' | 'coding';
 
 export default function TestGradingPage() {
   const { t } = useTranslation();
+  const { locale } = useLanguage();
   const [activeTab, setActiveTab] = useState<TabType>('all');
   const [selectedTest, setSelectedTest] = useState<string | null>(null);
   const [overrideModalOpen, setOverrideModalOpen] = useState(false);
@@ -94,7 +97,7 @@ export default function TestGradingPage() {
                     </div>
                     <div className={styles.testMeta}>
                       <span>{test.candidateName}</span>
-                      <span>{new Date(test.gradedAt).toLocaleDateString()}</span>
+                      <span>{formatDate(test.gradedAt, locale)}</span>
                     </div>
                     <div className={styles.testScore}>
                       <span className={styles.scoreValue}>{test.score}</span>
@@ -138,7 +141,7 @@ export default function TestGradingPage() {
                       <div className={styles.infoItem}>
                         <span className={styles.infoLabel}>{t('tests.grading.gradingInfo.gradedAt')}</span>
                         <span className={styles.infoValue}>
-                          {new Date(selected.gradedAt).toLocaleString()}
+                          {formatDateTime(selected.gradedAt, locale)}
                         </span>
                       </div>
                       <div className={styles.infoItem}>

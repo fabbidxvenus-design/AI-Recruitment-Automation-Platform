@@ -57,6 +57,9 @@ npm run typecheck  # kiểm tra TypeScript
 | AI Content & Design Tools Hub | `/tools` | Hub truy cập các module AI standalone mới |
 | AI Recruitment Content Generation | `/tools/content-generation` | Tạo nội dung tuyển dụng bằng mock AI, review biến thể, phê duyệt HR, copy/download local |
 | AI Design / Mock Image Generation | `/tools/ai-design` | Tạo mock design/image theo brief, duyệt gallery, phê duyệt/revision, export local fallback |
+| CV Evidence Viewer | `/tools/cv-evidence` | Xem dữ liệu cấu trúc trích xuất từ CV bằng AI |
+| AI CV Translation | `/tools/cv-translation` | Dịch CV ứng viên đa ngôn ngữ bằng AI |
+| AI Interview Translation | `/tools/interview-translation` | Dịch bản ghi phỏng vấn và phân đoạn người nói |
 
 Route gốc `/` tự động chuyển đến `/dashboard`.
 

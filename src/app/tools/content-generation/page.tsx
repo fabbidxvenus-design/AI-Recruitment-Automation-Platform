@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/i18n';
+import { formatDateTime } from '@/lib/formatDate';
 import { Card, Button, Notice, LoadingState, StatusBadge, Modal } from '@/components';
-import type { ContentBrief, GeneratedContent, ContentType, UserRole } from '@/types/content-generation';
+import type { ContentBrief, GeneratedContent, ContentType, UserRole, ApprovalHistoryEntry } from '@/types/content-generation';
 import { simulateAIGeneration } from '@/lib/mock-content-data';
 import styles from './content-generation.module.css';
 
@@ -11,6 +13,7 @@ type WorkflowStep = 'brief' | 'generating' | 'review' | 'approval' | 'export';
 
 export default function ContentGenerationPage() {
   const { t } = useTranslation();
+  const { locale } = useLanguage();
   const [currentStep, setCurrentStep] = useState<WorkflowStep>('brief');
   const [currentContent, setCurrentContent] = useState<GeneratedContent | null>(null);
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
@@ -21,8 +24,77 @@ export default function ContentGenerationPage() {
   const [rejectionReason, setRejectionReason] = useState('');
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
   const [clipboardError, setClipboardError] = useState<string>('');
-
   const [userRole] = useState<UserRole>('recruiter');
+  const [showHistory, setShowHistory] = useState(false);
+  const [publishingChannel, setPublishingChannel] = useState<string | null>(null);
+  const [publishedChannels, setPublishedChannels] = useState<Record<string, string>>({});
+  const [lastPublishedChannel, setLastPublishedChannel] = useState<string | null>(null);
+
+  const mockHistory: ApprovalHistoryEntry[] = [
+    {
+      id: 'h1',
+      contentId: 'mock-1',
+      action: 'submitted',
+      actor: 'recruiter@company.com',
+      actorRole: 'recruiter',
+      timestamp: '2026-05-12T18:00:00.000Z',
+    },
+    {
+      id: 'h2',
+      contentId: 'mock-1',
+      action: 'edited',
+      actor: 'hr.manager@company.com',
+      actorRole: 'hr_manager',
+      timestamp: '2026-05-13T06:00:00.000Z',
+      notes: 'Updated requirements section for clarity',
+    },
+    {
+      id: 'h3',
+      contentId: 'mock-1',
+      action: 'rejected',
+      actor: 'hr.manager@company.com',
+      actorRole: 'hr_manager',
+      timestamp: '2026-05-13T18:00:00.000Z',
+      notes: 'Still needs more emphasis on soft skills',
+    },
+    {
+      id: 'h4',
+      contentId: 'mock-1',
+      action: 'edited',
+      actor: 'recruiter@company.com',
+      actorRole: 'recruiter',
+      timestamp: '2026-05-14T06:00:00.000Z',
+      notes: 'Added soft skills section as requested',
+    },
+    {
+      id: 'h5',
+      contentId: 'mock-1',
+      action: 'approved',
+      actor: 'hr.manager@company.com',
+      actorRole: 'hr_manager',
+      timestamp: '2026-05-14T17:00:00.000Z',
+    }
+  ];
+
+  const handlePublish = (channelId: string) => {
+    setPublishingChannel(channelId);
+    setLastPublishedChannel(null);
+    setTimeout(() => {
+      setPublishedChannels(prev => ({
+        ...prev,
+        [channelId]: new Date().toISOString()
+      }));
+      setLastPublishedChannel(channelId);
+      setPublishingChannel(null);
+    }, 1000);
+  };
+
+  const channels = [
+    { id: 'linkedin', name: t('tools.contentGeneration.publish.channels.linkedin') },
+    { id: 'facebook', name: t('tools.contentGeneration.publish.channels.facebook') },
+    { id: 'email', name: t('tools.contentGeneration.publish.channels.email') },
+    { id: 'internal', name: t('tools.contentGeneration.publish.channels.internal') },
+  ];
 
   const [brief, setBrief] = useState<ContentBrief>({
     contentType: 'job_description',
@@ -47,6 +119,7 @@ export default function ContentGenerationPage() {
         status: 'generated',
         createdBy: 'recruiter@company.com',
         createdAt: new Date().toISOString(),
+        isAiGenerated: true,
       };
 
       setCurrentContent(newContent);
@@ -302,6 +375,31 @@ export default function ContentGenerationPage() {
                 {t('tools.contentGeneration.approval.submittedBy')}: {currentContent.approvedBy}
               </Notice>
             )}
+
+            <div className={styles.historySection}>
+              <details open={showHistory} onToggle={(e) => setShowHistory((e.target as HTMLDetailsElement).open)}>
+                <summary className={styles.sectionTitle} style={{ cursor: 'pointer', listStyle: 'none' }}>
+                  {showHistory ? '▼' : '▶'} {t('tools.contentGeneration.history.title')}
+                </summary>
+                <div className={styles.historyTimeline}>
+                  {mockHistory.length > 0 ? (
+                    mockHistory.map((entry) => (
+                      <div key={entry.id} className={styles.historyEntry}>
+                        <strong>{t(`tools.contentGeneration.history.action.${entry.action}`)}</strong>
+                        <div className={styles.historyMeta}>
+                          <span>{entry.actor} ({entry.actorRole})</span>
+                          <span>•</span>
+                          <span>{formatDateTime(entry.timestamp, locale)}</span>
+                        </div>
+                        {entry.notes && <p style={{ fontSize: '0.875rem', marginTop: '0.5rem', fontStyle: 'italic' }}>&ldquo;{entry.notes}&rdquo;</p>}
+                      </div>
+                    ))
+                  ) : (
+                    <p className={styles.noHistory}>{t('tools.contentGeneration.history.noHistory')}</p>
+                  )}
+                </div>
+              </details>
+            </div>
           </div>
 
           <div className={styles.contentPanel}>
@@ -316,7 +414,7 @@ export default function ContentGenerationPage() {
                 <div className={styles.provenanceMeta}>
                   <span>{t('tools.contentGeneration.workspace.model')}: {selectedVariant.aiModel}</span>
                   <span>{t('tools.contentGeneration.workspace.confidence')}: {Math.round(selectedVariant.confidence * 100)}%</span>
-                  <span>{t('tools.contentGeneration.workspace.generatedAt')}: {new Date(selectedVariant.generatedAt).toLocaleString()}</span>
+                  <span>{t('tools.contentGeneration.workspace.generatedAt')}: {formatDateTime(selectedVariant.generatedAt, locale)}</span>
                 </div>
               </Card>
             )}
@@ -394,6 +492,46 @@ export default function ContentGenerationPage() {
             {copiedToClipboard && (
               <div role="status" aria-live="polite" className="sr-only">
                 {t('tools.contentGeneration.export.copied')}
+              </div>
+            )}
+
+            {currentStep === 'export' && (
+              <div className={styles.publishSection}>
+                <h2 className={styles.sectionTitle}>{t('tools.contentGeneration.publish.title')}</h2>
+                <p className={styles.description} style={{ marginBottom: '1rem' }}>
+                  {t('tools.contentGeneration.publish.description')}
+                </p>
+
+                {currentContent.status !== 'approved' ? (
+                  <Notice variant="warning" title={t('tools.contentGeneration.publish.approvalRequired')}>
+                    {t('tools.contentGeneration.notice.approvalGateDesc')}
+                  </Notice>
+                ) : (
+                  <div className={styles.channelGrid}>
+                    {channels.map((channel) => (
+                      <div key={channel.id} className={styles.channelCard}>
+                        <h3 className={styles.variantTitle}>{channel.name}</h3>
+                        <div className={styles.channelMeta}>
+                          {publishedChannels[channel.id]
+                            ? `${t('common.dateTime.lastSync')}: ${formatDateTime(publishedChannels[channel.id], locale)}`
+                            : t('tools.contentGeneration.publish.neverPublished')}
+                        </div>
+                        {lastPublishedChannel === channel.id && (
+                           <div style={{ color: 'var(--color-success)', fontSize: '0.75rem', marginBottom: '0.5rem' }}>
+                             {t('tools.contentGeneration.publish.success')}
+                           </div>
+                        )}
+                        <Button
+                          variant={publishedChannels[channel.id] ? "secondary" : "primary"}
+                          onClick={() => handlePublish(channel.id)}
+                          disabled={publishingChannel === channel.id}
+                        >
+                          {publishingChannel === channel.id ? t('common.loading') : t('tools.contentGeneration.publish.button')}
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>

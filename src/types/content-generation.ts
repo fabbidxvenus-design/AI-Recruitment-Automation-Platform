@@ -31,6 +31,7 @@ export interface GeneratedContent {
   approvedBy?: string;
   approvedAt?: string;
   rejectionReason?: string;
+  isAiGenerated: boolean;
 }
 
 export interface ContentVariant {
@@ -40,6 +41,7 @@ export interface ContentVariant {
   aiModel: string;
   confidence: number;
   generatedAt: string;
+  isAiGenerated: boolean;
 }
 
 export interface ApprovalHistoryEntry {

@@ -32,6 +32,7 @@ We are seeking an experienced Senior Frontend Developer to join our Engineering 
         aiModel: 'gemini-2.0-flash',
         confidence: 0.92,
         generatedAt: '2026-05-13T10:30:00Z',
+        isAiGenerated: true,
       },
       {
         id: 'var-001-2',
@@ -52,12 +53,14 @@ Looking for a passionate frontend developer who thrives in collaborative environ
         aiModel: 'gemini-2.0-flash',
         confidence: 0.88,
         generatedAt: '2026-05-13T10:30:05Z',
+        isAiGenerated: true,
       },
     ],
     selectedVariantId: 'var-001-1',
     status: 'pending_approval',
     createdBy: 'recruiter@company.com',
     createdAt: '2026-05-13T10:25:00Z',
+    isAiGenerated: true,
   },
 ];
 
@@ -92,6 +95,7 @@ export function simulateAIGeneration(brief: ContentBrief): Promise<AIGenerationR
             aiModel: 'gemini-2.0-flash',
             confidence: 0.90,
             generatedAt: new Date().toISOString(),
+            isAiGenerated: true,
           },
           {
             id: `var-${timestamp}-2`,
@@ -100,6 +104,7 @@ export function simulateAIGeneration(brief: ContentBrief): Promise<AIGenerationR
             aiModel: 'gemini-2.0-flash',
             confidence: 0.85,
             generatedAt: new Date().toISOString(),
+            isAiGenerated: true,
           },
         ],
       });

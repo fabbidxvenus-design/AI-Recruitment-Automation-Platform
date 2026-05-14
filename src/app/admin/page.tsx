@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/i18n';
+import { formatTime } from '@/lib/formatDate';
 import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Notice } from '@/components/ui/Notice';
@@ -13,6 +15,7 @@ import styles from './admin.module.css';
 
 export default function AdminPage() {
   const { t } = useTranslation();
+  const { locale } = useLanguage();
   const [activeTab, setActiveTab] = useState<'integrations' | 'api' | 'monitoring'>('integrations');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -179,7 +182,7 @@ export default function AdminPage() {
                     <div className={styles.healthMeta}>
                       <span className={styles.healthEndpoint}>{integration.endpoint}</span>
                       <span className={styles.healthSync}>
-                        {t('admin.integrations.healthStatus.lastSync', { time: new Date(integration.lastSync).toLocaleTimeString() })}
+                        {t('admin.integrations.healthStatus.lastSync', { time: formatTime(integration.lastSync, locale) })}
                       </span>
                       {integration.errorCount > 0 && (
                         <span className={styles.healthErrors}>

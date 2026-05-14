@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/i18n';
+import { formatDateTime } from '@/lib/formatDate';
 import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Notice } from '@/components/ui/Notice';
@@ -23,12 +25,14 @@ interface RetryAttempt {
 
 export default function ErrorDetailPage() {
   const { t } = useTranslation();
+  const { locale } = useLanguage();
   const error = mockErrorRemediationItems.find(e => e.errorCode === 'ERR-2024-0892') || mockErrorRemediationItems[0];
 
   const [retryAttempts] = useState<RetryAttempt[]>([
-    { id: '1', attempt: 3, status: 'failed', timestamp: '2024-04-22T16:45:00Z', errorMessage: 'Connection timeout after 30s' },
-    { id: '2', attempt: 2, status: 'failed', timestamp: '2024-04-22T16:30:00Z', errorMessage: 'Video format not supported: .mov (iPhone)' },
-    { id: '3', attempt: 1, status: 'failed', timestamp: '2024-04-22T16:15:00Z', errorMessage: 'Storage bucket permissions denied' },
+    { id: '1', attempt: 4, status: 'in_progress', timestamp: '2024-04-22T17:00:00Z' },
+    { id: '2', attempt: 3, status: 'failed', timestamp: '2024-04-22T16:45:00Z', errorMessage: 'Connection timeout after 30s' },
+    { id: '3', attempt: 2, status: 'failed', timestamp: '2024-04-22T16:30:00Z', errorMessage: 'Video format not supported: .mov (iPhone)' },
+    { id: '4', attempt: 1, status: 'completed', timestamp: '2024-04-22T16:15:00Z' },
   ]);
 
   const [currentStep, setCurrentStep] = useState(2);
@@ -53,9 +57,7 @@ export default function ErrorDetailPage() {
     setShowEscalateModal(false);
   };
 
-  const getElapsedMinutes = () => {
-    return Math.round((new Date().getTime() - new Date(error.createdAt).getTime()) / (1000 * 60));
-  };
+  const elapsedMinutes = 187;
 
   return (
     <div className={styles.errorDetailPage}>
@@ -187,6 +189,46 @@ export default function ErrorDetailPage() {
               </div>
             </CardContent>
           </Card>
+          <div className={styles.retryHistorySection}>
+            <Card>
+              <CardHeader title={t('errors.detail.retryConfig.retryHistory.title')} />
+              <CardContent>
+                {retryAttempts.length > 0 ? (
+                  <div className={styles.retryHistoryTableContainer}>
+                    <table className={styles.retryHistoryTable}>
+                      <thead>
+                        <tr>
+                          <th>{t('errors.detail.retryConfig.retryHistory.attempt')}</th>
+                          <th>{t('errors.detail.retryConfig.retryHistory.timestamp')}</th>
+                          <th>{t('errors.detail.retryConfig.retryHistory.status')}</th>
+                          <th>{t('errors.detail.retryConfig.retryHistory.errorMessage')}</th>
+                          <th>{t('errors.detail.retryConfig.retryHistory.duration')}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {retryAttempts.map((attempt) => (
+                          <tr key={attempt.id} className={styles.retryRow}>
+                            <td>{attempt.attempt}</td>
+                            <td>{formatDateTime(attempt.timestamp, locale)}</td>
+                            <td className={styles.statusCell}>
+                              <span className={`${styles.badge} ${styles[attempt.status]}`}>
+                                {attempt.status}
+                              </span>
+                            </td>
+                            <td>{attempt.errorMessage || '-'}</td>
+                            <td>{attempt.status === 'failed' ? '45s' : '-'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <p>{t('errors.detail.retryConfig.retryHistory.noAttempts')}</p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
         </div>
 
         <div className={styles.contentRight}>
@@ -216,11 +258,37 @@ export default function ErrorDetailPage() {
                   </div>
                 </div>
 
-                <div className={styles.previousCard}>
-                  <h3 className={styles.previousTitle}>{t('errors.detail.retryConfig.previousState.title')}</h3>
-                  <p className={styles.previousValue}>
-                    {t('errors.detail.retryConfig.previousState.body', { date: '2024-04-22 14:00 UTC', lastVideo: 'int-002 (Sarah Chen)', time: '13:45 UTC' })}
-                  </p>
+                <div className={styles.previousStateCard}>
+                  <h3 className={styles.previousTitle}>{t('errors.detail.retryConfig.enhancedPreviousState.title')}</h3>
+                  <div className={styles.previousStateGrid}>
+                    <div className={styles.settingItem}>
+                      <span className={styles.settingLabel}>{t('errors.detail.retryConfig.enhancedPreviousState.candidateState')}</span>
+                      <span className={styles.settingValue}>INTERVIEW_SCHEDULED</span>
+                    </div>
+                    <div className={styles.settingItem}>
+                      <span className={styles.settingLabel}>{t('errors.detail.retryConfig.enhancedPreviousState.lastSuccess')}</span>
+                      <span className={styles.settingValue}>
+                        Video int-002 (Sarah Chen)<br/>
+                        <small>2024-04-22 13:45 UTC</small>
+                      </span>
+                    </div>
+                    <div className={styles.settingItem}>
+                      <span className={styles.settingLabel}>{t('errors.detail.retryConfig.enhancedPreviousState.affectedCount')}</span>
+                      <span className={`${styles.settingValue} ${styles.danger}`}>42 Candidates</span>
+                    </div>
+                  </div>
+
+                  <div className={styles.stateComparison}>
+                    <div className={styles.stateBox}>
+                      <span className={`${styles.stateTag} ${styles.before}`}>BEFORE</span>
+                      <span>Processing_Queue</span>
+                    </div>
+                    <div className={styles.stateArrow}>→</div>
+                    <div className={styles.stateBox}>
+                      <span className={`${styles.stateTag} ${styles.after}`}>AFTER</span>
+                      <span>Error_State</span>
+                    </div>
+                  </div>
                 </div>
 
                 <Notice variant="info" title={t('errors.detail.retryConfig.notice.title')}>
@@ -250,7 +318,7 @@ export default function ErrorDetailPage() {
             <div className={styles.escalationIcon}>⚠️</div>
             <h3 className={styles.escalationTitle}>{t('errors.detail.escalation.title')}</h3>
             <p className={styles.escalationText}>
-              {t('errors.detail.escalation.body', { minutes: getElapsedMinutes() })}
+              {t('errors.detail.escalation.body', { minutes: elapsedMinutes })}
             </p>
           </div>
 

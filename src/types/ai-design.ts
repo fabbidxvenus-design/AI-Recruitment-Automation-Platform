@@ -49,6 +49,7 @@ export interface DesignVariant {
     height: number;
   };
   provenance: AIProvenance;
+  isAiGenerated: boolean;
 }
 
 export interface ApprovalRecord {
@@ -68,6 +69,7 @@ export interface DesignProject {
   approvalHistory: ApprovalRecord[];
   createdAt: string;
   updatedAt: string;
+  isAiGenerated: boolean;
 }
 
 export interface ValidationMessage {

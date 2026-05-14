@@ -2,6 +2,8 @@
 
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
+import { useLanguage } from '@/i18n';
+import { formatDate, formatTime } from '@/lib/formatDate';
 import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { MetricCard } from '@/components/ui/MetricCard';
 import { DataTable } from '@/components/ui/DataTable';
@@ -23,6 +25,7 @@ import styles from './dashboard.module.css';
 
 export default function DashboardPage() {
   const { t } = useTranslation();
+  const { locale } = useLanguage();
   const pendingApprovals = mockScreeningEvaluations.filter(e => e.status === 'pending');
   const pendingSchedules = mockScheduleSlots.filter(s => s.status === 'pending');
   const openErrors = mockErrorRemediationItems.filter(e => e.status !== 'resolved');
@@ -236,7 +239,7 @@ export default function DashboardPage() {
                     </div>
                     <div className={styles.scheduleMeta}>
                       <span>{slot.interviewerName}</span>
-                      <span>{new Date(slot.scheduledAt).toLocaleDateString()}</span>
+                      <span>{formatDate(slot.scheduledAt, locale)}</span>
                     </div>
                     <StatusBadge variant="warning" label={t('common.status.pending')} />
                   </div>
@@ -282,7 +285,7 @@ export default function DashboardPage() {
                         <span className={styles.errorCount}>{integration.errorCount} {t('dashboard.integration.errors')}</span>
                       )}
                       <span className={styles.lastSync}>
-                        {t('common.dateTime.lastSync')}: {new Date(integration.lastSync).toLocaleTimeString()}
+                        {t('common.dateTime.lastSync')}: {formatTime(integration.lastSync, locale)}
                       </span>
                     </div>
                   </div>

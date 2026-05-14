@@ -25,6 +25,30 @@ export default function ToolsHubPage() {
       href: '/tools/ai-design',
       status: 'available' as const,
     },
+    {
+      id: 'cv-evidence',
+      titleKey: 'tools.cvEvidence.title',
+      descKey: 'tools.cvEvidence.description',
+      icon: '📄',
+      href: '/tools/cv-evidence',
+      status: 'available' as const,
+    },
+    {
+      id: 'cv-translation',
+      titleKey: 'tools.cvTranslation.title',
+      descKey: 'tools.cvTranslation.description',
+      icon: '🌐',
+      href: '/tools/cv-translation',
+      status: 'available' as const,
+    },
+    {
+      id: 'interview-translation',
+      titleKey: 'tools.interviewTranslation.title',
+      descKey: 'tools.interviewTranslation.description',
+      icon: '🗣️',
+      href: '/tools/interview-translation',
+      status: 'available' as const,
+    },
   ];
 
   return (

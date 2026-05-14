@@ -43,6 +43,7 @@ function generateMockVariants(brief: DesignBrief): DesignVariant[] {
         height: 1080,
       },
       provenance: generateMockProvenance(),
+      isAiGenerated: true,
     });
   });
 
