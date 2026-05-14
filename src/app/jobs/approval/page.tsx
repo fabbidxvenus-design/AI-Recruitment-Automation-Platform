@@ -46,8 +46,10 @@ export default function JDApprovalPage() {
   const handleApprove = (): void => {
     if (!selectedItem) return;
 
-    // Update status to approved
-    selectedItem.parsedProfile.status = 'approved';
+    setSelectedItem({
+      ...selectedItem,
+      parsedProfile: { ...selectedItem.parsedProfile, status: 'approved' },
+    });
     setCurrentStep('approved');
   };
 
