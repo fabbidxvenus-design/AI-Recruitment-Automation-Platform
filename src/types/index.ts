@@ -131,6 +131,8 @@ export interface FinalReviewPackage {
   candidateId: string;
   candidateName: string;
   jobTitle: string;
+  cvVersionId?: string;
+  assessmentTraceability?: AssessmentTraceability;
   overallScore: number;
   recommendation: 'strong_hire' | 'hire' | 'no_hire' | 'strong_no_hire';
   interviewSummary: string;

@@ -3,6 +3,11 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Card, Notice, StatusBadge } from '@/components';
+import {
+  approveAssessmentPlanForPrototype,
+  getActiveAssessmentWorkflowState,
+  saveAssessmentPlanDraftForPrototype,
+} from '@/lib/assessmentWorkflowState';
 import { mockJobs, mockJDVersions, mockParsedJDProfiles } from '@/lib/jobIntakeMockData';
 import {
   mockAssessmentPlans,
@@ -33,8 +38,11 @@ const statusVariantByPlanStatus: Record<AssessmentPlanStatus, 'default' | 'succe
 
 export default function AssessmentSetupPage() {
   const { t } = useTranslation();
-  const [selectedPlanId, setSelectedPlanId] = useState<string>(mockAssessmentPlans[0]?.id ?? '');
-  const [localStatus, setLocalStatus] = useState<AssessmentPlanStatus>(mockAssessmentPlans[0]?.status ?? 'draft');
+  const [selectedPlanId, setSelectedPlanId] = useState<string>(() => getActiveAssessmentWorkflowState().activeAssessmentPlanId);
+  const [localStatus, setLocalStatus] = useState<AssessmentPlanStatus>(() => {
+    const workflowState = getActiveAssessmentWorkflowState();
+    return workflowState.stages.planApproved ? 'approved' : 'draft';
+  });
 
   const selectedPlan = mockAssessmentPlans.find((plan) => plan.id === selectedPlanId) ?? mockAssessmentPlans[0];
   const selectedPlanVersion = mockAssessmentPlanVersions.find((version) => version.id === selectedPlan.currentVersionId) ?? mockAssessmentPlanVersions[0];
@@ -72,10 +80,12 @@ export default function AssessmentSetupPage() {
   };
 
   const handleSaveDraft = (): void => {
+    saveAssessmentPlanDraftForPrototype(selectedPlan, selectedPlanVersion);
     setLocalStatus('draft');
   };
 
   const handleApprove = (): void => {
+    approveAssessmentPlanForPrototype(selectedPlan, selectedPlanVersion);
     setLocalStatus('approved');
   };
 

@@ -11,6 +11,7 @@ import { Notice } from '@/components/ui/Notice';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { mockFinalReviewPackages } from '@/lib/mockData';
+import { markFinalReviewSubmitted, resolveFinalReviewPackageForActivePlan } from '@/lib/assessmentWorkflowState';
 import styles from './final-review.module.css';
 
 export default function FinalReviewPage() {
@@ -23,7 +24,9 @@ export default function FinalReviewPage() {
   const [reason, setReason] = useState('');
   const [reasonError, setReasonError] = useState('');
 
-  const selected = mockFinalReviewPackages.find(p => p.id === selectedCandidate) || mockFinalReviewPackages[0];
+  const activeWorkflowPackage = resolveFinalReviewPackageForActivePlan();
+  const finalReviewPackages = [activeWorkflowPackage, ...mockFinalReviewPackages.filter((reviewPackage) => reviewPackage.id !== activeWorkflowPackage.id)];
+  const selected = finalReviewPackages.find(p => p.id === selectedCandidate) || activeWorkflowPackage;
 
   const handleDecision = (type: 'PASS' | 'FAIL') => {
     setDecision(type);
@@ -36,6 +39,7 @@ export default function FinalReviewPage() {
       return;
     }
     if (mfaVerified && reason.trim()) {
+      markFinalReviewSubmitted(selected.id);
       alert(`Final decision ${decision} submitted for ${selected.candidateName}`);
       setShowDecisionModal(false);
       setDecision(null);
@@ -83,11 +87,11 @@ export default function FinalReviewPage() {
           <Card>
             <CardHeader
               title={t('finalReview.candidates.title')}
-              description={t('finalReview.candidates.count', { count: mockFinalReviewPackages.length })}
+              description={t('finalReview.candidates.count', { count: finalReviewPackages.length })}
             />
             <CardContent>
               <div className={styles.candidateList}>
-                {mockFinalReviewPackages.map(candidate => (
+                {finalReviewPackages.map(candidate => (
                   <div
                     key={candidate.id}
                     className={`${styles.candidateItem} ${selected?.id === candidate.id ? styles.selected : ''}`}
@@ -153,6 +157,51 @@ export default function FinalReviewPage() {
                     />
                   </div>
                 </section>
+
+                {selected.assessmentTraceability && (
+                  <section className={styles.reviewSection}>
+                    <h3 className={styles.sectionTitle}>{t('finalReview.sections.sourceOfTruth')}</h3>
+                    <p className={styles.summaryText}>{t('finalReview.traceability.notice')}</p>
+                    <div className={styles.compensationGrid}>
+                      <div className={styles.compItem}>
+                        <span className={styles.compLabel}>{t('finalReview.traceability.cvVersionId')}</span>
+                        <span className={styles.compValue}>{selected.cvVersionId ?? t('common.notAvailable')}</span>
+                      </div>
+                      <div className={styles.compItem}>
+                        <span className={styles.compLabel}>{t('finalReview.traceability.jobId')}</span>
+                        <span className={styles.compValue}>{selected.assessmentTraceability.jobId}</span>
+                      </div>
+                      <div className={styles.compItem}>
+                        <span className={styles.compLabel}>{t('finalReview.traceability.jdVersionId')}</span>
+                        <span className={styles.compValue}>{selected.assessmentTraceability.jdVersionId}</span>
+                      </div>
+                      <div className={styles.compItem}>
+                        <span className={styles.compLabel}>{t('finalReview.traceability.parsedCriteriaVersion')}</span>
+                        <span className={styles.compValue}>{selected.assessmentTraceability.parsedCriteriaVersion}</span>
+                      </div>
+                      <div className={styles.compItem}>
+                        <span className={styles.compLabel}>{t('finalReview.traceability.assessmentPlanId')}</span>
+                        <span className={styles.compValue}>{selected.assessmentTraceability.assessmentPlanId}</span>
+                      </div>
+                      <div className={styles.compItem}>
+                        <span className={styles.compLabel}>{t('finalReview.traceability.assessmentPlanVersionId')}</span>
+                        <span className={styles.compValue}>{selected.assessmentTraceability.assessmentPlanVersionId}</span>
+                      </div>
+                      <div className={styles.compItem}>
+                        <span className={styles.compLabel}>{t('finalReview.traceability.rubricVersionId')}</span>
+                        <span className={styles.compValue}>{selected.assessmentTraceability.rubricVersionId}</span>
+                      </div>
+                      <div className={styles.compItem}>
+                        <span className={styles.compLabel}>{t('finalReview.traceability.interviewQuestionSetVersionId')}</span>
+                        <span className={styles.compValue}>{selected.assessmentTraceability.interviewQuestionSetVersionId ?? t('common.notAvailable')}</span>
+                      </div>
+                      <div className={styles.compItem}>
+                        <span className={styles.compLabel}>{t('finalReview.traceability.testDefinitionVersionId')}</span>
+                        <span className={styles.compValue}>{selected.assessmentTraceability.testDefinitionVersionId ?? t('common.notAvailable')}</span>
+                      </div>
+                    </div>
+                  </section>
+                )}
 
                 <section className={styles.reviewSection}>
                   <h3 className={styles.sectionTitle}>{t('finalReview.sections.compensation')}</h3>

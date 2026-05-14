@@ -11,6 +11,7 @@ import { Notice } from '@/components/ui/Notice';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { mockTestResults } from '@/lib/mockData';
+import { markTestGraded, resolveTestResultForActivePlan } from '@/lib/assessmentWorkflowState';
 import styles from './grading.module.css';
 
 type TabType = 'all' | 'mcq' | 'essay' | 'coding';
@@ -19,13 +20,15 @@ export default function TestGradingPage() {
   const { t } = useTranslation();
   const { locale } = useLanguage();
   const [activeTab, setActiveTab] = useState<TabType>('all');
-  const [selectedTest, setSelectedTest] = useState<string | null>(mockTestResults[0]?.id ?? null);
+  const activeWorkflowTest = resolveTestResultForActivePlan();
+  const workflowTestResults = [activeWorkflowTest, ...mockTestResults.filter((test) => test.id !== activeWorkflowTest.id)];
+  const [selectedTest, setSelectedTest] = useState<string | null>(activeWorkflowTest.id);
   const [overrideModalOpen, setOverrideModalOpen] = useState(false);
   const [overrideReason, setOverrideReason] = useState('');
 
-  const selected = mockTestResults.find(test => test.id === selectedTest);
+  const selected = workflowTestResults.find(test => test.id === selectedTest);
 
-  const filteredTests = mockTestResults.filter(test => {
+  const filteredTests = workflowTestResults.filter(test => {
     if (activeTab === 'all') return true;
     if (activeTab === 'mcq') return test.testName.includes('JavaScript') || test.testName.includes('MCQ');
     if (activeTab === 'essay') return test.testName.includes('Design') || test.testName.includes('Essay');
@@ -65,7 +68,7 @@ export default function TestGradingPage() {
           >
             {t(`tests.grading.tabs.${tab}`)}
             <span className={styles.tabCount}>
-              {tab === 'all' ? mockTestResults.length : mockTestResults.filter(t => {
+              {tab === 'all' ? workflowTestResults.length : workflowTestResults.filter(t => {
                 if (tab === 'mcq') return t.testName.includes('JavaScript');
                 if (tab === 'essay') return t.testName.includes('Design');
                 if (tab === 'coding') return t.testName.includes('Coding');
@@ -249,7 +252,7 @@ export default function TestGradingPage() {
                 <Button variant="secondary" onClick={() => setOverrideModalOpen(true)}>
                   {t('tests.grading.actions.overrideScore')}
                 </Button>
-                <Link href="/final-review">
+                <Link href="/final-review" onClick={() => markTestGraded(selected.id)}>
                   <Button variant="primary">{t('tests.grading.actions.approveProceed')}</Button>
                 </Link>
               </div>

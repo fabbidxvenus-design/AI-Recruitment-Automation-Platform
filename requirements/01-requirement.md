@@ -22,47 +22,47 @@ Project type: data-ai
 | RAW-005 | The system uses LLM extraction on text-native PDF CV content to create candidate profiles; OCR is excluded from MVP | Scope decision | need | high | [CLARIFIED] LLM extract, no OCR |
 | RAW-006 | AI matching compares the extracted CandidateProfile and CV version against the HR-approved ParsedJDProfile and parsed criteria version | Scope decision | need | high | [CLARIFIED] Screening links CV and JD versions |
 | RAW-007 | Screening score and summary must trace to candidateId, cvVersionId, jobId, jdVersionId, and parsedCriteriaVersion | Scope decision | need | high | [CLARIFIED] Cross-domain screening traceability |
-| RAW-008 | Output: Risk flags (Ä‘iá»ƒm khÃ´ng phÃ¹ há»£p nghiÃªm trá»ng) | Q&A | need | high | [CLARIFIED via Q&A] |
+| RAW-008 | Output: Risk flags (?i?m kh?ng ph? h?p nghi?m tr?ng) | Q&A | need | high | [CLARIFIED via Q&A] |
 | RAW-009 | Output: Missing skills list | Q&A | need | high | [CLARIFIED via Q&A] |
-| RAW-010 | HR Manager approve káº¿t quï¿½ï¿½ï¿½ sÃ ng lá»c trÆ°á»›c khi chuyá»ƒn bÆ°á»›c | User input + Q&A | need | high | [CLARIFIED via Q&A] Single approve, há»— trá»£ bulk |
-| RAW-011 | CV format: PDF + DOCX only (khÃ´ng cáº§n OCR áº£nh) | Q&A | constraint | high | [CLARIFIED via Q&A] |
-| RAW-041 | CV Evidence Viewer: Cho phÃ©p HR xem CV gá»‘c, text trÃ­ch xuáº¥t, vÃ  cÃ¡c evidence spans Ä‘Æ°á»£c link vá»›i tiÃªu chÃ­ JD/screening (tÃ­ch há»£p vá»›i mÃ n hÃ¬nh sÃ ng lá»c/final review â€” evidence detail lÃ  Phase 2 prototype utility) | Scope decision | need | high | Phase 2 prototype utility module |
-| RAW-012 | Tá»± Ä‘á»™ng thu tháº­p availability á»©ng viÃªn + ngÆ°á»i phá»ng váº¥n | User input | need | high |  |
-| RAW-013 | Há»‡ thá»‘ng suggest lá»‹ch, HR Manager approve trÆ°á»›c khi confirm | User input | need | high | [CLARIFIED via Q&A] |
-| RAW-014 | LÃªn lá»‹ch tá»± Ä‘á»™ng qua Google Calendar | User input | need | high | [CLARIFIED via Q&A] |
-| RAW-015 | Gá»­i email tá»± Ä‘á»™ng qua shared HR mailbox (Gmail API) | User input + Q&A | need | high | [CLARIFIED via Q&A] |
-| RAW-016 | Nháº¯c lá»‹ch phá»ng váº¥n qua email | User input | need | medium |  |
-| RAW-017 | Timezone support cho á»©ng viÃªn/interviewer á»Ÿ nÆ°á»›c ngoÃ i | Review | need | medium |  |
-| RAW-018 | Phá»ng váº¥n async qua text message | User input + Q&A | need | high | [CLARIFIED via Q&A] |
-| RAW-019 | Hybrid: cÃ¢u há»i cá»‘ Ä‘á»‹nh + AI táº¡o follow-up dá»±a trÃªn cÃ¢u tráº£ lá»i | Q&A | need | high | [CLARIFIED via Q&A] |
-| RAW-020 | AI Ä‘Ã¡nh giÃ¡ nÄƒng lá»±c á»©ng viÃªn vÃ  táº¡o report | User input | need | high |  |
-| RAW-021 | Há»— trá»£ Ä‘a ngÃ´n ngá»¯: Viá»‡t, Nháº­t, Anh | Q&A | need | high | [CLARIFIED via Q&A] |
-| RAW-022 | Import bÃ i test + Ä‘Ã¡p Ã¡n Ä‘á»ƒ cháº¥m Ä‘iá»ƒm (LLM) | User input | need | high |  |
-| RAW-023 | Há»— trá»£ multiple choice (cháº¥m tá»± Ä‘á»™ng theo Ä‘Ã¡p Ã¡n) | Q&A | need | high | [CLARIFIED via Q&A] |
-| RAW-024 | Há»— trá»£ essay (AI Ä‘Ã¡nh giÃ¡ theo rubric) | Q&A | need | high | [CLARIFIED via Q&A] |
-| RAW-025 | Há»— trá»£ coding challenge (test cases + code quality) | Q&A | need | high | [CLARIFIED via Q&A] |
-| RAW-026 | Táº¡o content tuyá»ƒn dá»¥ng dáº¡ng gá»£i Ã½ (LLM): plain text, copyable, ho trá»£ export file, ho trá»£ channel integration | User input + scope decision | need | high | Phase 2 prototype standalone |
-| RAW-026a | Content publishing: Há»— trá»£ thá»§ cÃ´ng copy, export file, vÃ  tÃ­ch há»£p channel (LinkedIn, Facebook, job boards...) | Scope decision | need | high | [CLARIFIED via Q&A] All 3 supported |
-| RAW-026b | Generated content pháº£i Ä‘Æ°á»£c HR review/approve trÆ°á»›c khi publish/export/use | Scope decision | constraint | high | [CLARIFIED via Q&A] |
-| RAW-027 | Thiáº¿t káº¿ áº£nh tuyá»ƒn dá»¥ng Ä‘Æ¡n giáº£n (LLM) dáº¡ng gá»£i Ã½: mock image prototype â€” khÃ´ng báº¯t buá»™c tÃ­ch há»£p image provider tháº­t | User input + scope decision | idea | high | Phase 2 prototype standalone |
-| RAW-027a | Design scope: mock/preview, creative suggestions, banner, poster, social asset â€” khÃ´ng cáº§n integration tháº­t | Scope decision | need | high | [CLARIFIED via Q&A] Not real image generation |
-| RAW-027b | Generated design pháº£i Ä‘Æ°á»£c HR review/approve trÆ°á»›c khi sá»­ dá»¥ng | Scope decision | constraint | high | [CLARIFIED via Q&A] |
-| RAW-028 | Dá»‹ch CV tiáº¿ng Viá»‡t / Nháº­t / Anh (LLM) | User input + scope decision | need | high | vi/en/ja |
-| RAW-028a | CV translation: Há»— trá»£ HR review vÃ  related workflows, nhÆ°ng CV gá»‘c lÃ  nguá»“n chuáº©n duy nháº¥t | Scope decision | constraint | high | [CLARIFIED via Q&A] Original CV is source of truth |
-| RAW-028b | Screening decisions pháº£i cÃ³ traceback to original CV | Scope decision | constraint | high | [CLARIFIED via Q&A] |
-| RAW-029 | Nháº­n xÃ©t phá»ng váº¥n tiáº¿ng Nháº­t (LLM) | User input | need | high | Phase 2 prototype standalone |
-| RAW-029a | Translated notes: Há»— trá»£ HR review vÃ  related workflows | Scope decision | need | high | [CLARIFIED via Q&A] |
-| RAW-030 | Pipeline auto: Táº¡o nguá»“n â†’ SÃ ng lá»c â†’ Set lá»‹ch â†’ Phá»ng váº¥n â†’ Cháº¥m bÃ i | User input | goal | high |  |
-| RAW-031 | Human approve báº¯t buá»™c á»Ÿ bÆ°á»›c sÃ ng lá»c vÃ  set lá»‹ch | Q&A | constraint | high | [CLARIFIED via Q&A] |
-| RAW-032 | Content/Design/Translation lÃ  cÃ¡c Phase 2 prototype standalone module, KHÃ”NG náº±m trong core pipeline | Scope decision | constraint | high | [CLARIFIED via Q&A] Updated wording |
-| RAW-033 | Approval timeout: chá»‰ reminder, khÃ´ng auto cancel/skip | Q&A | constraint | high | [CLARIFIED via Q&A] |
-| RAW-034 | MVP = full pipeline chÃ­nh (Phase 1); Content/Design/Translation lÃ  Phase 2 prototype standalone | Scope decision | constraint | high | [CLARIFIED via Q&A] Updated wording |
-| RAW-035 | Quy mÃ´ lá»›n: > 200 job/thÃ¡ng | Q&A | constraint | high | [CLARIFIED via Q&A] |
-| RAW-036 | Há»— trá»£ Ä‘a ngÃ´n ngá»¯: Viá»‡t, Nháº­t, Anh | Q&A | need | high |  |
-| RAW-037 | KhÃ´ng rÃ ng buá»™c tech stack | Q&A | constraint | high |  |
-| RAW-038 | Báº£o máº­t dá»¯ liá»‡u á»©ng viÃªn má»©c cÆ¡ báº£n | Q&A | constraint | medium |  |
-| RAW-039 | TÃ­ch há»£p Google Workspace: Calendar, Gmail, Drive | Q&A | need | high |  |
-| RAW-040 | Há»‡ thá»‘ng chá»‰ phá»¥c vá»¥ HR ná»™i bá»™, khÃ´ng multi-tenant | Q&A | constraint | high |  |
+| RAW-010 | HR Manager approve k?t qu? s?ng l?c tr??c khi chuy?n b??c | User input + Q&A | need | high | [CLARIFIED via Q&A] Single approve, h? tr? bulk |
+| RAW-011 | CV format: PDF + DOCX only (kh?ng c?n OCR ?nh) | Q&A | constraint | high | [CLARIFIED via Q&A] |
+| RAW-041 | CV Evidence Viewer: Cho ph?p HR xem CV g?c, text tr?ch xu?t, v? c?c evidence spans ???c link v?i ti?u ch? JD/screening (t?ch h?p v?i m?n h?nh s?ng l?c/final review ? evidence detail l? Phase 2 prototype utility) | Scope decision | need | high | Phase 2 prototype utility module |
+| RAW-012 | T? ??ng thu th?p availability ?ng vi?n + ng??i ph?ng v?n | User input | need | high |  |
+| RAW-013 | H? th?ng suggest l?ch, HR Manager approve tr??c khi confirm | User input | need | high | [CLARIFIED via Q&A] |
+| RAW-014 | L?n l?ch t? ??ng qua Google Calendar | User input | need | high | [CLARIFIED via Q&A] |
+| RAW-015 | G?i email t? ??ng qua shared HR mailbox (Gmail API) | User input + Q&A | need | high | [CLARIFIED via Q&A] |
+| RAW-016 | Nh?c l?ch ph?ng v?n qua email | User input | need | medium |  |
+| RAW-017 | Timezone support cho ?ng vi?n/interviewer ? n??c ngo?i | Review | need | medium |  |
+| RAW-018 | Ph?ng v?n async qua text message | User input + Q&A | need | high | [CLARIFIED via Q&A] |
+| RAW-019 | Hybrid: c?u h?i c? ??nh + AI t?o follow-up d?a tr?n c?u tr? l?i | Q&A | need | high | [CLARIFIED via Q&A] |
+| RAW-020 | AI ??nh gi? n?ng l?c ?ng vi?n v? t?o report | User input | need | high |  |
+| RAW-021 | H? tr? ?a ng?n ng?: Vi?t, Nh?t, Anh | Q&A | need | high | [CLARIFIED via Q&A] |
+| RAW-022 | Import b?i test + ??p ?n ?? ch?m ?i?m (LLM) | User input | need | high |  |
+| RAW-023 | H? tr? multiple choice (ch?m t? ??ng theo ??p ?n) | Q&A | need | high | [CLARIFIED via Q&A] |
+| RAW-024 | H? tr? essay (AI ??nh gi? theo rubric) | Q&A | need | high | [CLARIFIED via Q&A] |
+| RAW-025 | H? tr? coding challenge (test cases + code quality) | Q&A | need | high | [CLARIFIED via Q&A] |
+| RAW-026 | T?o content tuy?n d?ng d?ng g?i ? (LLM): plain text, copyable, h? tr? export file, h? tr? channel integration | User input + scope decision | need | high | Phase 2 prototype standalone |
+| RAW-026a | Content publishing: H? tr? th? c?ng copy, export file, v? t?ch h?p channel (LinkedIn, Facebook, job boards...) | Scope decision | need | high | [CLARIFIED via Q&A] All 3 supported |
+| RAW-026b | Generated content ph?i ???c HR review/approve tr??c khi publish/export/use | Scope decision | constraint | high | [CLARIFIED via Q&A] |
+| RAW-027 | Thi?t k? ?nh tuy?n d?ng ??n gi?n (LLM) d?ng g?i ?: mock image prototype ? kh?ng b?t bu?c t?ch h?p image provider th?t | User input + scope decision | idea | high | Phase 2 prototype standalone |
+| RAW-027a | Design scope: mock/preview, creative suggestions, banner, poster, social asset ? kh?ng c?n integration th?t | Scope decision | need | high | [CLARIFIED via Q&A] Not real image generation |
+| RAW-027b | Generated design ph?i ???c HR review/approve tr??c khi s? d?ng | Scope decision | constraint | high | [CLARIFIED via Q&A] |
+| RAW-028 | D?ch CV ti?ng Vi?t / Nh?t / Anh (LLM) | User input + scope decision | need | high | vi/en/ja |
+| RAW-028a | CV translation: H? tr? HR review v? related workflows, nh?ng CV g?c l? ngu?n chu?n duy nh?t | Scope decision | constraint | high | [CLARIFIED via Q&A] Original CV is source of truth |
+| RAW-028b | Screening decisions ph?i c? traceback to original CV | Scope decision | constraint | high | [CLARIFIED via Q&A] |
+| RAW-029 | Nh?n x?t ph?ng v?n ti?ng Nh?t (LLM) | User input | need | high | Phase 2 prototype standalone |
+| RAW-029a | Translated notes: H? tr? HR review v? related workflows | Scope decision | need | high | [CLARIFIED via Q&A] |
+| RAW-030 | Pipeline auto: T?o ngu?n ? S?ng l?c ? Set l?ch ? Ph?ng v?n ? Ch?m b?i | User input | goal | high |  |
+| RAW-031 | Human approve b?t bu?c ? b??c s?ng l?c v? set l?ch | Q&A | constraint | high | [CLARIFIED via Q&A] |
+| RAW-032 | Content/Design/Translation l? c?c Phase 2 prototype standalone module, KH?NG n?m trong core pipeline | Scope decision | constraint | high | [CLARIFIED via Q&A] Updated wording |
+| RAW-033 | Approval timeout: ch? reminder, kh?ng auto cancel/skip | Q&A | constraint | high | [CLARIFIED via Q&A] |
+| RAW-034 | MVP = full pipeline ch?nh (Phase 1); Content/Design/Translation l? Phase 2 prototype standalone | Scope decision | constraint | high | [CLARIFIED via Q&A] Updated wording |
+| RAW-035 | Quy m? l?n: > 200 job/th?ng | Q&A | constraint | high | [CLARIFIED via Q&A] |
+| RAW-036 | H? tr? ?a ng?n ng?: Vi?t, Nh?t, Anh | Q&A | need | high |  |
+| RAW-037 | Kh?ng r?ng bu?c tech stack | Q&A | constraint | high |  |
+| RAW-038 | B?o m?t d? li?u ?ng vi?n m?c c? b?n | Q&A | constraint | medium |  |
+| RAW-039 | T?ch h?p Google Workspace: Calendar, Gmail, Drive | Q&A | need | high |  |
+| RAW-040 | H? th?ng ch? ph?c v? HR n?i b?, kh?ng multi-tenant | Q&A | constraint | high |  |
 | RAW-042 | CV versioning is required; new CV files create a new CV version and flag HR for manual re-screen decision without automatic re-screening | Scope decision | constraint | high | [CLARIFIED] Manual re-screen trigger only |
 | RAW-043 | The original CV PDF is the source of truth for candidate information; extracted profiles and translations are derived artifacts | Scope decision | constraint | high | [CLARIFIED] CV source of truth |
 | RAW-044 | HR-approved parsed JD profile is the operational source of truth for matching; original JD text/file is retained as evidence/reference | Scope decision | constraint | high | [CLARIFIED] JD source of truth |

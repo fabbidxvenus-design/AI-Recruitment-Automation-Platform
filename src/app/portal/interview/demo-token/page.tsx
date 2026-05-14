@@ -6,7 +6,7 @@ import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Notice } from '@/components/ui/Notice';
 import { ProgressBar } from '@/components/ui/ProgressBar';
-import { mockInterviewSessions } from '@/lib/mockData';
+import { markInterviewCompleted, resolveInterviewSessionForActivePlan } from '@/lib/assessmentWorkflowState';
 import styles from './interview.module.css';
 
 export const dynamic = 'force-dynamic';
@@ -18,11 +18,13 @@ export default function InterviewPage() {
   const [showConsent, setShowConsent] = useState(true);
   const [interviewStarted, setInterviewStarted] = useState(false);
   const [isExpired, setIsExpired] = useState(false);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false
+  );
 
   const questionRef = useRef<HTMLHeadingElement>(null);
 
-  const session = mockInterviewSessions[0];
+  const [session, setSession] = useState(() => resolveInterviewSessionForActivePlan());
   const currentQuestion = session.questions[currentQuestionIndex];
   const assessmentTraceability = session.assessmentTraceability;
   const progress = ((currentQuestionIndex + (answers[currentQuestion.id] ? 1 : 0)) / session.questions.length) * 100;
@@ -30,8 +32,6 @@ export default function InterviewPage() {
   // Check reduced motion preference - initialize with current value then subscribe for changes
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- MediaQueryList requires initial read + subscription pattern
-    setPrefersReducedMotion(mediaQuery.matches);
 
     const handler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
     mediaQuery.addEventListener('change', handler);
@@ -67,6 +67,7 @@ export default function InterviewPage() {
   };
 
   const handleSubmit = () => {
+    markInterviewCompleted(session.id);
     alert('Interview submitted! AI analysis will be available shortly.');
   };
 

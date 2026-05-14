@@ -77,3 +77,31 @@ test('test grading shows assessment traceability for default selected result', a
     await expect(page.getByText(value).first()).toBeVisible();
   }
 });
+
+test('approved assessment plan persists across interview test and final review', async ({ page }) => {
+  await page.goto('/assessments/setup');
+  await page.getByRole('button', { name: /Approve Local Plan|Duyệt kế hoạch local/ }).click();
+  await page.reload();
+
+  await expect(page.getByText(/Approved|Đã duyệt/).first()).toBeVisible();
+  for (const value of [...sharedAssessmentTraceabilityValues, 'iqs-ver-001', 'test-def-ver-001']) {
+    await expect(page.getByText(value).first()).toBeVisible();
+  }
+
+  await page.goto('/portal/interview/demo-token');
+  for (const value of [...sharedAssessmentTraceabilityValues, 'iqs-ver-001']) {
+    await expect(page.getByText(value).first()).toBeVisible();
+  }
+
+  await page.goto('/tests/grading');
+  for (const value of [...sharedAssessmentTraceabilityValues, 'test-def-ver-001']) {
+    await expect(page.getByText(value).first()).toBeVisible();
+  }
+
+  await page.goto('/final-review');
+  await expect(page.getByText(/Source-of-truth audit trail|Audit trail nguồn chuẩn/)).toBeVisible();
+  await expect(page.getByText('cv-ver-001').first()).toBeVisible();
+  for (const value of [...sharedAssessmentTraceabilityValues, 'iqs-ver-001', 'test-def-ver-001']) {
+    await expect(page.getByText(value).first()).toBeVisible();
+  }
+});

@@ -570,7 +570,7 @@
           "element": "Evidence package summary",
           "type": "card",
           "required": true,
-          "validationOrBehavior": "Aggregates screening, interview, and test reports.",
+          "validationOrBehavior": "Aggregates screening, interview, and test reports with cvVersionId, jdVersionId, parsedCriteriaVersion, assessmentPlanVersionId, rubricVersionId, interviewQuestionSetVersionId, and testDefinitionVersionId visible in the evidence package.",
           "sourceIds": [
             "BP-006",
             "UC-007"
@@ -609,6 +609,22 @@
             "BP-009",
             "UC-009"
           ]
+        },
+        {
+          "id": "UI-050",
+          "element": "Evidence traceability panel",
+          "type": "card",
+          "required": true,
+          "validationOrBehavior": "Shows CV/JD version traceability and Assessment Plan traceability before final pass/fail confirmation; missing or conflicting IDs force defer/manual remediation.",
+          "sourceIds": [
+            "BP-006",
+            "BR-005",
+            "BR-006",
+            "BR-SCR-001",
+            "BR-ASSESS-001",
+            "BR-ASSESS-002",
+            "UC-007"
+          ]
         }
       ],
       "sourceIds": [
@@ -618,7 +634,12 @@
         "BR-012",
         "BR-022",
         "UC-007",
-        "UC-009"
+        "UC-009",
+        "BR-005",
+        "BR-006",
+        "BR-SCR-001",
+        "BR-ASSESS-001",
+        "BR-ASSESS-002"
       ]
     },
     {
@@ -2764,6 +2785,171 @@
             "UC-004",
             "UC-007"
           ]
+        },
+        {
+          "field": "candidateId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing candidate",
+          "default": "",
+          "notes": "Candidate receiving the final decision",
+          "sourceIds": [
+            "BP-006",
+            "UC-007"
+          ]
+        },
+        {
+          "field": "applicationId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing CandidateApplication",
+          "default": "",
+          "notes": "Canonical Candidate-Job relationship for the decision",
+          "sourceIds": [
+            "BP-006",
+            "UC-007",
+            "BR-SCR-001"
+          ]
+        },
+        {
+          "field": "cvVersionId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing CV version",
+          "default": "",
+          "notes": "CV version used by screening evidence in final review",
+          "sourceIds": [
+            "BR-005",
+            "BR-SCR-001",
+            "UC-007"
+          ]
+        },
+        {
+          "field": "jdVersionId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing JD version",
+          "default": "",
+          "notes": "JD version used by screening and assessment evidence in final review",
+          "sourceIds": [
+            "BR-006",
+            "BR-SCR-001",
+            "BR-ASSESS-001",
+            "UC-007"
+          ]
+        },
+        {
+          "field": "parsedCriteriaVersion",
+          "type": "integer",
+          "required": "yes",
+          "validation": "positive version number",
+          "default": "",
+          "notes": "Approved parsed criteria version used by screening and assessment plan",
+          "sourceIds": [
+            "BR-SCR-001",
+            "BR-ASSESS-001",
+            "UC-007"
+          ]
+        },
+        {
+          "field": "screeningResultId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing screening result",
+          "default": "",
+          "notes": "Screening evidence included in the final decision package",
+          "sourceIds": [
+            "BP-006",
+            "UC-007"
+          ]
+        },
+        {
+          "field": "transcriptId",
+          "type": "uuid",
+          "required": "conditional",
+          "validation": "required when interview stage completed",
+          "default": "",
+          "notes": "Interview transcript/evaluation evidence included in final review",
+          "sourceIds": [
+            "BP-006",
+            "UC-007",
+            "UC-005"
+          ]
+        },
+        {
+          "field": "submissionId",
+          "type": "uuid",
+          "required": "conditional",
+          "validation": "required when testRequired=true",
+          "default": "",
+          "notes": "Test submission/grading evidence included in final review",
+          "sourceIds": [
+            "BP-006",
+            "UC-007",
+            "UC-006"
+          ]
+        },
+        {
+          "field": "assessmentPlanId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing assessment plan",
+          "default": "",
+          "notes": "Assessment plan inherited by interview/test evidence in final review",
+          "sourceIds": [
+            "BR-ASSESS-001",
+            "BR-ASSESS-002",
+            "UC-007"
+          ]
+        },
+        {
+          "field": "assessmentPlanVersionId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "same version across interview/test evidence",
+          "default": "",
+          "notes": "Assessment plan version used for the final decision evidence package",
+          "sourceIds": [
+            "BR-ASSESS-001",
+            "BR-ASSESS-002",
+            "UC-007"
+          ]
+        },
+        {
+          "field": "rubricVersionId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing rubric version",
+          "default": "",
+          "notes": "Shared rubric version used by interview/test evidence",
+          "sourceIds": [
+            "BR-ASSESS-002",
+            "UC-007"
+          ]
+        },
+        {
+          "field": "interviewQuestionSetVersionId",
+          "type": "uuid",
+          "required": "conditional",
+          "validation": "required when interview evidence exists",
+          "default": "",
+          "notes": "Question set version used by interview evidence",
+          "sourceIds": [
+            "BR-ASSESS-002",
+            "UC-007"
+          ]
+        },
+        {
+          "field": "testDefinitionVersionId",
+          "type": "uuid",
+          "required": "conditional",
+          "validation": "required when test evidence exists",
+          "default": "",
+          "notes": "Test definition version used by test evidence",
+          "sourceIds": [
+            "BR-ASSESS-002",
+            "UC-007"
+          ]
         }
       ],
       "sourceIds": [
@@ -3007,6 +3193,89 @@
             "BP-004",
             "UC-005"
           ]
+        },
+        {
+          "field": "jobId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing job",
+          "default": "",
+          "notes": "Job evaluated by this evidence record",
+          "sourceIds": [
+            "BR-ASSESS-001",
+            "BR-ASSESS-002"
+          ]
+        },
+        {
+          "field": "jdVersionId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing JD version",
+          "default": "",
+          "notes": "Approved JD version used for assessment setup",
+          "sourceIds": [
+            "BR-ASSESS-001",
+            "BR-ASSESS-002"
+          ]
+        },
+        {
+          "field": "parsedCriteriaVersion",
+          "type": "integer",
+          "required": "yes",
+          "validation": "positive version number",
+          "default": "",
+          "notes": "Approved parsed criteria version used for assessment setup",
+          "sourceIds": [
+            "BR-ASSESS-001",
+            "BR-ASSESS-002"
+          ]
+        },
+        {
+          "field": "assessmentPlanId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing assessment plan",
+          "default": "",
+          "notes": "Unified assessment plan used by interview/test/final review",
+          "sourceIds": [
+            "BR-ASSESS-001",
+            "BR-ASSESS-002"
+          ]
+        },
+        {
+          "field": "assessmentPlanVersionId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing assessment plan version",
+          "default": "",
+          "notes": "Versioned assessment setup used to preserve reproducibility",
+          "sourceIds": [
+            "BR-ASSESS-001",
+            "BR-ASSESS-002"
+          ]
+        },
+        {
+          "field": "rubricVersionId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing rubric version",
+          "default": "",
+          "notes": "Shared rubric version inherited from Assessment Plan",
+          "sourceIds": [
+            "BR-ASSESS-002"
+          ]
+        },
+        {
+          "field": "interviewQuestionSetVersionId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing question set version",
+          "default": "",
+          "notes": "Question set version used to present fixed interview questions and govern follow-up policy",
+          "sourceIds": [
+            "BR-ASSESS-002",
+            "UC-005"
+          ]
         }
       ],
       "sourceIds": [
@@ -3124,6 +3393,89 @@
             "BR-010",
             "UC-006",
             "BQ-004"
+          ]
+        },
+        {
+          "field": "jobId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing job",
+          "default": "",
+          "notes": "Job evaluated by this evidence record",
+          "sourceIds": [
+            "BR-ASSESS-001",
+            "BR-ASSESS-002"
+          ]
+        },
+        {
+          "field": "jdVersionId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing JD version",
+          "default": "",
+          "notes": "Approved JD version used for assessment setup",
+          "sourceIds": [
+            "BR-ASSESS-001",
+            "BR-ASSESS-002"
+          ]
+        },
+        {
+          "field": "parsedCriteriaVersion",
+          "type": "integer",
+          "required": "yes",
+          "validation": "positive version number",
+          "default": "",
+          "notes": "Approved parsed criteria version used for assessment setup",
+          "sourceIds": [
+            "BR-ASSESS-001",
+            "BR-ASSESS-002"
+          ]
+        },
+        {
+          "field": "assessmentPlanId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing assessment plan",
+          "default": "",
+          "notes": "Unified assessment plan used by interview/test/final review",
+          "sourceIds": [
+            "BR-ASSESS-001",
+            "BR-ASSESS-002"
+          ]
+        },
+        {
+          "field": "assessmentPlanVersionId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing assessment plan version",
+          "default": "",
+          "notes": "Versioned assessment setup used to preserve reproducibility",
+          "sourceIds": [
+            "BR-ASSESS-001",
+            "BR-ASSESS-002"
+          ]
+        },
+        {
+          "field": "rubricVersionId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing rubric version",
+          "default": "",
+          "notes": "Shared rubric version inherited from Assessment Plan",
+          "sourceIds": [
+            "BR-ASSESS-002"
+          ]
+        },
+        {
+          "field": "testDefinitionVersionId",
+          "type": "uuid",
+          "required": "yes",
+          "validation": "existing test definition version",
+          "default": "",
+          "notes": "Test definition version used for sections, answer key, rubric, and grading report",
+          "sourceIds": [
+            "BR-ASSESS-002",
+            "UC-006"
           ]
         }
       ],
@@ -3299,6 +3651,20 @@
             "BR-012",
             "BP-008",
             "BP-010"
+          ]
+        },
+        {
+          "field": "traceabilitySnapshot",
+          "type": "object",
+          "required": "conditional",
+          "validation": "required for final_review, interview.submitted, test.overridden, and final decision actions",
+          "default": "",
+          "notes": "Immutable snapshot of CV/JD/assessment trace IDs at the time of the action",
+          "sourceIds": [
+            "BR-012",
+            "BR-SCR-001",
+            "BR-ASSESS-002",
+            "UC-007"
           ]
         }
       ],
@@ -5080,6 +5446,20 @@
       "id": "VAL-SCR-001",
       "errorMessage": "candidateId, cvVersionId, jobId, jdVersionId, and parsedCriteriaVersion are required.",
       "inputOrObject": "ScreeningResult"
+    },
+    {
+      "id": "VAL-ASSESS-003",
+      "type": "validation",
+      "rule": "Final review evidence package requires consistent CV/JD and Assessment Plan traceability before pass/fail decision.",
+      "appliesTo": "SCREEN-007; DATA-005; DATA-007; DATA-008",
+      "failureMessage": "Final decision cannot be submitted until cvVersionId, jdVersionId, parsedCriteriaVersion, assessmentPlanVersionId, rubricVersionId, and available interview/test version IDs are present and consistent.",
+      "sourceIds": [
+        "BP-006",
+        "BR-SCR-001",
+        "BR-ASSESS-001",
+        "BR-ASSESS-002",
+        "UC-007"
+      ]
     }
   ],
   "securityPrivacyCompliance": [
@@ -5840,12 +6220,15 @@
       "scenario": "Final HR decision",
       "steps": [
         "Open final review evidence package",
+        "Verify screening, interview, test, CV/JD, and Assessment Plan traceability",
         "Record pass/fail with reason when needed"
       ],
-      "expectedResult": "Candidate reaches PASSED or FAILED; audit event created.",
+      "expectedResult": "Candidate reaches PASSED or FAILED; audit event created with final decision reason and traceability snapshot.",
       "sourceIds": [
         "UC-007",
-        "BR-022"
+        "BR-022",
+        "BR-SCR-001",
+        "BR-ASSESS-002"
       ]
     },
     {
@@ -6264,6 +6647,23 @@
       "type": "contract",
       "expectedResult": "candidateId, cvVersionId, jobId, jdVersionId, and parsedCriteriaVersion are present.",
       "scenario": "Screening request and response include all CV/JD trace fields"
+    },
+    {
+      "id": "TEST-ASSESS-003",
+      "type": "e2e",
+      "scenario": "Final review preserves full Assessment Plan and CV/JD traceability.",
+      "steps": [
+        "Open final review for a candidate with screening, interview, and test evidence",
+        "Verify CV/JD version IDs and assessmentPlanVersionId/rubricVersionId/question/test version IDs are visible",
+        "Submit final decision with required reason when applicable"
+      ],
+      "expectedResult": "Final decision audit event records the same cvVersionId, jdVersionId, parsedCriteriaVersion, assessmentPlanVersionId, rubricVersionId, interviewQuestionSetVersionId, and testDefinitionVersionId shown in the evidence package.",
+      "sourceIds": [
+        "BP-006",
+        "BR-SCR-001",
+        "BR-ASSESS-002",
+        "UC-007"
+      ]
     }
   ],
   "edgeCases": [
@@ -11211,6 +11611,89 @@
         "id": "TEST-ASSESS-002",
         "type": "test",
         "detail": "Interview/test surfaces expose assessment plan traceability."
+      },
+      {
+        "id": "VAL-ASSESS-003",
+        "type": "validation",
+        "detail": "Final review evidence package requires consistent CV/JD and Assessment Plan traceability.",
+        "expectedBehavior": "Missing or conflicting trace IDs block pass/fail and require defer/manual remediation.",
+        "sourceIds": [
+          "BP-006",
+          "BR-SCR-001",
+          "BR-ASSESS-002",
+          "UC-007"
+        ],
+        "requirementIds": [
+          "REQ-C-022"
+        ]
+      },
+      {
+        "id": "TEST-ASSESS-003",
+        "type": "test",
+        "detail": "Final review preserves full traceability snapshot.",
+        "expectedBehavior": "Final decision audit event records CV/JD versions and Assessment Plan version IDs shown in the evidence package.",
+        "sourceIds": [
+          "BP-006",
+          "BR-SCR-001",
+          "BR-ASSESS-002",
+          "UC-007"
+        ],
+        "requirementIds": [
+          "REQ-C-022"
+        ]
+      }
+    ],
+    "fullFlowTraceability": [
+      {
+        "targetDetail": "SCREEN-007 Final Review and Decision",
+        "requiredTraceFields": [
+          "candidateId",
+          "applicationId",
+          "cvVersionId",
+          "jdVersionId",
+          "parsedCriteriaVersion",
+          "assessmentPlanId",
+          "assessmentPlanVersionId",
+          "rubricVersionId",
+          "interviewQuestionSetVersionId",
+          "testDefinitionVersionId"
+        ],
+        "expectedBehavior": "Final review displays the same CV/JD and Assessment Plan traceability inherited by screening, interview, and test evidence before HR Manager submits pass/fail.",
+        "sourceIds": [
+          "BP-006",
+          "BR-SCR-001",
+          "BR-ASSESS-001",
+          "BR-ASSESS-002",
+          "UC-007"
+        ],
+        "requirementIds": [
+          "REQ-F-120",
+          "REQ-F-122",
+          "REQ-F-123",
+          "REQ-C-022"
+        ]
+      },
+      {
+        "targetDetail": "DATA-005 Approval Decision and DATA-009 Audit Event",
+        "requiredTraceFields": [
+          "traceabilitySnapshot",
+          "screeningResultId",
+          "transcriptId",
+          "submissionId",
+          "assessmentPlanVersionId",
+          "rubricVersionId"
+        ],
+        "expectedBehavior": "Final decision and related audit events preserve immutable evidence references and do not recompute historical versions after an Assessment Plan changes.",
+        "sourceIds": [
+          "BR-012",
+          "BR-SCR-001",
+          "BR-ASSESS-002",
+          "UC-007"
+        ],
+        "requirementIds": [
+          "REQ-C-022",
+          "REQ-D-020"
+        ]
       }
     ]
   }

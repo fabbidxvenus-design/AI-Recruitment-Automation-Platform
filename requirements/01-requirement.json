@@ -13,7 +13,7 @@
       },
       {
         "type": "file",
-        "path": "Há»‡ thá»‘ng recruitment.jpg",
+        "path": "H? th?ng recruitment.jpg",
         "description": "System diagram"
       },
       {
@@ -29,7 +29,7 @@
     ]
   },
   "context": {
-    "productName": "RecruitAI â€” Há»‡ thá»‘ng Recruitment AI Automation",
+    "productName": "RecruitAI ? H? th?ng Recruitment AI Automation",
     "businessDomain": "Human Resources / Recruitment",
     "targetUsers": [
       "Internal HR Team"
@@ -108,7 +108,7 @@
     },
     {
       "id": "RAW-008",
-      "text": "Output: Risk flags (Ä‘iá»ƒm khÃ´ng phÃ¹ há»£p nghiÃªm trá»ng)",
+      "text": "Output: Risk flags (?i?m kh?ng ph? h?p nghi?m tr?ng)",
       "source": "Q&A",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -126,16 +126,16 @@
     },
     {
       "id": "RAW-010",
-      "text": "HR Manager approve káº¿t quï¿½ï¿½ï¿½ sÃ ng lá»c trÆ°á»›c khi chuyá»ƒn bÆ°á»›c",
+      "text": "HR Manager approve k?t qu? s?ng l?c tr??c khi chuy?n b??c",
       "source": "User input + Q&A",
       "stakeholder": "HR Manager",
       "type": "need",
       "confidence": "high",
-      "notes": "[CLARIFIED via Q&A] Single approve, há»— trá»£ bulk"
+      "notes": "[CLARIFIED via Q&A] Single approve, h? tr? bulk"
     },
     {
       "id": "RAW-011",
-      "text": "CV format: PDF + DOCX only (khÃ´ng cáº§n OCR áº£nh)",
+      "text": "CV format: PDF + DOCX only (kh?ng c?n OCR ?nh)",
       "source": "Q&A",
       "stakeholder": "HR Manager",
       "type": "constraint",
@@ -144,7 +144,7 @@
     },
     {
       "id": "RAW-041",
-      "text": "CV Evidence Viewer: Cho phÃ©p HR xem CV gá»‘c, text trÃ­ch xuáº¥t, vÃ  cÃ¡c evidence spans Ä‘Æ°á»£c link vá»›i tiÃªu chÃ­ JD/screening (tÃ­ch há»£p vá»›i mÃ n hÃ¬nh sÃ ng lá»c/final review â€” evidence detail lÃ  Phase 2 prototype utility)",
+      "text": "CV Evidence Viewer: Cho ph?p HR xem CV g?c, text tr?ch xu?t, v? c?c evidence spans ???c link v?i ti?u ch? JD/screening (t?ch h?p v?i m?n h?nh s?ng l?c/final review ? evidence detail l? Phase 2 prototype utility)",
       "source": "Scope decision",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -153,7 +153,7 @@
     },
     {
       "id": "RAW-012",
-      "text": "Tá»± Ä‘á»™ng thu tháº­p availability á»©ng viÃªn + ngÆ°á»i phá»ng váº¥n",
+      "text": "T? ??ng thu th?p availability ?ng vi?n + ng??i ph?ng v?n",
       "source": "User input",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -162,7 +162,7 @@
     },
     {
       "id": "RAW-013",
-      "text": "Há»‡ thá»‘ng suggest lá»‹ch, HR Manager approve trÆ°á»›c khi confirm",
+      "text": "H? th?ng suggest l?ch, HR Manager approve tr??c khi confirm",
       "source": "User input",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -171,7 +171,7 @@
     },
     {
       "id": "RAW-014",
-      "text": "LÃªn lá»‹ch tá»± Ä‘á»™ng qua Google Calendar",
+      "text": "L?n l?ch t? ??ng qua Google Calendar",
       "source": "User input",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -180,7 +180,7 @@
     },
     {
       "id": "RAW-015",
-      "text": "Gá»­i email tá»± Ä‘á»™ng qua shared HR mailbox (Gmail API)",
+      "text": "G?i email t? ??ng qua shared HR mailbox (Gmail API)",
       "source": "User input + Q&A",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -189,7 +189,7 @@
     },
     {
       "id": "RAW-016",
-      "text": "Nháº¯c lá»‹ch phá»ng váº¥n qua email",
+      "text": "Nh?c l?ch ph?ng v?n qua email",
       "source": "User input",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -198,7 +198,7 @@
     },
     {
       "id": "RAW-017",
-      "text": "Timezone support cho á»©ng viÃªn/interviewer á»Ÿ nÆ°á»›c ngoÃ i",
+      "text": "Timezone support cho ?ng vi?n/interviewer ? n??c ngo?i",
       "source": "Review",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -207,7 +207,7 @@
     },
     {
       "id": "RAW-018",
-      "text": "Phá»ng váº¥n async qua text message",
+      "text": "Ph?ng v?n async qua text message",
       "source": "User input + Q&A",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -216,7 +216,7 @@
     },
     {
       "id": "RAW-019",
-      "text": "Hybrid: cÃ¢u há»i cá»‘ Ä‘á»‹nh + AI táº¡o follow-up dá»±a trÃªn cÃ¢u tráº£ lá»i",
+      "text": "Hybrid: c?u h?i c? ??nh + AI t?o follow-up d?a tr?n c?u tr? l?i",
       "source": "Q&A",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -225,7 +225,7 @@
     },
     {
       "id": "RAW-020",
-      "text": "AI Ä‘Ã¡nh giÃ¡ nÄƒng lá»±c á»©ng viÃªn vÃ  táº¡o report",
+      "text": "AI ??nh gi? n?ng l?c ?ng vi?n v? t?o report",
       "source": "User input",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -234,7 +234,7 @@
     },
     {
       "id": "RAW-021",
-      "text": "Há»— trá»£ Ä‘a ngÃ´n ngá»¯: Viá»‡t, Nháº­t, Anh",
+      "text": "H? tr? ?a ng?n ng?: Vi?t, Nh?t, Anh",
       "source": "Q&A",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -243,7 +243,7 @@
     },
     {
       "id": "RAW-022",
-      "text": "Import bÃ i test + Ä‘Ã¡p Ã¡n Ä‘á»ƒ cháº¥m Ä‘iá»ƒm (LLM)",
+      "text": "Import b?i test + ??p ?n ?? ch?m ?i?m (LLM)",
       "source": "User input",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -252,7 +252,7 @@
     },
     {
       "id": "RAW-023",
-      "text": "Há»— trá»£ multiple choice (cháº¥m tá»± Ä‘á»™ng theo Ä‘Ã¡p Ã¡n)",
+      "text": "H? tr? multiple choice (ch?m t? ??ng theo ??p ?n)",
       "source": "Q&A",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -261,7 +261,7 @@
     },
     {
       "id": "RAW-024",
-      "text": "Há»— trá»£ essay (AI Ä‘Ã¡nh giÃ¡ theo rubric)",
+      "text": "H? tr? essay (AI ??nh gi? theo rubric)",
       "source": "Q&A",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -270,7 +270,7 @@
     },
     {
       "id": "RAW-025",
-      "text": "Há»— trá»£ coding challenge (test cases + code quality)",
+      "text": "H? tr? coding challenge (test cases + code quality)",
       "source": "Q&A",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -279,7 +279,7 @@
     },
     {
       "id": "RAW-026",
-      "text": "Táº¡o content tuyá»ƒn dá»¥ng dáº¡ng gá»£i Ã½ (LLM): plain text, copyable, ho trá»£ export file, ho trá»£ channel integration",
+      "text": "T?o content tuy?n d?ng d?ng g?i ? (LLM): plain text, copyable, h? tr? export file, h? tr? channel integration",
       "source": "User input + scope decision",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -288,7 +288,7 @@
     },
     {
       "id": "RAW-026a",
-      "text": "Content publishing: Há»— trá»£ thá»§ cÃ´ng copy, export file, vÃ  tÃ­ch há»£p channel (LinkedIn, Facebook, job boards...)",
+      "text": "Content publishing: H? tr? th? c?ng copy, export file, v? t?ch h?p channel (LinkedIn, Facebook, job boards...)",
       "source": "Scope decision",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -297,7 +297,7 @@
     },
     {
       "id": "RAW-026b",
-      "text": "Generated content pháº£i Ä‘Æ°á»£c HR review/approve trÆ°á»›c khi publish/export/use",
+      "text": "Generated content ph?i ???c HR review/approve tr??c khi publish/export/use",
       "source": "Scope decision",
       "stakeholder": "HR Manager",
       "type": "constraint",
@@ -306,7 +306,7 @@
     },
     {
       "id": "RAW-027",
-      "text": "Thiáº¿t káº¿ áº£nh tuyá»ƒn dá»¥ng Ä‘Æ¡n giáº£n (LLM) dáº¡ng gá»£i Ã½: mock image prototype â€” khÃ´ng báº¯t buá»™c tÃ­ch há»£p image provider tháº­t",
+      "text": "Thi?t k? ?nh tuy?n d?ng ??n gi?n (LLM) d?ng g?i ?: mock image prototype ? kh?ng b?t bu?c t?ch h?p image provider th?t",
       "source": "User input + scope decision",
       "stakeholder": "HR Manager",
       "type": "idea",
@@ -315,7 +315,7 @@
     },
     {
       "id": "RAW-027a",
-      "text": "Design scope: mock/preview, creative suggestions, banner, poster, social asset â€” khÃ´ng cáº§n integration tháº­t",
+      "text": "Design scope: mock/preview, creative suggestions, banner, poster, social asset ? kh?ng c?n integration th?t",
       "source": "Scope decision",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -324,7 +324,7 @@
     },
     {
       "id": "RAW-027b",
-      "text": "Generated design pháº£i Ä‘Æ°á»£c HR review/approve trÆ°á»›c khi sá»­ dá»¥ng",
+      "text": "Generated design ph?i ???c HR review/approve tr??c khi s? d?ng",
       "source": "Scope decision",
       "stakeholder": "HR Manager",
       "type": "constraint",
@@ -333,7 +333,7 @@
     },
     {
       "id": "RAW-028",
-      "text": "Dá»‹ch CV tiáº¿ng Viá»‡t / Nháº­t / Anh (LLM)",
+      "text": "D?ch CV ti?ng Vi?t / Nh?t / Anh (LLM)",
       "source": "User input + scope decision",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -342,7 +342,7 @@
     },
     {
       "id": "RAW-028a",
-      "text": "CV translation: Há»— trá»£ HR review vÃ  related workflows, nhÆ°ng CV gá»‘c lÃ  nguá»“n chuáº©n duy nháº¥t",
+      "text": "CV translation: H? tr? HR review v? related workflows, nh?ng CV g?c l? ngu?n chu?n duy nh?t",
       "source": "Scope decision",
       "stakeholder": "HR Manager",
       "type": "constraint",
@@ -351,7 +351,7 @@
     },
     {
       "id": "RAW-028b",
-      "text": "Screening decisions pháº£i cÃ³ traceback to original CV",
+      "text": "Screening decisions ph?i c? traceback to original CV",
       "source": "Scope decision",
       "stakeholder": "HR Manager",
       "type": "constraint",
@@ -360,7 +360,7 @@
     },
     {
       "id": "RAW-029",
-      "text": "Nháº­n xÃ©t phá»ng váº¥n tiáº¿ng Nháº­t (LLM)",
+      "text": "Nh?n x?t ph?ng v?n ti?ng Nh?t (LLM)",
       "source": "User input",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -369,7 +369,7 @@
     },
     {
       "id": "RAW-029a",
-      "text": "Translated notes: Há»— trá»£ HR review vÃ  related workflows",
+      "text": "Translated notes: H? tr? HR review v? related workflows",
       "source": "Scope decision",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -378,7 +378,7 @@
     },
     {
       "id": "RAW-030",
-      "text": "Pipeline auto: Táº¡o nguá»“n â†’ SÃ ng lá»c â†’ Set lá»‹ch â†’ Phá»ng váº¥n â†’ Cháº¥m bÃ i",
+      "text": "Pipeline auto: T?o ngu?n ? S?ng l?c ? Set l?ch ? Ph?ng v?n ? Ch?m b?i",
       "source": "User input",
       "stakeholder": "HR Manager",
       "type": "goal",
@@ -387,7 +387,7 @@
     },
     {
       "id": "RAW-031",
-      "text": "Human approve báº¯t buá»™c á»Ÿ bÆ°á»›c sÃ ng lá»c vÃ  set lá»‹ch",
+      "text": "Human approve b?t bu?c ? b??c s?ng l?c v? set l?ch",
       "source": "Q&A",
       "stakeholder": "HR Manager",
       "type": "constraint",
@@ -396,7 +396,7 @@
     },
     {
       "id": "RAW-032",
-      "text": "Content/Design/Translation lÃ  cÃ¡c Phase 2 prototype standalone module, KHÃ”NG náº±m trong core pipeline",
+      "text": "Content/Design/Translation l? c?c Phase 2 prototype standalone module, KH?NG n?m trong core pipeline",
       "source": "Scope decision",
       "stakeholder": "HR Manager",
       "type": "constraint",
@@ -405,7 +405,7 @@
     },
     {
       "id": "RAW-033",
-      "text": "Approval timeout: chá»‰ reminder, khÃ´ng auto cancel/skip",
+      "text": "Approval timeout: ch? reminder, kh?ng auto cancel/skip",
       "source": "Q&A",
       "stakeholder": "HR Manager",
       "type": "constraint",
@@ -414,7 +414,7 @@
     },
     {
       "id": "RAW-034",
-      "text": "MVP = full pipeline chÃ­nh (Phase 1); Content/Design/Translation lÃ  Phase 2 prototype standalone",
+      "text": "MVP = full pipeline ch?nh (Phase 1); Content/Design/Translation l? Phase 2 prototype standalone",
       "source": "Scope decision",
       "stakeholder": "HR Manager",
       "type": "constraint",
@@ -423,7 +423,7 @@
     },
     {
       "id": "RAW-035",
-      "text": "Quy mÃ´ lá»›n: > 200 job/thÃ¡ng",
+      "text": "Quy m? l?n: > 200 job/th?ng",
       "source": "Q&A",
       "stakeholder": "HR Manager",
       "type": "constraint",
@@ -432,7 +432,7 @@
     },
     {
       "id": "RAW-036",
-      "text": "Há»— trá»£ Ä‘a ngÃ´n ngá»¯: Viá»‡t, Nháº­t, Anh",
+      "text": "H? tr? ?a ng?n ng?: Vi?t, Nh?t, Anh",
       "source": "Q&A",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -441,7 +441,7 @@
     },
     {
       "id": "RAW-037",
-      "text": "KhÃ´ng rÃ ng buá»™c tech stack",
+      "text": "Kh?ng r?ng bu?c tech stack",
       "source": "Q&A",
       "stakeholder": "IT Admin",
       "type": "constraint",
@@ -450,7 +450,7 @@
     },
     {
       "id": "RAW-038",
-      "text": "Báº£o máº­t dá»¯ liá»‡u á»©ng viÃªn má»©c cÆ¡ báº£n",
+      "text": "B?o m?t d? li?u ?ng vi?n m?c c? b?n",
       "source": "Q&A",
       "stakeholder": "HR Manager",
       "type": "constraint",
@@ -459,7 +459,7 @@
     },
     {
       "id": "RAW-039",
-      "text": "TÃ­ch há»£p Google Workspace: Calendar, Gmail, Drive",
+      "text": "T?ch h?p Google Workspace: Calendar, Gmail, Drive",
       "source": "Q&A",
       "stakeholder": "HR Manager",
       "type": "need",
@@ -468,7 +468,7 @@
     },
     {
       "id": "RAW-040",
-      "text": "Há»‡ thá»‘ng chá»‰ phá»¥c vá»¥ HR ná»™i bá»™, khÃ´ng multi-tenant",
+      "text": "H? th?ng ch? ph?c v? HR n?i b?, kh?ng multi-tenant",
       "source": "Q&A",
       "stakeholder": "HR Manager",
       "type": "constraint",
@@ -565,7 +565,7 @@
         "HR Recruiter",
         "System"
       ],
-      "trigger": "HR upload file / HR táº¡o thá»§ cÃ´ng / File má»›i trÃªn Google Drive",
+      "trigger": "HR upload file / HR tạo thủ công / File mới trên Google Drive",
       "input": [
         "Excel file (batch)",
         "Manual form data",
@@ -767,7 +767,7 @@
         "Format output"
       ],
       "output": [
-        "Translated document (Viá»‡t/Nháº­t/Anh)"
+        "Translated document (Việt/Nhật/Anh)"
       ],
       "exception": [
         "Unsupported language",
@@ -1268,43 +1268,43 @@
   "openQuestions": [
     {
       "id": "Q-001",
-      "question": "AI matching weights (40/30/20/10) cÃ³ phÃ¹ há»£p?",
+      "question": "AI matching weights (40/30/20/10) có phù hợp?",
       "owner": "HR Manager",
       "blocksNextStep": false
     },
     {
       "id": "Q-002",
-      "question": "Nháº¯c lá»‹ch: trÆ°á»›c 24h, 1h, hay cáº£ hai?",
+      "question": "Nhắc lịch: trước 24h, 1h, hay cả hai?",
       "owner": "HR Manager",
       "blocksNextStep": false
     },
     {
       "id": "Q-003",
-      "question": "Coding test: sandbox environment nÃ o?",
+      "question": "Coding test: sandbox environment nào?",
       "owner": "IT Admin",
       "blocksNextStep": false
     },
     {
       "id": "Q-004",
-      "question": "Sá»‘ lÆ°á»£ng cÃ¢u há»i phá»ng váº¥n chÃ­nh xÃ¡c?",
+      "question": "Số lượng câu hỏi phỏng vấn chính xác?",
       "owner": "HR Manager",
       "blocksNextStep": false
     },
     {
       "id": "Q-005",
-      "question": "Google Drive: folder nÃ o watch? Naming convention?",
+      "question": "Google Drive: folder nào watch? Naming convention?",
       "owner": "IT Admin",
       "blocksNextStep": false
     },
     {
       "id": "Q-006",
-      "question": "Email template: ai táº¡o vÃ  quáº£n lÃ½?",
+      "question": "Email template: ai tạo và quản lý?",
       "owner": "HR Manager",
       "blocksNextStep": false
     },
     {
       "id": "Q-007",
-      "question": "Channel integration: integration nÃ o thá»±c táº¿ trong Phase 2?",
+      "question": "Channel integration: integration nào thực tế trong Phase 2?",
       "owner": "HR Manager",
       "blocksNextStep": false
     }

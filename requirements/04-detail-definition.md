@@ -1,11 +1,11 @@
-# Detail Definition: RecruitAI â€” Há»‡ thá»‘ng Recruitment AI Automation
+# Detail Definition: RecruitAI — Hệ thống Recruitment AI Automation
 
 Generated: 2026-05-14T00:00:00Z
 Language: bilingual (vi/en)
 Project type: data-ai / internal HR web tool
 Upstream: `03-business-definition.md/json`
 
-**Gate 4 Status: CONDITIONAL PASS** â€” detail contracts are implementation-ready where policy is known; seven blocking questions must be resolved before full build sign-off.
+**Gate 4 Status: CONDITIONAL PASS** — detail contracts are implementation-ready where policy is known; seven blocking questions must be resolved before full build sign-off.
 
 ## 1. Detail Summary
 
@@ -188,7 +188,8 @@ Upstream: `03-business-definition.md/json`
 
 | Element ID | Element | Type | Required? | Validation / Behavior | Source IDs |
 | --- | --- | --- | --- | --- | --- |
-| UI-025 | Evidence package summary | card | yes | Aggregates screening, interview, and test reports. | BP-006; UC-007 |
+| UI-025 | Evidence package summary | card | yes | Aggregates screening, interview, and test reports with CV/JD version IDs and Assessment Plan traceability. | BP-006; UC-007; BR-SCR-001; BR-ASSESS-002 |
+| UI-050 | Evidence traceability panel | card | yes | Shows cvVersionId, jdVersionId, parsedCriteriaVersion, assessmentPlanId, assessmentPlanVersionId, rubricVersionId, interviewQuestionSetVersionId, and testDefinitionVersionId before final pass/fail confirmation; missing/conflicting IDs force defer/manual remediation. | BP-006; BR-SCR-001; BR-ASSESS-001; BR-ASSESS-002; UC-007 |
 | UI-026 | Final decision actions | button | yes | Requires explicit HR Manager pass/fail decision; combined policy unresolved until BQ-006. | BR-001; BR-022; UC-007 |
 | UI-027 | Decision audit reason input | input | yes | Required for override/defer/exception decisions. | BR-012; UC-007 |
 | UI-028 | Withdrawal action | button | yes | Moves candidate to WITHDRAWN and closes pending actions. | BP-009; UC-009 |
@@ -1062,7 +1063,7 @@ Upstream: `03-business-definition.md/json`
 | TEST-010 | e2e | Expired interview link | Open expired token | Candidate sees expired state; HR can reopen/withdraw/remediate. | UC-005; |
 | TEST-011 | unit | MCQ deterministic grading | Grade known answer key/submission | Score exactly matches answer key. | BR-009; UC-006 |
 | TEST-012 | integration | Essay/coding rubric-backed grading | Submit essay/coding test with rubric/test cases; Run grading | Scores, feedback, confidence, and rubric version are recorded. | BR-010; UC-006 |
-| TEST-013 | e2e | Final HR decision | Open final review evidence package; Record pass/fail with reason when needed | Candidate reaches PASSED or FAILED; audit event created. | UC-007; BR-022 |
+| TEST-013 | e2e | Final HR decision | Open final review evidence package; Verify screening, interview, test, CV/JD, and Assessment Plan traceability; Record pass/fail with reason when needed | Candidate reaches PASSED or FAILED; audit event created with final decision reason and traceability snapshot. | UC-007; BR-022; BR-SCR-001; BR-ASSESS-002 |
 | TEST-014 | e2e | Candidate withdrawal closes pending actions | Withdraw candidate with pending approval; Confirm withdrawal | Candidate moves to WITHDRAWN and pending actions close/cancel. | UC-009; BP-009 |
 | TEST-015 | e2e | Error remediation returns to previous state | Create ERROR with prior state; Assign owner; Retry successfully | Candidate returns to previous valid state; error audit trail complete. | UC-010; BP-010 |
 | TEST-016 | security | Unauthorized user cannot approve | Login as HR Recruiter; Attempt HR Manager approval API | Request denied; no state change. | BR-011; BR-001; |
@@ -1205,6 +1206,13 @@ Accessibility baseline for SCREEN-ASSESS-001: setup sections use semantic headin
 | DATA-007 Async Interview Transcript and Evaluation | assessmentPlanId, assessmentPlanVersionId, rubricVersionId, interviewQuestionSetVersionId, jobId, jdVersionId, parsedCriteriaVersion | Candidate interview session displays and stores the approved assessment setup version used for questions and evaluation rubric. | BR-ASSESS-001; BR-ASSESS-002; UC-005 | REQ-F-122; REQ-C-022 |
 | DATA-008 Test Definition and Submission | assessmentPlanId, assessmentPlanVersionId, rubricVersionId, testDefinitionVersionId, jobId, jdVersionId, parsedCriteriaVersion | Test grading displays and stores the approved assessment setup version used for answer key/rubric and report. | BR-ASSESS-001; BR-ASSESS-002; UC-006 | REQ-F-123; REQ-C-022 |
 
+### Full Flow Final Review Traceability Extension
+
+| Target Detail | Required Trace Fields | Expected Behavior | Source IDs | Requirement IDs |
+| --- | --- | --- | --- | --- |
+| SCREEN-007 Final Review and Decision | candidateId, applicationId, cvVersionId, jdVersionId, parsedCriteriaVersion, assessmentPlanId, assessmentPlanVersionId, rubricVersionId, interviewQuestionSetVersionId, testDefinitionVersionId | Final review displays the same CV/JD and Assessment Plan traceability inherited by screening, interview, and test evidence before HR Manager submits pass/fail. | BP-006; BR-SCR-001; BR-ASSESS-001; BR-ASSESS-002; UC-007 | REQ-F-120; REQ-F-122; REQ-F-123; REQ-C-022 |
+| DATA-005 Approval Decision and DATA-009 Audit Event | traceabilitySnapshot, screeningResultId, transcriptId, submissionId, assessmentPlanVersionId, rubricVersionId | Final decision and related audit events preserve immutable evidence references and do not recompute historical versions after an Assessment Plan changes. | BR-012; BR-SCR-001; BR-ASSESS-002; UC-007 | REQ-C-022; REQ-D-020 |
+
 ### Assessment Plan Validation, Edge, and Test Details
 
 | ID | Type | Detail | Expected Behavior | Source IDs | Requirement IDs |
@@ -1214,6 +1222,8 @@ Accessibility baseline for SCREEN-ASSESS-001: setup sections use semantic headin
 | EDGE-ASSESS-001 | edge | Existing interview/test output uses prior assessment version. | Prior outputs retain their original assessmentPlanVersionId and are not rewritten. | BR-ASSESS-001; BR-ASSESS-002 | REQ-F-121; REQ-C-022 |
 | TEST-ASSESS-001 | test | Assessment setup route renders shared plan and traceability preview. | Open setup route; verify Job/JD criteria version, rubric, interview setup, test setup, and trace IDs are visible. | UC-ASSESS-001 | REQ-F-120; REQ-F-121; REQ-F-122; REQ-F-123; REQ-F-124 |
 | TEST-ASSESS-002 | test | Interview/test surfaces expose assessment plan traceability. | Open interview demo and test grading; verify assessmentPlanId, assessmentPlanVersionId, rubricVersionId, and question/test definition version IDs are visible. | UC-005; UC-006; BR-ASSESS-002 | REQ-F-122; REQ-F-123; REQ-C-022 |
+| VAL-ASSESS-003 | validation | Final review evidence package requires consistent CV/JD and Assessment Plan traceability. | Missing or conflicting trace IDs block pass/fail and require defer/manual remediation. | BP-006; BR-SCR-001; BR-ASSESS-002; UC-007 | REQ-C-022 |
+| TEST-ASSESS-003 | test | Final review preserves full traceability snapshot. | Open final review; verify CV/JD versions and assessmentPlanVersionId/rubricVersionId/question/test version IDs are visible; submit final decision. | Final decision audit event records the same traceability snapshot shown in the evidence package. | BP-006; BR-SCR-001; BR-ASSESS-002; UC-007 | REQ-C-022 |
 
 ### Assessment Plan Traceability Matrix Addendum
 
@@ -1221,6 +1231,7 @@ Accessibility baseline for SCREEN-ASSESS-001: setup sections use semantic headin
 | --- | --- | --- |
 | SCREEN-ASSESS-001; DATA-ASSESS-001..005; API-ASSESS-001; VAL-ASSESS-001; VAL-ASSESS-002; EDGE-ASSESS-001; TEST-ASSESS-001 | BP-ASSESS-001; BR-ASSESS-001; BR-ASSESS-002; BR-ASSESS-003; UC-ASSESS-001 | REQ-F-120; REQ-F-121; REQ-F-122; REQ-F-123; REQ-F-124; REQ-D-020; REQ-C-021; REQ-C-022 |
 | DATA-007; DATA-008; TEST-ASSESS-002 | BR-ASSESS-001; BR-ASSESS-002; UC-005; UC-006 | REQ-F-122; REQ-F-123; REQ-C-022 |
+| SCREEN-007; DATA-005; DATA-009; VAL-ASSESS-003; TEST-ASSESS-003 | BP-006; BR-SCR-001; BR-ASSESS-001; BR-ASSESS-002; UC-007 | REQ-F-120; REQ-F-122; REQ-F-123; REQ-C-022 |
 
 ## 12. Validation Gate 4
 
