@@ -204,9 +204,13 @@ export const mockJobs: Job[] = [
 export const mockScreeningEvaluations: ScreeningEvaluation[] = [
   {
     id: 'screen-001',
+    applicationId: 'app-001',
     candidateId: 'cand-001',
     candidateName: 'Sarah Chen',
     jobTitle: 'Senior Frontend Engineer',
+    cvVersionId: 'cv-ver-001',
+    jdVersionId: 'jd-ver-001',
+    parsedCriteriaVersion: 1,
     overallScore: 85,
     decision: 'approve',
     aiSummary: 'Strong technical background with 6 years of experience in React and TypeScript. Demonstrated expertise in building scalable web applications.',
@@ -223,9 +227,13 @@ export const mockScreeningEvaluations: ScreeningEvaluation[] = [
   },
   {
     id: 'screen-002',
+    applicationId: 'app-002',
     candidateId: 'cand-002',
     candidateName: 'Michael Johnson',
     jobTitle: 'Senior Frontend Engineer',
+    cvVersionId: 'cv-ver-002',
+    jdVersionId: 'jd-ver-002',
+    parsedCriteriaVersion: 1,
     overallScore: 72,
     decision: 'needs_review',
     aiSummary: 'Solid Python background with 4 years of experience. Has relevant skills but may need additional training for frontend specialization.',

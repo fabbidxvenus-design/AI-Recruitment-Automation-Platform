@@ -260,6 +260,18 @@ export default function ScreeningReviewPage() {
                     <h3 className={styles.sectionTitle}>{t('screening.review.detail.evidence')}</h3>
                     <div className={styles.evidenceList}>
                       <div className={styles.evidenceItem}>
+                        <span className={styles.evidenceLabel}>CV Version</span>
+                        <span className={styles.evidenceValue}>{selected.cvVersionId || 'N/A'}</span>
+                      </div>
+                      <div className={styles.evidenceItem}>
+                        <span className={styles.evidenceLabel}>JD Version</span>
+                        <span className={styles.evidenceValue}>{selected.jdVersionId || 'N/A'}</span>
+                      </div>
+                      <div className={styles.evidenceItem}>
+                        <span className={styles.evidenceLabel}>Parsed Criteria Version</span>
+                        <span className={styles.evidenceValue}>{selected.parsedCriteriaVersion || 'N/A'}</span>
+                      </div>
+                      <div className={styles.evidenceItem}>
                         <span className={styles.evidenceLabel}>{t('screening.review.detail.cvMatch')}</span>
                         <span className={styles.evidenceValue}>{t('screening.review.detail.cvMatchValue', { matched: 12, total: 15 })}</span>
                       </div>

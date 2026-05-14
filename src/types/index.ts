@@ -45,9 +45,13 @@ export interface PipelineStage {
 
 export interface ScreeningEvaluation {
   id: string;
+  applicationId?: string; // Links to CandidateApplication (Cross-Domain Traceability)
   candidateId: string;
   candidateName: string;
   jobTitle: string;
+  cvVersionId?: string; // Linked CV Version
+  jdVersionId?: string; // Linked JD Version
+  parsedCriteriaVersion?: number; // Linked Parsed JD Profile
   overallScore: number;
   decision: 'approve' | 'reject' | 'needs_review';
   aiSummary: string;

@@ -113,6 +113,10 @@ export default function AdminPage() {
                     <span>{t('admin.integrations.googleDrive.watchNotConfigured')}</span>
                     <Button variant="secondary" size="sm">{t('admin.integrations.googleSheets.configure')}</Button>
                   </div>
+                  <div className={styles.configDetails}>
+                    <span>CV Folder: <code>/Recruitment/CVs/</code></span>
+                    <span>JD Folder: <code>/Recruitment/JDs/</code></span>
+                  </div>
                   <Notice variant="warning" title={t('admin.integrations.notices.bq005.title')}>
                     {t('admin.integrations.notices.bq005.body')}
                   </Notice>
