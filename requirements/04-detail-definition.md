@@ -1,11 +1,11 @@
-# Detail Definition: RecruitAI — Hệ thống Recruitment AI Automation
+# Detail Definition: RecruitAI â€” Há»‡ thá»‘ng Recruitment AI Automation
 
-Generated: 2026-05-13T00:00:00Z
+Generated: 2026-05-14T00:00:00Z
 Language: bilingual (vi/en)
 Project type: data-ai / internal HR web tool
 Upstream: `03-business-definition.md/json`
 
-**Gate 4 Status: CONDITIONAL PASS** — detail contracts are implementation-ready where policy is known; seven blocking questions must be resolved before full build sign-off.
+**Gate 4 Status: CONDITIONAL PASS** â€” detail contracts are implementation-ready where policy is known; seven blocking questions must be resolved before full build sign-off.
 
 ## 1. Detail Summary
 
@@ -18,7 +18,7 @@ Upstream: `03-business-definition.md/json`
 
 ## 2. Screen / UX Definitions
 
-### : Recruitment Pipeline Dashboard
+### SCREEN-001: Recruitment Pipeline Dashboard
 
 | Field | Value |
 | --- | --- |
@@ -38,12 +38,12 @@ Upstream: `03-business-definition.md/json`
 
 | Element ID | Element | Type | Required? | Validation / Behavior | Source IDs |
 | --- | --- | --- | --- | --- | --- |
-| | Pipeline state summary cards | card | yes | Counts candidates by canonical business state. | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006 |
-| | Pending approvals queue | table | yes | Shows screening, scheduling, and final review actions requiring explicit HR Manager decision. | BR-001; UC-003; UC-004; UC-007 |
-| | Error remediation queue | table | yes | Shows ERROR items with owner, reason, previous valid state, and retry/manual review actions. | BP-010; UC-010 |
-| | KPI and monitoring panel | card | yes | Shows processing, scheduling, AI quality, integration failure, and cost indicators. | BP-008; BR-015; BR-020 |
+| UI-001 | Pipeline state summary cards | card | yes | Counts candidates by canonical business state. | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006 |
+| UI-002 | Pending approvals queue | table | yes | Shows screening, scheduling, and final review actions requiring explicit HR Manager decision. | BR-001; UC-003; UC-004; UC-007 |
+| UI-003 | Error remediation queue | table | yes | Shows ERROR items with owner, reason, previous valid state, and retry/manual review actions. | BP-010; UC-010 |
+| UI-004 | KPI and monitoring panel | card | yes | Shows processing, scheduling, AI quality, integration failure, and cost indicators. | BP-008; BR-015; BR-020 |
 
-### : Candidate Sourcing and Import
+### SCREEN-002: Candidate Sourcing and Import
 
 | Field | Value |
 | --- | --- |
@@ -63,12 +63,12 @@ Upstream: `03-business-definition.md/json`
 
 | Element ID | Element | Type | Required? | Validation / Behavior | Source IDs |
 | --- | --- | --- | --- | --- | --- |
-| | Manual candidate/job form | input | yes | Required fields must pass validation before creating NEW/IMPORTED record. | UC-001; BP-001 |
-| | Excel upload control | input | yes | Accept .xlsx only; reject unsupported formats before import. | UC-001; BR-004 |
-| | Duplicate review table | table | yes | Requires HR decision to merge, skip, or create new candidate. | BR-003 |
-| | Drive import exception list | table | yes | Displays folder/file/import error and retry/assign actions. | UC-002; BP-010 |
+| UI-005 | Manual candidate/job form | input | yes | Required fields must pass validation before creating NEW/IMPORTED record. | UC-001; BP-001 |
+| UI-006 | Excel upload control | input | yes | Accept .xlsx only; reject unsupported formats before import. | UC-001; BR-004 |
+| UI-007 | Duplicate review table | table | yes | Requires HR decision to merge, skip, or create new candidate. | BR-003 |
+| UI-008 | Drive import exception list | table | yes | Displays folder/file/import error and retry/assign actions. | UC-002; BP-010 |
 
-### : Screening Review and Approval
+### SCREEN-003: Screening Review and Approval
 
 | Field | Value |
 | --- | --- |
@@ -88,12 +88,12 @@ Upstream: `03-business-definition.md/json`
 
 | Element ID | Element | Type | Required? | Validation / Behavior | Source IDs |
 | --- | --- | --- | --- | --- | --- |
-| | Screening score panel | card | yes | Displays score 0-100, sub-scores, confidence, recommendation, and prompt/model/rubric version. | BR-006; UC-003 |
-| | Evidence and explainability section | card | yes | Shows strengths, weaknesses, missing skills, risk flags, and evidence spans. | BR-006; BR-005 |
-| | Screening approval actions | button | yes | Requires explicit HR Manager action; no timeout auto-action. | BR-001; BR-002; UC-003 |
-| | Bulk screening approval controls | table | yes | Bulk action available only for selected candidates with complete review data. | UC-003; BR-001 |
+| UI-009 | Screening score panel | card | yes | Displays score 0-100, sub-scores, confidence, recommendation, and prompt/model/rubric version. | BR-006; UC-003 |
+| UI-010 | Evidence and explainability section | card | yes | Shows strengths, weaknesses, missing skills, risk flags, and evidence spans. | BR-006; BR-005 |
+| UI-011 | Screening approval actions | button | yes | Requires explicit HR Manager action; no timeout auto-action. | BR-001; BR-002; UC-003 |
+| UI-012 | Bulk screening approval controls | table | yes | Bulk action available only for selected candidates with complete review data. | UC-003; BR-001 |
 
-### : Interview Scheduling Approval
+### SCREEN-004: Interview Scheduling Approval
 
 | Field | Value |
 | --- | --- |
@@ -113,12 +113,12 @@ Upstream: `03-business-definition.md/json`
 
 | Element ID | Element | Type | Required? | Validation / Behavior | Source IDs |
 | --- | --- | --- | --- | --- | --- |
-| | Availability and free/busy summary | card | yes | Displays candidate availability and interviewer free/busy source status. | BP-003; UC-004 |
-| | Suggested slot list | table | yes | Ranks earliest valid slots within working hours/timezone policy. | BR-008; UC-004 |
-| | Schedule approval actions | button | yes | Creates calendar event only after explicit approval. | BR-001; BR-007 |
-| | Reschedule/cancel placeholder notice | card | yes | Indicates post-creation policy is unresolved and must not assume automated behavior. | BR-024; BQ-007 |
+| UI-013 | Availability and free/busy summary | card | yes | Displays candidate availability and interviewer free/busy source status. | BP-003; UC-004 |
+| UI-014 | Suggested slot list | table | yes | Ranks earliest valid slots within working hours/timezone policy. | BR-008; UC-004 |
+| UI-015 | Schedule approval actions | button | yes | Creates calendar event only after explicit approval. | BR-001; BR-007 |
+| UI-016 | Reschedule/cancel placeholder notice | card | yes | Indicates post-creation policy is unresolved and must not assume automated behavior. | BR-024; BQ-007 |
 
-### : Async AI Interview Workspace
+### SCREEN-005: Async AI Interview Workspace
 
 | Field | Value |
 | --- | --- |
@@ -138,12 +138,12 @@ Upstream: `03-business-definition.md/json`
 
 | Element ID | Element | Type | Required? | Validation / Behavior | Source IDs |
 | --- | --- | --- | --- | --- | --- |
-| | Interview instruction panel | card | yes | Shows async text format, deadline, reminder behavior, and privacy notice. | BP-004; UC-005 |
-| | Question and answer thread | input | yes | Shows fixed questions and AI follow-ups based on prior answers. | UC-005 |
-| | Submit interview button | button | yes | Requires all required answers; creates transcript and evaluation trigger. | UC-005; BR-012 |
-| | Expired/incomplete interview state | card | yes | Routes to reopen/manual review/withdraw/error according to business policy. | BP-004; BP-009; BP-010 |
+| UI-017 | Interview instruction panel | card | yes | Shows async text format, deadline, reminder behavior, and privacy notice. | BP-004; UC-005 |
+| UI-018 | Question and answer thread | input | yes | Shows fixed questions and AI follow-ups based on prior answers. | UC-005 |
+| UI-019 | Submit interview button | button | yes | Requires all required answers; creates transcript and evaluation trigger. | UC-005; BR-012 |
+| UI-020 | Expired/incomplete interview state | card | yes | Routes to reopen/manual review/withdraw/error according to business policy. | BP-004; BP-009; BP-010 |
 
-### : Test Setup, Submission, and Grading Review
+### SCREEN-006: Test Setup, Submission, and Grading Review
 
 | Field | Value |
 | --- | --- |
@@ -163,12 +163,12 @@ Upstream: `03-business-definition.md/json`
 
 | Element ID | Element | Type | Required? | Validation / Behavior | Source IDs |
 | --- | --- | --- | --- | --- | --- |
-| | Test definition import | input | yes | Accept configured Excel/JSON test definition with answer key/rubric/test cases. | BP-005; UC-006 |
-| | Candidate submission form | input | yes | Captures MCQ/essay/coding submission and deadline status. | UC-006 |
-| | Grading report | card | yes | MCQ deterministic; essay/coding rubric-backed with score and feedback. | BR-009; BR-010; UC-006 |
-| | Manual review/override action | button | yes | Requires HR Manager reason and audit record for override. | BR-012; UC-006 |
+| UI-021 | Test definition import | input | yes | Accept configured Excel/JSON test definition with answer key/rubric/test cases. | BP-005; UC-006 |
+| UI-022 | Candidate submission form | input | yes | Captures MCQ/essay/coding submission and deadline status. | UC-006 |
+| UI-023 | Grading report | card | yes | MCQ deterministic; essay/coding rubric-backed with score and feedback. | BR-009; BR-010; UC-006 |
+| UI-024 | Manual review/override action | button | yes | Requires HR Manager reason and audit record for override. | BR-012; UC-006 |
 
-### : Final Review and Decision
+### SCREEN-007: Final Review and Decision
 
 | Field | Value |
 | --- | --- |
@@ -188,12 +188,12 @@ Upstream: `03-business-definition.md/json`
 
 | Element ID | Element | Type | Required? | Validation / Behavior | Source IDs |
 | --- | --- | --- | --- | --- | --- |
-| | Evidence package summary | card | yes | Aggregates screening, interview, and test reports. | BP-006; UC-007 |
-| | Final decision actions | button | yes | Requires explicit HR Manager pass/fail decision; combined policy unresolved until BQ-006. | BR-001; BR-022; UC-007 |
-| | Decision audit reason input | input | yes | Required for override/defer/exception decisions. | BR-012; UC-007 |
-| | Withdrawal action | button | yes | Moves candidate to WITHDRAWN and closes pending actions. | BP-009; UC-009 |
+| UI-025 | Evidence package summary | card | yes | Aggregates screening, interview, and test reports. | BP-006; UC-007 |
+| UI-026 | Final decision actions | button | yes | Requires explicit HR Manager pass/fail decision; combined policy unresolved until BQ-006. | BR-001; BR-022; UC-007 |
+| UI-027 | Decision audit reason input | input | yes | Required for override/defer/exception decisions. | BR-012; UC-007 |
+| UI-028 | Withdrawal action | button | yes | Moves candidate to WITHDRAWN and closes pending actions. | BP-009; UC-009 |
 
-### : Admin Configuration and Monitoring
+### SCREEN-008: Admin Configuration and Monitoring
 
 | Field | Value |
 | --- | --- |
@@ -213,15 +213,15 @@ Upstream: `03-business-definition.md/json`
 
 | Element ID | Element | Type | Required? | Validation / Behavior | Source IDs |
 | --- | --- | --- | --- | --- | --- |
-| | Google Workspace configuration | input | yes | Captures OAuth status, Drive folder, Gmail mailbox/templates, Calendar access. | BR-017; BQ-005 |
-| | Reminder and escalation policy settings | input | yes | Reminder-only behavior enforced; escalation cannot approve automatically. | BR-002; BR-021; BQ-002 |
-| | Retention policy settings placeholder | input | yes | Blocks implementation sign-off until retention/deletion periods are defined. | BR-023; BQ-003 |
-| | Monitoring dashboard | card | yes | Shows uptime, AI errors, API failures, token cost, queue stalls. | BP-008; BR-015; BR-020 |
+| UI-029 | Google Workspace configuration | input | yes | Captures OAuth status, Drive folder, Gmail mailbox/templates, Calendar access. | BR-017; BQ-005 |
+| UI-030 | Reminder and escalation policy settings | input | yes | Reminder-only behavior enforced; escalation cannot approve automatically. | BR-002; BR-021; BQ-002 |
+| UI-031 | Retention policy settings placeholder | input | yes | Blocks implementation sign-off until retention/deletion periods are defined. | BR-023; BQ-003 |
+| UI-032 | Monitoring dashboard | card | yes | Shows uptime, AI errors, API failures, token cost, queue stalls. | BP-008; BR-015; BR-020 |
 
 
 ## 3. API / Interface Definitions
 
-### : Candidate and Job Import Interface
+### API-001: Candidate and Job Import Interface
 
 | Field | Value |
 | --- | --- |
@@ -276,7 +276,7 @@ Upstream: `03-business-definition.md/json`
 | ERR_DUPLICATE_CANDIDATE | Possible duplicate candidate detected | Duplicate review is required. | HR chooses merge, skip, or create new. |
 | ERR_DRIVE_CONFIG | Drive folder/webhook unavailable | Drive import is not configured or unavailable. | Admin remediates configuration or retries. |
 
-### : CV/JD Text Extraction Interface
+### API-002: CV/JD Text Extraction Interface
 
 | Field | Value |
 | --- | --- |
@@ -314,7 +314,7 @@ Upstream: `03-business-definition.md/json`
 | ERR_UNSUPPORTED_OCR | Scanned/image-only file | OCR is outside MVP scope. | Ask HR to upload text-native PDF/DOCX or route to Phase 2. |
 | ERR_PARSE_LOW_CONFIDENCE | Extraction confidence below threshold | Manual review required. | Route to manual review. |
 
-### : AI Screening Evaluation Interface
+### API-003: AI Screening Evaluation Interface
 
 | Field | Value |
 | --- | --- |
@@ -386,7 +386,7 @@ Upstream: `03-business-definition.md/json`
 | ERR_AI_UNAVAILABLE | LLM request fails | Screening could not be completed. | Retry or route to ERROR remediation. |
 | ERR_LOW_CONFIDENCE | AI confidence below threshold | Manual review required. | HR Manager reviews manually. |
 
-### : Approval Decision Interface
+### API-004: Approval Decision Interface
 
 | Field | Value |
 | --- | --- |
@@ -428,7 +428,7 @@ Upstream: `03-business-definition.md/json`
 | ERR_APPROVER_REQUIRED | Actor lacks approval permission | Only authorized approver can decide. | Route to HR Manager or backup approver. |
 | ERR_DECISION_INCOMPLETE | Required reason/evidence missing | Decision requires complete evidence or reason. | Provide missing information. |
 
-### : Scheduling Suggestion and Calendar Interface
+### API-005: Scheduling Suggestion and Calendar Interface
 
 | Field | Value |
 | --- | --- |
@@ -478,7 +478,7 @@ Upstream: `03-business-definition.md/json`
 | ERR_CALENDAR_UNAVAILABLE | Google Calendar unavailable | Calendar integration unavailable. | Retry or manual scheduling fallback. |
 | ERR_EVENT_REQUIRES_APPROVAL | Create event before approval | Calendar event requires HR Manager approval. | Record approval first. |
 
-### : Notification and Gmail Interface
+### API-006: Notification and Gmail Interface
 
 | Field | Value |
 | --- | --- |
@@ -517,7 +517,7 @@ Upstream: `03-business-definition.md/json`
 | ERR_TEMPLATE_MISSING | Template unavailable | Email template is missing. | Admin/HR configures template. |
 | ERR_GMAIL_UNAVAILABLE | Gmail API failure | Email could not be sent. | Retry or remediate integration. |
 
-### : Async Interview Interface
+### API-007: Async Interview Interface
 
 | Field | Value |
 | --- | --- |
@@ -584,7 +584,7 @@ Upstream: `03-business-definition.md/json`
 | ERR_ANSWER_TOO_LONG | Answer exceeds 4000 characters | Answer exceeds maximum length. | Shorten answer and resubmit. |
 | ERR_RATE_LIMIT_EXCEEDED | Exceeding 60 req/min | Too many requests. Please wait. | Retry after rate limit window. |
 
-### : Test Grading Interface
+### API-008: Test Grading Interface
 
 | Field | Value |
 | --- | --- |
@@ -628,7 +628,7 @@ Upstream: `03-business-definition.md/json`
 | ERR_GRADING_FAILURE | AI or deterministic grader fails | Test grading failed. | Retry or manual review. |
 | ERR_SANDBOX_UNDEFINED | Coding runtime policy missing | Coding sandbox/runtime must be defined. | Resolve BQ-004 before coding grading implementation. |
 
-### : Withdrawal Interface
+### API-009: Withdrawal Interface
 
 | Field | Value |
 | --- | --- |
@@ -667,7 +667,7 @@ Upstream: `03-business-definition.md/json`
 | --- | --- | --- | --- |
 | ERR_WITHDRAWAL_AMBIGUOUS | Withdrawal source unclear | Withdrawal request must be confirmed. | HR confirms source before state change. |
 
-### : Error Remediation Interface
+### API-010: Error Remediation Interface
 
 | Field | Value |
 | --- | --- |
@@ -709,7 +709,7 @@ Upstream: `03-business-definition.md/json`
 
 ## 4. Data Detail Definitions
 
-### : Candidate
+### DATA-001: Candidate
 
 | Field | Value |
 | --- | --- |
@@ -732,7 +732,7 @@ Upstream: `03-business-definition.md/json`
 | source | enum | yes | manual|excel|google_drive | | Sourcing origin | BP-001; BP-009; BR-011; BR-019 |
 | withdrawalReason | string | no | required when state WITHDRAWN if available | | Audit context | BP-001; BP-009; BR-011; BR-019 |
 
-### : Job and JD
+### DATA-002: Job and JD
 
 | Field | Value |
 | --- | --- |
@@ -752,7 +752,7 @@ Upstream: `03-business-definition.md/json`
 | language | enum | yes | vi|ja|en | | Primary JD/interview language | BP-001; BP-002; BR-019 |
 | status | enum | yes | open|closed|paused | open | Recruitment status | BP-001; BP-002; BR-019 |
 
-### : Document File
+### DATA-003: Document File
 
 | Field | Value |
 | --- | --- |
@@ -773,7 +773,7 @@ Upstream: `03-business-definition.md/json`
 | parseConfidence | number | no | 0-1 | | Manual review threshold governed by BQ-001 | BR-004; BR-005; BP-002 |
 | isScannedOrImageOnly | boolean | yes | true|false | false | Rejected in MVP if true | BR-004; BR-005; BP-002 |
 
-### : Screening Result
+### DATA-004: Screening Result
 
 | Field | Value |
 | --- | --- |
@@ -799,7 +799,7 @@ Upstream: `03-business-definition.md/json`
 | modelVersion | string | yes | non-empty | | AI governance | BP-002; BR-005; BR-006; UC-003 |
 | promptVersion | string | yes | non-empty | | Screening prompt version for governance and reproducibility. | BP-002; BR-005; BR-006; UC-003 |
 
-### : Approval Decision
+### DATA-005: Approval Decision
 
 | Field | Value |
 | --- | --- |
@@ -820,7 +820,7 @@ Upstream: `03-business-definition.md/json`
 | reason | string | conditional | required for reject/rework/defer/override | | Decision rationale | BR-001; BR-002; BR-012; BR-021; UC-003; UC-004; UC-007 |
 | createdAt | datetime | yes | ISO-8601 | now | Decision timestamp | BR-001; BR-002; BR-012; BR-021; UC-003; UC-004; UC-007 |
 
-### : Interview Schedule
+### DATA-006: Interview Schedule
 
 | Field | Value |
 | --- | --- |
@@ -844,7 +844,7 @@ Upstream: `03-business-definition.md/json`
 | status | enum | yes | suggested|approved|created|cancelled|reschedule_pending | suggested | Reschedule/cancel governed by BQ-007 | BP-003; BR-007; BR-008; BR-024; UC-004 |
 | calendarEventCleanup | enum | no | delete|retain|blocked_by_q7 | blocked_by_q7 | Upon withdrawal or cancellation, calendar event cleanup policy. BLOCKED until Q4-007 resolves reschedule/cancel policy. Do not auto-delete or auto-retain without resolution. | BP-003; BR-024; BQ-007 |
 
-### : Async Interview Transcript and Evaluation
+### DATA-007: Async Interview Transcript and Evaluation
 
 | Field | Value |
 | --- | --- |
@@ -866,7 +866,7 @@ Upstream: `03-business-definition.md/json`
 | completionStatus | enum | yes | pending|completed|expired|incomplete|in_progress | pending | Interview completion state. `in_progress` used during active session. | BP-004; UC-005 |
 | evaluationSlaDeadline | datetime | no | ISO-8601 | submittedAt + 30 minutes | Default evaluation SLA deadline. If missed, mark evaluation stale, alert owner, and route to ERROR/manual review without advancing candidate. | BP-004; UC-005; BP-008; BP-010; BR-015 |
 
-### : Test Definition and Submission
+### DATA-008: Test Definition and Submission
 
 | Field | Value |
 | --- | --- |
@@ -889,7 +889,7 @@ Upstream: `03-business-definition.md/json`
 | totalScore | number | conditional | 0-100 after grading | | Total score | BP-005; BR-009; BR-010; UC-006; BQ-004 |
 | gradingConfidence | number | conditional | 0-1 | | Manual review trigger | BP-005; BR-009; BR-010; UC-006; BQ-004 |
 
-### : Audit Event
+### DATA-009: Audit Event
 
 | Field | Value |
 | --- | --- |
@@ -919,7 +919,7 @@ Upstream: `03-business-definition.md/json`
 | integrity | enum | yes | append_only|immutable | append_only | Audit events are append-only; once written they cannot be modified or deleted. Enforced at storage layer. | BR-012; BAC-004 |
 | createdAt | datetime | yes | ISO-8601 | now | Timestamp | BR-012; BAC-002; BAC-004 |
 
-### : Integration Configuration and Health
+### DATA-010: Integration Configuration and Health
 
 | Field | Value |
 | --- | --- |
@@ -970,44 +970,44 @@ Upstream: `03-business-definition.md/json`
 
 | State ID | Object / Workflow | State | Entry Condition | Exit Condition | Allowed Actions | Source IDs |
 | --- | --- | --- | --- | --- | --- | --- |
-| | Candidate Pipeline | NEW | Candidate creation started | Allowed next states: IMPORTED, WITHDRAWN | IMPORTED; WITHDRAWN | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
-| | Candidate Pipeline | IMPORTED | Valid candidate/job input imported | Allowed next states: SCREENING_RUNNING, ERROR, WITHDRAWN | SCREENING_RUNNING; ERROR; WITHDRAWN | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
-| | Candidate Pipeline | SCREENING_RUNNING | JD and CV available | Allowed next states: SCREENING_PENDING_APPROVAL, ERROR, WITHDRAWN | SCREENING_PENDING_APPROVAL; ERROR; WITHDRAWN | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
-| | Candidate Pipeline | SCREENING_PENDING_APPROVAL | Screening result generated | Allowed next states: SCREENED_IN, SCREENED_OUT, SCREENING_RUNNING, WITHDRAWN | SCREENED_IN; SCREENED_OUT; SCREENING_RUNNING; WITHDRAWN | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
-| | Candidate Pipeline | SCREENED_IN | HR Manager approves screening | Allowed next states: AVAILABILITY_PENDING, WITHDRAWN | AVAILABILITY_PENDING; WITHDRAWN | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
-| | Candidate Pipeline | SCREENED_OUT | HR Manager rejects screening | Terminal state | | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
-| | Candidate Pipeline | AVAILABILITY_PENDING | Candidate screened in | Allowed next states: SCHEDULING_PENDING_APPROVAL, ERROR, WITHDRAWN | SCHEDULING_PENDING_APPROVAL; ERROR; WITHDRAWN | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
-| | Candidate Pipeline | SCHEDULING_PENDING_APPROVAL | Valid interview slots generated | Allowed next states: INTERVIEW_SCHEDULED, AVAILABILITY_PENDING, WITHDRAWN | INTERVIEW_SCHEDULED; AVAILABILITY_PENDING; WITHDRAWN | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
-| | Candidate Pipeline | INTERVIEW_SCHEDULED | HR Manager approves slot | Allowed next states: AI_INTERVIEW_PENDING, WITHDRAWN, ERROR | AI_INTERVIEW_PENDING; WITHDRAWN; ERROR | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
-| | Candidate Pipeline | AI_INTERVIEW_PENDING | Interview link sent | Allowed next states: AI_INTERVIEW_COMPLETED, WITHDRAWN, ERROR | AI_INTERVIEW_COMPLETED; WITHDRAWN; ERROR | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
-| | Candidate Pipeline | AI_INTERVIEW_COMPLETED | Candidate submits async interview | Allowed next states: TEST_PENDING, FINAL_REVIEW, ERROR | TEST_PENDING; FINAL_REVIEW; ERROR | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | Note: If testRequired=false (per job config), candidate transitions directly to FINAL_REVIEW without entering TEST_PENDING or TEST_GRADED. TEST-011 and TEST-012 are conditional on testRequired=true. |
-| | Candidate Pipeline | TEST_PENDING | Test assigned | Allowed next states: TEST_GRADED, WITHDRAWN, ERROR | TEST_GRADED; WITHDRAWN; ERROR | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
-| | Candidate Pipeline | TEST_GRADED | Test sections graded | Allowed next states: FINAL_REVIEW, ERROR | FINAL_REVIEW; ERROR | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
-| | Candidate Pipeline | FINAL_REVIEW | Evidence package ready | Allowed next states: PASSED, FAILED, WITHDRAWN | PASSED; FAILED; WITHDRAWN | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
-| | Candidate Pipeline | PASSED | Final pass decision recorded | Terminal state | | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
-| | Candidate Pipeline | FAILED | Final fail decision recorded | Terminal state | | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
-| | Candidate Pipeline | WITHDRAWN | Candidate withdraws or HR marks withdrawn | Terminal state | | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
-| | Candidate Pipeline | ERROR | Blocking technical or data issue | Allowed next states: previous_valid_state, WITHDRAWN | previous_valid_state; WITHDRAWN | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | Note: ERROR captures blocking technical or data issues at any pipeline stage. The `previousValidState` field (required in error remediation) must capture the exact state before error occurred, disambiguated from itself. ERROR state disambiguates from all other states via errorId and remediation record. |
+| STATE-001 | Candidate Pipeline | NEW | Candidate creation started | Allowed next states: IMPORTED, WITHDRAWN | IMPORTED; WITHDRAWN | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
+| STATE-002 | Candidate Pipeline | IMPORTED | Valid candidate/job input imported | Allowed next states: SCREENING_RUNNING, ERROR, WITHDRAWN | SCREENING_RUNNING; ERROR; WITHDRAWN | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
+| STATE-003 | Candidate Pipeline | SCREENING_RUNNING | JD and CV available | Allowed next states: SCREENING_PENDING_APPROVAL, ERROR, WITHDRAWN | SCREENING_PENDING_APPROVAL; ERROR; WITHDRAWN | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
+| STATE-004 | Candidate Pipeline | SCREENING_PENDING_APPROVAL | Screening result generated | Allowed next states: SCREENED_IN, SCREENED_OUT, SCREENING_RUNNING, WITHDRAWN | SCREENED_IN; SCREENED_OUT; SCREENING_RUNNING; WITHDRAWN | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
+| STATE-005 | Candidate Pipeline | SCREENED_IN | HR Manager approves screening | Allowed next states: AVAILABILITY_PENDING, WITHDRAWN | AVAILABILITY_PENDING; WITHDRAWN | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
+| STATE-006 | Candidate Pipeline | SCREENED_OUT | HR Manager rejects screening | Terminal state | STATE-001 | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
+| STATE-007 | Candidate Pipeline | AVAILABILITY_PENDING | Candidate screened in | Allowed next states: SCHEDULING_PENDING_APPROVAL, ERROR, WITHDRAWN | SCHEDULING_PENDING_APPROVAL; ERROR; WITHDRAWN | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
+| STATE-008 | Candidate Pipeline | SCHEDULING_PENDING_APPROVAL | Valid interview slots generated | Allowed next states: INTERVIEW_SCHEDULED, AVAILABILITY_PENDING, WITHDRAWN | INTERVIEW_SCHEDULED; AVAILABILITY_PENDING; WITHDRAWN | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
+| STATE-009 | Candidate Pipeline | INTERVIEW_SCHEDULED | HR Manager approves slot | Allowed next states: AI_INTERVIEW_PENDING, WITHDRAWN, ERROR | AI_INTERVIEW_PENDING; WITHDRAWN; ERROR | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
+| STATE-010 | Candidate Pipeline | AI_INTERVIEW_PENDING | Interview link sent | Allowed next states: AI_INTERVIEW_COMPLETED, WITHDRAWN, ERROR | AI_INTERVIEW_COMPLETED; WITHDRAWN; ERROR | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
+| STATE-011 | Candidate Pipeline | AI_INTERVIEW_COMPLETED | Candidate submits async interview | Allowed next states: TEST_PENDING, FINAL_REVIEW, ERROR | TEST_PENDING; FINAL_REVIEW; ERROR | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | Note: If testRequired=false (per job config), candidate transitions directly to FINAL_REVIEW without entering TEST_PENDING or TEST_GRADED. TEST-011 and TEST-012 are conditional on testRequired=true. |
+| STATE-012 | Candidate Pipeline | TEST_PENDING | Test assigned | Allowed next states: TEST_GRADED, WITHDRAWN, ERROR | TEST_GRADED; WITHDRAWN; ERROR | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
+| STATE-013 | Candidate Pipeline | TEST_GRADED | Test sections graded | Allowed next states: FINAL_REVIEW, ERROR | FINAL_REVIEW; ERROR | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
+| STATE-014 | Candidate Pipeline | FINAL_REVIEW | Evidence package ready | Allowed next states: PASSED, FAILED, WITHDRAWN | PASSED; FAILED; WITHDRAWN | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
+| STATE-015 | Candidate Pipeline | PASSED | Final pass decision recorded | Terminal state | STATE-002 | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
+| STATE-016 | Candidate Pipeline | FAILED | Final fail decision recorded | Terminal state | STATE-003 | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
+| STATE-017 | Candidate Pipeline | WITHDRAWN | Candidate withdraws or HR marks withdrawn | Terminal state | STATE-004 | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 |
+| STATE-018 | Candidate Pipeline | ERROR | Blocking technical or data issue | Allowed next states: previous_valid_state, WITHDRAWN | previous_valid_state; WITHDRAWN | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | Note: ERROR captures blocking technical or data issues at any pipeline stage. The `previousValidState` field (required in error remediation) must capture the exact state before error occurred, disambiguated from itself. ERROR state disambiguates from all other states via errorId and remediation record. |
 
 ## 6. Validation Rules
 
 | Rule ID | Input / Object | Validation | Error Message | Source BR/UC IDs |
 | --- | --- | --- | --- | --- |
-| | Candidate/job import | Manual and Excel inputs require required candidate, job, and supported file fields before import. | Missing or invalid import data. | BP-001; UC-001 |
-| | File upload | CV and JD files must be text-native PDF/DOCX; Excel import must be .xlsx; test import must be Excel/JSON. | Unsupported file format for MVP. | BR-004; UC-001 |
-| | Duplicate candidate | Potential duplicate requires HR Recruiter merge/skip/create-new decision before pipeline proceeds. | Duplicate candidate requires review. | BR-003 |
-| | Screening score | AI screening score must be numeric 0-100 with summary, flags, missing skills, confidence, and evidence spans. | Screening result is incomplete. | BR-006; UC-003 |
-| | Low confidence | Low parse/AI confidence must route to manual review and cannot silently advance. | Manual review required due to low confidence. | BR-005 |
-| | Approval decision | Screening, scheduling, and final decisions require authorized human actor and explicit action. | Human approval is required. | BR-001; BR-021 |
-| | Approval timeout | Elapsed approval time may trigger reminders/escalation but cannot auto-approve/reject/skip. | Approval timeout cannot create a decision. | BR-002; BR-021 |
-| | Calendar event creation | Calendar event creation requires approved slot, valid timezone, and valid participants. | Approved slot required before event creation. | BR-007; BR-008 |
-| | Notification sending | Workflow emails must use shared HR mailbox and configured templates. | Configured HR mailbox/template required. | BR-014 |
-| | MCQ grading | MCQ score must be computed against answer key deterministically. | MCQ answer key required. | BR-009 |
-| | Essay/coding grading | Essay/coding grading requires rubric/test cases and records AI confidence/version. | Rubric/test cases required. | BR-010 |
-| | Final decision | Final pass/fail must be explicit HR Manager decision; combined policy remains blocked by BQ-006. | Final HR decision required. | BR-022; UC-007 |
-| | Withdrawal | Withdrawal closes pending actions and moves candidate to terminal WITHDRAWN. | Withdrawal must close pending actions. | BP-009; UC-009 |
-| | Error remediation | ERROR state requires owner, reason, prior state, and resolution action. | Error remediation owner and reason required. | BP-010; UC-010 |
-| | Audit trail | All approvals, state changes, AI evaluations, imports, notifications, and remediation actions create audit events. | Audit event required. | BR-012 |
+| VAL-001 | Candidate/job import | Manual and Excel inputs require required candidate, job, and supported file fields before import. | Missing or invalid import data. | BP-001; UC-001 |
+| VAL-002 | File upload | CV and JD files must be text-native PDF/DOCX; Excel import must be .xlsx; test import must be Excel/JSON. | Unsupported file format for MVP. | BR-004; UC-001 |
+| VAL-003 | Duplicate candidate | Potential duplicate requires HR Recruiter merge/skip/create-new decision before pipeline proceeds. | Duplicate candidate requires review. | BR-003 |
+| VAL-004 | Screening score | AI screening score must be numeric 0-100 with summary, flags, missing skills, confidence, and evidence spans. | Screening result is incomplete. | BR-006; UC-003 |
+| VAL-005 | Low confidence | Low parse/AI confidence must route to manual review and cannot silently advance. | Manual review required due to low confidence. | BR-005 |
+| VAL-006 | Approval decision | Screening, scheduling, and final decisions require authorized human actor and explicit action. | Human approval is required. | BR-001; BR-021 |
+| VAL-007 | Approval timeout | Elapsed approval time may trigger reminders/escalation but cannot auto-approve/reject/skip. | Approval timeout cannot create a decision. | BR-002; BR-021 |
+| VAL-008 | Calendar event creation | Calendar event creation requires approved slot, valid timezone, and valid participants. | Approved slot required before event creation. | BR-007; BR-008 |
+| VAL-009 | Notification sending | Workflow emails must use shared HR mailbox and configured templates. | Configured HR mailbox/template required. | BR-014 |
+| VAL-010 | MCQ grading | MCQ score must be computed against answer key deterministically. | MCQ answer key required. | BR-009 |
+| VAL-011 | Essay/coding grading | Essay/coding grading requires rubric/test cases and records AI confidence/version. | Rubric/test cases required. | BR-010 |
+| VAL-012 | Final decision | Final pass/fail must be explicit HR Manager decision; combined policy remains blocked by BQ-006. | Final HR decision required. | BR-022; UC-007 |
+| VAL-013 | Withdrawal | Withdrawal closes pending actions and moves candidate to terminal WITHDRAWN. | Withdrawal must close pending actions. | BP-009; UC-009 |
+| VAL-014 | Error remediation | ERROR state requires owner, reason, prior state, and resolution action. | Error remediation owner and reason required. | BP-010; UC-010 |
+| VAL-015 | Audit trail | All approvals, state changes, AI evaluations, imports, notifications, and remediation actions create audit events. | Audit event required. | BR-012 |
 
 ## 6A. Retry, Timeout, and Escalation Detail
 
@@ -1025,14 +1025,14 @@ Upstream: `03-business-definition.md/json`
 
 | ID | Concern | Requirement | Implementation Expectation | Verification | Source IDs |
 | --- | --- | --- | --- | --- | --- |
-| | authentication | All internal HR/Admin screens and APIs require authenticated user identity. | Enforce login/session validation before access. | Access unauthenticated request is rejected. | BR-011 |
-| | authorization | Candidate data and decision actions are role-bound to HR Recruiter, HR Manager, Interviewer, and Admin/IT permissions. | Role checks on screens/API actions. | Unauthorized role cannot access/action candidate data. | BR-011; ROLE-001; ROLE-002; ROLE-003; ROLE-004 |
-| | privacy | CVs, transcripts, test submissions, and evaluations are sensitive candidate data. | Encrypt in transit/at rest; restrict access; avoid unnecessary exposure. | Security review plus access-control tests. | BR-011; BR-023; BAC-004 |
-| | audit | All business decisions and sensitive workflow actions require immutable audit event. | Write Audit Event for state/approval/import/AI/notification/error actions. | Audit coverage tests for each core workflow. | BR-012 |
-| | external integration secrets | Google OAuth tokens and AI provider credentials must not be hardcoded. | Use environment variables or secret manager; validate presence at startup. | Secret scan and config validation. | BR-017 |
-| | input validation | Uploaded files, forms, Drive events, and candidate answers are untrusted input. | Validate format, size, schema, and expected enum values. | Boundary validation tests. | BR-004; BR-011 |
-| | error disclosure | Errors must not leak OAuth tokens, prompts, model internals, or private candidate data. | Map internal errors to safe user messages. | Error response tests. | BP-010 |
-| | accessibility | Internal and candidate-facing screens must be keyboard accessible and not rely on color alone. | Semantic controls, focus states, labels, text alternatives. | Automated and manual accessibility checks. | UC-005; |
+| SEC-001 | authentication | All internal HR/Admin screens and APIs require authenticated user identity. | Enforce login/session validation before access. | Access unauthenticated request is rejected. | BR-011 |
+| SEC-002 | authorization | Candidate data and decision actions are role-bound to HR Recruiter, HR Manager, Interviewer, and Admin/IT permissions. | Role checks on screens/API actions. | Unauthorized role cannot access/action candidate data. | BR-011; ROLE-001; ROLE-002; ROLE-003; ROLE-004 |
+| SEC-003 | privacy | CVs, transcripts, test submissions, and evaluations are sensitive candidate data. | Encrypt in transit/at rest; restrict access; avoid unnecessary exposure. | Security review plus access-control tests. | BR-011; BR-023; BAC-004 |
+| SEC-004 | audit | All business decisions and sensitive workflow actions require immutable audit event. | Write Audit Event for state/approval/import/AI/notification/error actions. | Audit coverage tests for each core workflow. | BR-012 |
+| SEC-005 | external integration secrets | Google OAuth tokens and AI provider credentials must not be hardcoded. | Use environment variables or secret manager; validate presence at startup. | Secret scan and config validation. | BR-017 |
+| SEC-006 | input validation | Uploaded files, forms, Drive events, and candidate answers are untrusted input. | Validate format, size, schema, and expected enum values. | Boundary validation tests. | BR-004; BR-011 |
+| SEC-007 | error disclosure | Errors must not leak OAuth tokens, prompts, model internals, or private candidate data. | Map internal errors to safe user messages. | Error response tests. | BP-010 |
+| SEC-008 | accessibility | Internal and candidate-facing screens must be keyboard accessible and not rely on color alone. | Semantic controls, focus states, labels, text alternatives. | Automated and manual accessibility checks. | UC-005; |
 | SEC-009 | RBAC permission matrix | All screens and API actions enforce role-based access for HR Recruiter, HR Manager, Interviewer, Admin/IT, and Candidate. | Role-based checks on every screen navigation and API action. HR Recruiter: import, view pipeline, retry errors. HR Manager: approve, reject, defer, final decision, configure. Interviewer: view schedule and feedback. Admin/IT: configure integrations, monitor, manage users. Candidate: access own interview link, submit answers, withdraw. | Unauthorized role attempt returns 403/redirect; authorized role can perform action. | BR-011; ROLE-001; ROLE-002; ROLE-003; ROLE-004; BP-008; BAC-004 |
 | SEC-010 | API rate limiting | All public-facing and internal APIs enforce rate limits to prevent abuse. | Rate limit headers (X-RateLimit-Limit/Remaining/Reset). Default internal API: 1000 req/min per user. Candidate interview API: 60 req/min per token. AI screening/grading: 30 req/min per job. Exceeding returns 429. | Load test exceeding limit returns 429; headers present. | BR-011; REQ-NF-006 |
 | SEC-011 | File upload size limits and malware scanning | Uploaded files are size-limited and scanned for malware before storage. | Max 10 MB per CV/JD, 5 MB per test definition. Rejected files return 413 Payload Too Large. Malware scan before durable storage using approved scanning service; infected files quarantined outside normal processing path, inaccessible to HR users, logged, and routed to ERROR owner. | Upload >10 MB returns 413; scan of infected file is quarantined and not processed. | BR-004; BR-011; BP-010 |
@@ -1046,7 +1046,7 @@ Upstream: `03-business-definition.md/json`
 | SEC-019 | MFA requirement for HR Manager and Admin roles | HR Manager and Admin/IT roles must authenticate with MFA for sensitive actions. | MFA enforced for exact sensitive actions: final pass/fail decision, integration configuration create/update/delete, audit log export, and bulk screening/scheduling approval actions. TOTP or hardware token accepted. Session invalidation after 30 minutes inactivity. | Sensitive action without MFA rejected with MFA required prompt. | BR-011; BR-012; BR-017; BR-022; ROLE-002; ROLE-004; UC-007; BP-008 |
 | SEC-A11Y | Accessibility baseline (WCAG 2.2 AA) | All candidate-facing and internal HR screens meet WCAG 2.2 Level AA. | WCAG 2.2 AA: 1.4.3 Contrast (4.5:1 text, 3:1 UI); 2.1.1 Keyboard; 2.4.7 Focus visible (2px outline min); 2.4.11 Focus not obscured; 2.5.3 Label in name; 4.1.2 Name/role/value. Candidate-facing: ARIA live regions (polite for queues, assertive for timer); focus management on question transitions; 44x44px min touch target; prefers-reduced-motion respected; table semantics (th/caption/scope); progress bars role=progressbar with aria-valuenow/min/max; field errors via aria-describedby; health charts tabular fallback; skip navigation link on all pages. | Automated WCAG 2.2 scan passes; manual keyboard/screen reader testing passes for key workflows. | UC-005; BP-004; SCREEN-001; SCREEN-003; SCREEN-005; SCREEN-006; SCREEN-008 |
 
-## 8. Non-Functional Detail\n\n| ID | Category | Target | Measurement | Verification Method | Source IDs |\n| --- | --- | --- | --- | --- | --- |\n| | performance | Single CV screening completes under 30 seconds where AI provider is available. | Measure p95 screening duration by candidate. | Performance test and production monitoring | REQ-NF-001; BP-002; BP-008 |\n| | performance | Non-AI API responses meet p95 <2s. | Measure API p95 by route excluding AI calls. | Load test/API telemetry | REQ-NF-004; BP-008 |\n| | scalability | Support >200 jobs/month and ~10,000 CV/month planning volume. | Monthly throughput and queue capacity metrics. | Capacity test and monitoring | REQ-NF-002; REQ-NF-003; BP-001; BP-008 |\n| | concurrency | Support 50+ concurrent internal users. | Concurrent authenticated session/API test. | Load test | REQ-NF-005; BP-008 |\n| | availability | Target 99% uptime for core internal workflow. Excludes planned maintenance windows and external Google Workspace outages beyond system control. Uptime measured excluding maintenance exclusion periods. | Monthly uptime. | Monitoring report | REQ-NF-009; BP-008 |\n| | observability | Track AI errors, API failures, queue stalls, and Google integration failures. | Dashboard/alert coverage. | Alert simulation tests | REQ-NF-010; REQ-NF-011; BP-008; BP-010; BR-015 |\n| | cost monitoring | Track LLM token usage/cost by module. | Cost per candidate/job/module. | Cost report validation | REQ-NF-012; BP-008; BR-015 |\n| | AI quality | Track reviewer agreement, precision@shortlist, false reject review, prompt/rubric drift. | AI governance metrics. | Evaluation dataset/review workflow | REQ-NF-AI-002; REQ-NF-AI-004; BP-002; BP-008; BR-020 |\n| | security | Candidate data encrypted at rest and in transit. | TLS and storage encryption verification. | Security review/config check | REQ-NF-005; BR-011; BR-023 |\n| | auditability | All decisions and state transitions are auditable. | Audit event completeness. | Workflow audit tests | REQ-NF-007; BR-012; BP-008 |\n\n## 9. Test Matrix
+## 8. Non-Functional Detail\n\n| ID | Category | Target | Measurement | Verification Method | Source IDs |\n| --- | --- | --- | --- | --- | --- |\n| NFD-001 | performance | Single CV screening completes under 30 seconds where AI provider is available. | Measure p95 screening duration by candidate. | Performance test and production monitoring | REQ-NF-001; BP-002; BP-008 |\n| NFD-002 | performance | Non-AI API responses meet p95 <2s. | Measure API p95 by route excluding AI calls. | Load test/API telemetry | REQ-NF-004; BP-008 |\n| NFD-003 | scalability | Support >200 jobs/month and ~10,000 CV/month planning volume. | Monthly throughput and queue capacity metrics. | Capacity test and monitoring | REQ-NF-002; REQ-NF-003; BP-001; BP-008 |\n| NFD-004 | concurrency | Support 50+ concurrent internal users. | Concurrent authenticated session/API test. | Load test | REQ-NF-005; BP-008 |\n| NFD-005 | availability | Target 99% uptime for core internal workflow. Excludes planned maintenance windows and external Google Workspace outages beyond system control. Uptime measured excluding maintenance exclusion periods. | Monthly uptime. | Monitoring report | REQ-NF-009; BP-008 |\n| NFD-006 | observability | Track AI errors, API failures, queue stalls, and Google integration failures. | Dashboard/alert coverage. | Alert simulation tests | REQ-NF-010; REQ-NF-011; BP-008; BP-010; BR-015 |\n| NFD-007 | cost monitoring | Track LLM token usage/cost by module. | Cost per candidate/job/module. | Cost report validation | REQ-NF-012; BP-008; BR-015 |\n| NFD-008 | AI quality | Track reviewer agreement, precision@shortlist, false reject review, prompt/rubric drift. | AI governance metrics. | Evaluation dataset/review workflow | REQ-NF-AI-002; REQ-NF-AI-004; BP-002; BP-008; BR-020 |\n| NFD-009 | security | Candidate data encrypted at rest and in transit. | TLS and storage encryption verification. | Security review/config check | REQ-NF-005; BR-011; BR-023 |\n| NFD-010 | auditability | All decisions and state transitions are auditable. | Audit event completeness. | Workflow audit tests | REQ-NF-007; BR-012; BP-008 |\n\n## 9. Test Matrix
 
 | Test ID | Type | Scenario | Steps | Expected Result | Source IDs |
 | --- | --- | --- | --- | --- | --- |
@@ -1075,18 +1075,18 @@ Upstream: `03-business-definition.md/json`
 
 | ID | Edge Case | Expected Behavior | Source IDs |
 | --- | --- | --- | --- |
-| | Excel import contains valid rows plus invalid rows | Valid rows can proceed; invalid rows reported and assigned for correction without blocking whole batch unless policy requires. | BP-001; UC-001 |
-| | Duplicate candidate detected across jobs | HR reviews duplicate and chooses merge/skip/create-new. | BR-003 |
-| | Low AI confidence in screening | Candidate routes to manual review and cannot silently advance. | BR-005 |
-| | No interview slot satisfies timezone/working-hour policy | No event created; HR requests alternatives or manual scheduling fallback. | BP-003; BR-008 |
-| | Candidate interview link expires or submission incomplete | HR may reopen, manual review, withdraw, or route ERROR according to policy. | BP-004; UC-005 |
-| | Coding sandbox/runtime not defined | Coding grading implementation blocked until BQ-004 is resolved. | BQ-004; UC-006 |
-| | Final evidence package incomplete or conflicting | Final decision is deferred/manual reviewed with reason; no automatic pass/fail. | BP-006; BR-022 |
-| | Candidate withdraws after scheduled interview | Close pending actions, notify stakeholders, move to WITHDRAWN, and require manual HR Calendar cleanup until Q4-007 is resolved. | BP-009; UC-009; BR-024; BQ-007 |
-| | Repeated integration retry failure | Assign/remediate/escalate and keep ERROR owner/reason visible. | BP-010; UC-010 |
-| | Post-approval reschedule/cancel requested | Implementation remains blocked by BQ-007; do not assume automated Calendar update behavior. | BR-024; BQ-007 |
+| EDGE-001 | Excel import contains valid rows plus invalid rows | Valid rows can proceed; invalid rows reported and assigned for correction without blocking whole batch unless policy requires. | BP-001; UC-001 |
+| EDGE-002 | Duplicate candidate detected across jobs | HR reviews duplicate and chooses merge/skip/create-new. | BR-003 |
+| EDGE-003 | Low AI confidence in screening | Candidate routes to manual review and cannot silently advance. | BR-005 |
+| EDGE-004 | No interview slot satisfies timezone/working-hour policy | No event created; HR requests alternatives or manual scheduling fallback. | BP-003; BR-008 |
+| EDGE-005 | Candidate interview link expires or submission incomplete | HR may reopen, manual review, withdraw, or route ERROR according to policy. | BP-004; UC-005 |
+| EDGE-006 | Coding sandbox/runtime not defined | Coding grading implementation blocked until BQ-004 is resolved. | BQ-004; UC-006 |
+| EDGE-007 | Final evidence package incomplete or conflicting | Final decision is deferred/manual reviewed with reason; no automatic pass/fail. | BP-006; BR-022 |
+| EDGE-008 | Candidate withdraws after scheduled interview | Close pending actions, notify stakeholders, move to WITHDRAWN, and require manual HR Calendar cleanup until Q4-007 is resolved. | BP-009; UC-009; BR-024; BQ-007 |
+| EDGE-009 | Repeated integration retry failure | Assign/remediate/escalate and keep ERROR owner/reason visible. | BP-010; UC-010 |
+| EDGE-010 | Post-approval reschedule/cancel requested | Implementation remains blocked by BQ-007; do not assume automated Calendar update behavior. | BR-024; BQ-007 |
 
-## 11. Traceability Summary\n\n| Detail ID | Upstream Business IDs | Requirement IDs | Raw IDs |\n| --- | --- | --- | --- |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-008; BP-010; BR-001; BR-015; BR-020 | REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-054; REQ-F-055; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-007; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012; REQ-NF-AI-002; REQ-NF-AI-004 | |\n| | BP-001; BP-010; BR-003; BR-004; UC-001; UC-002 | REQ-C-002; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-002; BR-001; BR-002; BR-005; BR-006; UC-003 | REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-023; REQ-F-051; REQ-F-052; REQ-F-053; REQ-F-054; REQ-NF-AI-005 | |\n| | BP-003; BR-001; BR-007; BR-008; BR-024; UC-004 | REQ-F-017; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-051; REQ-F-054; REQ-I-002; REQ-I-003 | |\n| | BP-004; BP-009; BP-010; UC-005 | REQ-D-007; REQ-F-018; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-005; BR-009; BR-010; BR-012; UC-006 | REQ-D-007; REQ-D-008; REQ-D-009; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-NF-007 | |\n| | BP-006; BP-009; BR-001; BR-012; BR-022; UC-007; UC-009 | REQ-D-007; REQ-D-008; REQ-D-009; REQ-F-017; REQ-F-023; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-054; REQ-F-055; REQ-F-056; REQ-NF-007 | |\n| | BP-008; BP-010; BR-002; BR-015; BR-017; BR-020; BR-021; BR-023; BQ-002; BQ-003; BQ-005 | REQ-C-003; REQ-D-001; REQ-D-002; REQ-D-005; REQ-D-006; REQ-F-018; REQ-F-053; REQ-F-054; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-005; REQ-NF-007; REQ-NF-008; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012; REQ-NF-AI-002; REQ-NF-AI-004 | |\n| | BP-001; BP-010; BR-003; BR-004; BR-011; UC-001; UC-002 | REQ-C-002; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-006; REQ-NF-007; REQ-NF-008; REQ-NF-010 | |\n| | BP-002; BR-004; BR-005 | REQ-C-002; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-051; REQ-NF-AI-005 | |\n| | BP-002; BR-005; BR-006; UC-003 | REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-051; REQ-F-052; REQ-F-054; REQ-NF-AI-005 | |\n| | BR-001; BR-002; BR-012; BR-021; UC-003; UC-004; UC-007 | REQ-D-007; REQ-D-008; REQ-D-009; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-017; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-045; REQ-F-050; REQ-F-051; REQ-F-052; REQ-F-053; REQ-F-054; REQ-F-055; REQ-NF-007 | |\n| | BP-003; BR-007; BR-008; BR-017; BR-024; UC-004 | REQ-C-003; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-I-002; REQ-I-003; REQ-I-004 | |\n| | BP-007; BR-014; BR-017; UC-008 | REQ-C-003; REQ-F-026; REQ-F-060; REQ-F-061; REQ-F-062; REQ-I-003; REQ-I-004 | |\n| | BP-004; UC-005 | REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037 | |\n| | BP-005; BR-009; BR-010; UC-006; BQ-004 | REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046 | |\n| | BP-009; UC-009 | REQ-D-007; REQ-F-055; REQ-F-056; REQ-NF-007 | |\n| | BP-010; UC-010; BR-012 | REQ-D-007; REQ-D-008; REQ-D-009; REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-009; BR-011; BR-019 | REQ-D-001; REQ-D-002; REQ-D-003; REQ-D-004; REQ-D-005; REQ-D-006; REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-055; REQ-F-056; REQ-I-001; REQ-NF-006; REQ-NF-007; REQ-NF-008 | |\n| | BP-001; BP-002; BR-019 | REQ-D-001; REQ-D-002; REQ-D-003; REQ-D-004; REQ-D-005; REQ-D-006; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-051; REQ-I-001 | |\n| | BR-004; BR-005; BP-002 | REQ-C-002; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-051; REQ-NF-AI-005 | |\n| | BP-002; BR-005; BR-006; UC-003 | REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-051; REQ-F-052; REQ-F-054; REQ-NF-AI-005 | |\n| | BR-001; BR-002; BR-012; BR-021; UC-003; UC-004; UC-007 | REQ-D-007; REQ-D-008; REQ-D-009; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-017; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-045; REQ-F-050; REQ-F-051; REQ-F-052; REQ-F-053; REQ-F-054; REQ-F-055; REQ-NF-007 | |\n| | BP-003; BR-007; BR-008; BR-024; UC-004 | REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-I-002; REQ-I-003 | |\n| | BP-004; UC-005 | REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037 | |\n| | BP-005; BR-009; BR-010; UC-006; BQ-004 | REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046 | |\n| | BR-012; BAC-002; BAC-004 | REQ-D-007; REQ-D-008; REQ-D-009; REQ-NF-007 | |\n| | BP-008; BP-010; BR-015; BR-017; BR-020 | REQ-C-003; REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-007; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012; REQ-NF-AI-002; REQ-NF-AI-004 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; UC-001 | REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-I-001 | |\n| | BR-004; UC-001 | REQ-C-002; REQ-F-001; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-018 | |\n| | BR-003 | REQ-F-006 | |\n| | BR-006; UC-003 | REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-017; REQ-F-052; REQ-F-054 | |\n| | BR-005 | REQ-F-018; REQ-NF-AI-005 | |\n| | BR-001; BR-021 | REQ-F-017; REQ-F-023; REQ-F-051; REQ-F-053; REQ-F-054 | |\n| | BR-002; BR-021 | REQ-F-053; REQ-F-054 | |\n| | BR-007; BR-008 | REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027 | |\n| | BR-014 | REQ-F-026; REQ-F-060; REQ-F-061; REQ-F-062 | |\n| | BR-009 | REQ-F-042 | |\n| | BR-010 | REQ-F-043; REQ-F-044; REQ-F-045 | |\n| | BR-022; UC-007 | REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-055; REQ-NF-007 | |\n| | BP-009; UC-009 | REQ-D-007; REQ-F-055; REQ-F-056; REQ-NF-007 | |\n| | BP-010; UC-010 | REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BR-012 | REQ-D-007; REQ-D-008; REQ-D-009; REQ-NF-007 | |\n| | BR-011 | REQ-NF-006; REQ-NF-008 | |\n| | BR-011; ROLE-001; ROLE-002; ROLE-003; ROLE-004 | REQ-NF-006; REQ-NF-008 | |\n| | BR-011; BR-023; BAC-004 | REQ-D-001; REQ-D-002; REQ-D-005; REQ-D-006; REQ-NF-005; REQ-NF-006; REQ-NF-008 | |\n| | BR-012 | REQ-D-007; REQ-D-008; REQ-D-009; REQ-NF-007 | |\n| | BR-017 | REQ-C-003; REQ-I-004 | |\n| | BR-004; BR-011 | REQ-C-002; REQ-F-010; REQ-F-018 | |\n| | BP-010 | REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | UC-005; | REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037 | |\n| | BP-002; BP-008 | REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-051; REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| | BP-008 | REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| | BP-001; BP-008 | REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-I-001; REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| | BP-008 | REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-005; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| | BP-008 | REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| | BP-008; BP-010; BR-015 | REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-007; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| | BP-008; BR-015 | REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| | BP-002; BP-008; BR-020 | REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-051; REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012; REQ-NF-AI-002; REQ-NF-AI-004 | |\n| | BR-011; BR-023 | REQ-D-001; REQ-D-002; REQ-D-005; REQ-D-006; REQ-NF-005; REQ-NF-006; REQ-NF-008 | |\n| | BR-012; BP-008 | REQ-D-007; REQ-D-008; REQ-D-009; REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-007; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| TEST-001 | UC-001; BP-001; | REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-I-001 | |\n| TEST-002 | UC-002; BP-010; | REQ-F-003; REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| TEST-003 | BR-004; | REQ-C-002; REQ-F-010; REQ-F-018 | |\n| TEST-004 | BR-006; | REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015 | |\n| TEST-005 | UC-003; BR-001 | REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-017; REQ-F-023; REQ-F-051; REQ-F-052; REQ-F-054 | |\n| TEST-006 | BR-002; BR-021 | REQ-F-053; REQ-F-054 | |\n| TEST-007 | UC-004; BR-007; | REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025 | |\n| TEST-008 | BP-003; | REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-I-002; REQ-I-003 | |\n| TEST-009 | UC-005; | REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037 | |\n| TEST-010 | UC-005; | REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037 | |\n| TEST-011 | BR-009; UC-006 | REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046 | |\n| TEST-012 | BR-010; UC-006 | REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046 | |\n| TEST-013 | UC-007; BR-022 | REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-055; REQ-NF-007 | |\n| TEST-014 | UC-009; BP-009 | REQ-D-007; REQ-F-055; REQ-F-056; REQ-NF-007 | |\n| TEST-015 | UC-010; BP-010 | REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| TEST-016 | BR-011; BR-001; | REQ-F-017; REQ-F-023; REQ-F-051; REQ-F-054; REQ-NF-006; REQ-NF-008 | |\n| TEST-017 | SCREEN-001; SCREEN-003; SCREEN-005; SCREEN-006; SCREEN-008; SEC-A11Y; UC-005; BR-011 | REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-NF-006; REQ-NF-008 | |\n| TEST-018 | NFD-001; BP-002; BP-008 | REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| TEST-019 | BP-008; BP-010; | REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-007; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| TEST-020 | SEC-007; BP-010; BR-011 | REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; UC-001 | REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-I-001 | |\n| | BR-003 | REQ-F-006 | |\n| | BR-005 | REQ-F-018; REQ-NF-AI-005 | |\n| | BP-003; BR-008 | REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-I-002; REQ-I-003 | |\n| | BP-004; UC-005 | REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037 | |\n| | BQ-004; UC-006 | REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046 | |\n| | BP-006; BR-022 | REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-055; REQ-NF-007 | |\n| | BP-009; UC-009 | REQ-D-007; REQ-F-055; REQ-F-056; REQ-NF-007 | |\n| | BP-010; UC-010 | REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BR-024; BQ-007 | REQ-F-023; REQ-F-024; REQ-F-025; REQ-I-002 | |\n\n
+## 11. Traceability Summary\n\n| Detail ID | Upstream Business IDs | Requirement IDs | Raw IDs |\n| --- | --- | --- | --- |\n| SCREEN-001 | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-008; BP-010; BR-001; BR-015; BR-020 | REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-054; REQ-F-055; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-007; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012; REQ-NF-AI-002; REQ-NF-AI-004 | |\n| SCREEN-002 | BP-001; BP-010; BR-003; BR-004; UC-001; UC-002 | REQ-C-002; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| SCREEN-003 | BP-002; BR-001; BR-002; BR-005; BR-006; UC-003 | REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-023; REQ-F-051; REQ-F-052; REQ-F-053; REQ-F-054; REQ-NF-AI-005 | |\n| SCREEN-004 | BP-003; BR-001; BR-007; BR-008; BR-024; UC-004 | REQ-F-017; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-051; REQ-F-054; REQ-I-002; REQ-I-003 | |\n| SCREEN-005 | BP-004; BP-009; BP-010; UC-005 | REQ-D-007; REQ-F-018; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| SCREEN-006 | BP-005; BR-009; BR-010; BR-012; UC-006 | REQ-D-007; REQ-D-008; REQ-D-009; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-NF-007 | |\n| SCREEN-007 | BP-006; BP-009; BR-001; BR-012; BR-022; UC-007; UC-009 | REQ-D-007; REQ-D-008; REQ-D-009; REQ-F-017; REQ-F-023; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-054; REQ-F-055; REQ-F-056; REQ-NF-007 | |\n| SCREEN-008 | BP-008; BP-010; BR-002; BR-015; BR-017; BR-020; BR-021; BR-023; BQ-002; BQ-003; BQ-005 | REQ-C-003; REQ-D-001; REQ-D-002; REQ-D-005; REQ-D-006; REQ-F-018; REQ-F-053; REQ-F-054; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-005; REQ-NF-007; REQ-NF-008; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012; REQ-NF-AI-002; REQ-NF-AI-004 | |\n| API-001 | BP-001; BP-010; BR-003; BR-004; BR-011; UC-001; UC-002 | REQ-C-002; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-006; REQ-NF-007; REQ-NF-008; REQ-NF-010 | |\n| API-002 | BP-002; BR-004; BR-005 | REQ-C-002; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-051; REQ-NF-AI-005 | |\n| API-003 | BP-002; BR-005; BR-006; UC-003 | REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-051; REQ-F-052; REQ-F-054; REQ-NF-AI-005 | |\n| API-004 | BR-001; BR-002; BR-012; BR-021; UC-003; UC-004; UC-007 | REQ-D-007; REQ-D-008; REQ-D-009; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-017; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-045; REQ-F-050; REQ-F-051; REQ-F-052; REQ-F-053; REQ-F-054; REQ-F-055; REQ-NF-007 | |\n| API-005 | BP-003; BR-007; BR-008; BR-017; BR-024; UC-004 | REQ-C-003; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-I-002; REQ-I-003; REQ-I-004 | |\n| API-006 | BP-007; BR-014; BR-017; UC-008 | REQ-C-003; REQ-F-026; REQ-F-060; REQ-F-061; REQ-F-062; REQ-I-003; REQ-I-004 | |\n| API-007 | BP-004; UC-005 | REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037 | |\n| API-008 | BP-005; BR-009; BR-010; UC-006; BQ-004 | REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046 | |\n| API-009 | BP-009; UC-009 | REQ-D-007; REQ-F-055; REQ-F-056; REQ-NF-007 | |\n| API-010 | BP-010; UC-010; BR-012 | REQ-D-007; REQ-D-008; REQ-D-009; REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| DATA-001 | BP-001; BP-009; BR-011; BR-019 | REQ-D-001; REQ-D-002; REQ-D-003; REQ-D-004; REQ-D-005; REQ-D-006; REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-055; REQ-F-056; REQ-I-001; REQ-NF-006; REQ-NF-007; REQ-NF-008 | |\n| DATA-002 | BP-001; BP-002; BR-019 | REQ-D-001; REQ-D-002; REQ-D-003; REQ-D-004; REQ-D-005; REQ-D-006; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-051; REQ-I-001 | |\n| DATA-003 | BR-004; BR-005; BP-002 | REQ-C-002; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-051; REQ-NF-AI-005 | |\n| DATA-004 | BP-002; BR-005; BR-006; UC-003 | REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-051; REQ-F-052; REQ-F-054; REQ-NF-AI-005 | |\n| DATA-005 | BR-001; BR-002; BR-012; BR-021; UC-003; UC-004; UC-007 | REQ-D-007; REQ-D-008; REQ-D-009; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-017; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-045; REQ-F-050; REQ-F-051; REQ-F-052; REQ-F-053; REQ-F-054; REQ-F-055; REQ-NF-007 | |\n| DATA-006 | BP-003; BR-007; BR-008; BR-024; UC-004 | REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-I-002; REQ-I-003 | |\n| DATA-007 | BP-004; UC-005 | REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037 | |\n| DATA-008 | BP-005; BR-009; BR-010; UC-006; BQ-004 | REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046 | |\n| DATA-009 | BR-012; BAC-002; BAC-004 | REQ-D-007; REQ-D-008; REQ-D-009; REQ-NF-007 | |\n| DATA-010 | BP-008; BP-010; BR-015; BR-017; BR-020 | REQ-C-003; REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-007; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012; REQ-NF-AI-002; REQ-NF-AI-004 | |\n| STATE-005 | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| STATE-006 | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| STATE-007 | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| STATE-008 | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| STATE-009 | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| STATE-010 | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| STATE-011 | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| STATE-012 | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| STATE-013 | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| STATE-014 | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| STATE-015 | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| STATE-016 | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| STATE-017 | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| STATE-018 | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | BP-001; BP-002; BP-003; BP-004; BP-005; BP-006; BP-009; BP-010 | REQ-D-007; REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-F-040; REQ-F-041; REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-051; REQ-F-055; REQ-F-056; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| VAL-001 | BP-001; UC-001 | REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-I-001 | |\n| VAL-002 | BR-004; UC-001 | REQ-C-002; REQ-F-001; REQ-F-005; REQ-F-006; REQ-F-010; REQ-F-018 | |\n| VAL-003 | BR-003 | REQ-F-006 | |\n| VAL-004 | BR-006; UC-003 | REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-017; REQ-F-052; REQ-F-054 | |\n| VAL-005 | BR-005 | REQ-F-018; REQ-NF-AI-005 | |\n| VAL-006 | BR-001; BR-021 | REQ-F-017; REQ-F-023; REQ-F-051; REQ-F-053; REQ-F-054 | |\n| VAL-007 | BR-002; BR-021 | REQ-F-053; REQ-F-054 | |\n| VAL-008 | BR-007; BR-008 | REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027 | |\n| VAL-009 | BR-014 | REQ-F-026; REQ-F-060; REQ-F-061; REQ-F-062 | |\n| VAL-010 | BR-009 | REQ-F-042 | |\n| VAL-011 | BR-010 | REQ-F-043; REQ-F-044; REQ-F-045 | |\n| VAL-012 | BR-022; UC-007 | REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-055; REQ-NF-007 | |\n| VAL-013 | BP-009; UC-009 | REQ-D-007; REQ-F-055; REQ-F-056; REQ-NF-007 | |\n| VAL-014 | BP-010; UC-010 | REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| VAL-015 | BR-012 | REQ-D-007; REQ-D-008; REQ-D-009; REQ-NF-007 | |\n| SEC-001 | BR-011 | REQ-NF-006; REQ-NF-008 | |\n| SEC-002 | BR-011; ROLE-001; ROLE-002; ROLE-003; ROLE-004 | REQ-NF-006; REQ-NF-008 | |\n| SEC-003 | BR-011; BR-023; BAC-004 | REQ-D-001; REQ-D-002; REQ-D-005; REQ-D-006; REQ-NF-005; REQ-NF-006; REQ-NF-008 | |\n| SEC-004 | BR-012 | REQ-D-007; REQ-D-008; REQ-D-009; REQ-NF-007 | |\n| SEC-005 | BR-017 | REQ-C-003; REQ-I-004 | |\n| | BR-004; BR-011 | REQ-C-002; REQ-F-010; REQ-F-018 | |\n| SEC-007 | BP-010 | REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| | UC-005; | REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037 | |\n| NFD-001 | BP-002; BP-008 | REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-051; REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| NFD-002 | BP-008 | REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| NFD-003 | BP-001; BP-008 | REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-I-001; REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| NFD-004 | BP-008 | REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-005; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| NFD-005 | BP-008 | REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| NFD-006 | BP-008; BP-010; BR-015 | REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-007; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| NFD-007 | BP-008; BR-015 | REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| NFD-008 | BP-002; BP-008; BR-020 | REQ-F-010; REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015; REQ-F-016; REQ-F-017; REQ-F-018; REQ-F-051; REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012; REQ-NF-AI-002; REQ-NF-AI-004 | |\n| NFD-009 | BR-011; BR-023 | REQ-D-001; REQ-D-002; REQ-D-005; REQ-D-006; REQ-NF-005; REQ-NF-006; REQ-NF-008 | |\n| NFD-010 | BR-012; BP-008 | REQ-D-007; REQ-D-008; REQ-D-009; REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-007; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| TEST-001 | UC-001; BP-001; | REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-I-001 | |\n| TEST-002 | UC-002; BP-010; | REQ-F-003; REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| TEST-003 | BR-004; | REQ-C-002; REQ-F-010; REQ-F-018 | |\n| TEST-004 | BR-006; | REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-015 | |\n| TEST-005 | UC-003; BR-001 | REQ-F-011; REQ-F-012; REQ-F-013; REQ-F-014; REQ-F-017; REQ-F-023; REQ-F-051; REQ-F-052; REQ-F-054 | |\n| TEST-006 | BR-002; BR-021 | REQ-F-053; REQ-F-054 | |\n| TEST-007 | UC-004; BR-007; | REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025 | |\n| TEST-008 | BP-003; | REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-I-002; REQ-I-003 | |\n| TEST-009 | UC-005; | REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037 | |\n| TEST-010 | UC-005; | REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037 | |\n| TEST-011 | BR-009; UC-006 | REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046 | |\n| TEST-012 | BR-010; UC-006 | REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046 | |\n| TEST-013 | UC-007; BR-022 | REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-055; REQ-NF-007 | |\n| TEST-014 | UC-009; BP-009 | REQ-D-007; REQ-F-055; REQ-F-056; REQ-NF-007 | |\n| TEST-015 | UC-010; BP-010 | REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| TEST-016 | BR-011; BR-001; | REQ-F-017; REQ-F-023; REQ-F-051; REQ-F-054; REQ-NF-006; REQ-NF-008 | |\n| TEST-017 | SCREEN-001; SCREEN-003; SCREEN-005; SCREEN-006; SCREEN-008; SEC-A11Y; UC-005; BR-011 | REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037; REQ-NF-006; REQ-NF-008 | |\n| TEST-018 | NFD-001; BP-002; BP-008 | REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| TEST-019 | BP-008; BP-010; | REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-001; REQ-NF-002; REQ-NF-003; REQ-NF-004; REQ-NF-007; REQ-NF-009; REQ-NF-010; REQ-NF-011; REQ-NF-012 | |\n| TEST-020 | SEC-007; BP-010; BR-011 | REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| EDGE-001 | BP-001; UC-001 | REQ-F-001; REQ-F-002; REQ-F-003; REQ-F-004; REQ-F-005; REQ-F-006; REQ-I-001 | |\n| EDGE-002 | BR-003 | REQ-F-006 | |\n| EDGE-003 | BR-005 | REQ-F-018; REQ-NF-AI-005 | |\n| EDGE-004 | BP-003; BR-008 | REQ-F-020; REQ-F-021; REQ-F-022; REQ-F-023; REQ-F-024; REQ-F-025; REQ-F-027; REQ-I-002; REQ-I-003 | |\n| EDGE-005 | BP-004; UC-005 | REQ-F-030; REQ-F-031; REQ-F-032; REQ-F-033; REQ-F-034; REQ-F-035; REQ-F-036; REQ-F-037 | |\n| EDGE-006 | BQ-004; UC-006 | REQ-F-042; REQ-F-043; REQ-F-044; REQ-F-045; REQ-F-046 | |\n| EDGE-007 | BP-006; BR-022 | REQ-F-045; REQ-F-046; REQ-F-050; REQ-F-055; REQ-NF-007 | |\n| EDGE-008 | BP-009; UC-009 | REQ-D-007; REQ-F-055; REQ-F-056; REQ-NF-007 | |\n| EDGE-009 | BP-010; UC-010 | REQ-F-018; REQ-I-001; REQ-I-002; REQ-I-003; REQ-I-004; REQ-NF-007; REQ-NF-010 | |\n| EDGE-010 | BR-024; BQ-007 | REQ-F-023; REQ-F-024; REQ-F-025; REQ-I-002 | |\n\n
 ## 11A. Phase 2 Utility AI Module Detail Addendum
 
 Scope constraints: standalone Phase 2 prototype utility modules, not MVP core pipeline; mock design generation uses prototype mock image output only; original CV/interview records remain source of truth; HR approval is required before external use; no OCR is included unless explicitly scoped later; content publishing supports manual copy, file export, and channel integration fallback.
@@ -1148,12 +1148,12 @@ Scope constraints: standalone Phase 2 prototype utility modules, not MVP core pi
 | EDGE-014 | edge | Translation fails. | Unsupported language/LLM error shows safe retry and preserves source record. | BP-014; BP-015; UC-014; UC-015 | REQ-F-090..095; REQ-F-100..102 |
 | EDGE-015 | edge | Approval workflow interrupted. | Artifact stays pending/rejected and never auto-approves. | BP-016 | REQ-C-012 |
 | EDGE-016 | edge | Channel integration unavailable. | Export fallback via manual copy or file export is available and audited. | BP-011; BP-012 | REQ-I-005; REQ-I-006; REQ-C-013 |
-| TEST-021 | test | Content generation workflow. | Template → generate → approve → publish/export succeeds with audit and AI flag. | BP-011; BP-016; UC-011 | REQ-F-070..075 |
-| TEST-022 | test | Design generation workflow. | Brief → generate → approve → export succeeds with mock image and AI flag. | BP-012; BP-016; UC-012 | REQ-F-080..083 |
+| TEST-021 | test | Content generation workflow. | Template â†’ generate â†’ approve â†’ publish/export succeeds with audit and AI flag. | BP-011; BP-016; UC-011 | REQ-F-070..075 |
+| TEST-022 | test | Design generation workflow. | Brief â†’ generate â†’ approve â†’ export succeeds with mock image and AI flag. | BP-012; BP-016; UC-012 | REQ-F-080..083 |
 | TEST-023 | test | CV evidence viewer. | Structured data displays, sections navigate, and original CV reference opens. | BP-013; UC-013 | REQ-F-110..112 |
-| TEST-024 | test | CV translation workflow. | Language selection → translate → side-by-side review → approve succeeds. | BP-014; BP-016; UC-014 | REQ-F-090..095 |
-| TEST-025 | test | Interview translation workflow. | Input/select notes → translate → approve succeeds. | BP-015; BP-016; UC-015 | REQ-F-100..102 |
-| TEST-026 | test | Approval rejection flow. | Reject → edit → resubmit returns to pending and audits decisions. | BP-016; UC-011; UC-012; UC-014; UC-015 | REQ-C-012 |
+| TEST-024 | test | CV translation workflow. | Language selection â†’ translate â†’ side-by-side review â†’ approve succeeds. | BP-014; BP-016; UC-014 | REQ-F-090..095 |
+| TEST-025 | test | Interview translation workflow. | Input/select notes â†’ translate â†’ approve succeeds. | BP-015; BP-016; UC-015 | REQ-F-100..102 |
+| TEST-026 | test | Approval rejection flow. | Reject â†’ edit â†’ resubmit returns to pending and audits decisions. | BP-016; UC-011; UC-012; UC-014; UC-015 | REQ-C-012 |
 | TEST-027 | test | Source of truth validation. | Screening decisions trace to original CV/interview records, not translations. | BP-013; BP-014; BP-015 | REQ-C-009; REQ-C-010 |
 
 ### Phase 2 Traceability Matrix Addendum
@@ -1194,3 +1194,323 @@ Scope constraints: standalone Phase 2 prototype utility modules, not MVP core pi
 | Q4-005 | What exact Drive folder, ownership, webhook renewal, and naming convention should be used for MVP? | API-001; DATA-010; SEC-012 | IT Admin | yes | BQ-005 |
 | Q4-006 | What final combined pass/fail policy should be applied across screening, interview, and test evidence? | SCREEN-007; DATA-008; STATE-014; TEST-013 | HR Manager | yes | BQ-006 |
 | Q4-007 | What is the Calendar reschedule/cancel policy after event creation? | API-005; API-009; EDGE-010 | HR Manager / IT Admin | yes | BQ-007 |
+
+## 14. CV Intake and Job/JD Intake Detail
+
+### SCREEN-JOB-001: Job/JD Intake
+
+| Field | Value |
+|---|---|
+| Purpose | Create or import Job/JD from supported MVP sources and route parsed JD profiles for HR approval. |
+| Primary User | HR Recruiter |
+| Entry Point | Dashboard create job CTA or Job Source workspace |
+| Primary Action | Create/import Job/JD from manual form, JD text, file upload, Drive, or Sheet/Excel |
+| Secondary Actions | View original JD evidence; Run or retry JD parse; Open parsed JD review; Preview mock external connector status |
+| Source IDs | BP-JOB-001; BP-JOB-002; BR-JOB-001; BR-JOB-004; UC-JOB-001; UC-JOB-004 |
+
+### SCREEN-JOB-002: Parsed JD Review and Approval
+
+| Field | Value |
+|---|---|
+| Purpose | Allow HR to review, edit, re-parse, reject, or approve ParsedJDProfile before matching. |
+| Primary User | HR Manager |
+| Entry Point | Job/JD Intake parse completion or pending approval queue |
+| Primary Action | Approve ParsedJDProfile |
+| Secondary Actions | Edit parsed fields; Request re-parse; Reject import; Save draft; View original JD evidence |
+| Source IDs | BP-JOB-001; BR-JOB-001; BR-JOB-002; BR-JOB-003; UC-JOB-002; UC-JOB-003 |
+
+### SCREEN-JOB-003: JD Version History
+
+| Field | Value |
+|---|---|
+| Purpose | View JD versions, parsed criteria versions, and linked screening batches. |
+| Primary User | HR Manager |
+| Entry Point | Parsed JD review or job detail |
+| Primary Action | Compare versions |
+| Secondary Actions | View original JD evidence; View linked screening results; Set latest approved version |
+| Source IDs | BR-JOB-003; BR-SCR-001; UC-JOB-003; UC-SCR-TRACE |
+
+### DATA-CV-001: CandidateCV
+
+| Field | Value |
+|---|---|
+| Business Meaning | Original CV PDF file and provenance for candidate source of truth. |
+| Lifecycle | Created on CV import/upload; versioned; retained per policy. |
+| Sensitivity | confidential |
+| Retention | BLOCKED: BQ-003. |
+| Source IDs | BP-CV-001; BR-CV-001; BR-CV-002; UC-CV-001 |
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| cvFileId | uuid | yes | CV file identifier |
+| candidateId | uuid | yes | Owning candidate |
+| originalFileName | string | yes | Original upload name |
+| driveFileId | string | no | Google Drive file ID if imported |
+| uploadedAt | datetime | yes | Upload timestamp |
+
+### DATA-CV-002: CVVersion
+
+| Field | Value |
+|---|---|
+| Business Meaning | Candidate CV version record. |
+| Lifecycle | Created whenever a new CV PDF is imported for a candidate. |
+| Sensitivity | confidential |
+| Retention | BLOCKED: BQ-003. |
+| Source IDs | BR-CV-003; UC-CV-002 |
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| cvVersionId | uuid | yes | CV version identifier |
+| candidateId | uuid | yes | Owning candidate |
+| cvFileId | uuid | yes | Associated CV file |
+| versionNumber | integer | yes | Sequential version |
+| createdAt | datetime | yes | Version creation time |
+
+### DATA-CV-003: CVExtractionResult
+
+| Field | Value |
+|---|---|
+| Business Meaning | LLM extraction result from text-native PDF CV. |
+| Lifecycle | Created after extraction, linked to CVVersion. |
+| Sensitivity | confidential |
+| Retention | BLOCKED: BQ-003. |
+| Source IDs | BP-CV-001; BR-CV-001; RISK-013 |
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| extractionId | uuid | yes | Extraction identifier |
+| cvVersionId | uuid | yes | Source CV version |
+| extractedProfile | object | yes | Structured candidate profile |
+| confidence | number | yes | Extraction confidence 0-1 |
+| extractedAt | datetime | yes | Extraction timestamp |
+
+### DATA-JOB-001: Job
+
+| Field | Value |
+|---|---|
+| Business Meaning | Recruitment opening independent from candidate source. |
+| Lifecycle | Created/imported, receives JD versions, referenced by CandidateApplication. |
+| Sensitivity | internal |
+| Retention | BLOCKED: BQ-003 if confidential. |
+| Source IDs | BP-JOB-001; UC-JOB-001 |
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| jobId | uuid | yes | Job identifier |
+| title | string | yes | Job title |
+| department | string | no | Department |
+| status | enum | yes | open/closed/paused |
+| createdAt | datetime | yes | Creation time |
+
+### DATA-JOB-002: OriginalJDDocument
+
+| Field | Value |
+|---|---|
+| Business Meaning | Original JD text/file/import evidence. |
+| Lifecycle | Created on JD source submission; retained as evidence/reference. |
+| Sensitivity | internal |
+| Retention | BLOCKED: BQ-003. |
+| Source IDs | BR-JOB-001; UC-JOB-001 |
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| jdDocumentId | uuid | yes | JD evidence ID |
+| jobId | uuid | yes | Owning job |
+| sourceType | enum | yes | text/pdf/docx/drive/sheet |
+| content | text | yes | Original JD content or file ref |
+| uploadedAt | datetime | yes | Submission time |
+
+### DATA-JOB-003: JDVersion
+
+| Field | Value |
+|---|---|
+| Business Meaning | Versioned JD profile approval record. |
+| Lifecycle | Created for JD document update or approval cycle. |
+| Sensitivity | internal |
+| Retention | BLOCKED: BQ-003. |
+| Source IDs | BR-JOB-002; BR-JOB-003; UC-JOB-003 |
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| jdVersionId | uuid | yes | JD version ID |
+| jobId | uuid | yes | Owning job |
+| versionNumber | integer | yes | Sequential version |
+| status | enum | yes | draft/pending/approved/rejected |
+| approvedAt | datetime | no | Approval timestamp |
+
+### DATA-JOB-004: ParsedJDProfile
+
+| Field | Value |
+|---|---|
+| Business Meaning | HR-reviewed parsed JD criteria used as matching source of truth. |
+| Lifecycle | Created by LLM parse, edited/re-parsed, approved by HR. |
+| Sensitivity | internal |
+| Retention | BLOCKED: BQ-003. |
+| Source IDs | BR-JOB-001; BR-JOB-002; BR-JOB-003; UC-JOB-002 |
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| parsedProfileId | uuid | yes | Parsed profile ID |
+| jdVersionId | uuid | yes | Source JD version |
+| parsedCriteriaVersion | integer | yes | Criteria version number |
+| skills | array | yes | Required/preferred skills |
+| status | enum | yes | draft/pending/approved/rejected |
+
+### DATA-APP-001: CandidateApplication
+
+| Field | Value |
+|---|---|
+| Business Meaning | Canonical candidate-job relationship for application and screening traceability. |
+| Lifecycle | Created when candidate is applied/matched to job; links CV/JD versions for screening. |
+| Sensitivity | internal |
+| Retention | BLOCKED: BQ-003. |
+| Source IDs | BP-001; BR-SCR-001; UC-SCR-TRACE |
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| applicationId | uuid | yes | Application ID |
+| candidateId | uuid | yes | Candidate reference |
+| jobId | uuid | yes | Job reference |
+| cvVersionId | uuid | yes | CV version used |
+| jdVersionId | uuid | yes | JD version used |
+| parsedCriteriaVersion | integer | yes | Criteria version used |
+
+### API-JOB-001: Job/JD Intake Interface
+
+| Field | Value |
+|---|---|
+| Interface Type | REST/File |
+| Method / Event | POST |
+| Path / Topic / Command | /imports/jobs |
+| Purpose | Create/import Job/JD separately from Candidate/CV Intake. |
+| Auth Required | yes |
+| Permission Rule | BR-011 |
+| Source IDs | BP-JOB-001; UC-JOB-001 |
+
+### API-JOB-002: JD Parse and Approval Interface
+
+| Field | Value |
+|---|---|
+| Interface Type | RPC/REST |
+| Method / Event | parse_jd / approve_parsed_jd |
+| Path / Topic / Command | jd.parse / /jobs/{jobId}/parsed-jd/approve |
+| Purpose | Parse JD into ParsedJDProfile and approve it before matching. |
+| Auth Required | yes |
+| Permission Rule | BR-011 |
+| Source IDs | BR-JOB-001; BR-JOB-002; BR-JOB-003; UC-JOB-002; UC-JOB-003 |
+
+### API-JOB-003: External Job Source Connector Mock Interface
+
+| Field | Value |
+|---|---|
+| Interface Type | REST |
+| Method / Event | GET |
+| Path / Topic / Command | /job-source-connectors/mock-status |
+| Purpose | Return prototype-only mock status and requisition previews for external job sources. |
+| Auth Required | yes |
+| Permission Rule | BR-011 |
+| Source IDs | BP-JOB-002; BR-JOB-004; UC-JOB-004 |
+
+### VAL-CV-001: CV must be PDF and text-native
+
+| Field | Value |
+|---|---|
+| Applies To | CandidateCV.fileType |
+| Rule | Only text-native PDF CV files are accepted; OCR is out of scope. |
+| Failure Message | Only text-native PDF CV files are accepted; OCR is out of scope. |
+| Source IDs | BR-CV-002 |
+
+### VAL-CV-002: Drive CV scan flags invalid items
+
+| Field | Value |
+|---|---|
+| Applies To | Drive CV import |
+| Rule | Drive CV scan must flag non-PDF files and nested folders. |
+| Failure Message | Invalid Drive items must be reported to HR. |
+| Source IDs | UC-CV-001 |
+
+### VAL-CV-003: New CV version no auto re-screen
+
+| Field | Value |
+|---|---|
+| Applies To | CVVersion |
+| Rule | New CV version must not auto re-screen later-stage candidates. |
+| Failure Message | HR must manually decide whether to re-screen. |
+| Source IDs | BR-CV-003 |
+
+### VAL-JOB-001: ParsedJDProfile approval required
+
+| Field | Value |
+|---|---|
+| Applies To | ParsedJDProfile.status |
+| Rule | ParsedJDProfile must be approved before screening. |
+| Failure Message | Approve parsed JD profile before matching. |
+| Source IDs | BR-JOB-002 |
+
+### VAL-JOB-002: ParsedJDProfile minimum criteria
+
+| Field | Value |
+|---|---|
+| Applies To | ParsedJDProfile |
+| Rule | ParsedJDProfile must contain minimum criteria before approval. |
+| Failure Message | Required skills, responsibilities, and language/seniority fields must be present before approval. |
+| Source IDs | UC-JOB-002 |
+
+### VAL-SCR-001: Screening trace fields required
+
+| Field | Value |
+|---|---|
+| Applies To | ScreeningResult |
+| Rule | Screening result must include CV and JD version references. |
+| Failure Message | candidateId, cvVersionId, jobId, jdVersionId, and parsedCriteriaVersion are required. |
+| Source IDs | BR-SCR-001 |
+
+### TEST-JOB-001: JD text parse and HR approval
+
+| Field | Value |
+|---|---|
+| Type | integration |
+| Scenario | JD text input parses and requires HR approval |
+| Steps | Submit JD text; Run parse; Attempt screening before approval; Approve parsed JD |
+| Expected Result | Screening is blocked before approval and allowed after approval. |
+| Source IDs | UC-JOB-002; API-JOB-002; VAL-JOB-001 |
+
+### TEST-JOB-002: Drive JD and Sheet requisition import
+
+| Field | Value |
+|---|---|
+| Type | integration |
+| Scenario | Drive JD and Sheet requisition import create job drafts |
+| Steps | Import JD from Drive; Import requisition from Sheet/Excel |
+| Expected Result | Job/JD drafts and original evidence records are created with validation results. |
+| Source IDs | UC-JOB-001; API-JOB-001 |
+
+### TEST-JOB-003: JD version traceability
+
+| Field | Value |
+|---|---|
+| Type | e2e |
+| Scenario | JD version update preserves screening traceability |
+| Steps | Approve JD v1; Run screening; Create JD v2; Run screening again |
+| Expected Result | Each result stores correct jobId, jdVersionId, and parsedCriteriaVersion. |
+| Source IDs | UC-JOB-003; UC-SCR-TRACE; VAL-SCR-001 |
+
+### TEST-JOB-004: External connector mock marking
+
+| Field | Value |
+|---|---|
+| Type | ui |
+| Scenario | External connector mock is clearly marked |
+| Steps | Open connector mock section; Inspect preview |
+| Expected Result | Mock status and full requisition preview are visible and marked not real integration. |
+| Source IDs | UC-JOB-004; API-JOB-003 |
+
+### TEST-SCR-TRACE: Screening CV/JD trace fields
+
+| Field | Value |
+|---|---|
+| Type | contract |
+| Scenario | Screening request and response include all CV/JD trace fields |
+| Steps | Call screening interface with version IDs; Validate response |
+| Expected Result | candidateId, cvVersionId, jobId, jdVersionId, and parsedCriteriaVersion are present. |
+| Source IDs | API-003; BR-SCR-001 |

@@ -1,229 +1,173 @@
-﻿{
+{
     "metadata":  {
                      "productName":  "RecruitAI",
-                     "generatedAt":  "2026-05-13T10:34:00Z",
+                     "generatedAt":  "2026-05-14T00:00:00Z",
                      "gate2Status":  "CONDITIONAL_PASS",
                      "reviewStatus":  "CONDITIONAL_PASS",
                      "gate3Status":  "CONDITIONAL_PASS",
                      "gate3GeneratedAt":  "2026-05-12T00:00:00Z",
                      "gate4Status":  "CONDITIONAL_PASS",
-                     "gate4GeneratedAt":  "2026-05-13T10:34:00Z"
+                     "gate4GeneratedAt":  "2026-05-14T00:00:00Z"
                  },
     "endToEndTraceability":  [
                                  {
                                      "rawId":  "RAW-001",
-                                     "requirementId":  "REQ-F-001, REQ-F-005, REQ-F-006",
+                                     "requirementId":  "REQ-F-001, REQ-D-002, REQ-D-016, REQ-I-001, REQ-C-014",
                                      "businessIds":  [
-
+                                                         "BP-CV-001",
+                                                         "BR-CV-001",
+                                                         "BR-CV-004",
+                                                         "UC-CV-001"
                                                      ],
                                      "detailIds":  [
-
+                                                       "SCREEN-002",
+                                                       "DATA-CV-001",
+                                                       "DATA-CV-002",
+                                                       "API-001",
+                                                       "VAL-CV-001",
+                                                       "TEST-001"
                                                    ],
                                      "testIds":  [
-
+                                                     "TEST-001"
                                                  ],
-                                     "status":  "partial",
-                                     "notes":  "Awaiting business/detail"
+                                     "status":  "complete",
+                                     "notes":  "CV batch import is PDF-first via Drive/multi-file upload; Excel only metadata support"
                                  },
                                  {
                                      "rawId":  "RAW-002",
-                                     "requirementId":  "REQ-F-002",
+                                     "requirementId":  "REQ-F-002, REQ-D-001, REQ-D-002",
                                      "businessIds":  [
-
+                                                         "BP-CV-001",
+                                                         "UC-CV-001"
                                                      ],
                                      "detailIds":  [
-                                                       "API-001",
-                                                       "DATA-001",
-                                                       "DATA-002",
-                                                       "EDGE-001",
-                                                       "SCREEN-001",
                                                        "SCREEN-002",
-                                                       "STATE-001",
-                                                       "STATE-002",
-                                                       "STATE-003",
-                                                       "STATE-004",
-                                                       "STATE-005",
-                                                       "STATE-006",
-                                                       "STATE-007",
-                                                       "STATE-008",
-                                                       "STATE-009",
-                                                       "STATE-010",
-                                                       "STATE-011",
-                                                       "STATE-012",
-                                                       "STATE-013",
-                                                       "STATE-014",
-                                                       "STATE-015",
-                                                       "STATE-016",
-                                                       "STATE-017",
-                                                       "STATE-018",
-                                                       "TEST-001",
-                                                       "VAL-001"
+                                                       "DATA-001",
+                                                       "DATA-CV-001",
+                                                       "API-001"
                                                    ],
                                      "testIds":  [
                                                      "TEST-001"
                                                  ],
-                                     "status":  "partial",
-                                     "notes":  ""
+                                     "status":  "complete",
+                                     "notes":  "Manual candidate creation uses single CV PDF upload; Job creation separated"
                                  },
                                  {
                                      "rawId":  "RAW-003",
-                                     "requirementId":  "REQ-F-003, REQ-F-005, REQ-I-001",
+                                     "requirementId":  "REQ-F-003, REQ-I-001",
                                      "businessIds":  [
-
+                                                         "BP-CV-001",
+                                                         "UC-CV-001",
+                                                         "RISK-012"
                                                      ],
                                      "detailIds":  [
-
+                                                       "SCREEN-002",
+                                                       "API-001",
+                                                       "VAL-CV-002",
+                                                       "TEST-002"
                                                    ],
                                      "testIds":  [
-
+                                                     "TEST-002"
                                                  ],
-                                     "status":  "partial",
-                                     "notes":  ""
+                                     "status":  "complete",
+                                     "notes":  "Drive folder trigger/scan for CV intake with invalid item errors"
                                  },
                                  {
                                      "rawId":  "RAW-004",
-                                     "requirementId":  "REQ-F-004",
+                                     "requirementId":  "REQ-F-004, REQ-F-068, REQ-F-069, REQ-D-003, REQ-D-017, REQ-I-001, REQ-I-008, REQ-C-016, REQ-C-020",
                                      "businessIds":  [
-
+                                                         "BP-JOB-001",
+                                                         "BR-JOB-001",
+                                                         "BR-JOB-002",
+                                                         "UC-JOB-001",
+                                                         "UC-JOB-002",
+                                                         "RISK-014"
                                                      ],
                                      "detailIds":  [
-                                                       "API-001",
-                                                       "DATA-001",
-                                                       "DATA-002",
-                                                       "EDGE-001",
-                                                       "SCREEN-001",
-                                                       "SCREEN-002",
-                                                       "STATE-001",
-                                                       "STATE-002",
-                                                       "STATE-003",
-                                                       "STATE-004",
-                                                       "STATE-005",
-                                                       "STATE-006",
-                                                       "STATE-007",
-                                                       "STATE-008",
-                                                       "STATE-009",
-                                                       "STATE-010",
-                                                       "STATE-011",
-                                                       "STATE-012",
-                                                       "STATE-013",
-                                                       "STATE-014",
-                                                       "STATE-015",
-                                                       "STATE-016",
-                                                       "STATE-017",
-                                                       "STATE-018",
-                                                       "TEST-001",
-                                                       "VAL-001"
+                                                       "SCREEN-JOB-001",
+                                                       "SCREEN-JOB-002",
+                                                       "DATA-JOB-001",
+                                                       "DATA-JOB-002",
+                                                       "DATA-JOB-003",
+                                                       "DATA-JOB-004",
+                                                       "API-JOB-001",
+                                                       "API-JOB-002",
+                                                       "VAL-JOB-001",
+                                                       "VAL-JOB-002",
+                                                       "TEST-JOB-001",
+                                                       "TEST-JOB-002"
                                                    ],
                                      "testIds":  [
-                                                     "TEST-001"
+                                                     "TEST-JOB-001",
+                                                     "TEST-JOB-002"
                                                  ],
-                                     "status":  "partial",
-                                     "notes":  ""
+                                     "status":  "complete",
+                                     "notes":  "Job/JD Intake supports manual/text/file/Drive/Sheet and parsed JD approval"
                                  },
                                  {
                                      "rawId":  "RAW-005",
-                                     "requirementId":  "REQ-F-010, REQ-F-011, REQ-F-015, REQ-F-016, REQ-F-018",
+                                     "requirementId":  "REQ-F-005, REQ-F-010, REQ-D-001, REQ-D-015, REQ-C-002",
                                      "businessIds":  [
-
+                                                         "BP-CV-001",
+                                                         "BR-CV-001",
+                                                         "BR-CV-002",
+                                                         "UC-CV-001",
+                                                         "RISK-013"
                                                      ],
                                      "detailIds":  [
-
+                                                       "SCREEN-002",
+                                                       "DATA-CV-003",
+                                                       "API-002",
+                                                       "VAL-CV-001",
+                                                       "TEST-001",
+                                                       "TEST-002"
                                                    ],
                                      "testIds":  [
-
+                                                     "TEST-001",
+                                                     "TEST-002"
                                                  ],
-                                     "status":  "partial",
-                                     "notes":  ""
+                                     "status":  "complete",
+                                     "notes":  "LLM extraction from text-native PDF CV; OCR excluded"
                                  },
                                  {
                                      "rawId":  "RAW-006",
-                                     "requirementId":  "REQ-F-011",
+                                     "requirementId":  "REQ-F-011, REQ-F-078, REQ-D-004, REQ-D-019, REQ-C-018",
                                      "businessIds":  [
-
+                                                         "BP-002",
+                                                         "BR-SCR-001",
+                                                         "UC-SCR-TRACE",
+                                                         "RISK-015"
                                                      ],
                                      "detailIds":  [
-                                                       "API-002",
+                                                       "DATA-APP-001",
                                                        "API-003",
-                                                       "API-004",
-                                                       "DATA-002",
-                                                       "DATA-003",
-                                                       "DATA-004",
-                                                       "DATA-005",
-                                                       "SCREEN-001",
-                                                       "SCREEN-003",
-                                                       "STATE-001",
-                                                       "STATE-002",
-                                                       "STATE-003",
-                                                       "STATE-004",
-                                                       "STATE-005",
-                                                       "STATE-006",
-                                                       "STATE-007",
-                                                       "STATE-008",
-                                                       "STATE-009",
-                                                       "STATE-010",
-                                                       "STATE-011",
-                                                       "STATE-012",
-                                                       "STATE-013",
-                                                       "STATE-014",
-                                                       "STATE-015",
-                                                       "STATE-016",
-                                                       "STATE-017",
-                                                       "STATE-018",
-                                                       "TEST-004",
-                                                       "TEST-005",
-                                                       "VAL-004"
+                                                       "VAL-SCR-001",
+                                                       "TEST-SCR-TRACE"
                                                    ],
                                      "testIds":  [
-                                                     "TEST-004",
-                                                     "TEST-005"
+                                                     "TEST-SCR-TRACE"
                                                  ],
-                                     "status":  "partial",
-                                     "notes":  ""
+                                     "status":  "complete",
+                                     "notes":  "Matching uses CandidateProfile/CVVersion and approved ParsedJDProfile/ParsedCriteriaVersion"
                                  },
                                  {
                                      "rawId":  "RAW-007",
-                                     "requirementId":  "REQ-F-012",
+                                     "requirementId":  "REQ-F-012, REQ-F-078, REQ-D-004, REQ-C-018",
                                      "businessIds":  [
-
+                                                         "BP-002",
+                                                         "BR-SCR-001",
+                                                         "UC-SCR-TRACE"
                                                      ],
                                      "detailIds":  [
-                                                       "API-002",
                                                        "API-003",
-                                                       "API-004",
-                                                       "DATA-002",
-                                                       "DATA-003",
-                                                       "DATA-004",
-                                                       "DATA-005",
-                                                       "SCREEN-001",
-                                                       "SCREEN-003",
-                                                       "STATE-001",
-                                                       "STATE-002",
-                                                       "STATE-003",
-                                                       "STATE-004",
-                                                       "STATE-005",
-                                                       "STATE-006",
-                                                       "STATE-007",
-                                                       "STATE-008",
-                                                       "STATE-009",
-                                                       "STATE-010",
-                                                       "STATE-011",
-                                                       "STATE-012",
-                                                       "STATE-013",
-                                                       "STATE-014",
-                                                       "STATE-015",
-                                                       "STATE-016",
-                                                       "STATE-017",
-                                                       "STATE-018",
-                                                       "TEST-004",
-                                                       "TEST-005",
-                                                       "VAL-004"
+                                                       "VAL-SCR-001",
+                                                       "TEST-SCR-TRACE"
                                                    ],
                                      "testIds":  [
-                                                     "TEST-004",
-                                                     "TEST-005"
+                                                     "TEST-SCR-TRACE"
                                                  ],
-                                     "status":  "partial",
-                                     "notes":  ""
+                                     "status":  "complete",
+                                     "notes":  "Score and summary trace to CV/JD version fields"
                                  },
                                  {
                                      "rawId":  "RAW-008",
@@ -1195,6 +1139,127 @@
                                                  ],
                                      "status":  "complete",
                                      "notes":  "Phase 2 prototype: CV Evidence Viewer"
+                                 },
+                                 {
+                                     "rawId":  "RAW-042",
+                                     "requirementId":  "REQ-F-001, REQ-F-076, REQ-D-016, REQ-C-015",
+                                     "businessIds":  [
+                                                         "BP-CV-001",
+                                                         "BR-CV-003",
+                                                         "UC-CV-002"
+                                                     ],
+                                     "detailIds":  [
+                                                       "SCREEN-002",
+                                                       "DATA-CV-002",
+                                                       "VAL-CV-003"
+                                                   ],
+                                     "testIds":  [
+
+                                                 ],
+                                     "status":  "complete",
+                                     "notes":  "CV versioning and manual re-screen decision"
+                                 },
+                                 {
+                                     "rawId":  "RAW-043",
+                                     "requirementId":  "REQ-F-005, REQ-D-002, REQ-C-009",
+                                     "businessIds":  [
+                                                         "BR-CV-001",
+                                                         "BP-CV-001"
+                                                     ],
+                                     "detailIds":  [
+                                                       "DATA-CV-001",
+                                                       "DATA-CV-003",
+                                                       "API-002"
+                                                   ],
+                                     "testIds":  [
+
+                                                 ],
+                                     "status":  "complete",
+                                     "notes":  "Original CV PDF is candidate source of truth"
+                                 },
+                                 {
+                                     "rawId":  "RAW-044",
+                                     "requirementId":  "REQ-F-006, REQ-F-069, REQ-D-003, REQ-C-016, REQ-C-020",
+                                     "businessIds":  [
+                                                         "BR-JOB-001",
+                                                         "BR-JOB-002",
+                                                         "UC-JOB-002"
+                                                     ],
+                                     "detailIds":  [
+                                                       "SCREEN-JOB-002",
+                                                       "DATA-JOB-004",
+                                                       "API-JOB-002",
+                                                       "VAL-JOB-001"
+                                                   ],
+                                     "testIds":  [
+                                                     "TEST-JOB-001"
+                                                 ],
+                                     "status":  "complete",
+                                     "notes":  "HR-approved ParsedJDProfile is JD source of truth"
+                                 },
+                                 {
+                                     "rawId":  "RAW-045",
+                                     "requirementId":  "REQ-F-076, REQ-F-078, REQ-D-003, REQ-C-017, REQ-C-018",
+                                     "businessIds":  [
+                                                         "BR-JOB-003",
+                                                         "BR-SCR-001",
+                                                         "UC-JOB-003",
+                                                         "UC-SCR-TRACE"
+                                                     ],
+                                     "detailIds":  [
+                                                       "SCREEN-JOB-003",
+                                                       "DATA-JOB-003",
+                                                       "DATA-JOB-004",
+                                                       "DATA-APP-001",
+                                                       "VAL-SCR-001",
+                                                       "TEST-JOB-003"
+                                                   ],
+                                     "testIds":  [
+                                                     "TEST-JOB-003"
+                                                 ],
+                                     "status":  "complete",
+                                     "notes":  "JDVersion and ParsedCriteriaVersion preserve screening reproducibility"
+                                 },
+                                 {
+                                     "rawId":  "RAW-046",
+                                     "requirementId":  "REQ-F-077, REQ-D-018, REQ-I-009, REQ-C-019",
+                                     "businessIds":  [
+                                                         "BP-JOB-002",
+                                                         "BR-JOB-004",
+                                                         "UC-JOB-004",
+                                                         "RISK-016"
+                                                     ],
+                                     "detailIds":  [
+                                                       "SCREEN-JOB-001",
+                                                       "API-JOB-003",
+                                                       "TEST-JOB-004"
+                                                   ],
+                                     "testIds":  [
+                                                     "TEST-JOB-004"
+                                                 ],
+                                     "status":  "complete",
+                                     "notes":  "External job source connectors are prototype-only mock UI/status"
+                                 },
+                                 {
+                                     "rawId":  "RAW-047",
+                                     "requirementId":  "REQ-F-068, REQ-F-069, REQ-C-016, REQ-C-020",
+                                     "businessIds":  [
+                                                         "BR-JOB-001",
+                                                         "BR-JOB-002",
+                                                         "UC-JOB-002"
+                                                     ],
+                                     "detailIds":  [
+                                                       "SCREEN-JOB-002",
+                                                       "API-JOB-002",
+                                                       "VAL-JOB-001",
+                                                       "VAL-JOB-002",
+                                                       "TEST-JOB-001"
+                                                   ],
+                                     "testIds":  [
+                                                     "TEST-JOB-001"
+                                                 ],
+                                     "status":  "complete",
+                                     "notes":  "JD rejection recovery supports edit/resubmit or re-upload/re-parse"
                                  }
                              ],
     "orphanItems":  [

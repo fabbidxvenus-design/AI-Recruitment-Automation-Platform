@@ -4,7 +4,7 @@
     "projectType": "data-ai",
     "language": "bilingual",
     "version": "0.2.0",
-    "generatedAt": "2026-05-13T00:00:00Z",
+    "generatedAt": "2026-05-14T00:00:00Z",
     "upstream": "03-business-definition.md/json",
     "gate": "Gate 4 Detail Definition",
     "status": "CONDITIONAL_PASS",
@@ -1097,6 +1097,70 @@
         "REQ-C-011",
         "REQ-C-012"
       ]
+    },
+    {
+      "secondaryActions": [
+        "View original JD evidence",
+        "Run or retry JD parse",
+        "Open parsed JD review",
+        "Preview mock external connector status"
+      ],
+      "entryPoint": "Dashboard create job CTA or Job Source workspace",
+      "name": "Job/JD Intake",
+      "sourceIds": [
+        "BP-JOB-001",
+        "BP-JOB-002",
+        "BR-JOB-001",
+        "BR-JOB-004",
+        "UC-JOB-001",
+        "UC-JOB-004"
+      ],
+      "purpose": "Create or import Job/JD from supported MVP sources and route parsed JD profiles for HR approval.",
+      "id": "SCREEN-JOB-001",
+      "primaryAction": "Create/import Job/JD from manual form, JD text, file upload, Drive, or Sheet/Excel",
+      "primaryUser": "HR Recruiter"
+    },
+    {
+      "secondaryActions": [
+        "Edit parsed fields",
+        "Request re-parse",
+        "Reject import",
+        "Save draft",
+        "View original JD evidence"
+      ],
+      "entryPoint": "Job/JD Intake parse completion or pending approval queue",
+      "name": "Parsed JD Review and Approval",
+      "sourceIds": [
+        "BP-JOB-001",
+        "BR-JOB-001",
+        "BR-JOB-002",
+        "BR-JOB-003",
+        "UC-JOB-002",
+        "UC-JOB-003"
+      ],
+      "purpose": "Allow HR to review, edit, re-parse, reject, or approve ParsedJDProfile before matching.",
+      "id": "SCREEN-JOB-002",
+      "primaryAction": "Approve ParsedJDProfile",
+      "primaryUser": "HR Manager"
+    },
+    {
+      "secondaryActions": [
+        "View original JD evidence",
+        "View linked screening results",
+        "Set latest approved version"
+      ],
+      "entryPoint": "Parsed JD review or job detail",
+      "name": "JD Version History",
+      "sourceIds": [
+        "BR-JOB-003",
+        "BR-SCR-001",
+        "UC-JOB-003",
+        "UC-SCR-TRACE"
+      ],
+      "purpose": "View JD versions, parsed criteria versions, and linked screening batches.",
+      "id": "SCREEN-JOB-003",
+      "primaryAction": "Compare versions",
+      "primaryUser": "HR Manager"
     }
   ],
   "interfaces": [
@@ -1700,7 +1764,11 @@
         "REQ-C-007",
         "REQ-C-012",
         "REQ-C-013"
-      ]
+      ],
+      "interfaceType": "REST",
+      "methodOrEvent": "POST",
+      "pathOrTopicOrCommand": "/api/content/generate",
+      "purpose": "Generate AI recruitment content draft from template and prompt."
     },
     {
       "id": "API-012",
@@ -1750,7 +1818,11 @@
         "REQ-C-007",
         "REQ-C-012",
         "REQ-C-013"
-      ]
+      ],
+      "interfaceType": "REST",
+      "methodOrEvent": "POST",
+      "pathOrTopicOrCommand": "/api/content/approve",
+      "purpose": "Approve or reject generated content for external use."
     },
     {
       "id": "API-013",
@@ -1791,7 +1863,11 @@
         "REQ-I-006",
         "REQ-C-008",
         "REQ-C-012"
-      ]
+      ],
+      "interfaceType": "REST",
+      "methodOrEvent": "POST",
+      "pathOrTopicOrCommand": "/api/design/generate",
+      "purpose": "Generate mock design image from brief."
     },
     {
       "id": "API-014",
@@ -1838,7 +1914,11 @@
         "REQ-I-006",
         "REQ-C-008",
         "REQ-C-012"
-      ]
+      ],
+      "interfaceType": "REST",
+      "methodOrEvent": "POST",
+      "pathOrTopicOrCommand": "/api/design/approve",
+      "purpose": "Approve or reject mock design for export."
     },
     {
       "id": "API-015",
@@ -1876,7 +1956,11 @@
         "REQ-D-012",
         "REQ-C-009",
         "REQ-C-010"
-      ]
+      ],
+      "interfaceType": "REST",
+      "methodOrEvent": "GET",
+      "pathOrTopicOrCommand": "/api/cv/{cvId}/evidence",
+      "purpose": "Retrieve structured CV evidence with original reference."
     },
     {
       "id": "API-016",
@@ -1922,7 +2006,11 @@
         "REQ-C-010",
         "REQ-C-011",
         "REQ-C-012"
-      ]
+      ],
+      "interfaceType": "REST",
+      "methodOrEvent": "POST",
+      "pathOrTopicOrCommand": "/api/cv/translate",
+      "purpose": "Generate CV translation draft for target language."
     },
     {
       "id": "API-017",
@@ -1972,7 +2060,11 @@
         "REQ-C-010",
         "REQ-C-011",
         "REQ-C-012"
-      ]
+      ],
+      "interfaceType": "REST",
+      "methodOrEvent": "POST",
+      "pathOrTopicOrCommand": "/api/cv/translation/approve",
+      "purpose": "Approve or reject CV translation for external use."
     },
     {
       "id": "API-018",
@@ -2015,7 +2107,11 @@
         "REQ-C-010",
         "REQ-C-011",
         "REQ-C-012"
-      ]
+      ],
+      "interfaceType": "REST",
+      "methodOrEvent": "POST",
+      "pathOrTopicOrCommand": "/api/interview/translate",
+      "purpose": "Generate interview notes/transcript translation draft."
     },
     {
       "id": "API-019",
@@ -2062,6 +2158,56 @@
         "REQ-C-010",
         "REQ-C-011",
         "REQ-C-012"
+      ],
+      "interfaceType": "REST",
+      "methodOrEvent": "POST",
+      "pathOrTopicOrCommand": "/api/interview/translation/approve",
+      "purpose": "Approve or reject interview translation for external use."
+    },
+    {
+      "interfaceType": "REST/File",
+      "id": "API-JOB-001",
+      "pathOrTopicOrCommand": "/imports/jobs",
+      "purpose": "Create/import Job/JD separately from Candidate/CV Intake.",
+      "permissionRuleId": "BR-011",
+      "methodOrEvent": "POST",
+      "name": "Job/JD Intake Interface",
+      "authRequired": true,
+      "sourceIds": [
+        "BP-JOB-001",
+        "UC-JOB-001"
+      ]
+    },
+    {
+      "interfaceType": "RPC/REST",
+      "id": "API-JOB-002",
+      "pathOrTopicOrCommand": "jd.parse / /jobs/{jobId}/parsed-jd/approve",
+      "purpose": "Parse JD into ParsedJDProfile and approve it before matching.",
+      "permissionRuleId": "BR-011",
+      "methodOrEvent": "parse_jd / approve_parsed_jd",
+      "name": "JD Parse and Approval Interface",
+      "authRequired": true,
+      "sourceIds": [
+        "BR-JOB-001",
+        "BR-JOB-002",
+        "BR-JOB-003",
+        "UC-JOB-002",
+        "UC-JOB-003"
+      ]
+    },
+    {
+      "interfaceType": "REST",
+      "id": "API-JOB-003",
+      "pathOrTopicOrCommand": "/job-source-connectors/mock-status",
+      "purpose": "Return prototype-only mock status and requisition previews for external job sources.",
+      "permissionRuleId": "BR-011",
+      "methodOrEvent": "GET",
+      "name": "External Job Source Connector Mock Interface",
+      "authRequired": true,
+      "sourceIds": [
+        "BP-JOB-002",
+        "BR-JOB-004",
+        "UC-JOB-004"
       ]
     }
   ],
@@ -3723,6 +3869,330 @@
         "REQ-C-011",
         "REQ-C-012"
       ]
+    },
+    {
+      "retention": "BLOCKED: BQ-003.",
+      "fields": [
+        {
+          "name": "cvFileId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "candidateId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "originalFileName",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "driveFileId",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "uploadedAt",
+          "type": "datetime",
+          "required": true
+        }
+      ],
+      "sensitivity": "confidential",
+      "name": "CandidateCV",
+      "sourceIds": [
+        "BP-CV-001",
+        "BR-CV-001",
+        "BR-CV-002",
+        "UC-CV-001"
+      ],
+      "id": "DATA-CV-001",
+      "businessMeaning": "Original CV PDF file and provenance for candidate source of truth.",
+      "lifecycle": "Created on CV import/upload; versioned; retained per policy."
+    },
+    {
+      "retention": "BLOCKED: BQ-003.",
+      "fields": [
+        {
+          "name": "cvVersionId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "candidateId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "cvFileId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "versionNumber",
+          "type": "integer",
+          "required": true
+        },
+        {
+          "name": "createdAt",
+          "type": "datetime",
+          "required": true
+        }
+      ],
+      "sensitivity": "confidential",
+      "name": "CVVersion",
+      "sourceIds": [
+        "BR-CV-003",
+        "UC-CV-002"
+      ],
+      "id": "DATA-CV-002",
+      "businessMeaning": "Candidate CV version record.",
+      "lifecycle": "Created whenever a new CV PDF is imported for a candidate."
+    },
+    {
+      "retention": "BLOCKED: BQ-003.",
+      "fields": [
+        {
+          "name": "extractionId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "cvVersionId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "extractedProfile",
+          "type": "object",
+          "required": true
+        },
+        {
+          "name": "confidence",
+          "type": "number",
+          "required": true
+        },
+        {
+          "name": "extractedAt",
+          "type": "datetime",
+          "required": true
+        }
+      ],
+      "sensitivity": "confidential",
+      "name": "CVExtractionResult",
+      "sourceIds": [
+        "BP-CV-001",
+        "BR-CV-001",
+        "RISK-013"
+      ],
+      "id": "DATA-CV-003",
+      "businessMeaning": "LLM extraction result from text-native PDF CV.",
+      "lifecycle": "Created after extraction, linked to CVVersion."
+    },
+    {
+      "retention": "BLOCKED: BQ-003 if confidential.",
+      "fields": [
+        {
+          "name": "jobId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "department",
+          "type": "string",
+          "required": false
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "required": true
+        },
+        {
+          "name": "createdAt",
+          "type": "datetime",
+          "required": true
+        }
+      ],
+      "sensitivity": "internal",
+      "name": "Job",
+      "sourceIds": [
+        "BP-JOB-001",
+        "UC-JOB-001"
+      ],
+      "id": "DATA-JOB-001",
+      "businessMeaning": "Recruitment opening independent from candidate source.",
+      "lifecycle": "Created/imported, receives JD versions, referenced by CandidateApplication."
+    },
+    {
+      "retention": "BLOCKED: BQ-003.",
+      "fields": [
+        {
+          "name": "jdDocumentId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "jobId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "sourceType",
+          "type": "enum",
+          "required": true
+        },
+        {
+          "name": "content",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "uploadedAt",
+          "type": "datetime",
+          "required": true
+        }
+      ],
+      "sensitivity": "internal",
+      "name": "OriginalJDDocument",
+      "sourceIds": [
+        "BR-JOB-001",
+        "UC-JOB-001"
+      ],
+      "id": "DATA-JOB-002",
+      "businessMeaning": "Original JD text/file/import evidence.",
+      "lifecycle": "Created on JD source submission; retained as evidence/reference."
+    },
+    {
+      "retention": "BLOCKED: BQ-003.",
+      "fields": [
+        {
+          "name": "jdVersionId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "jobId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "versionNumber",
+          "type": "integer",
+          "required": true
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "required": true
+        },
+        {
+          "name": "approvedAt",
+          "type": "datetime",
+          "required": false
+        }
+      ],
+      "sensitivity": "internal",
+      "name": "JDVersion",
+      "sourceIds": [
+        "BR-JOB-002",
+        "BR-JOB-003",
+        "UC-JOB-003"
+      ],
+      "id": "DATA-JOB-003",
+      "businessMeaning": "Versioned JD profile approval record.",
+      "lifecycle": "Created for JD document update or approval cycle."
+    },
+    {
+      "retention": "BLOCKED: BQ-003.",
+      "fields": [
+        {
+          "name": "parsedProfileId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "jdVersionId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "parsedCriteriaVersion",
+          "type": "integer",
+          "required": true
+        },
+        {
+          "name": "skills",
+          "type": "array",
+          "required": true
+        },
+        {
+          "name": "status",
+          "type": "enum",
+          "required": true
+        }
+      ],
+      "sensitivity": "internal",
+      "name": "ParsedJDProfile",
+      "sourceIds": [
+        "BR-JOB-001",
+        "BR-JOB-002",
+        "BR-JOB-003",
+        "UC-JOB-002"
+      ],
+      "id": "DATA-JOB-004",
+      "businessMeaning": "HR-reviewed parsed JD criteria used as matching source of truth.",
+      "lifecycle": "Created by LLM parse, edited/re-parsed, approved by HR."
+    },
+    {
+      "retention": "BLOCKED: BQ-003.",
+      "fields": [
+        {
+          "name": "applicationId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "candidateId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "jobId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "cvVersionId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "jdVersionId",
+          "type": "uuid",
+          "required": true
+        },
+        {
+          "name": "parsedCriteriaVersion",
+          "type": "integer",
+          "required": true
+        }
+      ],
+      "sensitivity": "internal",
+      "name": "CandidateApplication",
+      "sourceIds": [
+        "BP-001",
+        "BR-SCR-001",
+        "UC-SCR-TRACE"
+      ],
+      "id": "DATA-APP-001",
+      "businessMeaning": "Canonical candidate-job relationship for application and screening traceability.",
+      "lifecycle": "Created when candidate is applied/matched to job; links CV/JD versions for screening."
     }
   ],
   "states": [
@@ -4556,6 +5026,60 @@
         "REQ-C-011",
         "REQ-C-012"
       ]
+    },
+    {
+      "sourceIds": [
+        "BR-CV-002"
+      ],
+      "validation": "CV file must be PDF and text-native for MVP",
+      "id": "VAL-CV-001",
+      "errorMessage": "Only text-native PDF CV files are accepted; OCR is out of scope.",
+      "inputOrObject": "CandidateCV.fileType"
+    },
+    {
+      "sourceIds": [
+        "UC-CV-001"
+      ],
+      "validation": "Drive CV scan must flag non-PDF files and nested folders",
+      "id": "VAL-CV-002",
+      "errorMessage": "Invalid Drive items must be reported to HR.",
+      "inputOrObject": "Drive CV import"
+    },
+    {
+      "sourceIds": [
+        "BR-CV-003"
+      ],
+      "validation": "New CV version must not auto re-screen later-stage candidates",
+      "id": "VAL-CV-003",
+      "errorMessage": "HR must manually decide whether to re-screen.",
+      "inputOrObject": "CVVersion"
+    },
+    {
+      "sourceIds": [
+        "BR-JOB-002"
+      ],
+      "validation": "ParsedJDProfile must be approved before screening",
+      "id": "VAL-JOB-001",
+      "errorMessage": "Approve parsed JD profile before matching.",
+      "inputOrObject": "ParsedJDProfile.status"
+    },
+    {
+      "sourceIds": [
+        "UC-JOB-002"
+      ],
+      "validation": "ParsedJDProfile must contain minimum criteria before approval",
+      "id": "VAL-JOB-002",
+      "errorMessage": "Required skills, responsibilities, and language/seniority fields must be present before approval.",
+      "inputOrObject": "ParsedJDProfile"
+    },
+    {
+      "sourceIds": [
+        "BR-SCR-001"
+      ],
+      "validation": "Screening result must include CV and JD version references",
+      "id": "VAL-SCR-001",
+      "errorMessage": "candidateId, cvVersionId, jobId, jdVersionId, and parsedCriteriaVersion are required.",
+      "inputOrObject": "ScreeningResult"
     }
   ],
   "securityPrivacyCompliance": [
@@ -5664,6 +6188,82 @@
         "REQ-C-011",
         "REQ-C-012"
       ]
+    },
+    {
+      "id": "TEST-JOB-001",
+      "sourceIds": [
+        "UC-JOB-002",
+        "API-JOB-002",
+        "VAL-JOB-001"
+      ],
+      "steps": [
+        "Submit JD text",
+        "Run parse",
+        "Attempt screening before approval",
+        "Approve parsed JD"
+      ],
+      "type": "integration",
+      "expectedResult": "Screening is blocked before approval and allowed after approval.",
+      "scenario": "JD text input parses and requires HR approval"
+    },
+    {
+      "id": "TEST-JOB-002",
+      "sourceIds": [
+        "UC-JOB-001",
+        "API-JOB-001"
+      ],
+      "steps": [
+        "Import JD from Drive",
+        "Import requisition from Sheet/Excel"
+      ],
+      "type": "integration",
+      "expectedResult": "Job/JD drafts and original evidence records are created with validation results.",
+      "scenario": "Drive JD and Sheet requisition import create job drafts"
+    },
+    {
+      "id": "TEST-JOB-003",
+      "sourceIds": [
+        "UC-JOB-003",
+        "UC-SCR-TRACE",
+        "VAL-SCR-001"
+      ],
+      "steps": [
+        "Approve JD v1",
+        "Run screening",
+        "Create JD v2",
+        "Run screening again"
+      ],
+      "type": "e2e",
+      "expectedResult": "Each result stores correct jobId, jdVersionId, and parsedCriteriaVersion.",
+      "scenario": "JD version update preserves screening traceability"
+    },
+    {
+      "id": "TEST-JOB-004",
+      "sourceIds": [
+        "UC-JOB-004",
+        "API-JOB-003"
+      ],
+      "steps": [
+        "Open connector mock section",
+        "Inspect preview"
+      ],
+      "type": "ui",
+      "expectedResult": "Mock status and full requisition preview are visible and marked not real integration.",
+      "scenario": "External connector mock is clearly marked"
+    },
+    {
+      "id": "TEST-SCR-TRACE",
+      "sourceIds": [
+        "API-003",
+        "BR-SCR-001"
+      ],
+      "steps": [
+        "Call screening interface with version IDs",
+        "Validate response"
+      ],
+      "type": "contract",
+      "expectedResult": "candidateId, cvVersionId, jobId, jdVersionId, and parsedCriteriaVersion are present.",
+      "scenario": "Screening request and response include all CV/JD trace fields"
     }
   ],
   "edgeCases": [
@@ -10407,6 +11007,88 @@
       "blocksImplementation": true,
       "sourceIds": [
         "BQ-007"
+      ]
+    }
+  ],
+  "retryAndFallback": [
+    {
+      "id": "RETRY-001",
+      "area": "AI screening timeout",
+      "contract": "Screening request timeout = 30 seconds.",
+      "failureBehavior": "On timeout, move candidate to ERROR with reason SCREENING_TIMEOUT, assign owner, alert configured channel, and do not advance automatically.",
+      "sourceIds": [
+        "BP-002",
+        "BP-010",
+        "BR-015"
+      ]
+    },
+    {
+      "id": "RETRY-002",
+      "area": "Gmail delivery",
+      "contract": "Per-message maxEmailDeliveryRetries = 3 with backoff [60, 300, 900] seconds.",
+      "failureBehavior": "After exhaustion, route notification to ERROR, assign owner, alert configured channel, and keep candidate state unchanged.",
+      "sourceIds": [
+        "BP-010",
+        "BR-015",
+        "BR-017"
+      ]
+    },
+    {
+      "id": "RETRY-003",
+      "area": "Calendar availability/free-busy",
+      "contract": "maxRetries = 3 with backoff [60, 180, 300] seconds.",
+      "failureBehavior": "After exhaustion, route scheduling item to ERROR and require HR/Admin remediation; no Calendar event is created.",
+      "sourceIds": [
+        "BP-003",
+        "BP-010",
+        "BR-007",
+        "BR-015"
+      ]
+    },
+    {
+      "id": "RETRY-004",
+      "area": "Test grading",
+      "contract": "maxGradingRetries = 2 with backoff [120, 600] seconds.",
+      "failureBehavior": "After exhaustion, route to ERROR with manual grading/remediation owner and audit event.",
+      "sourceIds": [
+        "BP-005",
+        "BP-010",
+        "BR-009",
+        "BR-010",
+        "BR-015"
+      ]
+    },
+    {
+      "id": "RETRY-005",
+      "area": "Error remediation loop",
+      "contract": "remediationAttemptCount tracked; maxRemediationAttempts = 3.",
+      "failureBehavior": "After exhaustion, escalate to backup owner/Admin alert channel and keep item in ERROR; escalation never approves/rejects/skips.",
+      "sourceIds": [
+        "BP-010",
+        "BR-021",
+        "BQ-002"
+      ]
+    },
+    {
+      "id": "RETRY-006",
+      "area": "Owner fallback",
+      "contract": "If owner inactive/unavailable, reassign to backup owner from Q4-002; if unset, alert Admin and HR Manager after 4 business hours unassigned.",
+      "failureBehavior": "Alert and audit only; no automatic decision action.",
+      "sourceIds": [
+        "BP-010",
+        "BR-021",
+        "BQ-002"
+      ]
+    },
+    {
+      "id": "RETRY-007",
+      "area": "Interview evaluation SLA",
+      "contract": "Default evaluationSlaDeadline = submittedAt + 30 minutes.",
+      "failureBehavior": "If missed, mark evaluation stale, alert owner, and route to ERROR/manual review without advancing candidate.",
+      "sourceIds": [
+        "BP-004",
+        "BP-010",
+        "BR-015"
       ]
     }
   ]
