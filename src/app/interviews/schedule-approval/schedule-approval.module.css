@@ -73,6 +73,8 @@
 
 .slotItem {
   padding: var(--space-4);
+  width: 100%;
+  text-align: left;
   background: var(--color-surface-container-low);
   border-radius: 12px;
   cursor: pointer;

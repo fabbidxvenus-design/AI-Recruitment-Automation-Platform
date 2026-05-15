@@ -34,8 +34,8 @@
 }
 
 .closeButton {
-  width: 32px;
-  height: 32px;
+  min-width: 44px;
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -51,6 +51,11 @@
 .closeButton:hover {
   background-color: var(--color-surface-container);
   color: var(--color-text);
+}
+
+.closeButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .body {

@@ -1,14 +1,17 @@
+import { useTranslation } from 'react-i18next';
 import styles from './LoadingState.module.css';
 
 interface LoadingStateProps {
   text?: string;
 }
 
-export function LoadingState({ text = 'Loading...' }: LoadingStateProps) {
+export function LoadingState({ text }: LoadingStateProps) {
+  const { t } = useTranslation();
+
   return (
     <div className={styles.loadingState} role="status" aria-live="polite">
       <div className={styles.spinner} aria-hidden="true" />
-      <span className={styles.loadingText}>{text}</span>
+      <span className={styles.loadingText}>{text ?? t('common.loading')}</span>
     </div>
   );
 }

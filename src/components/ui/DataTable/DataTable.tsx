@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from './DataTable.module.css';
 
 interface Column<T> {
@@ -18,6 +19,7 @@ interface DataTableProps<T> {
   selectedRows?: Set<string | number>;
   onRowSelectionChange?: (selectedIds: Set<string | number>) => void;
   selectionAnnouncement?: string;
+  getRowSelectionLabel?: (row: T) => string;
 }
 
 export function DataTable<T extends { id: string | number }>({
@@ -26,13 +28,16 @@ export function DataTable<T extends { id: string | number }>({
   caption,
   striped = false,
   compact = false,
-  emptyMessage = 'No data available',
+  emptyMessage,
   rowSelectionEnabled = false,
   selectedRows = new Set(),
   onRowSelectionChange,
   selectionAnnouncement,
+  getRowSelectionLabel,
 }: DataTableProps<T>) {
+  const { t } = useTranslation();
   const tableClasses = `${styles.table} ${striped ? styles.striped : ''} ${compact ? styles.compact : ''}`;
+  const captionId = caption ? `table-caption-${caption.replace(/\s+/g, '-').toLowerCase()}` : undefined;
 
   const handleSelectAll = (checked: boolean) => {
     if (!onRowSelectionChange) return;
@@ -70,9 +75,9 @@ export function DataTable<T extends { id: string | number }>({
           {selectionAnnouncement}
         </div>
       )}
-      <table className={tableClasses} aria-describedby={caption ? `table-caption-${caption.replace(/\s+/g, '-').toLowerCase()}` : undefined}>
+      <table className={tableClasses} aria-describedby={captionId}>
         {caption && (
-          <caption id={`table-caption-${caption.replace(/\s+/g, '-').toLowerCase()}`} className="sr-only">
+          <caption id={captionId} className="sr-only">
             {caption}
           </caption>
         )}
@@ -87,7 +92,7 @@ export function DataTable<T extends { id: string | number }>({
                     if (el) el.indeterminate = someSelected;
                   }}
                   onChange={(e) => handleSelectAll(e.target.checked)}
-                  aria-label={allSelected ? 'Deselect all rows' : 'Select all rows'}
+                  aria-label={allSelected ? t('common.table.deselectAllRows') : t('common.table.selectAllRows')}
                 />
               </th>
             )}
@@ -100,7 +105,7 @@ export function DataTable<T extends { id: string | number }>({
           {data.length === 0 ? (
             <tr>
               <td colSpan={columns.length + (rowSelectionEnabled ? 1 : 0)} style={{ textAlign: 'center', padding: 'var(--space-6)' }}>
-                {emptyMessage}
+                {emptyMessage ?? t('common.table.noData')}
               </td>
             </tr>
           ) : (
@@ -112,15 +117,23 @@ export function DataTable<T extends { id: string | number }>({
                       type="checkbox"
                       checked={selectedRows.has(row.id)}
                       onChange={(e) => handleSelectRow(row.id, e.target.checked)}
-                      aria-label={`Select row for ${columns[0]?.header || 'item'}`}
+                      aria-label={t('common.table.selectRow', { item: getRowSelectionLabel?.(row) ?? String(row.id) })}
                     />
                   </td>
                 )}
-                {columns.map((col) => (
-                  <td key={col.key}>
-                    {col.render ? col.render(row) : (row as Record<string, unknown>)[col.key] as ReactNode}
-                  </td>
-                ))}
+                {columns.map((col, columnIndex) => {
+                  const cellContent = col.render ? col.render(row) : (row as Record<string, unknown>)[col.key] as ReactNode;
+
+                  return columnIndex === 0 ? (
+                    <th key={col.key} scope="row">
+                      {cellContent}
+                    </th>
+                  ) : (
+                    <td key={col.key}>
+                      {cellContent}
+                    </td>
+                  );
+                })}
               </tr>
             ))
           )}

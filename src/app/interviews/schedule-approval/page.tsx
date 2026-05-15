@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import Link from 'next/link';
+import { useLanguage } from '@/i18n';
+import { formatDate, formatTime } from '@/lib/formatDate';
 import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { StatusBadge } from '@/components/ui/StatusBadge';
@@ -11,7 +13,9 @@ import { mockScheduleSlots } from '@/lib/mockData';
 import styles from './schedule-approval.module.css';
 
 export default function ScheduleApprovalPage() {
-  const { t, i18n } = useTranslation();
+  const router = useRouter();
+  const { t } = useTranslation();
+  const { locale } = useLanguage();
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [showConflictWarning, setShowConflictWarning] = useState(false);
   const [slots, setSlots] = useState(mockScheduleSlots);
@@ -27,8 +31,8 @@ export default function ScheduleApprovalPage() {
     )));
     setFeedback({
       variant: 'success',
-      title: 'Interview slot approved',
-      body: slot ? `${slot.candidateName}'s workspace link is ready for the prototype interview.` : 'The selected slot was approved.',
+      title: t('interviews.scheduleApproval.feedback.approved.title'),
+      body: t('interviews.scheduleApproval.feedback.approved.body', { name: slot?.candidateName ?? t('common.notAvailable') }),
     });
   };
 
@@ -39,26 +43,27 @@ export default function ScheduleApprovalPage() {
     )));
     setFeedback({
       variant: 'warning',
-      title: 'Alternative requested',
-      body: slot ? `${slot.candidateName}'s proposed slot was rejected and marked for rescheduling.` : 'The selected slot was rejected.',
+      title: t('interviews.scheduleApproval.feedback.alternativeRequested.title'),
+      body: t('interviews.scheduleApproval.feedback.alternativeRequested.body', { name: slot?.candidateName ?? t('common.notAvailable') }),
     });
     setSelectedSlot(null);
   };
 
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
+  const formatScheduleDate = (dateStr: string) => formatDate(dateStr, locale, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 
-  const formatTime = (dateStr: string) => {
-    return new Date(dateStr).toLocaleTimeString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+  const formatScheduleTime = (dateStr: string) => formatTime(dateStr, locale, {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
+  const getInterviewTypeLabel = (interviewType: string): string => {
+    const interviewTypeKey = interviewType.split(' ')[0].toLowerCase();
+    return t(`interviews.scheduleApproval.type.${interviewTypeKey}`);
   };
 
   return (
@@ -98,10 +103,20 @@ export default function ScheduleApprovalPage() {
             <CardContent>
               <div className={styles.slotItems}>
                 {pendingSlots.map(slot => (
-                  <div
+                  <button
                     key={slot.id}
+                    type="button"
                     className={`${styles.slotItem} ${selectedSlot === slot.id ? styles.selected : ''}`}
                     onClick={() => setSelectedSlot(slot.id)}
+                    aria-pressed={selectedSlot === slot.id}
+                    aria-label={t('interviews.scheduleApproval.suggestedSlots.slotLabel', {
+                      candidate: slot.candidateName,
+                      type: getInterviewTypeLabel(slot.interviewType),
+                      interviewer: slot.interviewerName,
+                      date: formatScheduleDate(slot.scheduledAt),
+                      time: formatScheduleTime(slot.scheduledAt),
+                      duration: slot.duration,
+                    })}
                   >
                     <div className={styles.slotHeader}>
                       <span className={styles.candidateName}>{slot.candidateName}</span>
@@ -109,23 +124,23 @@ export default function ScheduleApprovalPage() {
                     </div>
                     <div className={styles.slotDetails}>
                       <div className={styles.slotDetail}>
-                        <span className={styles.detailIcon}>📋</span>
-                        <span>{slot.interviewType}</span>
+                        <span className={styles.detailIcon} aria-hidden="true">📋</span>
+                        <span>{getInterviewTypeLabel(slot.interviewType)}</span>
                       </div>
                       <div className={styles.slotDetail}>
-                        <span className={styles.detailIcon}>👤</span>
+                        <span className={styles.detailIcon} aria-hidden="true">👤</span>
                         <span>{slot.interviewerName}</span>
                       </div>
                       <div className={styles.slotDetail}>
-                        <span className={styles.detailIcon}>📅</span>
-                        <span>{formatDate(slot.scheduledAt)}</span>
+                        <span className={styles.detailIcon} aria-hidden="true">📅</span>
+                        <span>{formatScheduleDate(slot.scheduledAt)}</span>
                       </div>
                       <div className={styles.slotDetail}>
-                        <span className={styles.detailIcon}>⏰</span>
-                        <span>{formatTime(slot.scheduledAt)} ({slot.duration} {t('interviews.scheduleApproval.suggestedSlots.minDuration')})</span>
+                        <span className={styles.detailIcon} aria-hidden="true">⏰</span>
+                        <span>{formatScheduleTime(slot.scheduledAt)} ({slot.duration} {t('interviews.scheduleApproval.suggestedSlots.minDuration')})</span>
                       </div>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </CardContent>
@@ -137,7 +152,7 @@ export default function ScheduleApprovalPage() {
             <Card>
               <CardHeader
                 title={t('interviews.scheduleApproval.detail.title', { name: selected.candidateName })}
-                description={selected.interviewType}
+                description={getInterviewTypeLabel(selected.interviewType)}
               />
               <CardContent>
                 <div className={styles.scheduleDetails}>
@@ -154,7 +169,7 @@ export default function ScheduleApprovalPage() {
                       </div>
                       <div className={styles.detailItem}>
                         <span className={styles.detailLabel}>{t('interviews.scheduleApproval.detail.type')}</span>
-                        <span className={styles.detailValue}>{selected.interviewType}</span>
+                        <span className={styles.detailValue}>{getInterviewTypeLabel(selected.interviewType)}</span>
                       </div>
                       <div className={styles.detailItem}>
                         <span className={styles.detailLabel}>{t('interviews.scheduleApproval.detail.duration')}</span>
@@ -168,17 +183,17 @@ export default function ScheduleApprovalPage() {
                     <div className={styles.dateTimeDisplay}>
                       <div className={styles.dateBox}>
                         <span className={styles.dayName}>
-                          {new Date(selected.scheduledAt).toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', { weekday: 'long' })}
+                          {formatDate(selected.scheduledAt, locale, { weekday: 'long' })}
                         </span>
                         <span className={styles.dayNumber}>
                           {new Date(selected.scheduledAt).getDate()}
                         </span>
                         <span className={styles.monthYear}>
-                          {new Date(selected.scheduledAt).toLocaleDateString(i18n.language === 'vi' ? 'vi-VN' : 'en-US', { month: 'long', year: 'numeric' })}
+                          {formatDate(selected.scheduledAt, locale, { month: 'long', year: 'numeric' })}
                         </span>
                       </div>
                       <div className={styles.timeBox}>
-                        <span className={styles.time}>{formatTime(selected.scheduledAt)}</span>
+                        <span className={styles.time}>{formatScheduleTime(selected.scheduledAt)}</span>
                         <span className={styles.timezone}>{t('interviews.scheduleApproval.timezone')}</span>
                       </div>
                     </div>
@@ -220,12 +235,13 @@ export default function ScheduleApprovalPage() {
                 </div>
 
                 <div className={styles.conflictToggle}>
-                  <label className={styles.toggleLabel}>
-                    <input
-                      type="checkbox"
-                      checked={showConflictWarning}
-                      onChange={(e) => setShowConflictWarning(e.target.checked)}
-                    />
+                  <input
+                    id="show-conflict-warning"
+                    type="checkbox"
+                    checked={showConflictWarning}
+                    onChange={(e) => setShowConflictWarning(e.target.checked)}
+                  />
+                  <label className={styles.toggleLabel} htmlFor="show-conflict-warning">
                     {t('interviews.scheduleApproval.conflict.showWarning')}
                   </label>
                 </div>
@@ -234,18 +250,22 @@ export default function ScheduleApprovalPage() {
                 <Button variant="danger" onClick={() => handleReject(selected.id)}>
                   {t('interviews.scheduleApproval.actions.rejectAlternative')}
                 </Button>
-                <Link href="/portal/interview/demo-token">
-                  <Button variant="primary" onClick={() => handleApprove(selected.id)}>
-                    {t('interviews.scheduleApproval.actions.approveWorkspace')}
-                  </Button>
-                </Link>
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    handleApprove(selected.id);
+                    router.push('/portal/interview/access');
+                  }}
+                >
+                  {t('interviews.scheduleApproval.actions.approveWorkspace')}
+                </Button>
               </div>
             </Card>
           ) : (
             <Card>
               <CardContent>
                 <div className={styles.emptyState}>
-                  <span className={styles.emptyIcon}>📅</span>
+                  <span className={styles.emptyIcon} aria-hidden="true">📅</span>
                   <p>{t('interviews.scheduleApproval.empty.selectToReview')}</p>
                 </div>
               </CardContent>

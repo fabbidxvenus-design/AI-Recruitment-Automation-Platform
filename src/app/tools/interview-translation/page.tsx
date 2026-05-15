@@ -11,7 +11,7 @@ import styles from './interview-translation.module.css';
 type WorkflowStep = 'input' | 'generating' | 'review' | 'approved';
 
 interface TranscriptSegment {
-  speaker: string;
+  speakerKey: 'interviewer' | 'candidate';
   original: string;
   translated: string;
 }
@@ -79,22 +79,22 @@ export default function InterviewTranslationPage() {
     // Mock translated segments
     const mockSegments: TranscriptSegment[] = [
       {
-        speaker: 'Interviewer',
+        speakerKey: 'interviewer',
         original: 'Xin chào, bạn có thể giới thiệu về bản thân không?',
         translated: 'Hello, can you introduce yourself?',
       },
       {
-        speaker: 'Candidate',
+        speakerKey: 'candidate',
         original: 'Chào anh/chị. Tôi tên là Nguyen Van A, có 5 năm kinh nghiệm làm việc trong lĩnh vực phát triển phần mềm.',
         translated: 'Hello. My name is Nguyen Van A, I have 5 years of experience working in software development.',
       },
       {
-        speaker: 'Interviewer',
+        speakerKey: 'interviewer',
         original: 'Bạn có kinh nghiệm với React không?',
         translated: 'Do you have experience with React?',
       },
       {
-        speaker: 'Candidate',
+        speakerKey: 'candidate',
         original: 'Có, tôi đã sử dụng React trong 3 năm qua cho nhiều dự án khác nhau.',
         translated: 'Yes, I have been using React for the past 3 years on various projects.',
       },
@@ -106,7 +106,7 @@ export default function InterviewTranslationPage() {
       candidateId: 'cand-001',
       sourceLang: 'vi',
       targetLang,
-      translatedText: mockSegments.map((s) => `${s.speaker}: ${s.translated}`).join('\n'),
+      translatedText: mockSegments.map((s) => `${t(`tools.interviewTranslation.speakers.${s.speakerKey}`)}: ${s.translated}`).join('\n'),
       status: 'pending',
       isAiGenerated: true,
       createdAt: new Date().toISOString(),
@@ -137,6 +137,7 @@ export default function InterviewTranslationPage() {
   };
 
   const canGenerate = (selectedInterview || manualNotes.trim()) && targetLang;
+  const currentTranslationStatusLabel = currentTranslation ? t(`common.status.${currentTranslation.status}`) : '';
 
   return (
     <div className={styles.container}>
@@ -237,7 +238,7 @@ export default function InterviewTranslationPage() {
           <div className={styles.statusPanel}>
             <h2 className={styles.sectionTitle}>{t('tools.interviewTranslation.workspace.status')}</h2>
             <StatusBadge
-              label={currentTranslation.status}
+              label={currentTranslationStatusLabel}
               variant={currentTranslation.status === 'approved' ? 'success' : 'warning'}
             />
 
@@ -250,7 +251,7 @@ export default function InterviewTranslationPage() {
             <Card className={styles.provenanceCard}>
               <h3>{t('tools.interviewTranslation.provenance.title')}</h3>
               <div className={styles.provenanceMeta}>
-                <span>{t('tools.interviewTranslation.provenance.model')}: gemini-2.0-flash</span>
+                <span>{t('tools.interviewTranslation.provenance.model')}: {t('tools.interviewTranslation.provenance.reviewEngine')}</span>
                 <span>{t('tools.interviewTranslation.provenance.confidence')}: 92%</span>
                 <span>{t('tools.interviewTranslation.provenance.timestamp')}: {formatDateTime(currentTranslation.createdAt, locale)}</span>
               </div>
@@ -260,11 +261,11 @@ export default function InterviewTranslationPage() {
           <div className={styles.transcriptPanel}>
             <h2 className={styles.sectionTitle}>{t('tools.interviewTranslation.workspace.transcript')}</h2>
 
-            <div className={styles.segmentList}>
+            <div className={styles.segmentList} role="list">
               {segments.map((segment, index) => (
-                <div key={index} className={styles.segment}>
+                <div key={index} className={styles.segment} role="listitem">
                   <div className={styles.segmentHeader}>
-                    <strong>{segment.speaker}</strong>
+                    <strong>{t(`tools.interviewTranslation.speakers.${segment.speakerKey}`)}</strong>
                   </div>
                   <div className={styles.segmentContent}>
                     <div className={styles.segmentOriginal}>

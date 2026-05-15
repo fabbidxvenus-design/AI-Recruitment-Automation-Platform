@@ -1,4 +1,3 @@
-// Mock data fixtures for RecruitAI prototype
 import type {
   Candidate,
   Job,
@@ -18,19 +17,19 @@ export const bqBlockers: BQBlocker[] = [
   {
     id: 'bq-002',
     code: 'BQ-002',
-    title: 'Google Sheets API Integration for Candidate Import',
-    description: 'Requires Google API credentials and Sheets API setup. Integration not implemented in current slice.',
+    title: 'Requisition Sheet Workspace Setup',
+    description: 'Workspace account connection and requisition sheet setup are needed before this intake path is ready.',
     screenIds: ['SCREEN-002'],
-    requiresAction: 'Configure Google OAuth and Sheets API credentials',
+    requiresAction: 'Connect recruiting account and confirm requisition sheet access',
     priority: 'high',
   },
   {
     id: 'bq-003',
     code: 'BQ-003',
-    title: 'AI Candidate Matching Engine',
-    description: 'AI matching algorithm requires backend processing and Google Gemini API integration.',
+    title: 'Candidate Matching Review Setup',
+    description: 'Matching review settings need confirmation before recommendations are ready for recruiting teams.',
     screenIds: ['SCREEN-002'],
-    requiresAction: 'Implement AI matching service with Gemini API',
+    requiresAction: 'Review matching settings and approval readiness',
     priority: 'high',
   },
   {
@@ -418,7 +417,7 @@ export const mockFinalReviewPackages: FinalReviewPackage[] = [
 export const mockIntegrationHealth: IntegrationHealth[] = [
   {
     id: 'int-hlth-001',
-    name: 'Google Sheets API',
+    name: 'Requisition Sheet Workspace',
     status: 'healthy',
     lastSync: '2024-04-23T08:00:00Z',
     errorCount: 0,
@@ -426,7 +425,7 @@ export const mockIntegrationHealth: IntegrationHealth[] = [
   },
   {
     id: 'int-hlth-002',
-    name: 'Gemini AI Service',
+    name: 'AI Review Service',
     status: 'degraded',
     lastSync: '2024-04-23T07:55:00Z',
     errorCount: 3,
@@ -434,7 +433,7 @@ export const mockIntegrationHealth: IntegrationHealth[] = [
   },
   {
     id: 'int-hlth-003',
-    name: 'Video Processing',
+    name: 'Interview Media Review',
     status: 'down',
     lastSync: '2024-04-22T22:00:00Z',
     errorCount: 12,
@@ -442,7 +441,7 @@ export const mockIntegrationHealth: IntegrationHealth[] = [
   },
   {
     id: 'int-hlth-004',
-    name: 'Calendar Integration',
+    name: 'Interview Calendar Workspace',
     status: 'healthy',
     lastSync: '2024-04-23T08:05:00Z',
     errorCount: 0,

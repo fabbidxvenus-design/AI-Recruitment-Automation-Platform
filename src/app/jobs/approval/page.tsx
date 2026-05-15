@@ -56,7 +56,7 @@ export default function JDApprovalPage() {
       return {
         parsedProfile: profile,
         jdVersion: jdVersion!,
-        jobTitle: job?.title || 'Unknown Job',
+        jobTitle: job?.title || t('jobs.approval.unknownJob'),
       };
     });
 

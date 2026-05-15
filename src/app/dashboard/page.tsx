@@ -8,7 +8,6 @@ import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { MetricCard } from '@/components/ui/MetricCard';
 import { DataTable } from '@/components/ui/DataTable';
 import { StatusBadge } from '@/components/ui/StatusBadge';
-import { Button } from '@/components/ui/Button';
 import { Notice } from '@/components/ui/Notice';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import {
@@ -29,6 +28,11 @@ export default function DashboardPage() {
   const pendingApprovals = mockScreeningEvaluations.filter(e => e.status === 'pending');
   const pendingSchedules = mockScheduleSlots.filter(s => s.status === 'pending');
   const openErrors = mockErrorRemediationItems.filter(e => e.status !== 'resolved');
+  const getPipelineStageLabel = (stage: string): string => t(`dashboard.pipeline.stage.${stage.toLowerCase()}`);
+  const getInterviewTypeLabel = (interviewType: string): string => {
+    const interviewTypeKey = interviewType.split(' ')[0].toLowerCase();
+    return t(`interviews.scheduleApproval.type.${interviewTypeKey}`);
+  };
 
   const approvalColumns = [
     {
@@ -63,7 +67,7 @@ export default function DashboardPage() {
     },
     {
       key: 'actions',
-      header: '',
+      header: t('dashboard.columns.actions'),
       render: () => (
         <Link href="/screening/review" className={styles.actionLink}>{t('dashboard.approvals.review')}</Link>
       ),
@@ -152,7 +156,7 @@ export default function DashboardPage() {
           value={`${dashboardMetrics.avgTimeToHire}d`}
           icon="⏱️"
           change={t('dashboard.kpi.minusDays')}
-          trend="up"
+          trend="down"
           variant="teal"
         />
       </section>
@@ -160,7 +164,7 @@ export default function DashboardPage() {
       <Notice
         variant="blocker"
         title={t('dashboard.notice.aiBlocked')}
-        action={<Link href="/admin"><Button variant="secondary" size="sm">{t('common.configure')}</Button></Link>}
+        action={<Link href="/admin" className={`${styles.buttonLink} ${styles.secondaryButtonLink}`}>{t('common.configure')}</Link>}
       >
         {t('dashboard.notice.aiBlockedDesc', { count: bqBlockers.filter(b => b.screenIds.includes('SCREEN-001')).length })}
       </Notice>
@@ -171,7 +175,7 @@ export default function DashboardPage() {
             <CardHeader
               title={t('dashboard.pipeline.title')}
               description={t('dashboard.pipeline.description')}
-              action={<Link href="/candidates/import"><Button variant="ghost" size="sm">{t('common.viewAll')}</Button></Link>}
+              action={<Link href="/candidates/import" className={`${styles.buttonLink} ${styles.ghostButtonLink}`}>{t('common.viewAll')}</Link>}
             />
             <CardContent>
               <div className={styles.pipelineJobs}>
@@ -181,15 +185,21 @@ export default function DashboardPage() {
                       <span className={styles.jobTitle}>{job.title}</span>
                       <span className={styles.jobDept}>{job.department}</span>
                     </div>
-                    <div className={styles.pipelineBars}>
+                    <div
+                      className={styles.pipelineBars}
+                      role="list"
+                      aria-label={`${job.title} ${t('dashboard.pipeline.description')}`}
+                    >
                       {job.pipelineSummary.map(stage => (
                         <div
                           key={stage.stage}
                           className={styles.pipelineStage}
                           style={{ '--stage-color': stage.color } as React.CSSProperties}
-                          title={`${stage.stage}: ${stage.count}`}
+                          title={t('dashboard.pipeline.stageTooltip', { stage: getPipelineStageLabel(stage.stage), count: stage.count })}
+                          aria-label={t('dashboard.pipeline.stageTooltip', { stage: getPipelineStageLabel(stage.stage), count: stage.count })}
+                          role="listitem"
                         >
-                          <div className={styles.stageBar} style={{ width: `${(stage.count / job.candidateCount) * 100}%` }} />
+                          <div className={styles.stageBar} style={{ width: `${(stage.count / job.candidateCount) * 100}%` }} aria-hidden="true" />
                           <span className={styles.stageCount}>{stage.count}</span>
                         </div>
                       ))}
@@ -197,8 +207,8 @@ export default function DashboardPage() {
                     <div className={styles.stageLegend}>
                       {job.pipelineSummary.map(stage => (
                         <div key={stage.stage} className={styles.legendItem}>
-                          <span className={styles.legendDot} style={{ background: stage.color }} />
-                          <span>{stage.stage}</span>
+                          <span className={styles.legendDot} style={{ background: stage.color }} aria-hidden="true" />
+                          <span>{getPipelineStageLabel(stage.stage)}</span>
                         </div>
                       ))}
                     </div>
@@ -212,13 +222,14 @@ export default function DashboardPage() {
             <CardHeader
               title={t('dashboard.approvals.title')}
               description={t('dashboard.approvals.description', { count: pendingApprovals.length })}
-              action={<Link href="/screening/review"><Button variant="primary" size="sm">{t('common.reviewAll')}</Button></Link>}
+              action={<Link href="/screening/review" className={`${styles.buttonLink} ${styles.primaryButtonLink}`}>{t('common.reviewAll')}</Link>}
             />
             <CardContent>
               <DataTable
                 columns={approvalColumns}
                 data={pendingApprovals}
                 caption={t('dashboard.approvals.caption')}
+                getRowSelectionLabel={(row) => row.candidateName}
               />
             </CardContent>
           </Card>
@@ -227,24 +238,24 @@ export default function DashboardPage() {
             <CardHeader
               title={t('dashboard.schedule.title')}
               description={t('dashboard.schedule.description', { count: pendingSchedules.length })}
-              action={<Link href="/interviews/schedule-approval"><Button variant="ghost" size="sm">{t('common.viewAll')}</Button></Link>}
+              action={<Link href="/interviews/schedule-approval" className={`${styles.buttonLink} ${styles.ghostButtonLink}`}>{t('common.viewAll')}</Link>}
             />
             <CardContent>
-              <div className={styles.scheduleList}>
+              <ul className={styles.scheduleList}>
                 {pendingSchedules.map(slot => (
-                  <div key={slot.id} className={styles.scheduleItem}>
+                  <li key={slot.id} className={styles.scheduleItem}>
                     <div className={styles.scheduleInfo}>
                       <span className={styles.scheduleCandidate}>{slot.candidateName}</span>
-                      <span className={styles.scheduleType}>{slot.interviewType}</span>
+                      <span className={styles.scheduleType}>{getInterviewTypeLabel(slot.interviewType)}</span>
                     </div>
                     <div className={styles.scheduleMeta}>
                       <span>{slot.interviewerName}</span>
                       <span>{formatDate(slot.scheduledAt, locale)}</span>
                     </div>
                     <StatusBadge variant="warning" label={t('common.status.pending')} />
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </CardContent>
           </Card>
         </div>
@@ -254,7 +265,7 @@ export default function DashboardPage() {
             <CardHeader
               title={t('dashboard.errors.title')}
               description={t('dashboard.errors.description', { count: openErrors.length })}
-              action={<Link href="/errors/ERR-2024-0892"><Button variant="ghost" size="sm">{t('dashboard.errors.viewDetails')}</Button></Link>}
+              action={<Link href="/errors/ERR-2024-0892" className={`${styles.buttonLink} ${styles.ghostButtonLink}`}>{t('dashboard.errors.viewDetails')}</Link>}
             />
             <CardContent>
               <DataTable
@@ -270,15 +281,16 @@ export default function DashboardPage() {
             <CardHeader
               title={t('dashboard.integration.title')}
               description={t('dashboard.integration.description')}
-              action={<Link href="/admin"><Button variant="ghost" size="sm">{t('common.adminPanel')}</Button></Link>}
+              action={<Link href="/admin" className={`${styles.buttonLink} ${styles.ghostButtonLink}`}>{t('common.adminPanel')}</Link>}
             />
             <CardContent>
-              <div className={styles.integrationList}>
+              <div className={styles.integrationList} role="list">
                 {mockIntegrationHealth.map(integration => (
-                  <div key={integration.id} className={styles.integrationItem}>
+                  <div key={integration.id} className={styles.integrationItem} role="listitem">
                     <div className={styles.integrationStatus}>
-                      <span className={`${styles.statusDot} ${styles[integration.status]}`} />
+                      <span className={`${styles.statusDot} ${styles[integration.status]}`} aria-hidden="true" />
                       <span className={styles.integrationName}>{integration.name}</span>
+                      <span className="sr-only">{t(`dashboard.integration.status.${integration.status}`)}</span>
                     </div>
                     <div className={styles.integrationMeta}>
                       {integration.status !== 'healthy' && (
@@ -300,36 +312,36 @@ export default function DashboardPage() {
               description={t('dashboard.activity.description')}
             />
             <CardContent>
-              <div className={styles.activityFeed}>
-                <div className={styles.activityItem}>
-                  <span className={styles.activityIcon}>✅</span>
+              <ol className={styles.activityFeed}>
+                <li className={styles.activityItem}>
+                  <span className={styles.activityIcon} aria-hidden="true">✅</span>
                   <div className={styles.activityContent}>
                     <span className={styles.activityText}>{t('dashboard.activity.movedToStage', { name: 'Sarah Chen', stage: 'Interview' })}</span>
                     <span className={styles.activityTime}>{t('dashboard.activity.twoHoursAgo')}</span>
                   </div>
-                </div>
-                <div className={styles.activityItem}>
-                  <span className={styles.activityIcon}>📋</span>
+                </li>
+                <li className={styles.activityItem}>
+                  <span className={styles.activityIcon} aria-hidden="true">📋</span>
                   <div className={styles.activityContent}>
                     <span className={styles.activityText}>{t('dashboard.activity.awaitingScreening', { count: 3 })}</span>
                     <span className={styles.activityTime}>{t('dashboard.activity.fiveHoursAgo')}</span>
                   </div>
-                </div>
-                <div className={styles.activityItem}>
-                  <span className={styles.activityIcon}>📅</span>
+                </li>
+                <li className={styles.activityItem}>
+                  <span className={styles.activityIcon} aria-hidden="true">📅</span>
                   <div className={styles.activityContent}>
                     <span className={styles.activityText}>{t('dashboard.activity.scheduledInterview', { name: 'Emily Williams' })}</span>
                     <span className={styles.activityTime}>{t('common.dateTime.yesterday')}</span>
                   </div>
-                </div>
-                <div className={styles.activityItem}>
-                  <span className={styles.activityIcon}>⚠️</span>
+                </li>
+                <li className={styles.activityItem}>
+                  <span className={styles.activityIcon} aria-hidden="true">⚠️</span>
                   <div className={styles.activityContent}>
                     <span className={styles.activityText}>{t('dashboard.activity.videoError')}</span>
                     <span className={styles.activityTime}>{t('dashboard.activity.twoDaysAgo')}</span>
                   </div>
-                </div>
-              </div>
+                </li>
+              </ol>
             </CardContent>
           </Card>
         </div>

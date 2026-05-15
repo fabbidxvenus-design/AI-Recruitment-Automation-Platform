@@ -9,6 +9,8 @@ import styles from './cv-import.module.css';
 type ImportSource = 'manual' | 'drive' | 'batch';
 type ValidationState = 'success' | 'warning' | 'danger' | 'info';
 
+const importSources: ImportSource[] = ['manual', 'drive', 'batch'];
+
 interface ValidationScenario {
   id: string;
   titleKey: string;
@@ -44,6 +46,25 @@ export default function CVImportPage() {
   const handleSourceChange = (source: ImportSource): void => {
     setImportSource(source);
     resetImportState();
+  };
+
+  const handleSourceKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, source: ImportSource): void => {
+    const currentIndex = importSources.indexOf(source);
+    const lastIndex = importSources.length - 1;
+    const nextIndexByKey: Partial<Record<string, number>> = {
+      ArrowLeft: currentIndex === 0 ? lastIndex : currentIndex - 1,
+      ArrowRight: currentIndex === lastIndex ? 0 : currentIndex + 1,
+      Home: 0,
+      End: lastIndex,
+    };
+    const nextIndex = nextIndexByKey[event.key];
+
+    if (nextIndex === undefined) return;
+
+    event.preventDefault();
+    const nextSource = importSources[nextIndex];
+    handleSourceChange(nextSource);
+    document.getElementById(`cv-import-tab-${nextSource}`)?.focus();
   };
 
   const handleDriveFolderChange = (value: string): void => {
@@ -107,14 +128,19 @@ export default function CVImportPage() {
 
       <Card className={styles.sourceCard}>
         <h2 className={styles.sectionTitle}>{t('cvImport.sources.title')}</h2>
-        <div className={styles.sourceOptions}>
-          {(['manual', 'drive', 'batch'] as ImportSource[]).map((source) => (
+        <div className={styles.sourceOptions} role="tablist" aria-label={t('cvImport.sources.title')}>
+          {importSources.map((source) => (
             <button
               key={source}
+              id={`cv-import-tab-${source}`}
               type="button"
-              aria-pressed={importSource === source}
+              role="tab"
+              aria-selected={importSource === source}
+              aria-controls={`cv-import-panel-${source}`}
+              tabIndex={importSource === source ? 0 : -1}
               className={`${styles.sourceButton} ${importSource === source ? styles.active : ''}`}
               onClick={() => handleSourceChange(source)}
+              onKeyDown={(event) => handleSourceKeyDown(event, source)}
             >
               {t(`cvImport.sources.${source}`)}
             </button>
@@ -124,19 +150,24 @@ export default function CVImportPage() {
 
       <Card className={styles.validationCard}>
         <h2 className={styles.sectionTitle}>{t('cvImport.validation.title')}</h2>
-        <div className={styles.validationGrid}>
-          {validationScenarios.map((scenario) => (
-            <div key={scenario.id} className={styles.validationItem}>
-              <StatusBadge variant={scenario.state} label={t(`cvImport.validation.${scenario.titleKey}`)} />
-              <p>{t(`cvImport.validation.${scenario.bodyKey}`)}</p>
-            </div>
-          ))}
-        </div>
+        <p className={styles.validationIntro}>{t('cvImport.validation.guidance')}</p>
+        <details className={styles.validationDetails}>
+          <summary>{t('cvImport.validation.showDetails')}</summary>
+          <div className={styles.validationGrid}>
+            {validationScenarios.map((scenario) => (
+              <div key={scenario.id} className={styles.validationItem}>
+                <StatusBadge variant={scenario.state} label={t(`cvImport.validation.${scenario.titleKey}`)} />
+                <p>{t(`cvImport.validation.${scenario.bodyKey}`)}</p>
+              </div>
+            ))}
+          </div>
+        </details>
       </Card>
 
       {importSource === 'manual' && (
-        <Card className={styles.uploadCard}>
-          <h2 className={styles.sectionTitle}>{t('cvImport.manual.title')}</h2>
+        <div id="cv-import-panel-manual" role="tabpanel" aria-labelledby="cv-import-tab-manual">
+          <Card className={styles.uploadCard}>
+            <h2 className={styles.sectionTitle}>{t('cvImport.manual.title')}</h2>
           <div className={styles.uploadZone}>
             <input
               type="file"
@@ -166,12 +197,14 @@ export default function CVImportPage() {
               {importing ? t('cvImport.manual.importing') : t('cvImport.manual.import')}
             </Button>
           </div>
-        </Card>
+          </Card>
+        </div>
       )}
 
       {importSource === 'drive' && (
-        <Card className={styles.driveCard}>
-          <h2 className={styles.sectionTitle}>{t('cvImport.drive.title')}</h2>
+        <div id="cv-import-panel-drive" role="tabpanel" aria-labelledby="cv-import-tab-drive">
+          <Card className={styles.driveCard}>
+            <h2 className={styles.sectionTitle}>{t('cvImport.drive.title')}</h2>
           <div className={styles.formGroup}>
             <label htmlFor="driveFolder">{t('cvImport.drive.folderPath')}</label>
             <input
@@ -179,7 +212,7 @@ export default function CVImportPage() {
               id="driveFolder"
               value={driveFolder}
               onChange={(event) => handleDriveFolderChange(event.target.value)}
-              placeholder="/Recruitment/CVs/2026"
+              placeholder={t('cvImport.drive.folderPathPlaceholder')}
               className={styles.input}
             />
           </div>
@@ -193,16 +226,19 @@ export default function CVImportPage() {
               {importing ? t('cvImport.drive.scanning') : t('cvImport.drive.scan')}
             </Button>
           </div>
-        </Card>
+          </Card>
+        </div>
       )}
 
       {importSource === 'batch' && (
-        <Card className={styles.batchCard}>
-          <h2 className={styles.sectionTitle}>{t('cvImport.batch.title')}</h2>
+        <div id="cv-import-panel-batch" role="tabpanel" aria-labelledby="cv-import-tab-batch">
+          <Card className={styles.batchCard}>
+            <h2 className={styles.sectionTitle}>{t('cvImport.batch.title')}</h2>
           <Notice variant="warning" title={t('cvImport.batch.noticeTitle')}>
             {t('cvImport.batch.noticeBody')}
           </Notice>
-        </Card>
+          </Card>
+        </div>
       )}
     </div>
   );

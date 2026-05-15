@@ -36,7 +36,7 @@ const navSectionsMeta: { titleKey: string; items: NavItem[] }[] = [
     titleKey: 'nav.interviews',
     items: [
       { labelKey: 'nav.scheduleApproval', href: '/interviews/schedule-approval', icon: '📅' },
-      { labelKey: 'nav.aiWorkspace', href: '/portal/interview/demo-token', icon: '🤖' },
+      { labelKey: 'nav.aiWorkspace', href: '/portal/interview/access', icon: '🤖' },
     ],
   },
   {
@@ -65,8 +65,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { t } = useTranslation();
   const { locale, setLocale } = useLanguage();
 
+  const targetLocale = locale === 'vi' ? 'en' : 'vi';
+  const targetLanguageLabel = targetLocale === 'vi' ? t('language.vietnamese') : t('language.english');
+  const languageSwitchLabel = t('language.switchToLanguage', { language: targetLanguageLabel });
+
   const handleLanguageSwitch = () => {
-    setLocale(locale === 'vi' ? 'en' : 'vi');
+    setLocale(targetLocale);
   };
 
   return (
@@ -76,7 +80,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </a>
 
       {/* Sidebar */}
-      <aside className={styles.sidebar} role="navigation" aria-label="Main navigation">
+      <aside className={styles.sidebar}>
         <div className={styles.sidebarHeader}>
           <div className={styles.logo}>
             <span className={styles.logoIcon}>R</span>
@@ -84,7 +88,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
 
-        <nav className={styles.nav}>
+        <nav className={styles.nav} aria-label={t('nav.mainAriaLabel')}>
           {navSectionsMeta.map((section) => (
             <div key={section.titleKey} className={styles.navSection}>
               <h2 className={styles.navSectionTitle}>{t(section.titleKey)}</h2>
@@ -98,7 +102,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         className={`${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
                         aria-current={isActive ? 'page' : undefined}
                       >
-                        {item.icon && <span className={styles.navIcon}>{item.icon}</span>}
+                        {item.icon && <span className={styles.navIcon} aria-hidden="true">{item.icon}</span>}
                         <span className={styles.navLabel}>{t(item.labelKey)}</span>
                       </Link>
                     </li>
@@ -131,16 +135,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               className={styles.langSwitch}
               type="button"
               onClick={handleLanguageSwitch}
-              aria-label={t('language.switchTo')}
-              title={t('language.switchTo')}
+              aria-label={languageSwitchLabel}
+              title={languageSwitchLabel}
             >
-              {locale === 'vi' ? 'EN' : 'VI'}
+              {targetLocale.toUpperCase()}
             </button>
             <button className={styles.topbarButton} type="button" aria-label={t('topbar.notifications')}>
-              <span>🔔</span>
+              <span aria-hidden="true">🔔</span>
             </button>
             <button className={styles.topbarButton} type="button" aria-label={t('topbar.settings')}>
-              <span>⚙️</span>
+              <span aria-hidden="true">⚙️</span>
             </button>
           </div>
         </header>

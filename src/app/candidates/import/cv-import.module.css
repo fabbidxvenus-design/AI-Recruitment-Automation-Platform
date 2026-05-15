@@ -48,6 +48,11 @@
   border-color: var(--color-primary);
 }
 
+.sourceButton:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
 .sourceButton.active {
   border-color: var(--color-primary);
   background: var(--color-primary-light);
@@ -103,10 +108,35 @@
   justify-content: flex-end;
 }
 
+.validationIntro {
+  margin: 0 0 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.validationDetails {
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  background: var(--color-surface-alt);
+}
+
+.validationDetails summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.validationDetails summary:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
 .validationGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+  margin-top: 1rem;
 }
 
 .validationItem {

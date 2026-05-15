@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import styles from './ProgressBar.module.css';
 
 type ProgressVariant = 'default' | 'success' | 'warning' | 'danger' | 'info';
@@ -22,6 +23,7 @@ export function ProgressBar({
   size = 'md',
   striped = false,
 }: ProgressBarProps) {
+  const { t } = useTranslation();
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
 
   return (
@@ -31,7 +33,7 @@ export function ProgressBar({
       aria-valuenow={value}
       aria-valuemin={0}
       aria-valuemax={max}
-      aria-label={label}
+      aria-label={label ?? t('common.progressLabel', { value: Math.round(percentage) })}
     >
       {(label || showValue) && (
         <div className={styles.progressLabel}>

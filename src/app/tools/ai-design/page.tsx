@@ -80,7 +80,7 @@ export default function AIDesignPage() {
       };
 
       if (!isValidBrief(brief)) {
-        setValidationErrors(['All required fields must be filled']);
+        setValidationErrors([t('tools.aiDesign.validation.requiredFields')]);
         setStatus('empty');
         return;
       }
@@ -91,7 +91,7 @@ export default function AIDesignPage() {
       setSelectedVariantId(generatedVariants[0]?.id || null);
     } catch (error: unknown) {
       setStatus('empty');
-      const errorMessage = error instanceof Error ? error.message : 'Failed to generate designs. Please try again.';
+      const errorMessage = error instanceof Error ? error.message : t('tools.aiDesign.validation.generationFailed');
       setValidationErrors([errorMessage]);
     }
   };
@@ -115,9 +115,10 @@ export default function AIDesignPage() {
 
   const handleApprove = (): void => {
     setStatus('approved');
+    const approverLabel = t('tools.aiDesign.approval.approver.hrManager');
     const updatedHistory = approvalHistory.map((record) =>
       record.status === 'pending'
-        ? { ...record, status: 'approved' as const, approver: 'HR Manager', timestamp: new Date().toISOString() }
+        ? { ...record, status: 'approved' as const, approver: approverLabel, timestamp: new Date().toISOString() }
         : record
     );
     setApprovalHistory(updatedHistory);
@@ -125,12 +126,13 @@ export default function AIDesignPage() {
 
   const handleReject = (reason: string): void => {
     setStatus('rejected');
+    const approverLabel = t('tools.aiDesign.approval.approver.hrManager');
     const updatedHistory = approvalHistory.map((record) =>
       record.status === 'pending'
         ? {
             ...record,
             status: 'rejected' as const,
-            approver: 'HR Manager',
+            approver: approverLabel,
             reason,
             timestamp: new Date().toISOString(),
           }
@@ -181,8 +183,8 @@ export default function AIDesignPage() {
         <p className={styles.description}>{t('tools.aiDesign.description')}</p>
       </header>
 
-      <Notice variant="info" title={t('tools.aiDesign.notice.mockGeneration')}>
-        {t('tools.aiDesign.notice.mockGenerationDesc')}
+      <Notice variant="info" title={t('tools.aiDesign.notice.designPreview')}>
+        {t('tools.aiDesign.notice.designPreviewDesc')}
       </Notice>
 
       {status === 'empty' && (
@@ -425,7 +427,7 @@ export default function AIDesignPage() {
                             <Button onClick={handleApprove} variant="primary">
                               {t('tools.aiDesign.approval.approve')}
                             </Button>
-                            <Button onClick={() => handleReject('Design does not meet brand guidelines')} variant="danger">
+                            <Button onClick={() => handleReject(t('tools.aiDesign.approval.defaultRejectionReason'))} variant="danger">
                               {t('tools.aiDesign.approval.reject')}
                             </Button>
                           </div>
@@ -441,7 +443,7 @@ export default function AIDesignPage() {
                                     label={t(`tools.aiDesign.approval.${record.status}`)}
                                     variant={record.status === 'approved' ? 'success' : record.status === 'rejected' ? 'danger' : 'warning'}
                                   />
-                                  {record.approver && <span> by {record.approver}</span>}
+                                  {record.approver && <span> {t('tools.aiDesign.approval.byApprover', { approver: record.approver })}</span>}
                                   <span className={styles.historyTimestamp}> - {formatDateTime(record.timestamp, locale)}</span>
                                   {record.reason && <p className={styles.historyReason}>{record.reason}</p>}
                                 </li>

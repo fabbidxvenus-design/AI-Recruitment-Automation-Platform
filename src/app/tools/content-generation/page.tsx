@@ -36,6 +36,7 @@ export default function ContentGenerationPage() {
       contentId: 'mock-1',
       action: 'submitted',
       actor: 'recruiter@company.com',
+      actorKey: 'recruiter',
       actorRole: 'recruiter',
       timestamp: '2026-05-12T18:00:00.000Z',
     },
@@ -44,33 +45,40 @@ export default function ContentGenerationPage() {
       contentId: 'mock-1',
       action: 'edited',
       actor: 'hr.manager@company.com',
+      actorKey: 'hrManager',
       actorRole: 'hr_manager',
       timestamp: '2026-05-13T06:00:00.000Z',
       notes: 'Updated requirements section for clarity',
+      notesKey: 'requirementsUpdated',
     },
     {
       id: 'h3',
       contentId: 'mock-1',
       action: 'rejected',
       actor: 'hr.manager@company.com',
+      actorKey: 'hrManager',
       actorRole: 'hr_manager',
       timestamp: '2026-05-13T18:00:00.000Z',
       notes: 'Still needs more emphasis on soft skills',
+      notesKey: 'softSkillsNeeded',
     },
     {
       id: 'h4',
       contentId: 'mock-1',
       action: 'edited',
       actor: 'recruiter@company.com',
+      actorKey: 'recruiter',
       actorRole: 'recruiter',
       timestamp: '2026-05-14T06:00:00.000Z',
       notes: 'Added soft skills section as requested',
+      notesKey: 'softSkillsAdded',
     },
     {
       id: 'h5',
       contentId: 'mock-1',
       action: 'approved',
       actor: 'hr.manager@company.com',
+      actorKey: 'hrManager',
       actorRole: 'hr_manager',
       timestamp: '2026-05-14T17:00:00.000Z',
     }
@@ -147,7 +155,7 @@ export default function ContentGenerationPage() {
     setCurrentContent({
       ...currentContent,
       status: 'approved',
-      approvedBy: 'hr.manager@company.com',
+      approvedBy: t('tools.contentGeneration.history.actor.hrManager'),
       approvedAt: new Date().toISOString(),
     });
     setShowApprovalModal(false);
@@ -206,6 +214,7 @@ export default function ContentGenerationPage() {
   };
 
   const selectedVariant = currentContent?.variants.find(v => v.id === selectedVariantId);
+  const currentContentStatusLabel = currentContent ? t(`common.status.${currentContent.status}`) : '';
 
   return (
     <div className={styles.container}>
@@ -383,17 +392,26 @@ export default function ContentGenerationPage() {
                 </summary>
                 <div className={styles.historyTimeline}>
                   {mockHistory.length > 0 ? (
-                    mockHistory.map((entry) => (
-                      <div key={entry.id} className={styles.historyEntry}>
-                        <strong>{t(`tools.contentGeneration.history.action.${entry.action}`)}</strong>
-                        <div className={styles.historyMeta}>
-                          <span>{entry.actor} ({entry.actorRole})</span>
-                          <span>•</span>
-                          <span>{formatDateTime(entry.timestamp, locale)}</span>
+                    mockHistory.map((entry) => {
+                      const actorLabel = entry.actorKey
+                        ? t(`tools.contentGeneration.history.actor.${entry.actorKey}`)
+                        : entry.actor;
+                      const noteLabel = entry.notesKey
+                        ? t(`tools.contentGeneration.history.note.${entry.notesKey}`)
+                        : entry.notes;
+
+                      return (
+                        <div key={entry.id} className={styles.historyEntry}>
+                          <strong>{t(`tools.contentGeneration.history.action.${entry.action}`)}</strong>
+                          <div className={styles.historyMeta}>
+                            <span>{actorLabel} ({t(`tools.contentGeneration.history.role.${entry.actorRole}`)})</span>
+                            <span>•</span>
+                            <span>{formatDateTime(entry.timestamp, locale)}</span>
+                          </div>
+                          {noteLabel && <p style={{ fontSize: '0.875rem', marginTop: '0.5rem', fontStyle: 'italic' }}>&ldquo;{noteLabel}&rdquo;</p>}
                         </div>
-                        {entry.notes && <p style={{ fontSize: '0.875rem', marginTop: '0.5rem', fontStyle: 'italic' }}>&ldquo;{entry.notes}&rdquo;</p>}
-                      </div>
-                    ))
+                      );
+                    })
                   ) : (
                     <p className={styles.noHistory}>{t('tools.contentGeneration.history.noHistory')}</p>
                   )}
@@ -405,7 +423,7 @@ export default function ContentGenerationPage() {
           <div className={styles.contentPanel}>
             <div className={styles.contentHeader}>
               <h2 className={styles.sectionTitle}>{t('tools.contentGeneration.workspace.selectedContent')}</h2>
-              <StatusBadge label={currentContent.status} variant={currentContent.status === 'approved' ? 'success' : currentContent.status === 'pending_approval' ? 'warning' : 'default'} />
+              <StatusBadge label={currentContentStatusLabel} variant={currentContent.status === 'approved' ? 'success' : currentContent.status === 'pending_approval' ? 'warning' : 'default'} />
             </div>
 
             {selectedVariant && (
@@ -579,13 +597,13 @@ export default function ContentGenerationPage() {
             <p>{t('tools.contentGeneration.export.format')}</p>
             <div className={styles.exportOptions}>
               <Button variant="secondary" onClick={() => handleDownload('txt')}>
-                TXT
+                {t('tools.contentGeneration.export.formatTxt')}
               </Button>
               <Button variant="secondary" onClick={() => handleDownload('pdf')}>
-                PDF (simulated)
+                {t('tools.contentGeneration.export.formatPdf')}
               </Button>
               <Button variant="secondary" onClick={() => handleDownload('docx')}>
-                DOCX (simulated)
+                {t('tools.contentGeneration.export.formatDocx')}
               </Button>
             </div>
           </div>

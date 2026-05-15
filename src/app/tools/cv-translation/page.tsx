@@ -7,7 +7,7 @@ import { formatDateTime } from '@/lib/formatDate';
 import { Card, Button, Notice, LoadingState, Modal } from '@/components';
 import type { TranslatedCV, TargetLanguage, CVSection } from '@/types/cv-translation';
 import { translateCV } from '@/services/translationService';
-import { mockCandidates } from '@/lib/mockData';
+import { mockCandidates, mockJobs } from '@/lib/mockData';
 import styles from './cv-translation.module.css';
 
 type WorkflowStep = 'select' | 'generating' | 'review' | 'approved';
@@ -21,6 +21,7 @@ export default function CVTranslationPage() {
   const [selectedLanguage, setSelectedLanguage] = useState<TargetLanguage>('vi');
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
+  const getCandidateJobTitle = (jobId: string): string => mockJobs.find((job) => job.id === jobId)?.title ?? jobId;
 
   const handleTranslate = async (): Promise<void> => {
     if (!selectedCandidateId) return;
@@ -94,7 +95,7 @@ export default function CVTranslationPage() {
 
       {currentStep === 'select' && (
         <>
-          <Notice variant="info" title={t('tools.cvTranslation.workspace.sourceOfTruth')}>
+          <Notice variant="info" title={t('tools.cvTranslation.workspace.sourceOfTruthTitle')}>
             {t('tools.cvTranslation.workspace.sourceOfTruth')}
           </Notice>
 
@@ -113,7 +114,7 @@ export default function CVTranslationPage() {
                 <option value="">{t('common.status.pending')}</option>
                 {mockCandidates.map((candidate) => (
                   <option key={candidate.id} value={candidate.id}>
-                    {candidate.firstName} {candidate.lastName} - {candidate.jobId}
+                    {candidate.firstName} {candidate.lastName} - {getCandidateJobTitle(candidate.jobId)}
                   </option>
                 ))}
               </select>

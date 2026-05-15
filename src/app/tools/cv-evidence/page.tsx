@@ -216,7 +216,7 @@ export default function CVEvidencePage() {
         )}
       </div>
 
-      <Notice variant="info" title={t('tools.cvEvidence.sourceOfTruth')}>
+      <Notice variant="info" title={t('tools.cvEvidence.sourceOfTruthTitle')}>
         {t('tools.cvEvidence.sourceOfTruth')}
       </Notice>
 
@@ -255,7 +255,7 @@ export default function CVEvidencePage() {
                 <div className={styles.provenanceGrid}>
                   <div className={styles.provenanceItem}>
                     <label>{t('tools.cvEvidence.extractionModel')}</label>
-                    <span className={styles.provenanceValue}>gemini-2.0-flash</span>
+                    <span className={styles.provenanceValue}>{t('tools.cvEvidence.aiReviewEngine')}</span>
                   </div>
                   <div className={styles.provenanceItem}>
                     <label>{t('tools.cvEvidence.confidence')}</label>

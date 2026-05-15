@@ -16,6 +16,8 @@ import styles from './grading.module.css';
 
 type TabType = 'all' | 'mcq' | 'essay' | 'coding';
 
+const PASS_THRESHOLD_PERCENT = 60;
+
 export default function TestGradingPage() {
   const router = useRouter();
   const { t } = useTranslation();
@@ -34,13 +36,17 @@ export default function TestGradingPage() {
 
   const selected = workflowTestResults.find(test => test.id === selectedTest);
 
-  const filteredTests = workflowTestResults.filter(test => {
-    if (activeTab === 'all') return true;
-    if (activeTab === 'mcq') return test.testName.includes('JavaScript') || test.testName.includes('MCQ');
-    if (activeTab === 'essay') return test.testName.includes('Design') || test.testName.includes('Essay');
-    if (activeTab === 'coding') return test.testName.includes('Coding') || test.testName.includes('Challenge');
+  const getTestStatusLabel = (status: string): string => t(`common.status.${status}`);
+
+  const matchesTab = (test: typeof workflowTestResults[number], tab: TabType): boolean => {
+    if (tab === 'all') return true;
+    if (tab === 'mcq') return test.testName.includes('JavaScript') || test.testName.includes('MCQ');
+    if (tab === 'essay') return test.testName.includes('Design') || test.testName.includes('Essay');
+    if (tab === 'coding') return test.testName.includes('Coding') || test.testName.includes('Challenge');
     return true;
-  });
+  };
+
+  const filteredTests = workflowTestResults.filter(test => matchesTab(test, activeTab));
 
   const handleOverrideSubmit = () => {
     if (!selected || !overrideReason.trim()) return;
@@ -62,8 +68,12 @@ export default function TestGradingPage() {
     )));
     setFeedback({
       variant: 'success',
-      title: 'Override submitted',
-      body: `${selected.candidateName} now has a human override score of ${nextScore}/${selected.maxScore}.`,
+      title: t('tests.grading.feedback.override.title'),
+      body: t('tests.grading.feedback.override.body', {
+        name: selected.candidateName,
+        score: nextScore,
+        maxScore: selected.maxScore,
+      }),
     });
     setOverrideModalOpen(false);
     setOverrideReason('');
@@ -85,8 +95,8 @@ export default function TestGradingPage() {
     )));
     setFeedback({
       variant: 'warning',
-      title: 'Result flagged',
-      body: `${selected.candidateName}'s test result is now marked for reviewer follow-up.`,
+      title: t('tests.grading.feedback.flagged.title'),
+      body: t('tests.grading.feedback.flagged.body', { name: selected.candidateName }),
     });
   };
 
@@ -111,43 +121,50 @@ export default function TestGradingPage() {
         </Notice>
       )}
 
-      <div className={styles.tabs}>
+      <div className={styles.tabs} role="tablist" aria-label={t('tests.grading.tabs.label')}>
         {(['all', 'mcq', 'essay', 'coding'] as TabType[]).map(tab => (
           <button
             key={tab}
+            id={`test-grading-tab-${tab}`}
+            type="button"
+            role="tab"
+            aria-selected={activeTab === tab}
+            aria-controls="test-grading-results"
             className={`${styles.tab} ${activeTab === tab ? styles.active : ''}`}
             onClick={() => setActiveTab(tab)}
           >
             {t(`tests.grading.tabs.${tab}`)}
             <span className={styles.tabCount}>
-              {tab === 'all' ? workflowTestResults.length : workflowTestResults.filter(t => {
-                if (tab === 'mcq') return t.testName.includes('JavaScript');
-                if (tab === 'essay') return t.testName.includes('Design');
-                if (tab === 'coding') return t.testName.includes('Coding');
-                return true;
-              }).length}
+              {workflowTestResults.filter(test => matchesTab(test, tab)).length}
             </span>
           </button>
         ))}
       </div>
 
       <div className={styles.mainContent}>
-        <div className={styles.testList}>
+        <div
+          id="test-grading-results"
+          className={styles.testList}
+          role="tabpanel"
+          aria-labelledby={`test-grading-tab-${activeTab}`}
+        >
           <Card>
             <CardHeader title={t('tests.grading.results.title')} description={t('tests.grading.results.count', { count: filteredTests.length })} />
             <CardContent>
               <div className={styles.testItems}>
                 {filteredTests.map(test => (
-                  <div
+                  <button
                     key={test.id}
+                    type="button"
                     className={`${styles.testItem} ${selectedTest === test.id ? styles.selected : ''}`}
                     onClick={() => setSelectedTest(test.id)}
+                    aria-pressed={selectedTest === test.id}
                   >
                     <div className={styles.testHeader}>
                       <span className={styles.testName}>{test.testName}</span>
                       <StatusBadge
                         variant={test.status === 'approved' ? 'success' : test.status === 'flagged' ? 'warning' : 'danger'}
-                        label={test.status}
+                        label={getTestStatusLabel(test.status)}
                       />
                     </div>
                     <div className={styles.testMeta}>
@@ -161,7 +178,7 @@ export default function TestGradingPage() {
                         {test.gradedBy === 'ai' ? t('tests.grading.gradedBy.ai') : test.gradedBy === 'override' ? t('tests.grading.gradedBy.humanOverride') : t('tests.grading.gradedBy.human')}
                       </span>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </CardContent>
@@ -203,12 +220,12 @@ export default function TestGradingPage() {
                         <span className={styles.infoLabel}>{t('tests.grading.gradingInfo.status')}</span>
                         <StatusBadge
                           variant={selected.status === 'approved' ? 'success' : selected.status === 'flagged' ? 'warning' : 'info'}
-                          label={selected.status}
+                          label={getTestStatusLabel(selected.status)}
                         />
                       </div>
                       <div className={styles.infoItem}>
                         <span className={styles.infoLabel}>{t('tests.grading.gradingInfo.passThreshold')}</span>
-                        <span className={styles.infoValue}>60%</span>
+                        <span className={styles.infoValue}>{PASS_THRESHOLD_PERCENT}%</span>
                       </div>
                     </div>
                   </div>
@@ -311,7 +328,7 @@ export default function TestGradingPage() {
             <Card>
               <CardContent>
                 <div className={styles.emptyState}>
-                  <span className={styles.emptyIcon}>📝</span>
+                  <span className={styles.emptyIcon} aria-hidden="true">📝</span>
                   <p>{t('tests.grading.empty')}</p>
                 </div>
               </CardContent>
@@ -321,14 +338,16 @@ export default function TestGradingPage() {
       </div>
 
       {overrideModalOpen && (
-        <div className={styles.modal}>
-          <div className={styles.modalContent}>
+        <div className={styles.modal} role="presentation">
+          <div className={styles.modalContent} role="dialog" aria-modal="true" aria-labelledby="override-score-title" aria-describedby="override-score-description">
             <div className={styles.modalHeader}>
-              <h2>{t('tests.grading.modal.title')}</h2>
-              <button className={styles.closeButton} onClick={() => setOverrideModalOpen(false)}>×</button>
+              <h2 id="override-score-title">{t('tests.grading.modal.title')}</h2>
+              <button className={styles.closeButton} onClick={() => setOverrideModalOpen(false)} aria-label={t('common.closeModal')}>
+                <span aria-hidden="true">×</span>
+              </button>
             </div>
             <div className={styles.modalBody}>
-              <p className={styles.modalDescription}>
+              <p id="override-score-description" className={styles.modalDescription}>
                 {t('tests.grading.modal.description')}
               </p>
               <div className={styles.formGroup}>
@@ -356,7 +375,7 @@ export default function TestGradingPage() {
                 />
               </div>
               <div className={styles.mfaNotice}>
-                <span className={styles.mfaIcon}>🔐</span>
+                <span className={styles.mfaIcon} aria-hidden="true">🔐</span>
                 <span>{t('tests.grading.modal.mfaRequired')}</span>
               </div>
             </div>

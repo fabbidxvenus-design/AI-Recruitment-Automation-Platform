@@ -52,6 +52,8 @@ export interface ApprovalHistoryEntry {
   actorRole: UserRole;
   timestamp: string;
   notes?: string;
+  actorKey?: string;
+  notesKey?: string;
 }
 
 export interface ExportOptions {

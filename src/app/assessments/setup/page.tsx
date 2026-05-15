@@ -140,7 +140,7 @@ export default function AssessmentSetupPage() {
             </div>
             <div>
               <dt>{t('assessments.setup.jobContext.jdStatus')}</dt>
-              <dd>{selectedJdVersion?.status ?? t('common.notAvailable')}</dd>
+              <dd>{selectedJdVersion ? t(`assessments.setup.status.${selectedJdVersion.status}`) : t('common.notAvailable')}</dd>
             </div>
           </dl>
         </Card>
@@ -250,7 +250,7 @@ export default function AssessmentSetupPage() {
             <span className={styles.cardEyebrow}>{t('assessments.setup.trace.eyebrow')}</span>
             <h2 className={styles.sectionTitle}>{t('assessments.setup.trace.title')}</h2>
           </div>
-          <StatusBadge variant="info" label={t('assessments.setup.trace.prototypeOnly')} />
+          <StatusBadge variant="info" label={t('assessments.setup.trace.previewMode')} />
         </div>
         <dl className={styles.traceGrid}>
           {Object.entries(traceabilityPreview).map(([key, value]) => (
