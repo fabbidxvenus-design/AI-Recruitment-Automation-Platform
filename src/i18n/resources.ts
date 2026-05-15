@@ -116,6 +116,36 @@ export const resources = {
         status: { draft: 'Draft', approved: 'Approved', archived: 'Archived' },
         notice: { title: 'Assessment setup workspace', body: 'Review the approved assessment plan before interview and test activities begin.' },
         selector: { label: 'Assessment plan', aria: 'Assessment plan selector' },
+        workflow: {
+          state: {
+            label: 'Plan status',
+            draft: 'Draft',
+            approved: 'Approved',
+            description: { draft: 'Awaiting approval', approved: 'Ready for recruitment use' },
+          },
+          approval: {
+            label: 'Approval owner',
+            pending: 'Awaiting review',
+            approved: 'Approved',
+          },
+          evidence: {
+            label: 'Evidence versions',
+            planVersion: 'Plan version',
+            rubricVersion: 'Rubric version',
+          },
+          timeline: {
+            label: 'Activity timeline',
+            title: 'Recent activity',
+          },
+          event: {
+            created: 'Plan created',
+            planApproved: 'Plan approved',
+          },
+          action: {
+            approve: 'Approve plan',
+            viewResults: 'View assessment results',
+          },
+        },
         jobContext: { eyebrow: 'Job/JD criteria version', jdStatus: 'JD Status' },
         version: { eyebrow: 'Plan version', versionNumber: 'Version', createdBy: 'Created by' },
         rubric: { eyebrow: 'Shared criteria', title: 'Rubric & weights', totalWeight: '{{weight}}% total', weightLabel: '{{label}} weight {{weight}} percent' },
@@ -928,6 +958,36 @@ export const resources = {
         status: { draft: 'Bản nháp', approved: 'Đã duyệt', archived: 'Đã lưu trữ' },
         notice: { title: 'Workspace thiết lập đánh giá', body: 'Rà soát kế hoạch đánh giá đã duyệt trước khi bắt đầu hoạt động phỏng vấn và bài test.' },
         selector: { label: 'Kế hoạch đánh giá', aria: 'Bộ chọn kế hoạch đánh giá' },
+        workflow: {
+          state: {
+            label: 'Trạng thái kế hoạch',
+            draft: 'Bản nháp',
+            approved: 'Đã duyệt',
+            description: { draft: 'Chờ duyệt', approved: 'Sẵn sàng sử dụng' },
+          },
+          approval: {
+            label: 'Người phê duyệt',
+            pending: 'Chờ rà soát',
+            approved: 'Đã duyệt',
+          },
+          evidence: {
+            label: 'Phiên bản bằng chứng',
+            planVersion: 'Phiên bản kế hoạch',
+            rubricVersion: 'Phiên bản rubric',
+          },
+          timeline: {
+            label: 'Dòng thời gian hoạt động',
+            title: 'Hoạt động gần đây',
+          },
+          event: {
+            created: 'Tạo kế hoạch',
+            planApproved: 'Đã duyệt kế hoạch',
+          },
+          action: {
+            approve: 'Duyệt kế hoạch',
+            viewResults: 'Xem kết quả đánh giá',
+          },
+        },
         jobContext: { eyebrow: 'Phiên bản tiêu chí Job/JD', jdStatus: 'Trạng thái JD' },
         version: { eyebrow: 'Phiên bản kế hoạch', versionNumber: 'Phiên bản', createdBy: 'Tạo bởi' },
         rubric: { eyebrow: 'Tiêu chí chung', title: 'Rubric & trọng số', totalWeight: 'Tổng {{weight}}%', weightLabel: 'Trọng số {{label}} là {{weight}} phần trăm' },
