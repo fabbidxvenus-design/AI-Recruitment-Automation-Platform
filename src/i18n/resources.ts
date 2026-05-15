@@ -781,7 +781,7 @@ export const resources = {
         approvals: { title: 'Phê duyệt đang chờ', description: '{{count}} mục cần Quản lý Nhân sự xử lý', caption: 'Các mục đang chờ phê duyệt', review: 'Xem xét' },
         schedule: { title: 'Lịch phỏng vấn đang chờ duyệt', description: '{{count}} lịch phỏng vấn đang chờ duyệt' },
         errors: { title: 'Hàng đợi xử lý sự cố', description: '{{count}} sự cố đang mở', viewDetails: 'Xem chi tiết', caption: 'Các mục xử lý sự cố' },
-        integration: { title: 'Tình trạng tích hợp', description: 'Trạng thái Google Workspace', errors: 'lỗi', status: { healthy: 'Ổn định', degraded: 'Cần xem xét', down: 'Không khả dụng' } },
+        integration: { title: 'Tình trạng kết nối', description: 'Mức sẵn sàng của không gian làm việc', errors: 'mục cần xem xét', status: { healthy: 'Ổn định', degraded: 'Cần xem xét', down: 'Cần thiết lập' } },
         activity: { title: 'Hoạt động gần đây', description: 'Các sự kiện quy trình gần đây', movedToStage: '{{name}} chuyển sang giai đoạn {{stage}}', awaitingScreening: '{{count}} ứng viên đang chờ xem xét sàng lọc', scheduledInterview: 'Đã lên lịch phỏng vấn với {{name}}', videoError: 'Lỗi xử lý video cần xử lý', twoHoursAgo: '2 giờ trước', fiveHoursAgo: '5 giờ trước', twoDaysAgo: '2 ngày trước' },
       },
       candidates: { import: {

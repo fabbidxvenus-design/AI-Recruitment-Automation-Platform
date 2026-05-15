@@ -35,10 +35,10 @@ export const bqBlockers: BQBlocker[] = [
   {
     id: 'bq-004',
     code: 'BQ-004',
-    title: 'AI Video Interview Analysis',
-    description: 'Video analysis requires Google Cloud AI services and storage setup.',
+    title: 'Interview Evidence Review',
+    description: 'Interview evidence needs final review settings before the workspace is ready for hiring decisions.',
     screenIds: ['SCREEN-005'],
-    requiresAction: 'Configure Vertex AI and video processing pipeline',
+    requiresAction: 'Confirm interview evidence review settings',
     priority: 'critical',
   },
   {
