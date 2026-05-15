@@ -413,7 +413,7 @@ export const mockFinalReviewPackages: FinalReviewPackage[] = [
   },
 ];
 
-// Mock integration health
+// Workspace readiness fixtures
 export const mockIntegrationHealth: IntegrationHealth[] = [
   {
     id: 'int-hlth-001',

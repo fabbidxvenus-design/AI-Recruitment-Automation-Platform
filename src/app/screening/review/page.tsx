@@ -101,7 +101,7 @@ export default function ScreeningReviewPage() {
     });
   };
 
-  const handleRescreening = () => {
+  const handleReevaluation = () => {
     if (!selected) return;
 
     setEvaluations(prev => prev.map(evaluation => (
@@ -113,6 +113,22 @@ export default function ScreeningReviewPage() {
       variant: 'info',
       title: t('screening.review.feedback.rescreening.title'),
       body: t('screening.review.feedback.rescreening.body', { name: selected.candidateName }),
+    });
+    setSelectedEvaluation(null);
+  };
+
+  const handleStageAdvance = () => {
+    if (!selected) return;
+
+    setEvaluations(prev => prev.map(evaluation => (
+      evaluation.id === selected.id
+        ? { ...evaluation, status: 'approved', decision: 'approve' }
+        : evaluation
+    )));
+    setFeedback({
+      variant: 'success',
+      title: t('screening.review.feedback.stageAdvance.title'),
+      body: t('screening.review.feedback.stageAdvance.body', { name: selected.candidateName }),
     });
   };
 
@@ -399,19 +415,43 @@ export default function ScreeningReviewPage() {
                     </div>
                   </section>
                 </div>
+
+                {/* Workflow Timeline */}
+                <section className={styles.timelineSection}>
+                  <h3 className={styles.sectionTitle}>{t('screening.review.timeline.title')}</h3>
+                  <div className={styles.timeline}>
+                    <div className={`${styles.timelineStep} ${selected.status === 'approved' ? styles.completed : selected.status === 'pending' && selected.decision === 'needs_review' ? styles.completed : ''}`}>
+                      <span className={styles.timelineIcon} aria-hidden="true">1</span>
+                      <span className={styles.timelineLabel}>{t('screening.review.timeline.screening')}</span>
+                    </div>
+                    <div className={styles.timelineConnector} aria-hidden="true" />
+                    <div className={`${styles.timelineStep} ${selected.status === 'pending' && selected.decision === 'needs_review' ? styles.active : ''}`}>
+                      <span className={styles.timelineIcon} aria-hidden="true">2</span>
+                      <span className={styles.timelineLabel}>{t('screening.review.timeline.reevaluation')}</span>
+                    </div>
+                    <div className={styles.timelineConnector} aria-hidden="true" />
+                    <div className={`${styles.timelineStep} ${selected.status === 'approved' ? styles.active : ''}`}>
+                      <span className={styles.timelineIcon} aria-hidden="true">3</span>
+                      <span className={styles.timelineLabel}>{t('screening.review.timeline.interviewPrep')}</span>
+                    </div>
+                  </div>
+                  {selected.status === 'approved' && (
+                    <Link href="/interviews/schedule-approval" className={styles.nextActionCta}>
+                      {t('screening.review.timeline.nextActionCta')}
+                    </Link>
+                  )}
+                </section>
               </CardContent>
               <div className={styles.actionButtons}>
                 <Button variant="danger" onClick={handleRejectSelected}>
                   {t('screening.review.actions.reject')}
                 </Button>
-                <Button variant="secondary" onClick={handleRescreening}>
+                <Button variant="secondary" onClick={handleReevaluation}>
                   {t('screening.review.actions.rescreening')}
                 </Button>
-                <Link href="/interviews/schedule-approval">
-                  <Button variant="primary">
-                    {t('screening.review.actions.approveProceed')}
-                  </Button>
-                </Link>
+                <Button variant="primary" onClick={handleStageAdvance}>
+                  {t('screening.review.actions.approveProceed')}
+                </Button>
               </div>
             </Card>
           ) : (

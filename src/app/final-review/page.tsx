@@ -8,7 +8,6 @@ import { formatDate, formatNumber } from '@/lib/formatDate';
 import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Notice } from '@/components/ui/Notice';
-import { Modal } from '@/components/ui/Modal';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { mockFinalReviewPackages } from '@/lib/mockData';
@@ -34,11 +33,6 @@ export default function FinalReviewPage() {
     ...mockFinalReviewPackages.filter((reviewPackage) => reviewPackage.id !== activeWorkflowPackage.id),
   ]);
   const selected = finalReviewPackages.find(p => p.id === selectedCandidate) || activeWorkflowPackage;
-  const getApproverRoleLabel = (role: string): string => {
-    if (role === 'Hiring Manager') return t('common.role.hiringManager');
-    if (role === 'VP Product') return t('common.role.vpProduct');
-    return role;
-  };
 
   const handleDecision = (type: 'PASS' | 'FAIL') => {
     setDecision(type);
@@ -67,8 +61,8 @@ export default function FinalReviewPage() {
       )));
       setFeedback({
         variant: 'success',
-        title: t('finalReview.feedback.decisionSubmitted.title'),
-        body: t('finalReview.feedback.decisionSubmitted.body', { name: selected.candidateName, decision }),
+        title: 'Final decision submitted',
+        body: `${selected.candidateName} was marked ${decision} with an immutable evidence snapshot.`,
       });
       setShowDecisionModal(false);
       setDecision(null);
@@ -127,11 +121,18 @@ export default function FinalReviewPage() {
             <CardContent>
               <div className={styles.candidateList}>
                 {finalReviewPackages.map(candidate => (
-                  <button
+                  <div
                     key={candidate.id}
-                    type="button"
                     className={`${styles.candidateItem} ${selected?.id === candidate.id ? styles.selected : ''}`}
                     onClick={() => setSelectedCandidate(candidate.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setSelectedCandidate(candidate.id);
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
                     aria-pressed={selected?.id === candidate.id}
                     aria-label={`${candidate.candidateName}, ${candidate.jobTitle}, Score ${candidate.overallScore}`}
                   >
@@ -146,7 +147,7 @@ export default function FinalReviewPage() {
                         label={t(`finalReview.recommendation.label.${candidate.recommendation}`)}
                       />
                     </div>
-                  </button>
+                  </div>
                 ))}
               </div>
             </CardContent>
@@ -160,7 +161,7 @@ export default function FinalReviewPage() {
               description={selected.jobTitle}
               action={
                 <div className={styles.overallScore}>
-                  <span className={styles.scoreLabel}>{t('finalReview.sections.overallScore')}</span>
+                  <span className={styles.scoreLabel}>Overall Score</span>
                   <span className={styles.scoreValue}>{selected.overallScore}/100</span>
                 </div>
               }
@@ -275,11 +276,11 @@ export default function FinalReviewPage() {
                       <div key={index} className={styles.approverItem}>
                         <div className={styles.approverInfo}>
                           <span className={styles.approverName}>{approver.name}</span>
-                          <span className={styles.approverRole}>{getApproverRoleLabel(approver.role)}</span>
+                          <span className={styles.approverRole}>{approver.role}</span>
                         </div>
                         <StatusBadge
                           variant={approver.status === 'approved' ? 'success' : 'warning'}
-                          label={t(`common.status.${approver.status}`)}
+                          label={approver.status}
                           dot
                         />
                         {approver.timestamp && (
@@ -310,8 +311,8 @@ export default function FinalReviewPage() {
                 variant="ghost"
                 onClick={() => setFeedback({
                   variant: 'info',
-                  title: t('finalReview.feedback.requestInfo.title'),
-                  body: t('finalReview.feedback.requestInfo.body', { name: selected.candidateName }),
+                  title: 'Information requested',
+                  body: `Follow-up request for ${selected.candidateName} has been submitted to the recruiter workspace.`,
                 })}
               >
                 {t('finalReview.decisionActions.requestInfo')}
@@ -328,100 +329,120 @@ export default function FinalReviewPage() {
       </div>
 
 
-      <Modal
-        isOpen={historyOpen}
-        onClose={() => setHistoryOpen(false)}
-        title={t('finalReview.history.title')}
-        footer={<Button variant="primary" onClick={() => setHistoryOpen(false)}>{t('common.close')}</Button>}
-      >
-        <p className={styles.summaryText}>{t('finalReview.history.auditTrail', { name: selected.candidateName })}</p>
-        <div className={styles.approverList}>
-          {selected.approvers.map((approver, index) => (
-            <div key={`${approver.name}-${index}`} className={styles.approverItem}>
-              <div className={styles.approverInfo}>
-                <span className={styles.approverName}>{approver.name}</span>
-                <span className={styles.approverRole}>{getApproverRoleLabel(approver.role)}</span>
+      {historyOpen && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+              <h2>Decision history</h2>
+              <button className={styles.closeButton} onClick={() => setHistoryOpen(false)}>×</button>
+            </div>
+            <div className={styles.modalBody}>
+              <p className={styles.summaryText}>Decision audit trail for {selected.candidateName}.</p>
+              <div className={styles.approverList}>
+                {selected.approvers.map((approver, index) => (
+                  <div key={`${approver.name}-${index}`} className={styles.approverItem}>
+                    <div className={styles.approverInfo}>
+                      <span className={styles.approverName}>{approver.name}</span>
+                      <span className={styles.approverRole}>{approver.role}</span>
+                    </div>
+                    <StatusBadge variant={approver.status === 'approved' ? 'success' : 'warning'} label={approver.status} dot />
+                  </div>
+                ))}
               </div>
-              <StatusBadge variant={approver.status === 'approved' ? 'success' : 'warning'} label={t(`common.status.${approver.status}`)} dot />
             </div>
-          ))}
-        </div>
-      </Modal>
-
-      <Modal
-        isOpen={viewedDocument !== null}
-        onClose={() => setViewedDocument(null)}
-        title={viewedDocument ?? t('finalReview.documentPreview.title')}
-        footer={<Button variant="primary" onClick={() => setViewedDocument(null)}>{t('common.close')}</Button>}
-      >
-        <Notice variant="info" title={t('finalReview.documentPreview.title')}>
-          {t('finalReview.documentPreview.body')}
-        </Notice>
-      </Modal>
-
-      <Modal
-        isOpen={showDecisionModal}
-        onClose={() => setShowDecisionModal(false)}
-        title={t('finalReview.modal.title', { decision })}
-        footer={(
-          <>
-            <Button variant="ghost" onClick={() => setShowDecisionModal(false)}>{t('finalReview.modal.cancel')}</Button>
-            <Button
-              variant={decision === 'PASS' ? 'primary' : 'danger'}
-              onClick={handleSubmitDecision}
-              disabled={!mfaVerified || !reason.trim()}
-            >
-              {t('finalReview.modal.confirm', { decision })}
-            </Button>
-          </>
-        )}
-      >
-        <div className={styles.decisionInfo}>
-          <p>
-            {t('finalReview.modal.warning', { decision, name: selected.candidateName })}
-          </p>
-          <p className={styles.decisionWarning}>
-            {t('finalReview.modal.auditNotice')}
-          </p>
-        </div>
-
-        {!mfaVerified ? (
-          <div className={styles.mfaSection}>
-            <p className={styles.mfaLabel}>{t('finalReview.modal.mfaLabel')}</p>
-            <Button variant="secondary" onClick={handleVerifyMfa}>
-              <span aria-hidden="true">🔐</span> {t('finalReview.modal.verifyMfa')}
-            </Button>
+            <div className={styles.modalFooter}>
+              <Button variant="primary" onClick={() => setHistoryOpen(false)}>Close</Button>
+            </div>
           </div>
-        ) : (
-          <div className={styles.reasonSection}>
-            <div className={styles.mfaVerified}>
-              <span aria-hidden="true">✓</span>
-              <span>{t('finalReview.modal.mfaVerified')}</span>
+        </div>
+      )}
+
+      {viewedDocument && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+              <h2>{viewedDocument}</h2>
+              <button className={styles.closeButton} onClick={() => setViewedDocument(null)}>×</button>
             </div>
-            <div className={styles.formGroup}>
-              <label htmlFor="decisionReason">{t('finalReview.modal.reasonLabel')}</label>
-              <textarea
-                id="decisionReason"
-                className={styles.textarea}
-                rows={4}
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                onBlur={handleReasonBlur}
-                placeholder={t('finalReview.modal.reasonPlaceholder')}
-                required
-                aria-required="true"
-                aria-invalid={!!reasonError}
-                aria-describedby={reasonError ? 'reason-error' : undefined}
-              />
-              {reasonError && (
-                <span id="reason-error" className={styles.fieldError} role="alert">
-                  {reasonError}
-                </span>
+            <div className={styles.modalBody}>
+              <Notice variant="info" title="Document Preview">
+                The evidence document has been opened and can be reviewed here.
+              </Notice>
+            </div>
+            <div className={styles.modalFooter}>
+              <Button variant="primary" onClick={() => setViewedDocument(null)}>Close</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showDecisionModal && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+              <h2>{t('finalReview.modal.title', { decision })}</h2>
+              <button className={styles.closeButton} onClick={() => setShowDecisionModal(false)}>×</button>
+            </div>
+            <div className={styles.modalBody}>
+              <div className={styles.decisionInfo}>
+                <p>
+                  {t('finalReview.modal.warning', { decision, name: selected.candidateName })}
+                </p>
+                <p className={styles.decisionWarning}>
+                  {t('finalReview.modal.auditNotice')}
+                </p>
+              </div>
+
+              {!mfaVerified ? (
+                <div className={styles.mfaSection}>
+                  <p className={styles.mfaLabel}>{t('finalReview.modal.mfaLabel')}</p>
+                  <Button variant="secondary" onClick={handleVerifyMfa}>
+                    🔐 {t('finalReview.modal.verifyMfa')}
+                  </Button>
+                </div>
+              ) : (
+                <div className={styles.reasonSection}>
+                  <div className={styles.mfaVerified}>
+                    <span aria-hidden="true">✓</span>
+                    <span>{t('finalReview.modal.mfaVerified')}</span>
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="decisionReason">{t('finalReview.modal.reasonLabel')}</label>
+                    <textarea
+                      id="decisionReason"
+                      className={styles.textarea}
+                      rows={4}
+                      value={reason}
+                      onChange={(e) => setReason(e.target.value)}
+                      onBlur={handleReasonBlur}
+                      placeholder={t('finalReview.modal.reasonPlaceholder')}
+                      required
+                      aria-required="true"
+                      aria-invalid={!!reasonError}
+                      aria-describedby={reasonError ? 'reason-error' : undefined}
+                    />
+                    {reasonError && (
+                      <span id="reason-error" className={styles.fieldError} role="alert">
+                        {reasonError}
+                      </span>
+                    )}
+                  </div>
+                </div>
               )}
             </div>
+            <div className={styles.modalFooter}>
+              <Button variant="ghost" onClick={() => setShowDecisionModal(false)}>{t('finalReview.modal.cancel')}</Button>
+              <Button
+                variant={decision === 'PASS' ? 'primary' : 'danger'}
+                onClick={handleSubmitDecision}
+                disabled={!mfaVerified || !reason.trim()}
+              >
+                {t('finalReview.modal.confirm', { decision })}
+              </Button>
+            </div>
           </div>
-        )}
-      </Modal>
+        </div>
+      )}
     </div>
   );
 }

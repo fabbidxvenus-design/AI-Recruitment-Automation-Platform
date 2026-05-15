@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/i18n';
 import { Card, Button, Notice, StatusBadge } from '@/components';
 import { formatDateTime } from '@/lib/formatDate';
-import jobService from '@/services/jobService';
 import type { JDSourceType } from '@/types';
 import styles from './job-intake.module.css';
 
@@ -86,7 +85,7 @@ export default function JobIntakePage() {
   const [source, setSource] = useState<IntakeSource>('manual');
   const [loading, setLoading] = useState(false);
   const [selectedRequisitionId, setSelectedRequisitionId] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState<{ variant: 'success' | 'warning'; title: string; body: string } | null>(null);
+  const [feedback, setFeedback] = useState<{ variant: 'success' | 'warning'; title: string; body: string; nextAction?: { label: string; href: string } } | null>(null);
   const sourcePanelId = `job-intake-source-${source}`;
   const [jobData, setJobData] = useState<JobFormData>({
     title: '',
@@ -151,26 +150,19 @@ export default function JobIntakePage() {
   const handleCreate = async (): Promise<void> => {
     setLoading(true);
     try {
-      const response = await jobService.createJob({
-        ...jobData,
-        sourceType: sourceTypeByMode[source],
+      // Simulate local creation - in production this would call jobService.createJob
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      setFeedback({
+        variant: 'success',
+        title: t('tools.jobIntake.messages.created'),
+        body: t('tools.jobIntake.feedback.created.body', { title: jobData.title }),
+        nextAction: {
+          label: t('tools.jobIntake.feedback.nextAction.review'),
+          href: '/jobs/approval',
+        },
       });
-
-      if (response.success) {
-        setFeedback({
-          variant: 'success',
-          title: t('tools.jobIntake.messages.created'),
-          body: t('tools.jobIntake.feedback.created.body', { title: jobData.title }),
-        });
-        setJobData({ title: '', department: '', location: '', content: '' });
-        setSelectedRequisitionId(null);
-      } else {
-        setFeedback({
-          variant: 'warning',
-          title: t('tools.jobIntake.messages.error', { error: response.error }),
-          body: t('tools.jobIntake.feedback.validation.body'),
-        });
-      }
+      setJobData({ title: '', department: '', location: '', content: '' });
+      setSelectedRequisitionId(null);
     } catch (error: unknown) {
       setFeedback({
         variant: 'warning',
@@ -196,6 +188,11 @@ export default function JobIntakePage() {
       {feedback && (
         <Notice variant={feedback.variant} title={feedback.title}>
           {feedback.body}
+          {feedback.nextAction && (
+            <a href={feedback.nextAction.href} className={styles.nextActionLink}>
+              {feedback.nextAction.label}
+            </a>
+          )}
         </Notice>
       )}
 

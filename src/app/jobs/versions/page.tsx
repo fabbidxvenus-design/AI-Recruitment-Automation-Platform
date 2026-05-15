@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/i18n';
 import { formatDateTime } from '@/lib/formatDate';
@@ -40,6 +41,7 @@ export default function JDVersionHistoryPage() {
   });
 
   const currentVersion = versionsWithDetails.find((item) => item.version.status === 'approved');
+  const hasPendingVersion = versionsWithDetails.some((item) => item.version.status === 'pending');
 
   const handleJobChange = (jobId: string): void => {
     setSelectedJobId(jobId);
@@ -319,6 +321,52 @@ export default function JDVersionHistoryPage() {
           </div>
         )}
       </Card>
+
+      {currentVersion && (
+        <Card className={styles.workflowSummaryCard}>
+          <h3 className={styles.workflowSummaryTitle}>{t('jobs.versions.workflow.summary')}</h3>
+          <div className={styles.workflowSummaryContent}>
+            <div className={styles.workflowSummaryItem}>
+              <span className={styles.workflowSummaryLabel}>{t('jobs.versions.version')}</span>
+              <span className={styles.workflowSummaryValue}>{currentVersion.version.versionNumber}</span>
+            </div>
+            <div className={styles.workflowSummaryItem}>
+              <span className={styles.workflowSummaryLabel}>{t('jobs.versions.approved')}</span>
+              <span className={styles.workflowSummaryValue}>
+                {currentVersion.version.approvedAt ? formatDateTime(currentVersion.version.approvedAt, locale) : '-'}
+              </span>
+            </div>
+            {currentVersion.parsedProfile && (
+              <div className={styles.workflowSummaryItem}>
+                <span className={styles.workflowSummaryLabel}>{t('jobs.versions.skillsCount')}</span>
+                <span className={styles.workflowSummaryValue}>{currentVersion.parsedProfile.skills.length}</span>
+              </div>
+            )}
+          </div>
+          <div className={styles.workflowActions}>
+            <Link href={hasPendingVersion ? '/jobs/approval' : '/screening/review'}>
+              <Button variant="primary">
+                {hasPendingVersion
+                  ? t('jobs.versions.workflow.nextActionApproval')
+                  : t('jobs.versions.workflow.nextActionScreening')}
+              </Button>
+            </Link>
+          </div>
+          <p className={styles.workflowHint}>{t('jobs.versions.workflow.nextActionHint')}</p>
+        </Card>
+      )}
+
+      {!currentVersion && versionsWithDetails.length > 0 && (
+        <Card className={styles.workflowSummaryCard}>
+          <h3 className={styles.workflowSummaryTitle}>{t('jobs.versions.workflow.noApproved')}</h3>
+          <div className={styles.workflowActions}>
+            <Link href="/jobs/approval">
+              <Button variant="primary">{t('jobs.versions.workflow.nextActionApproval')}</Button>
+            </Link>
+          </div>
+          <p className={styles.workflowHint}>{t('jobs.versions.workflow.nextActionHint')}</p>
+        </Card>
+      )}
     </div>
   );
 }

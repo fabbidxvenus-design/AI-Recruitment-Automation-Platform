@@ -443,3 +443,183 @@
   padding: var(--space-4) var(--space-5);
   border-top: 1px solid var(--color-outline-variant);
 }
+
+/* Confirmation Modal */
+.confirmationModal {
+  background: var(--color-surface);
+  border-radius: 16px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.confirmationHeader {
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+
+.confirmationHeader h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.confirmationBody {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.confirmationScore {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface-container-low);
+  border-radius: 12px;
+  border: 1px solid var(--color-outline-variant);
+}
+
+.confirmScoreLabel {
+  font-size: 13px;
+  color: var(--color-on-surface-variant);
+}
+
+.confirmScoreValue {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.confirmationDetails {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.confirmRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.confirmLabel {
+  font-size: 13px;
+  color: var(--color-on-surface-variant);
+}
+
+.confirmValue {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-on-surface);
+}
+
+.confirmWarning {
+  font-size: 13px;
+  color: var(--color-warning);
+  margin: 0;
+  padding: var(--space-3);
+  background: var(--color-warning-light);
+  border-radius: 8px;
+  border-left: 3px solid var(--color-warning);
+}
+
+.confirmationFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-outline-variant);
+}
+
+/* Confirmation Modal */
+.confirmationModal {
+  background: var(--color-surface);
+  border-radius: 16px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.confirmationHeader {
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+
+.confirmationHeader h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+.confirmationBody {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.confirmationScore {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface-container-low);
+  border-radius: 12px;
+  border: 1px solid var(--color-outline-variant);
+}
+
+.confirmScoreLabel {
+  font-size: 13px;
+  color: var(--color-on-surface-variant);
+}
+
+.confirmScoreValue {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.confirmationDetails {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.confirmRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.confirmLabel {
+  font-size: 13px;
+  color: var(--color-on-surface-variant);
+}
+
+.confirmValue {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-on-surface);
+}
+
+.confirmWarning {
+  font-size: 13px;
+  color: var(--color-warning);
+  margin: 0;
+  padding: var(--space-3);
+  background: var(--color-warning-light);
+  border-radius: 8px;
+  border-left: 3px solid var(--color-warning);
+}
+
+.confirmationFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-outline-variant);
+}

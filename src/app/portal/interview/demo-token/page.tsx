@@ -27,7 +27,7 @@ export default function InterviewPage() {
 
   const [session, setSession] = useState(() => resolveInterviewSessionForActivePlan());
   const currentQuestion = session.questions[currentQuestionIndex];
-  const interviewDeadline = t('portal.interview.deadlineValue');
+  const assessmentTraceability = session.assessmentTraceability;
   const progress = ((currentQuestionIndex + (answers[currentQuestion.id] ? 1 : 0)) / session.questions.length) * 100;
 
   // Check reduced motion preference - initialize with current value then subscribe for changes
@@ -72,36 +72,76 @@ export default function InterviewPage() {
     setSession(prev => ({ ...prev, status: 'completed' }));
     setFeedback({
       variant: 'success',
-      title: t('portal.interview.feedback.submitted.title'),
-      body: t('portal.interview.feedback.submitted.body'),
+      title: 'Interview submitted',
+      body: 'AI analysis is queued and the recruiter workspace now shows this interview as completed.',
     });
   };
 
   const handleSaveProgress = () => {
     setFeedback({
       variant: 'info',
-      title: t('portal.interview.feedback.saved.title'),
-      body: t('portal.interview.feedback.saved.body', { count: Object.keys(answers).length }),
+      title: 'Progress saved',
+      body: `${Object.keys(answers).length} answer(s) have been saved.`,
     });
   };
 
   const handleContactHr = () => {
     setFeedback({
       variant: 'info',
-      title: t('portal.interview.feedback.contactHr.title'),
-      body: t('portal.interview.feedback.contactHr.body'),
+      title: 'HR contact prepared',
+      body: 'A support request has been submitted to hr@company.com.',
     });
   };
 
   const handleWithdraw = () => {
     setFeedback({
       variant: 'warning',
-      title: t('portal.interview.feedback.withdrawal.title'),
-      body: t('portal.interview.feedback.withdrawal.body'),
+      title: 'Withdrawal drafted',
+      body: 'The application withdrawal request has been submitted.',
     });
   };
 
-  const timeRemaining = t('portal.interview.remainingValue');
+  const renderAssessmentTraceability = () => {
+    if (!assessmentTraceability) return null;
+
+    return (
+      <div className={styles.traceabilityPanel}>
+        <h3>{t('portal.interview.traceability.title')}</h3>
+        <dl className={styles.traceabilityGrid}>
+          <div>
+            <dt>{t('portal.interview.traceability.jobId')}</dt>
+            <dd>{assessmentTraceability.jobId}</dd>
+          </div>
+          <div>
+            <dt>{t('portal.interview.traceability.jdVersionId')}</dt>
+            <dd>{assessmentTraceability.jdVersionId}</dd>
+          </div>
+          <div>
+            <dt>{t('portal.interview.traceability.parsedCriteriaVersion')}</dt>
+            <dd>{assessmentTraceability.parsedCriteriaVersion}</dd>
+          </div>
+          <div>
+            <dt>{t('portal.interview.traceability.assessmentPlanId')}</dt>
+            <dd>{assessmentTraceability.assessmentPlanId}</dd>
+          </div>
+          <div>
+            <dt>{t('portal.interview.traceability.assessmentPlanVersionId')}</dt>
+            <dd>{assessmentTraceability.assessmentPlanVersionId}</dd>
+          </div>
+          <div>
+            <dt>{t('portal.interview.traceability.rubricVersionId')}</dt>
+            <dd>{assessmentTraceability.rubricVersionId}</dd>
+          </div>
+          <div>
+            <dt>{t('portal.interview.traceability.interviewQuestionSetVersionId')}</dt>
+            <dd>{assessmentTraceability.interviewQuestionSetVersionId ?? t('common.notAvailable')}</dd>
+          </div>
+        </dl>
+      </div>
+    );
+  };
+
+  const timeRemaining = '68h 42m';
 
   if (isExpired) {
     return (
@@ -161,7 +201,7 @@ export default function InterviewPage() {
                   <div className={styles.deadlineDisplay}>
                     <span className={styles.deadlineIcon} aria-hidden="true">⏱️</span>
                     <span className={styles.deadlineValue}>{t('portal.interview.timeRemaining', { time: timeRemaining })}</span>
-                    <span className={styles.deadlineDate}>{t('portal.interview.deadlineDate', { date: interviewDeadline })}</span>
+                    <span className={styles.deadlineDate}>{t('portal.interview.deadlineDate', { date: 'May 15, 2026 at 11:59 PM' })}</span>
                   </div>
                 </div>
 
@@ -175,6 +215,7 @@ export default function InterviewPage() {
                   </Notice>
                 )}
 
+                {renderAssessmentTraceability()}
               </div>
             </CardContent>
             <div className={styles.consentActions}>
@@ -201,7 +242,7 @@ export default function InterviewPage() {
             className={`${styles.deadline} ${!prefersReducedMotion ? styles.animate : ''}`}
             role="timer"
             aria-live={prefersReducedMotion ? 'off' : 'polite'}
-            aria-label={t('portal.interview.timeRemaining', { time: timeRemaining })}
+            aria-label={`Time remaining: ${timeRemaining}`}
           >
             <span className={styles.deadlineIcon} aria-hidden="true">⏱️</span>
             <span>{t('portal.interview.inProgress.timeRemaining', { time: timeRemaining })}</span>
@@ -229,19 +270,21 @@ export default function InterviewPage() {
         </span>
       </div>
 
+      {renderAssessmentTraceability()}
+
       <Card className={styles.questionCard}>
         <CardContent>
           <div className={styles.questionHeader}>
-            <span className={styles.questionCategory}>{t(`portal.interview.question.category.${currentQuestion.category}`)}</span>
+            <span className={styles.questionCategory}>{currentQuestion.category}</span>
             <span className={`${styles.questionDifficulty} ${styles[currentQuestion.difficulty]}`}>
-              {t(`portal.interview.question.difficulty.${currentQuestion.difficulty}`)}
+              {currentQuestion.difficulty}
             </span>
           </div>
           <h2
             ref={questionRef}
             className={styles.questionText}
             tabIndex={-1}
-            aria-label={t('portal.interview.question.ariaLabel', { number: currentQuestionIndex + 1, text: currentQuestion.text })}
+            aria-label={`Question ${currentQuestionIndex + 1}: ${currentQuestion.text}`}
           >
             {currentQuestion.text}
           </h2>
@@ -263,11 +306,11 @@ export default function InterviewPage() {
               aria-describedby="answer-hint"
             />
             <span id="answer-hint" className="sr-only">
-              {t('portal.interview.answer.hint')}
+              Type your response to the current question. Your progress is automatically saved.
             </span>
             <div className={styles.answerMeta}>
               <span className={styles.charCount} aria-live="polite">
-                {t('portal.interview.answer.characterCount', { count: (answers[currentQuestion.id] || '').length })}
+                {(answers[currentQuestion.id] || '').length} characters
               </span>
             </div>
           </div>
@@ -299,23 +342,16 @@ export default function InterviewPage() {
             variant="ghost"
             onClick={handlePrev}
             disabled={currentQuestionIndex === 0}
-            aria-label={t('portal.interview.navigation.previousAria')}
+            aria-label="Go to previous question"
           >
             {t('portal.interview.navigation.previous')}
           </Button>
-          <div className={styles.questionDots} role="navigation" aria-label={t('portal.interview.question.navigationLabel')}>
+          <div className={styles.questionDots} role="navigation" aria-label="Question navigation">
             {session.questions.map((_, index) => (
               <span
                 key={index}
                 className={`${styles.dot} ${index === currentQuestionIndex ? styles.active : ''} ${answers[session.questions[index].id] ? styles.completed : ''}`}
-                aria-label={t('portal.interview.question.statusLabel', {
-                  number: index + 1,
-                  status: index === currentQuestionIndex
-                    ? t('portal.interview.question.status.current')
-                    : answers[session.questions[index].id]
-                      ? t('portal.interview.question.status.completed')
-                      : t('portal.interview.question.status.notAnswered'),
-                })}
+                aria-label={`Question ${index + 1}: ${index === currentQuestionIndex ? 'current' : answers[session.questions[index].id] ? 'completed' : 'not answered'}`}
               />
             ))}
           </div>
@@ -324,7 +360,7 @@ export default function InterviewPage() {
               variant="primary"
               onClick={handleNext}
               disabled={!answers[currentQuestion.id]}
-              aria-label={t('portal.interview.navigation.nextAria')}
+              aria-label="Go to next question"
             >
               {t('portal.interview.navigation.next')}
             </Button>
@@ -333,7 +369,7 @@ export default function InterviewPage() {
               variant="primary"
               onClick={handleSubmit}
               disabled={!answers[currentQuestion.id] || Object.keys(answers).length < session.questions.length}
-              aria-label={t('portal.interview.navigation.submitAria')}
+              aria-label="Submit interview"
             >
               {t('portal.interview.navigation.submit')}
             </Button>

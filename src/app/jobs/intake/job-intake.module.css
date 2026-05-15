@@ -87,6 +87,23 @@
   margin-top: 1rem;
 }
 
+.nextActionLink {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  color: var(--color-surface);
+  background: var(--color-primary);
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.nextActionLink:hover {
+  background: var(--color-primary-dark);
+}
+
 .sectionTitle {
   font-size: 1.125rem;
   font-weight: 700;

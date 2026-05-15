@@ -431,3 +431,152 @@
 .textarea[aria-invalid="true"] {
   border-color: var(--color-danger);
 }
+
+/* Evidence Bundle */
+.evidenceBundle {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.evidenceSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.evidenceTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+.evidenceItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3);
+  background: var(--color-surface-container-low);
+  border-radius: 8px;
+}
+
+.evidenceLabel {
+  font-size: 13px;
+  color: var(--color-on-surface-variant);
+}
+
+.evidenceValue {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+}
+
+/* Approval Timeline */
+.approvalTimeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.timelineHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.timelineTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-on-surface);
+  margin: 0;
+}
+
+.timelineCount {
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+  background: var(--color-surface-container-low);
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.timelineItems {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.timelineItem {
+  display: flex;
+  gap: var(--space-4);
+  position: relative;
+}
+
+.timelineItem:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 11px;
+  top: 28px;
+  bottom: 0;
+  width: 2px;
+  background: var(--color-outline-variant);
+}
+
+.timelineMarker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 4px;
+}
+
+.timelineDot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--color-outline);
+  background: var(--color-surface);
+}
+
+.timelineDot.approved {
+  border-color: var(--color-success);
+  background: var(--color-success-light);
+}
+
+.timelineDot.pending {
+  border-color: var(--color-warning);
+  background: var(--color-warning-light);
+}
+
+.timelineContent {
+  flex: 1;
+  padding-bottom: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.timelineApprover {
+  display: flex;
+  flex-direction: column;
+}
+
+.timelineApprover .approverName {
+  font-weight: 500;
+  color: var(--color-on-surface);
+}
+
+.timelineApprover .approverRole {
+  font-size: 12px;
+  color: var(--color-on-surface-variant);
+}
+
+.timelineStatus {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.timelineDate {
+  font-size: 11px;
+  color: var(--color-on-surface-variant);
+}

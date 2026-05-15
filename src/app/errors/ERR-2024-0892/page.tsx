@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/i18n';
@@ -8,7 +8,6 @@ import { formatDateTime } from '@/lib/formatDate';
 import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Notice } from '@/components/ui/Notice';
-import { Modal } from '@/components/ui/Modal';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { mockErrorRemediationItems } from '@/lib/mockData';
 import styles from './error-detail.module.css';
@@ -30,10 +29,10 @@ export default function ErrorDetailPage() {
   const error = mockErrorRemediationItems.find(e => e.errorCode === 'ERR-2024-0892') || mockErrorRemediationItems[0];
 
   const [retryAttempts] = useState<RetryAttempt[]>([
-    { id: '1', attempt: 4, status: 'in_progress', timestamp: '2026-05-15T17:00:00Z' },
-    { id: '2', attempt: 3, status: 'failed', timestamp: '2026-05-15T16:45:00Z', errorMessage: 'Connection timeout after 30s' },
-    { id: '3', attempt: 2, status: 'failed', timestamp: '2026-05-15T16:30:00Z', errorMessage: 'Video format not supported: .mov (iPhone)' },
-    { id: '4', attempt: 1, status: 'completed', timestamp: '2026-05-15T16:15:00Z' },
+    { id: '1', attempt: 4, status: 'in_progress', timestamp: '2024-04-22T17:00:00Z' },
+    { id: '2', attempt: 3, status: 'failed', timestamp: '2024-04-22T16:45:00Z', errorMessage: 'Connection timeout after 30s' },
+    { id: '3', attempt: 2, status: 'failed', timestamp: '2024-04-22T16:30:00Z', errorMessage: 'Video format not supported: .mov (iPhone)' },
+    { id: '4', attempt: 1, status: 'completed', timestamp: '2024-04-22T16:15:00Z' },
   ]);
 
   const [currentStep, setCurrentStep] = useState(2);
@@ -42,8 +41,9 @@ export default function ErrorDetailPage() {
   const [retryReason, setRetryReason] = useState('');
   const [escalateReason, setEscalateReason] = useState('');
   const [retryBackoff, setRetryBackoff] = useState(60);
-  const [assignee, setAssignee] = useState(error.assignee || t('errors.detail.assignment.supportTeam'));
+  const [assignee, setAssignee] = useState(error.assignee || 'Backend On-call');
   const [feedback, setFeedback] = useState<{ variant: 'success' | 'info' | 'warning'; title: string; body: string } | null>(null);
+  const [elapsedMinutes, setElapsedMinutes] = useState(0);
 
   const severityClass = styles[error.severity] || '';
 
@@ -63,7 +63,7 @@ export default function ErrorDetailPage() {
   const handleEscalate = () => {
     setShowEscalateModal(false);
     setEscalateReason('');
-    setAssignee(t('errors.detail.assignment.escalationLead'));
+    setAssignee('Engineering Manager');
     setFeedback({
       variant: 'warning',
       title: t('errors.detail.feedback.escalated.title'),
@@ -72,9 +72,7 @@ export default function ErrorDetailPage() {
   };
 
   const handleReassign = () => {
-    const supportTeam = t('errors.detail.assignment.supportTeam');
-    const reviewLead = t('errors.detail.assignment.reviewLead');
-    const nextAssignee = assignee === supportTeam ? reviewLead : supportTeam;
+    const nextAssignee = assignee === 'Backend On-call' ? 'Platform Reliability Lead' : 'Backend On-call';
     setAssignee(nextAssignee);
     setFeedback({
       variant: 'info',
@@ -83,7 +81,16 @@ export default function ErrorDetailPage() {
     });
   };
 
-  const elapsedMinutes = 187;
+  useEffect(() => {
+    const createdAtTime = new Date(error.createdAt).getTime();
+    const updateElapsedMinutes = () => {
+      setElapsedMinutes(Math.max(0, Math.floor((Date.now() - createdAtTime) / 60000)));
+    };
+
+    updateElapsedMinutes();
+    const timer = setInterval(updateElapsedMinutes, 60000);
+    return () => clearInterval(timer);
+  }, [error.createdAt]);
 
   return (
     <div className={styles.errorDetailPage}>
@@ -116,9 +123,9 @@ export default function ErrorDetailPage() {
           </span>
         </div>
         <div className={styles.metaInfo}>
-          <span className={styles.metaLabel}>{t('errors.detail.retryConfig.created')}</span>
+          <span className={styles.metaLabel}>Created</span>
           <span className={styles.metaValue}>
-            {new Date(error.createdAt).toLocaleDateString(locale, {
+            {new Date(error.createdAt).toLocaleDateString('en-US', {
               month: 'short',
               day: 'numeric',
               year: 'numeric',
@@ -244,7 +251,7 @@ export default function ErrorDetailPage() {
                             <td>{formatDateTime(attempt.timestamp, locale)}</td>
                             <td className={styles.statusCell}>
                               <span className={`${styles.badge} ${styles[attempt.status]}`}>
-                                {t(`common.status.${attempt.status}`)}
+                                {attempt.status}
                               </span>
                             </td>
                             <td>{attempt.errorMessage || '-'}</td>
@@ -295,30 +302,30 @@ export default function ErrorDetailPage() {
                   <div className={styles.previousStateGrid}>
                     <div className={styles.settingItem}>
                       <span className={styles.settingLabel}>{t('errors.detail.retryConfig.enhancedPreviousState.candidateState')}</span>
-                      <span className={styles.settingValue}>{t('errors.detail.retryConfig.scheduledState')}</span>
+                      <span className={styles.settingValue}>INTERVIEW_SCHEDULED</span>
                     </div>
                     <div className={styles.settingItem}>
                       <span className={styles.settingLabel}>{t('errors.detail.retryConfig.enhancedPreviousState.lastSuccess')}</span>
                       <span className={styles.settingValue}>
                         Video int-002 (Sarah Chen)<br/>
-                        <small>{formatDateTime('2026-05-15T13:45:00Z', locale)}</small>
+                        <small>2024-04-22 13:45 UTC</small>
                       </span>
                     </div>
                     <div className={styles.settingItem}>
                       <span className={styles.settingLabel}>{t('errors.detail.retryConfig.enhancedPreviousState.affectedCount')}</span>
-                      <span className={`${styles.settingValue} ${styles.danger}`}>{t('errors.detail.retryConfig.affectedCandidatesValue')}</span>
+                      <span className={`${styles.settingValue} ${styles.danger}`}>42 Candidates</span>
                     </div>
                   </div>
 
                   <div className={styles.stateComparison}>
                     <div className={styles.stateBox}>
-                      <span className={`${styles.stateTag} ${styles.before}`}>{t('errors.detail.retryConfig.beforeState')}</span>
-                      <span>{t('errors.detail.retryConfig.processingQueue')}</span>
+                      <span className={`${styles.stateTag} ${styles.before}`}>BEFORE</span>
+                      <span>Processing_Queue</span>
                     </div>
                     <div className={styles.stateArrow}>→</div>
                     <div className={styles.stateBox}>
-                      <span className={`${styles.stateTag} ${styles.after}`}>{t('errors.detail.retryConfig.afterState')}</span>
-                      <span>{t('errors.detail.retryConfig.errorState')}</span>
+                      <span className={`${styles.stateTag} ${styles.after}`}>AFTER</span>
+                      <span>Error_State</span>
                     </div>
                   </div>
                 </div>
@@ -335,10 +342,10 @@ export default function ErrorDetailPage() {
             <CardContent>
               <div className={styles.assignmentCard}>
                 <div className={styles.assigneeSection}>
-                  <div className={styles.assigneeAvatar} aria-hidden="true">👥</div>
+                  <div className={styles.assigneeAvatar}>👥</div>
                   <div className={styles.assigneeInfo}>
                     <span className={styles.assigneeName}>{assignee}</span>
-                    <span className={styles.assigneeRole}>{t('errors.detail.assignment.technicalRole')}</span>
+                    <span className={styles.assigneeRole}>{t('errors.detail.assignment.backendRole')}</span>
                   </div>
                   <Button variant="secondary" size="sm" onClick={handleReassign}>{t('errors.detail.assignment.reassign')}</Button>
                 </div>
@@ -361,25 +368,25 @@ export default function ErrorDetailPage() {
                 <h3 className={styles.manualTitle}>{t('errors.detail.manualReview.availableActions')}</h3>
                 <div className={styles.manualOptions}>
                   <div className={styles.manualOption}>
-                    <span className={styles.manualOptionIcon} aria-hidden="true">🔄</span>
+                    <span className={styles.manualOptionIcon}>🔄</span>
                     <span>{t('errors.detail.manualReview.forceRetry')}</span>
                   </div>
                   <div className={styles.manualOption}>
-                    <span className={styles.manualOptionIcon} aria-hidden="true">⏭️</span>
+                    <span className={styles.manualOptionIcon}>⏭️</span>
                     <span>{t('errors.detail.manualReview.skipFailed')}</span>
                   </div>
                   <div className={styles.manualOption}>
-                    <span className={styles.manualOptionIcon} aria-hidden="true">📥</span>
+                    <span className={styles.manualOptionIcon}>📥</span>
                     <span>{t('errors.detail.manualReview.exportFailed')}</span>
                   </div>
                 </div>
               </div>
               <div className={styles.actionButtons}>
                 <Button variant="secondary" onClick={() => setShowRetryModal(true)}>
-                  <span aria-hidden="true">🔄</span> {t('errors.detail.actions.manualRetry')}
+                  🔄 {t('errors.detail.actions.manualRetry')}
                 </Button>
                 <Button variant="danger" onClick={() => setShowEscalateModal(true)}>
-                  <span aria-hidden="true">🚨</span> {t('errors.detail.actions.escalateNow')}
+                  🚨 {t('errors.detail.actions.escalateNow')}
                 </Button>
               </div>
             </CardContent>
@@ -387,80 +394,88 @@ export default function ErrorDetailPage() {
         </div>
       </div>
 
-      <Modal
-        isOpen={showRetryModal}
-        onClose={() => setShowRetryModal(false)}
-        title={t('errors.detail.retryModal.title')}
-        footer={(
-          <>
-            <Button variant="ghost" onClick={() => setShowRetryModal(false)}>{t('errors.detail.retryModal.cancel')}</Button>
-            <Button variant="primary" onClick={handleRetry} disabled={!retryReason.trim()}>
-              {t('errors.detail.retryModal.startRetry')}
-            </Button>
-          </>
-        )}
-      >
-        <div className={styles.formGroup}>
-          <label htmlFor="retryBackoff">{t('errors.detail.retryModal.backoffLabel')}</label>
-          <select
-            id="retryBackoff"
-            className={styles.textarea}
-            value={retryBackoff}
-            onChange={(e) => setRetryBackoff(Number(e.target.value))}
-            style={{ height: 'auto', minHeight: 'auto', padding: '8px 12px' }}
-          >
-            <option value={30}>{t('errors.detail.retryModal.backoffOptions.fast30')}</option>
-            <option value={60}>{t('errors.detail.retryModal.backoffOptions.standard60')}</option>
-            <option value={120}>{t('errors.detail.retryModal.backoffOptions.extended120')}</option>
-            <option value={300}>{t('errors.detail.retryModal.backoffOptions.extendedPlus')}</option>
-          </select>
+      {showRetryModal && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+              <h2>{t('errors.detail.retryModal.title')}</h2>
+              <button className={styles.closeButton} onClick={() => setShowRetryModal(false)}>×</button>
+            </div>
+            <div className={styles.modalBody}>
+              <div className={styles.formGroup}>
+                <label htmlFor="retryBackoff">{t('errors.detail.retryModal.backoffLabel')}</label>
+                <select
+                  id="retryBackoff"
+                  className={styles.textarea}
+                  value={retryBackoff}
+                  onChange={(e) => setRetryBackoff(Number(e.target.value))}
+                  style={{ height: 'auto', minHeight: 'auto', padding: '8px 12px' }}
+                >
+                  <option value={30}>{t('errors.detail.retryModal.backoffOptions.fast30')}</option>
+                  <option value={60}>{t('errors.detail.retryModal.backoffOptions.standard60')}</option>
+                  <option value={120}>{t('errors.detail.retryModal.backoffOptions.extended120')}</option>
+                  <option value={300}>{t('errors.detail.retryModal.backoffOptions.extendedPlus')}</option>
+                </select>
+              </div>
+              <div className={styles.formGroup}>
+                <label htmlFor="retryReason">{t('errors.detail.retryModal.reasonLabel')}</label>
+                <textarea
+                  id="retryReason"
+                  className={styles.textarea}
+                  rows={4}
+                  value={retryReason}
+                  onChange={(e) => setRetryReason(e.target.value)}
+                  placeholder={t('errors.detail.retryModal.reasonPlaceholder')}
+                  required
+                />
+              </div>
+              <Notice variant="info" title={t('errors.detail.retryModal.bp010.title')}>
+                {t('errors.detail.retryModal.bp010.body')}
+              </Notice>
+            </div>
+            <div className={styles.modalFooter}>
+              <Button variant="ghost" onClick={() => setShowRetryModal(false)}>{t('errors.detail.retryModal.cancel')}</Button>
+              <Button variant="primary" onClick={handleRetry} disabled={!retryReason.trim()}>
+                {t('errors.detail.retryModal.startRetry')}
+              </Button>
+            </div>
+          </div>
         </div>
-        <div className={styles.formGroup}>
-          <label htmlFor="retryReason">{t('errors.detail.retryModal.reasonLabel')}</label>
-          <textarea
-            id="retryReason"
-            className={styles.textarea}
-            rows={4}
-            value={retryReason}
-            onChange={(e) => setRetryReason(e.target.value)}
-            placeholder={t('errors.detail.retryModal.reasonPlaceholder')}
-            required
-          />
-        </div>
-        <Notice variant="info" title={t('errors.detail.retryModal.bp010.title')}>
-          {t('errors.detail.retryModal.bp010.body')}
-        </Notice>
-      </Modal>
+      )}
 
-      <Modal
-        isOpen={showEscalateModal}
-        onClose={() => setShowEscalateModal(false)}
-        title={t('errors.detail.escalateModal.title')}
-        footer={(
-          <>
-            <Button variant="ghost" onClick={() => setShowEscalateModal(false)}>{t('errors.detail.escalateModal.cancel')}</Button>
-            <Button variant="danger" onClick={handleEscalate} disabled={!escalateReason.trim()}>
-              {t('errors.detail.escalateModal.confirm')}
-            </Button>
-          </>
-        )}
-      >
-        <p style={{ margin: '0 0 var(--space-4) 0', color: 'var(--color-on-surface)' }}>
-          {t('errors.detail.escalateModal.body')}
-        </p>
-        <div className={styles.formGroup}>
-          <label htmlFor="escalateReason">{t('errors.detail.escalateModal.reasonLabel')}</label>
-          <textarea
-            id="escalateReason"
-            className={styles.textarea}
-            rows={4}
-            value={escalateReason}
-            onChange={(e) => setEscalateReason(e.target.value)}
-            placeholder={t('errors.detail.escalateModal.reasonPlaceholder')}
-            required
-          />
+      {showEscalateModal && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+              <h2>{t('errors.detail.escalateModal.title')}</h2>
+              <button className={styles.closeButton} onClick={() => setShowEscalateModal(false)}>×</button>
+            </div>
+            <div className={styles.modalBody}>
+              <p style={{ margin: '0 0 var(--space-4) 0', color: 'var(--color-on-surface)' }}>
+                {t('errors.detail.escalateModal.body')}
+              </p>
+              <div className={styles.formGroup}>
+                <label htmlFor="escalateReason">{t('errors.detail.escalateModal.reasonLabel')}</label>
+                <textarea
+                  id="escalateReason"
+                  className={styles.textarea}
+                  rows={4}
+                  value={escalateReason}
+                  onChange={(e) => setEscalateReason(e.target.value)}
+                  placeholder={t('errors.detail.escalateModal.reasonPlaceholder')}
+                  required
+                />
+              </div>
+            </div>
+            <div className={styles.modalFooter}>
+              <Button variant="ghost" onClick={() => setShowEscalateModal(false)}>{t('errors.detail.escalateModal.cancel')}</Button>
+              <Button variant="danger" onClick={handleEscalate} disabled={!escalateReason.trim()}>
+                {t('errors.detail.escalateModal.confirm')}
+              </Button>
+            </div>
+          </div>
         </div>
-      </Modal>
+      )}
     </div>
   );
 }

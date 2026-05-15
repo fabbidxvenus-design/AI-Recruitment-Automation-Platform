@@ -153,8 +153,8 @@ export default function InterviewTranslationPage() {
         </p>
       </header>
 
-      <Notice variant="warning" title={t('tools.interviewTranslation.sourceOfTruth')}>
-        {t('tools.interviewTranslation.sourceOfTruthDesc')}
+      <Notice variant="info" title={t('tools.interviewTranslation.workspace.approvalRequired')}>
+        {t('tools.interviewTranslation.workspace.approvalRequiredDesc')}
       </Notice>
 
       {currentStep === 'input' && (
@@ -235,6 +235,17 @@ export default function InterviewTranslationPage() {
 
       {(currentStep === 'review' || currentStep === 'approved') && currentTranslation && (
         <div className={styles.workspace}>
+          <div className={styles.workflowStepper}>
+            <div className={`${styles.step} ${styles.stepComplete}`}>
+              <span className={styles.stepLabel}>{t('tools.interviewTranslation.steps.input')}</span>
+            </div>
+            <div className={`${styles.step} ${currentStep === 'review' ? styles.stepActive : currentStep === 'approved' ? styles.stepComplete : styles.stepPending}`}>
+              <span className={styles.stepLabel}>{t('tools.interviewTranslation.steps.review')}</span>
+            </div>
+            <div className={`${styles.step} ${currentStep === 'approved' ? styles.stepComplete : styles.stepPending}`}>
+              <span className={styles.stepLabel}>{t('common.status.approved')}</span>
+            </div>
+          </div>
           <div className={styles.statusPanel}>
             <h2 className={styles.sectionTitle}>{t('tools.interviewTranslation.workspace.status')}</h2>
             <StatusBadge

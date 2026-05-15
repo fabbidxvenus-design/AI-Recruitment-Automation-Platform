@@ -51,7 +51,7 @@ export const mockInterviewQuestionSetVersions: InterviewQuestionSetVersion[] = [
     versionNumber: 1,
     title: 'Senior Frontend Interview Set',
     language: 'en',
-    followUpPolicy: '2 AI follow-ups are allowed after fixed technical questions in prototype mode.',
+    followUpPolicy: '2 guided follow-ups are available after the fixed technical questions.',
     questions: [
       {
         id: 'iq-001',

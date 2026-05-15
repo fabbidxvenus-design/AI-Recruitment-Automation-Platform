@@ -1,4 +1,3 @@
-// Mock data for Module A prototype
 import type { GeneratedContent, ApprovalHistoryEntry } from '@/types/content-generation';
 
 export const mockGeneratedContents: GeneratedContent[] = [

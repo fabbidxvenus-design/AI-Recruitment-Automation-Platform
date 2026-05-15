@@ -237,6 +237,7 @@ export default function ContentGenerationPage() {
       {currentStep === 'brief' && (
         <Card className={styles.briefCard}>
           <h2 className={styles.sectionTitle}>{t('tools.contentGeneration.steps.input.title')}</h2>
+          <p className={styles.stepDescription}>{t('tools.contentGeneration.steps.input.description')}</p>
 
           <div className={styles.formGroup}>
             <label htmlFor="contentType">{t('tools.contentGeneration.form.contentType')} *</label>
@@ -347,6 +348,20 @@ export default function ContentGenerationPage() {
       {(currentStep === 'review' || currentStep === 'approval' || currentStep === 'export') && currentContent && (
         <div className={styles.workspace}>
           <div className={styles.variantsPanel}>
+            <div className={styles.workflowStepper}>
+              <div className={`${styles.step} ${styles.stepComplete}`}>
+                <span className={styles.stepLabel}>{t('tools.contentGeneration.steps.input.title')}</span>
+              </div>
+              <div className={`${styles.step} ${styles.stepActive}`}>
+                <span className={styles.stepLabel}>{t('tools.contentGeneration.steps.review.title')}</span>
+              </div>
+              <div className={`${styles.step} ${currentStep === 'approval' ? styles.stepActive : currentStep === 'export' ? styles.stepComplete : styles.stepPending}`}>
+                <span className={styles.stepLabel}>{t('tools.contentGeneration.approval.title')}</span>
+              </div>
+              <div className={`${styles.step} ${currentStep === 'export' ? styles.stepActive : styles.stepPending}`}>
+                <span className={styles.stepLabel}>{t('tools.contentGeneration.steps.export.title')}</span>
+              </div>
+            </div>
             <h2 className={styles.sectionTitle}>{t('tools.contentGeneration.workspace.variants')}</h2>
             <div role="radiogroup" aria-label={t('tools.contentGeneration.workspace.variants')}>
               {currentContent.variants.map((variant) => (

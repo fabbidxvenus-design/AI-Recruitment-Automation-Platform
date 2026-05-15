@@ -28,12 +28,13 @@ export const resources = {
       dashboard: {
         kpi: { totalCandidates: 'Total Candidates', activeJobs: 'Active Jobs', pendingScreening: 'Pending Screening', interviewsThisWeek: 'Interviews This Week', offersPending: 'Offers Pending', avgTimeToHire: 'Avg. Time to Hire', plusThisWeek: '+12 new candidates this week', minusDays: '-2 days average hiring cycle' },
         columns: { candidate: 'Candidate', aiScore: 'AI Score', recommendation: 'Recommendation', errorCode: 'Error Code', title: 'Title', severity: 'Severity', status: 'Status', assignee: 'Assignee', actions: 'Actions' },
-        notice: { aiBlocked: 'AI review setup needed', aiBlockedDesc: '{{count}} review workflow(s) need setup before recruiting teams can use AI-assisted screening.' },
+        notice: { aiBlocked: 'AI review setup needed', aiBlockedDesc: '{{count}} review workflow(s) need setup before recruiting teams can use AI-assisted screening.', workspaceReady: 'Workspace ready', workspaceReadyDesc: '{{count}} recruitment workflow(s) are configured and ready for AI-assisted review.' },
         pipeline: { title: 'Pipeline Overview', description: 'Active candidates by stage', stageTooltip: '{{stage}}: {{count}} candidates', stage: { applied: 'Applied', screening: 'Screening', interview: 'Interview', assessment: 'Assessment', offer: 'Offer' } },
         approvals: { title: 'Pending Approvals', description: '{{count}} items require HR Manager action', caption: 'Pending approval items', review: 'Review' },
         schedule: { title: 'Interview Schedule Pending', description: '{{count}} interviews awaiting approval' },
         errors: { title: 'Error Remediation Queue', description: '{{count}} open errors', viewDetails: 'View Details', caption: 'Error remediation items' },
         integration: { title: 'Integration Health', description: 'Google Workspace status', errors: 'errors', status: { healthy: 'Healthy', degraded: 'Needs review', down: 'Unavailable' } },
+        sourceConfig: { title: 'Source Configuration', description: 'Recruiting data sources status', errors: 'errors' },
         activity: { title: 'Recent Activity', description: 'Latest pipeline events', movedToStage: '{{name}} moved to {{stage}} stage', awaitingScreening: '{{count}} candidates awaiting screening review', scheduledInterview: 'Interview scheduled with {{name}}', videoError: 'Video processing error requires attention', twoHoursAgo: '2 hours ago', fiveHoursAgo: '5 hours ago', twoDaysAgo: '2 days ago' },
       },
       candidates: { import: {
@@ -65,7 +66,7 @@ export const resources = {
         filter: { pending: 'Pending', approved: 'Approved', rejected: 'Rejected', all: 'All' }, selection: { announcement: '{{selected}} of {{total}} candidates selected. Use Enter or Space to activate bulk actions.', selected: '{{count}} selected', clearAll: 'Clear all selections' },
         bulk: { label: 'Bulk actions', approveSelected: 'Approve Selected', rejectSelected: 'Reject Selected', clear: 'Clear' }, empty: { noMatch: 'No candidates match the current filter', selectToView: 'Select a candidate to view details' },
         detail: { score: 'Score: {{score}}/100', aiSummary: 'Evaluation Summary', traceability: 'Evidence History', applicationId: 'Application ID', candidateId: 'Candidate ID', jobId: 'Job ID', cvVersion: 'CV Version', jdVersion: 'JD Version', parsedCriteriaVersion: 'Evaluation Framework Version', keyStrengths: 'Key Strengths', concerns: 'Concerns', evidence: 'Evidence', cvMatch: 'CV Keywords Match', experienceRelevance: 'Experience Relevance', skillsMatch: 'Skills Match', cvMatchValue: '{{matched}}/{{total}} required', yearsRelevant: '{{years}} years relevant', skillsMatchValue: '{{matched}}/{{total}} core skills', model: 'Review engine', prompt: 'Evaluation guide', confidence: 'Confidence level', high: 'High' },
-        actions: { reject: 'Reject', rescreening: 'Request Re-screening', approveProceed: 'Approve & Proceed to Scheduling' }, decision: { recommend: 'Recommend', notRec: 'Not Rec.', review: 'Review' }, feedback: { bulk: { approve: { title: 'Candidates approved' }, reject: { title: 'Candidates rejected' }, body: '{{count}} screening decision(s) updated for review.' }, rejected: { title: 'Candidate rejected', body: '{{name}} was moved to rejected screening status.' }, rescreening: { title: 'Re-screening requested', body: '{{name}} was queued for candidate re-evaluation.' } }, aria: { filterTabs: 'Filter candidates by status', selectCandidate: 'Select {{name}} for bulk action', scoreLabel: 'Score {{score}} out of 100', loading: 'Loading candidate details...' },
+        actions: { reject: 'Reject', rescreening: 'Queue Re-evaluation', approveProceed: 'Approve & Proceed to Scheduling' }, decision: { recommend: 'Recommend', notRec: 'Not Rec.', review: 'Review' }, timeline: { title: 'Workflow Progress', screening: 'Screening', reevaluation: 'Re-evaluation', interviewPrep: 'Interview Prep', nextActionCta: 'Go to Schedule Approval' }, feedback: { bulk: { approve: { title: 'Candidates approved' }, reject: { title: 'Candidates rejected' }, body: '{{count}} screening decision(s) updated for review.' }, rejected: { title: 'Candidate rejected', body: '{{name}} was moved to rejected screening status.' }, rescreening: { title: 'Re-evaluation queued', body: '{{name}} is queued for candidate re-evaluation.' }, stageAdvance: { title: 'Stage Advanced', body: '{{name}} has been approved and moved to interview scheduling.' } }, aria: { filterTabs: 'Filter candidates by status', selectCandidate: 'Select {{name}} for bulk action', scoreLabel: 'Score {{score}} out of 100', loading: 'Loading candidate details...' },
       } },
       interviews: { scheduleApproval: {
         title: 'Interview Schedule Approval', description: 'Review and approve AI-suggested interview slots before calendar events are created', pendingApproval: 'Pending Approval', pending: 'Pending',
@@ -573,9 +574,10 @@ export const resources = {
           },
           feedback: {
             sheetImported: { title: 'Requisition source imported', body: '{{title}} was loaded from the requisition source for HR review.' },
-            created: { body: '{{title}} is now saved as an approved JD profile.' },
+            created: { body: '{{title}} is now saved and ready for approval review.' },
             validation: { body: 'Review required fields before creating this job requisition.' },
             unexpected: { body: 'Your draft was preserved so you can retry without losing JD content.' },
+            nextAction: { review: 'Proceed to Review →' },
           },
           sheet: {
             title: 'Sheet / Excel Requisition Import',
@@ -640,6 +642,8 @@ export const resources = {
             approvedBody: 'This JD profile has been approved and is now ready for candidate screening.',
             rejectedTitle: 'Rejected',
             rejectedBody: 'This JD profile has been rejected. Reason: {{reason}}',
+            nextAction: 'Continue to Screening',
+            nextActionHint: 'Proceed to candidate screening review',
           },
           details: {
             seniority: 'Seniority',
@@ -698,6 +702,12 @@ export const resources = {
             jdVersion: 'JD Version',
             created: 'Created',
           },
+          timeline: {
+            title: 'Workflow Timeline',
+            review: 'In Review',
+            approved: 'Approved',
+            rejected: 'Rejected',
+          },
         },
         versions: {
           title: 'JD Version History',
@@ -724,6 +734,14 @@ export const resources = {
           added: 'Added',
           removed: 'Removed',
           noChanges: 'No changes',
+          workflow: {
+            summary: 'Current Approved Version',
+            noApproved: 'No approved version',
+            pendingForApproval: 'Version pending approval',
+            nextActionApproval: 'Go to Approval',
+            nextActionScreening: 'Continue to Screening',
+            nextActionHint: 'Proceed to next step',
+          },
         },
       },
       errors: { detail: {
@@ -776,12 +794,13 @@ export const resources = {
       dashboard: {
         kpi: { totalCandidates: 'Tổng số ứng viên', activeJobs: 'Vị trí đang tuyển', pendingScreening: 'Đang chờ sàng lọc', interviewsThisWeek: 'Phỏng vấn tuần này', offersPending: 'Đang chờ chào việc', avgTimeToHire: 'Thời gian tuyển trung bình', plusThisWeek: '+12 ứng viên mới tuần này', minusDays: '-2 ngày chu kỳ tuyển trung bình' },
         columns: { candidate: 'Ứng viên', aiScore: 'Điểm AI', recommendation: 'Khuyến nghị', errorCode: 'Mã lỗi', title: 'Tiêu đề', severity: 'Mức độ', status: 'Trạng thái', assignee: 'Người phụ trách', actions: 'Hành động' },
-        notice: { aiBlocked: 'Cần hoàn tất thiết lập rà soát AI', aiBlockedDesc: '{{count}} quy trình rà soát cần được thiết lập trước khi đội tuyển dụng dùng sàng lọc hỗ trợ bởi AI.' },
+        notice: { aiBlocked: 'Cần hoàn tất thiết lập rà soát AI', aiBlockedDesc: '{{count}} quy trình rà soát cần được thiết lập trước khi đội tuyển dụng dùng sàng lọc hỗ trợ bởi AI.', workspaceReady: 'Không gian làm việc sẵn sàng', workspaceReadyDesc: '{{count}} quy trình tuyển dụng đã được cấu hình và sẵn sàng cho rà soát hỗ trợ bởi AI.' },
         pipeline: { title: 'Tổng quan quy trình', description: 'Ứng viên đang tuyển theo giai đoạn', stageTooltip: '{{stage}}: {{count}} ứng viên', stage: { applied: 'Đã ứng tuyển', screening: 'Sàng lọc', interview: 'Phỏng vấn', assessment: 'Đánh giá', offer: 'Đề nghị' } },
         approvals: { title: 'Phê duyệt đang chờ', description: '{{count}} mục cần Quản lý Nhân sự xử lý', caption: 'Các mục đang chờ phê duyệt', review: 'Xem xét' },
         schedule: { title: 'Lịch phỏng vấn đang chờ duyệt', description: '{{count}} lịch phỏng vấn đang chờ duyệt' },
         errors: { title: 'Hàng đợi xử lý sự cố', description: '{{count}} sự cố đang mở', viewDetails: 'Xem chi tiết', caption: 'Các mục xử lý sự cố' },
         integration: { title: 'Tình trạng kết nối', description: 'Mức sẵn sàng của không gian làm việc', errors: 'mục cần xem xét', status: { healthy: 'Ổn định', degraded: 'Cần xem xét', down: 'Cần thiết lập' } },
+        sourceConfig: { title: 'Cấu hình nguồn dữ liệu', description: 'Trạng thái nguồn dữ liệu tuyển dụng', errors: 'mục cần xem xét' },
         activity: { title: 'Hoạt động gần đây', description: 'Các sự kiện quy trình gần đây', movedToStage: '{{name}} chuyển sang giai đoạn {{stage}}', awaitingScreening: '{{count}} ứng viên đang chờ xem xét sàng lọc', scheduledInterview: 'Đã lên lịch phỏng vấn với {{name}}', videoError: 'Lỗi xử lý video cần xử lý', twoHoursAgo: '2 giờ trước', fiveHoursAgo: '5 giờ trước', twoDaysAgo: '2 ngày trước' },
       },
       candidates: { import: {
@@ -859,7 +878,7 @@ export const resources = {
         filter: { pending: 'Đang chờ', approved: 'Đã duyệt', rejected: 'Đã từ chối', all: 'Tất cả' }, selection: { announcement: '{{selected}} trong số {{total}} ứng viên đã được chọn. Nhấn Enter hoặc Space để kích hoạt thao tác hàng loạt.', selected: '{{count}} đã chọn', clearAll: 'Xóa tất cả lựa chọn' },
         bulk: { label: 'Thao tác hàng loạt', approveSelected: 'Phê duyệt đã chọn', rejectSelected: 'Từ chối đã chọn', clear: 'Xóa' }, empty: { noMatch: 'Không có ứng viên phù hợp với bộ lọc hiện tại', selectToView: 'Chọn một ứng viên để xem chi tiết' },
         detail: { score: 'Điểm: {{score}}/100', aiSummary: 'Tóm tắt đánh giá', traceability: 'Lịch sử bằng chứng', applicationId: 'ID hồ sơ ứng tuyển', candidateId: 'ID ứng viên', jobId: 'ID vị trí', cvVersion: 'Phiên bản CV', jdVersion: 'Phiên bản JD', parsedCriteriaVersion: 'Phiên bản khung đánh giá', keyStrengths: 'Điểm mạnh chính', concerns: 'Lo ngại', evidence: 'Bằng chứng', cvMatch: 'Từ khóa CV khớp', experienceRelevance: 'Mức độ phù hợp kinh nghiệm', skillsMatch: 'Khớp kỹ năng', cvMatchValue: '{{matched}}/{{total}} bắt buộc', yearsRelevant: '{{years}} năm liên quan', skillsMatchValue: '{{matched}}/{{total}} kỹ năng cốt lõi', model: 'Bộ máy rà soát', prompt: 'Hướng dẫn đánh giá', confidence: 'Mức độ tin cậy', high: 'Cao' },
-        actions: { reject: 'Từ chối', rescreening: 'Yêu cầu sàng lọc lại', approveProceed: 'Phê duyệt & Chuyển sang lên lịch' }, decision: { recommend: 'Khuyến nghị', notRec: 'Không đạt', review: 'Xem xét' }, feedback: { bulk: { approve: { title: 'Đã phê duyệt ứng viên' }, reject: { title: 'Đã từ chối ứng viên' }, body: '{{count}} quyết định sàng lọc đã được cập nhật để rà soát.' }, rejected: { title: 'Đã từ chối ứng viên', body: '{{name}} đã được chuyển sang trạng thái sàng lọc bị từ chối.' }, rescreening: { title: 'Đã yêu cầu sàng lọc lại', body: '{{name}} đã được đưa vào hàng đợi tái đánh giá ứng viên.' } }, aria: { filterTabs: 'Lọc ứng viên theo trạng thái', selectCandidate: 'Chọn {{name}} cho thao tác hàng loạt', scoreLabel: 'Điểm {{score}} trên 100', loading: 'Đang tải chi tiết ứng viên...' },
+        actions: { reject: 'Từ chối', rescreening: 'Đưa vào hàng đợi tái đánh giá', approveProceed: 'Phê duyệt & Chuyển sang lên lịch' }, decision: { recommend: 'Khuyến nghị', notRec: 'Không đạt', review: 'Xem xét' }, timeline: { title: 'Tiến trình quy trình', screening: 'Sàng lọc', reevaluation: 'Tái đánh giá', interviewPrep: 'Chuẩn bị phỏng vấn', nextActionCta: 'Đến phê duyệt lịch' }, feedback: { bulk: { approve: { title: 'Đã phê duyệt ứng viên' }, reject: { title: 'Đã từ chối ứng viên' }, body: '{{count}} quyết định sàng lọc đã được cập nhật để rà soát.' }, rejected: { title: 'Đã từ chối ứng viên', body: '{{name}} đã được chuyển sang trạng thái sàng lọc bị từ chối.' }, rescreening: { title: 'Tái đánh giá đang chờ', body: '{{name}} đang trong hàng đợi tái đánh giá ứng viên.' }, stageAdvance: { title: 'Chuyển sang giai đoạn tiếp theo', body: '{{name}} đã được phê duyệt và chuyển sang lên lịch phỏng vấn.' } }, aria: { filterTabs: 'Lọc ứng viên theo trạng thái', selectCandidate: 'Chọn {{name}} cho thao tác hàng loạt', scoreLabel: 'Điểm {{score}} trên 100', loading: 'Đang tải chi tiết ứng viên...' },
       } },
       interviews: { scheduleApproval: {
         title: 'Phê duyệt lịch phỏng vấn', description: 'Xem xét và phê duyệt các khung giờ phỏng vấn do AI gợi ý trước khi tạo sự kiện lịch', pendingApproval: 'Đang chờ phê duyệt', pending: 'Đang chờ',
@@ -1365,9 +1384,10 @@ export const resources = {
           },
           feedback: {
             sheetImported: { title: 'Đã nhập nguồn yêu cầu tuyển dụng', body: '{{title}} đã được tải từ nguồn yêu cầu tuyển dụng để Nhân sự xem xét.' },
-            created: { body: '{{title}} đã được lưu thành hồ sơ JD đã duyệt.' },
+            created: { body: '{{title}} đã được lưu và sẵn sàng để phê duyệt.' },
             validation: { body: 'Rà soát các trường bắt buộc trước khi tạo yêu cầu tuyển dụng.' },
             unexpected: { body: 'Bản nháp của bạn đã được giữ lại để có thể thử lại mà không mất nội dung JD.' },
+            nextAction: { review: 'Tiếp tục để Phê duyệt →' },
           },
           sheet: {
             title: 'Nhập yêu cầu từ Sheet / Excel',
@@ -1432,6 +1452,8 @@ export const resources = {
             approvedBody: 'Hồ sơ JD này đã được phê duyệt và sẵn sàng dùng để sàng lọc ứng viên.',
             rejectedTitle: 'Đã từ chối',
             rejectedBody: 'Hồ sơ JD này đã bị từ chối. Lý do: {{reason}}',
+            nextAction: 'Tiếp tục Sàng lọc',
+            nextActionHint: 'Chuyển sang rà soát sàng lọc ứng viên',
           },
           details: {
             seniority: 'Cấp bậc',
@@ -1490,6 +1512,12 @@ export const resources = {
             jdVersion: 'Phiên bản JD',
             created: 'Đã tạo',
           },
+          timeline: {
+            title: 'Quy trình',
+            review: 'Đang rà soát',
+            approved: 'Đã phê duyệt',
+            rejected: 'Đã từ chối',
+          },
         },
         versions: {
           title: 'Lịch sử Phiên bản JD',
@@ -1516,6 +1544,14 @@ export const resources = {
           added: 'Đã thêm',
           removed: 'Đã xóa',
           noChanges: 'Không có thay đổi',
+          workflow: {
+            summary: 'Phiên bản Hiện tại',
+            noApproved: 'Chưa có phiên bản được duyệt',
+            pendingForApproval: 'Phiên bản đang chờ duyệt',
+            nextActionApproval: 'Đến Phê duyệt',
+            nextActionScreening: 'Tiếp tục Sàng lọc',
+            nextActionHint: 'Chuyển sang bước tiếp theo',
+          },
         },
       },
       errors: { detail: {

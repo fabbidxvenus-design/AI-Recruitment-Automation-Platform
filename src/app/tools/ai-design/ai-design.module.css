@@ -12,6 +12,98 @@
   margin-bottom: 1rem;
 }
 
+/* Workflow Progress */
+.workflowProgress {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: var(--color-surface);
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border);
+}
+
+.workflowStep {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.workflowStepIndicator {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 2px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+}
+
+.workflowStepCompleted .workflowStepIndicator {
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: white;
+}
+
+.workflowStepActive .workflowStepIndicator {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+.workflowStepReady .workflowStepIndicator {
+  background: var(--color-warning);
+  border-color: var(--color-warning);
+  color: white;
+}
+
+.workflowStepRejected .workflowStepIndicator {
+  background: var(--color-danger);
+  border-color: var(--color-danger);
+  color: white;
+}
+
+.workflowStepCheck,
+.workflowStepX {
+  font-size: 0.875rem;
+}
+
+.workflowStepNumber {
+  font-size: 0.75rem;
+}
+
+.workflowStepLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.workflowStepCompleted .workflowStepLabel,
+.workflowStepActive .workflowStepLabel,
+.workflowStepReady .workflowStepLabel {
+  color: var(--color-text-primary);
+}
+
+.workflowConnector {
+  width: 40px;
+  height: 2px;
+  background: var(--color-border);
+  margin: 0 0.25rem;
+  flex-shrink: 0;
+}
+
+.workflowStepCompleted + .workflowStep .workflowConnector,
+.workflowStepActive + .workflowStep .workflowConnector {
+  background: var(--color-success);
+}
+
 .backLink {
   display: inline-flex;
   align-items: center;

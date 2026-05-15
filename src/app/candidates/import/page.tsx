@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import Link from 'next/link';
 import { Card, Button, Notice, StatusBadge } from '@/components';
 import cvService from '@/services/cvService';
 import styles from './cv-import.module.css';
@@ -115,9 +116,66 @@ export default function CVImportPage() {
       </Notice>
 
       {versionCreated && (
-        <Notice variant="warning" title={t('cvImport.rescreen.title')}>
-          {rescreenRequested ? t('cvImport.rescreen.requested') : t('cvImport.rescreen.body')}
-        </Notice>
+        <>
+          <Notice variant="warning" title={t('cvImport.rescreen.title')}>
+            {rescreenRequested ? t('cvImport.rescreen.requested') : t('cvImport.rescreen.body')}
+          </Notice>
+
+          <Card className={styles.timelineCard}>
+            <h2 className={styles.sectionTitle}>{t('cvImport.timeline.title')}</h2>
+            <div className={styles.timeline}>
+              <div className={styles.timelineItem}>
+                <div className={styles.timelineMarker}>
+                  <StatusBadge variant="success" label="" />
+                </div>
+                <div className={styles.timelineContent}>
+                  <h3 className={styles.timelineStep}>{t('cvImport.timeline.importCompleted')}</h3>
+                  <p className={styles.timelineDescription}>{t('cvImport.timeline.importCompletedBody')}</p>
+                </div>
+              </div>
+
+              {rescreenRequested && (
+                <div className={styles.timelineItem}>
+                  <div className={styles.timelineMarker}>
+                    <StatusBadge variant="info" label="" />
+                  </div>
+                  <div className={styles.timelineContent}>
+                    <h3 className={styles.timelineStep}>{t('cvImport.timeline.rescreenQueued')}</h3>
+                    <p className={styles.timelineDescription}>{t('cvImport.timeline.rescreenQueuedBody')}</p>
+                  </div>
+                </div>
+              )}
+
+              <div className={styles.timelineItem}>
+                <div className={styles.timelineMarker}>
+                  <StatusBadge variant={rescreenRequested ? 'warning' : 'info'} label="" />
+                </div>
+                <div className={styles.timelineContent}>
+                  <h3 className={styles.timelineStep}>{t('cvImport.timeline.screeningReview')}</h3>
+                  <p className={styles.timelineDescription}>{t('cvImport.timeline.screeningReviewBody')}</p>
+                </div>
+              </div>
+
+              <div className={styles.timelineItem}>
+                <div className={styles.timelineMarker}>
+                  <StatusBadge variant="info" label="" />
+                </div>
+                <div className={styles.timelineContent}>
+                  <h3 className={styles.timelineStep}>{t('cvImport.timeline.interviewScheduling')}</h3>
+                  <p className={styles.timelineDescription}>{t('cvImport.timeline.interviewSchedulingBody')}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.timelineActions}>
+              <Link href="/screening/review">
+                <Button variant="primary">
+                  {t('cvImport.timeline.ctaToScreening')}
+                </Button>
+              </Link>
+            </div>
+          </Card>
+        </>
       )}
 
       {importError && (

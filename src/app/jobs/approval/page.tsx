@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/i18n';
 import { formatDateTime } from '@/lib/formatDate';
@@ -309,11 +310,30 @@ export default function JDApprovalPage() {
               <Notice variant="success" title={t('jobs.approval.workflow.approvedTitle')}>
                 {t('jobs.approval.workflow.approvedBody')}
               </Notice>
+              <Card className={styles.timelineCard}>
+                <h3 className={styles.timelineTitle}>{t('jobs.approval.timeline.title')}</h3>
+                <div className={styles.timeline}>
+                  <div className={styles.timelineStep}>
+                    <span className={styles.timelineDotCompleted}></span>
+                    <span className={styles.timelineLabel}>{t('jobs.approval.timeline.review')}</span>
+                  </div>
+                  <div className={styles.timelineStep}>
+                    <span className={styles.timelineDotCompleted}></span>
+                    <span className={styles.timelineLabel}>{t('jobs.approval.timeline.approved')}</span>
+                  </div>
+                </div>
+              </Card>
               <div className={styles.actions}>
-                <Button variant="primary" onClick={handleBackToList}>
+                <Button variant="secondary" onClick={handleBackToList}>
                   {t('jobs.approval.actions.backToList')}
                 </Button>
+                <Link href="/screening/review">
+                  <Button variant="primary">
+                    {t('jobs.approval.workflow.nextAction')}
+                  </Button>
+                </Link>
               </div>
+              <p className={styles.nextActionHint}>{t('jobs.approval.workflow.nextActionHint')}</p>
             </>
           )}
 
@@ -322,6 +342,19 @@ export default function JDApprovalPage() {
               <Notice variant="danger" title={t('jobs.approval.workflow.rejectedTitle')}>
                 {t('jobs.approval.workflow.rejectedBody', { reason: rejectionReason })}
               </Notice>
+              <Card className={styles.timelineCard}>
+                <h3 className={styles.timelineTitle}>{t('jobs.approval.timeline.title')}</h3>
+                <div className={styles.timeline}>
+                  <div className={styles.timelineStep}>
+                    <span className={styles.timelineDotCompleted}></span>
+                    <span className={styles.timelineLabel}>{t('jobs.approval.timeline.review')}</span>
+                  </div>
+                  <div className={styles.timelineStep}>
+                    <span className={styles.timelineDotRejected}></span>
+                    <span className={styles.timelineLabel}>{t('jobs.approval.timeline.rejected')}</span>
+                  </div>
+                </div>
+              </Card>
               <div className={styles.actions}>
                 <Button variant="primary" onClick={handleBackToList}>
                   {t('jobs.approval.actions.backToList')}

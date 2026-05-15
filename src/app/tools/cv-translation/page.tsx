@@ -96,7 +96,7 @@ export default function CVTranslationPage() {
       {currentStep === 'select' && (
         <>
           <Notice variant="info" title={t('tools.cvTranslation.workspace.sourceOfTruthTitle')}>
-            {t('tools.cvTranslation.workspace.sourceOfTruth')}
+            {t('tools.cvTranslation.workspace.sourceOfTruthDesc')}
           </Notice>
 
           <Card className={styles.selectCard}>
@@ -156,6 +156,17 @@ export default function CVTranslationPage() {
 
       {(currentStep === 'review' || currentStep === 'approved') && translatedCV && (
         <div className={styles.workspace}>
+          <div className={styles.workflowStepper}>
+            <div className={`${styles.step} ${styles.stepComplete}`}>
+              <span className={styles.stepLabel}>{t('tools.cvTranslation.steps.select.title')}</span>
+            </div>
+            <div className={`${styles.step} ${currentStep === 'review' ? styles.stepActive : currentStep === 'approved' ? styles.stepComplete : styles.stepPending}`}>
+              <span className={styles.stepLabel}>{t('tools.cvTranslation.steps.review.title')}</span>
+            </div>
+            <div className={`${styles.step} ${currentStep === 'approved' ? styles.stepComplete : styles.stepPending}`}>
+              <span className={styles.stepLabel}>{t('tools.cvTranslation.workspace.approved')}</span>
+            </div>
+          </div>
           <div className={styles.sideBySide}>
             <div className={styles.cvPanel}>
               <h2 className={styles.sectionTitle}>{t('tools.cvTranslation.workspace.original')}</h2>
