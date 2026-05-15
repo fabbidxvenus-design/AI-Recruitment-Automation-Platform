@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import { AppShell } from '@/components';
-import { I18nProvider } from '@/i18n';
+import { AppShell } from '@/components/shell/AppShell';
+import { I18nProvider } from '@/i18n/I18nProvider';
 import './globals.css';
 
 export const metadata: Metadata = {
