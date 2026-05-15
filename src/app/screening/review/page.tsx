@@ -15,6 +15,8 @@ import styles from './review.module.css';
 
 type FilterStatus = 'all' | 'pending' | 'approved' | 'rejected';
 
+const filterStatuses: FilterStatus[] = ['pending', 'approved', 'rejected', 'all'];
+
 export default function ScreeningReviewPage() {
   const { t, i18n } = useTranslation();
   const [filter, setFilter] = useState<FilterStatus>('pending');
@@ -50,6 +52,25 @@ export default function ScreeningReviewPage() {
     });
   };
 
+  const handleFilterKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, status: FilterStatus): void => {
+    const currentIndex = filterStatuses.indexOf(status);
+    const lastIndex = filterStatuses.length - 1;
+    const nextIndexByKey: Partial<Record<string, number>> = {
+      ArrowLeft: currentIndex === 0 ? lastIndex : currentIndex - 1,
+      ArrowRight: currentIndex === lastIndex ? 0 : currentIndex + 1,
+      Home: 0,
+      End: lastIndex,
+    };
+    const nextIndex = nextIndexByKey[event.key];
+
+    if (nextIndex === undefined) return;
+
+    event.preventDefault();
+    const nextStatus = filterStatuses[nextIndex];
+    setFilter(nextStatus);
+    document.getElementById(`screening-filter-tab-${nextStatus}`)?.focus();
+  };
+
   const handleBulkAction = (action: 'approve' | 'reject') => {
     const selectedIds = Array.from(selectedCandidates);
     setEvaluations(prev => prev.map(evaluation => (
@@ -59,8 +80,8 @@ export default function ScreeningReviewPage() {
     )));
     setFeedback({
       variant: action === 'approve' ? 'success' : 'warning',
-      title: action === 'approve' ? 'Candidates approved' : 'Candidates rejected',
-      body: `${selectedCandidates.size} screening decision(s) updated locally.`,
+      title: t(`screening.review.feedback.bulk.${action}.title`),
+      body: t('screening.review.feedback.bulk.body', { count: selectedCandidates.size }),
     });
     setSelectedCandidates(new Set());
   };
@@ -75,12 +96,12 @@ export default function ScreeningReviewPage() {
     )));
     setFeedback({
       variant: 'warning',
-      title: 'Candidate rejected',
-      body: `${selected.candidateName} was moved to rejected screening status.`,
+      title: t('screening.review.feedback.rejected.title'),
+      body: t('screening.review.feedback.rejected.body', { name: selected.candidateName }),
     });
   };
 
-  const handleRescreening = () => {
+  const handleReevaluation = () => {
     if (!selected) return;
 
     setEvaluations(prev => prev.map(evaluation => (
@@ -90,8 +111,24 @@ export default function ScreeningReviewPage() {
     )));
     setFeedback({
       variant: 'info',
-      title: 'Re-screening requested',
-      body: `${selected.candidateName} was queued for a mock AI re-screening run.`,
+      title: t('screening.review.feedback.rescreening.title'),
+      body: t('screening.review.feedback.rescreening.body', { name: selected.candidateName }),
+    });
+    setSelectedEvaluation(null);
+  };
+
+  const handleStageAdvance = () => {
+    if (!selected) return;
+
+    setEvaluations(prev => prev.map(evaluation => (
+      evaluation.id === selected.id
+        ? { ...evaluation, status: 'approved', decision: 'approve' }
+        : evaluation
+    )));
+    setFeedback({
+      variant: 'success',
+      title: t('screening.review.feedback.stageAdvance.title'),
+      body: t('screening.review.feedback.stageAdvance.body', { name: selected.candidateName }),
     });
   };
 
@@ -128,13 +165,17 @@ export default function ScreeningReviewPage() {
 
       <div className={styles.toolbar}>
         <div className={styles.filterTabs} role="tablist" aria-label={t('screening.review.aria.filterTabs')}>
-          {(['pending', 'approved', 'rejected', 'all'] as FilterStatus[]).map(status => (
+          {filterStatuses.map(status => (
             <button
               key={status}
+              id={`screening-filter-tab-${status}`}
               role="tab"
               className={`${styles.filterTab} ${filter === status ? styles.active : ''}`}
               onClick={() => setFilter(status)}
+              onKeyDown={(event) => handleFilterKeyDown(event, status)}
               aria-selected={filter === status}
+              aria-controls="screening-candidate-results"
+              tabIndex={filter === status ? 0 : -1}
             >
               {t(`screening.review.filter.${status}`)}
               <span className={styles.filterCount}>
@@ -155,7 +196,6 @@ export default function ScreeningReviewPage() {
               variant="primary"
               size="sm"
               onClick={() => handleBulkAction('approve')}
-              aria-keyshortcuts="Enter"
             >
               {t('screening.review.bulk.approveSelected')}
             </Button>
@@ -186,6 +226,11 @@ export default function ScreeningReviewPage() {
               description={t('screening.review.count', { count: filteredEvaluations.length })}
             />
             <CardContent>
+              <div
+                id="screening-candidate-results"
+                role="tabpanel"
+                aria-labelledby={`screening-filter-tab-${filter}`}
+              >
               {isLoading ? (
                 <div className={styles.loadingState}>
                   <Skeleton />
@@ -194,7 +239,7 @@ export default function ScreeningReviewPage() {
                 </div>
               ) : filteredEvaluations.length === 0 ? (
                 <div className={styles.emptyState}>
-                  <span className={styles.emptyIcon}>📋</span>
+                  <span className={styles.emptyIcon} aria-hidden="true">📋</span>
                   <p>{t('screening.review.empty.noMatch')}</p>
                 </div>
               ) : (
@@ -203,34 +248,25 @@ export default function ScreeningReviewPage() {
                     <div
                       key={evaluation.id}
                       className={`${styles.candidateItem} ${selectedEvaluation === evaluation.id ? styles.selected : ''}`}
-                      onClick={() => setSelectedEvaluation(evaluation.id)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          setSelectedEvaluation(evaluation.id);
-                        }
-                      }}
-                      tabIndex={0}
-                      role="button"
-                      aria-pressed={selectedEvaluation === evaluation.id}
-                      aria-label={`${evaluation.candidateName}, ${evaluation.jobTitle}, ${t('screening.review.aria.scoreLabel', { score: evaluation.overallScore })}`}
                     >
-                      <label className={styles.checkbox}>
+                      <label className={styles.checkbox} onClick={(e) => e.stopPropagation()}>
                         <input
                           type="checkbox"
                           checked={selectedCandidates.has(evaluation.id)}
-                          onChange={(e) => {
-                            e.stopPropagation();
-                            toggleSelect(evaluation.id);
-                          }}
-                          onClick={(e) => e.stopPropagation()}
+                          onChange={() => toggleSelect(evaluation.id)}
                           aria-label={t('screening.review.aria.selectCandidate', { name: evaluation.candidateName })}
                         />
                       </label>
-                      <div className={styles.candidateInfo}>
+                      <button
+                        type="button"
+                        className={styles.candidateInfoButton}
+                        onClick={() => setSelectedEvaluation(evaluation.id)}
+                        aria-pressed={selectedEvaluation === evaluation.id}
+                        aria-label={`${evaluation.candidateName}, ${evaluation.jobTitle}, ${t('screening.review.aria.scoreLabel', { score: evaluation.overallScore })}`}
+                      >
                         <span className={styles.candidateName}>{evaluation.candidateName}</span>
                         <span className={styles.candidateJob}>{evaluation.jobTitle}</span>
-                      </div>
+                      </button>
                       <div className={styles.candidateScore}>
                         <span className={styles.score}>{evaluation.overallScore}</span>
                         <ProgressBar
@@ -238,7 +274,7 @@ export default function ScreeningReviewPage() {
                           max={100}
                           size="sm"
                           variant={evaluation.overallScore >= 80 ? 'success' : evaluation.overallScore >= 60 ? 'warning' : 'danger'}
-                          aria-label={`${t('screening.review.aria.scoreLabel', { score: evaluation.overallScore })} out of 100`}
+                          label={t('screening.review.aria.scoreLabel', { score: evaluation.overallScore })}
                         />
                       </div>
                       <StatusBadge
@@ -252,6 +288,7 @@ export default function ScreeningReviewPage() {
                   ))}
                 </div>
               )}
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -378,26 +415,50 @@ export default function ScreeningReviewPage() {
                     </div>
                   </section>
                 </div>
+
+                {/* Workflow Timeline */}
+                <section className={styles.timelineSection}>
+                  <h3 className={styles.sectionTitle}>{t('screening.review.timeline.title')}</h3>
+                  <div className={styles.timeline}>
+                    <div className={`${styles.timelineStep} ${selected.status === 'approved' ? styles.completed : selected.status === 'pending' && selected.decision === 'needs_review' ? styles.completed : ''}`}>
+                      <span className={styles.timelineIcon} aria-hidden="true">1</span>
+                      <span className={styles.timelineLabel}>{t('screening.review.timeline.screening')}</span>
+                    </div>
+                    <div className={styles.timelineConnector} aria-hidden="true" />
+                    <div className={`${styles.timelineStep} ${selected.status === 'pending' && selected.decision === 'needs_review' ? styles.active : ''}`}>
+                      <span className={styles.timelineIcon} aria-hidden="true">2</span>
+                      <span className={styles.timelineLabel}>{t('screening.review.timeline.reevaluation')}</span>
+                    </div>
+                    <div className={styles.timelineConnector} aria-hidden="true" />
+                    <div className={`${styles.timelineStep} ${selected.status === 'approved' ? styles.active : ''}`}>
+                      <span className={styles.timelineIcon} aria-hidden="true">3</span>
+                      <span className={styles.timelineLabel}>{t('screening.review.timeline.interviewPrep')}</span>
+                    </div>
+                  </div>
+                  {selected.status === 'approved' && (
+                    <Link href="/interviews/schedule-approval" className={styles.nextActionCta}>
+                      {t('screening.review.timeline.nextActionCta')}
+                    </Link>
+                  )}
+                </section>
               </CardContent>
               <div className={styles.actionButtons}>
-                <Button variant="danger" onClick={handleRejectSelected} aria-keyshortcuts="Enter">
+                <Button variant="danger" onClick={handleRejectSelected}>
                   {t('screening.review.actions.reject')}
                 </Button>
-                <Button variant="secondary" onClick={handleRescreening}>
+                <Button variant="secondary" onClick={handleReevaluation}>
                   {t('screening.review.actions.rescreening')}
                 </Button>
-                <Link href="/interviews/schedule-approval">
-                  <Button variant="primary" aria-keyshortcuts="Enter">
-                    {t('screening.review.actions.approveProceed')}
-                  </Button>
-                </Link>
+                <Button variant="primary" onClick={handleStageAdvance}>
+                  {t('screening.review.actions.approveProceed')}
+                </Button>
               </div>
             </Card>
           ) : (
             <Card>
               <CardContent>
                 <div className={styles.emptyState}>
-                  <span className={styles.emptyIcon}>👆</span>
+                  <span className={styles.emptyIcon} aria-hidden="true">👆</span>
                   <p>{t('screening.review.empty.selectToView')}</p>
                 </div>
               </CardContent>

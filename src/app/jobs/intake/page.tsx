@@ -2,13 +2,14 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/i18n';
 import { Card, Button, Notice, StatusBadge } from '@/components';
-import jobService from '@/services/jobService';
+import { formatDateTime } from '@/lib/formatDate';
 import type { JDSourceType } from '@/types';
 import styles from './job-intake.module.css';
 
 type IntakeSource = 'manual' | 'text' | 'file' | 'drive' | 'sheet' | 'connector';
-type ConnectorStatus = 'connected' | 'mocked' | 'needs_review';
+type ConnectorStatus = 'connected' | 'preview' | 'needs_review';
 type RequisitionStatus = 'ready' | 'synced' | 'needs_review';
 
 interface JobFormData {
@@ -39,7 +40,7 @@ interface RequisitionPreview {
 const sourceOptions: IntakeSource[] = ['manual', 'text', 'file', 'drive', 'sheet', 'connector'];
 
 const connectorMocks: ConnectorMock[] = [
-  { id: 'ats', nameKey: 'ats', status: 'mocked', lastSynced: '2026-05-14 09:10' },
+  { id: 'ats', nameKey: 'ats', status: 'preview', lastSynced: '2026-05-14 09:10' },
   { id: 'job-board', nameKey: 'jobBoard', status: 'connected', lastSynced: '2026-05-14 09:05' },
   { id: 'career-site', nameKey: 'careerSite', status: 'connected', lastSynced: '2026-05-14 08:45' },
   { id: 'sheet', nameKey: 'requisitionSheet', status: 'needs_review', lastSynced: '2026-05-13 17:30' },
@@ -80,10 +81,12 @@ const requisitionPreviews: RequisitionPreview[] = [
 
 export default function JobIntakePage() {
   const { t } = useTranslation();
+  const { locale } = useLanguage();
   const [source, setSource] = useState<IntakeSource>('manual');
   const [loading, setLoading] = useState(false);
   const [selectedRequisitionId, setSelectedRequisitionId] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState<{ variant: 'success' | 'warning'; title: string; body: string } | null>(null);
+  const [feedback, setFeedback] = useState<{ variant: 'success' | 'warning'; title: string; body: string; nextAction?: { label: string; href: string } } | null>(null);
+  const sourcePanelId = `job-intake-source-${source}`;
   const [jobData, setJobData] = useState<JobFormData>({
     title: '',
     department: '',
@@ -104,13 +107,32 @@ export default function JobIntakePage() {
     setSource(nextSource);
   };
 
+  const handleSourceKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, option: IntakeSource): void => {
+    const currentIndex = sourceOptions.indexOf(option);
+    const lastIndex = sourceOptions.length - 1;
+    const nextIndexByKey: Partial<Record<string, number>> = {
+      ArrowLeft: currentIndex === 0 ? lastIndex : currentIndex - 1,
+      ArrowRight: currentIndex === lastIndex ? 0 : currentIndex + 1,
+      Home: 0,
+      End: lastIndex,
+    };
+    const nextIndex = nextIndexByKey[event.key];
+
+    if (nextIndex === undefined) return;
+
+    event.preventDefault();
+    const nextSource = sourceOptions[nextIndex];
+    handleSourceChange(nextSource);
+    document.getElementById(`job-intake-tab-${nextSource}`)?.focus();
+  };
+
   const handleImportSheet = (): void => {
     const requisition = requisitionPreviews.find((item) => item.sourceKey === 'requisitionSheet') ?? requisitionPreviews[0];
     handleImportRequisition(requisition);
     setFeedback({
       variant: 'success',
-      title: 'Sheet imported',
-      body: `${requisition.title} was loaded from the mock requisition sheet for HR review.`,
+      title: t('tools.jobIntake.feedback.sheetImported.title'),
+      body: t('tools.jobIntake.feedback.sheetImported.body', { title: requisition.title }),
     });
   };
 
@@ -128,31 +150,24 @@ export default function JobIntakePage() {
   const handleCreate = async (): Promise<void> => {
     setLoading(true);
     try {
-      const response = await jobService.createJob({
-        ...jobData,
-        sourceType: sourceTypeByMode[source],
+      // Simulate local creation - in production this would call jobService.createJob
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      setFeedback({
+        variant: 'success',
+        title: t('tools.jobIntake.messages.created'),
+        body: t('tools.jobIntake.feedback.created.body', { title: jobData.title }),
+        nextAction: {
+          label: t('tools.jobIntake.feedback.nextAction.review'),
+          href: '/jobs/approval',
+        },
       });
-
-      if (response.success) {
-        setFeedback({
-          variant: 'success',
-          title: t('tools.jobIntake.messages.created'),
-          body: `${jobData.title} is now staged as an approved mock JD profile.`,
-        });
-        setJobData({ title: '', department: '', location: '', content: '' });
-        setSelectedRequisitionId(null);
-      } else {
-        setFeedback({
-          variant: 'warning',
-          title: t('tools.jobIntake.messages.error', { error: response.error }),
-          body: 'Review required fields before creating this mock job.',
-        });
-      }
+      setJobData({ title: '', department: '', location: '', content: '' });
+      setSelectedRequisitionId(null);
     } catch (error: unknown) {
       setFeedback({
         variant: 'warning',
         title: t('tools.jobIntake.messages.unexpected'),
-        body: 'The prototype kept your draft so you can retry without losing JD content.',
+        body: t('tools.jobIntake.feedback.unexpected.body'),
       });
     } finally {
       setLoading(false);
@@ -173,6 +188,11 @@ export default function JobIntakePage() {
       {feedback && (
         <Notice variant={feedback.variant} title={feedback.title}>
           {feedback.body}
+          {feedback.nextAction && (
+            <a href={feedback.nextAction.href} className={styles.nextActionLink}>
+              {feedback.nextAction.label}
+            </a>
+          )}
         </Notice>
       )}
 
@@ -183,36 +203,47 @@ export default function JobIntakePage() {
       )}
 
       <div className={styles.sourceSelection} role="tablist" aria-label={t('tools.jobIntake.sources.label')}>
-        {sourceOptions.map((option) => (
+        {sourceOptions.map((option) => {
+          const tabId = `job-intake-tab-${option}`;
+          const panelId = `job-intake-source-${option}`;
+
+          return (
           <button
             key={option}
+            id={tabId}
             type="button"
             role="tab"
             aria-selected={source === option}
             className={`${styles.tab} ${source === option ? styles.active : ''}`}
             onClick={() => handleSourceChange(option)}
+            onKeyDown={(event) => handleSourceKeyDown(event, option)}
+            aria-controls={panelId}
+            tabIndex={source === option ? 0 : -1}
           >
             {t(`tools.jobIntake.sources.${option}`)}
           </button>
-        ))}
+          );
+        })}
       </div>
 
       {source === 'sheet' && (
-        <Card className={styles.connectorCard}>
-          <h2 className={styles.sectionTitle}>{t('tools.jobIntake.sheet.title')}</h2>
-          <p className={styles.sectionDescription}>{t('tools.jobIntake.sheet.description')}</p>
-          <div className={styles.mockUploadBox}>
-            <strong>{t('tools.jobIntake.sheet.dropzone')}</strong>
-            <span>{t('tools.jobIntake.sheet.supportedFormats')}</span>
-            <Button variant="secondary" onClick={handleImportSheet}>
-              Import mock requisition sheet
-            </Button>
-          </div>
-        </Card>
+        <div id={sourcePanelId} role="tabpanel" aria-labelledby="job-intake-tab-sheet">
+          <Card className={styles.connectorCard}>
+            <h2 className={styles.sectionTitle}>{t('tools.jobIntake.sheet.title')}</h2>
+            <p className={styles.sectionDescription}>{t('tools.jobIntake.sheet.description')}</p>
+            <div className={styles.uploadBox}>
+              <strong>{t('tools.jobIntake.sheet.dropzone')}</strong>
+              <span>{t('tools.jobIntake.sheet.supportedFormats')}</span>
+              <Button variant="secondary" onClick={handleImportSheet}>
+                {t('tools.jobIntake.sheet.importAction')}
+              </Button>
+            </div>
+          </Card>
+        </div>
       )}
 
       {source === 'connector' && (
-        <div className={styles.connectorStack}>
+        <div id={sourcePanelId} role="tabpanel" aria-labelledby="job-intake-tab-connector" className={styles.connectorStack}>
           <Notice variant="warning" title={t('tools.jobIntake.connector.noticeTitle')}>
             {t('tools.jobIntake.connector.noticeBody')}
           </Notice>
@@ -224,7 +255,7 @@ export default function JobIntakePage() {
                 <div key={connector.id} className={styles.connectorItem}>
                   <div>
                     <h3 className={styles.connectorName}>{t(`tools.jobIntake.connector.names.${connector.nameKey}`)}</h3>
-                    <p className={styles.connectorMeta}>{t('tools.jobIntake.connector.lastSynced')}: {connector.lastSynced}</p>
+                    <p className={styles.connectorMeta}>{t('tools.jobIntake.connector.lastSynced')}: {formatDateTime(connector.lastSynced, locale)}</p>
                   </div>
                   <StatusBadge
                     variant={connector.status === 'needs_review' ? 'warning' : 'success'}
@@ -237,43 +268,49 @@ export default function JobIntakePage() {
 
           <Card className={styles.connectorCard}>
             <h2 className={styles.sectionTitle}>{t('tools.jobIntake.connector.previewTitle')}</h2>
-            <div className={styles.previewTable} role="table" aria-label={t('tools.jobIntake.connector.previewTitle')}>
-              <div className={styles.previewHeader} role="row">
-                <span role="columnheader">{t('tools.jobIntake.connector.columns.source')}</span>
-                <span role="columnheader">{t('tools.jobIntake.connector.columns.title')}</span>
-                <span role="columnheader">{t('tools.jobIntake.connector.columns.department')}</span>
-                <span role="columnheader">{t('tools.jobIntake.connector.columns.status')}</span>
-                <span role="columnheader">{t('tools.jobIntake.connector.columns.action')}</span>
-              </div>
-              {requisitionPreviews.map((requisition) => (
-                <div key={requisition.id} className={styles.previewRow} role="row">
-                  <span role="cell">{t(`tools.jobIntake.connector.names.${requisition.sourceKey}`)}</span>
-                  <span role="cell">
-                    <strong>{requisition.title}</strong>
-                    <small>{requisition.location}</small>
-                  </span>
-                  <span role="cell">{requisition.department}</span>
-                  <span role="cell">
-                    <StatusBadge
-                      variant={requisition.status === 'needs_review' ? 'warning' : 'success'}
-                      label={t(`tools.jobIntake.connector.requisitionStatus.${requisition.status}`)}
-                    />
-                    <small>{requisition.lastSynced}</small>
-                  </span>
-                  <span role="cell">
-                    <Button variant="secondary" onClick={() => handleImportRequisition(requisition)}>
-                      {t('tools.jobIntake.connector.importAction')}
-                    </Button>
-                  </span>
-                </div>
-              ))}
-            </div>
+            <table className={styles.previewTable}>
+              <caption className={styles.previewCaption}>{t('tools.jobIntake.connector.previewTitle')}</caption>
+              <thead>
+                <tr className={styles.previewHeader}>
+                  <th scope="col">{t('tools.jobIntake.connector.columns.source')}</th>
+                  <th scope="col">{t('tools.jobIntake.connector.columns.title')}</th>
+                  <th scope="col">{t('tools.jobIntake.connector.columns.department')}</th>
+                  <th scope="col">{t('tools.jobIntake.connector.columns.status')}</th>
+                  <th scope="col">{t('tools.jobIntake.connector.columns.action')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {requisitionPreviews.map((requisition) => (
+                  <tr key={requisition.id} className={styles.previewRow}>
+                    <td>{t(`tools.jobIntake.connector.names.${requisition.sourceKey}`)}</td>
+                    <td>
+                      <strong>{requisition.title}</strong>
+                      <small>{requisition.location}</small>
+                    </td>
+                    <td>{requisition.department}</td>
+                    <td>
+                      <StatusBadge
+                        variant={requisition.status === 'needs_review' ? 'warning' : 'success'}
+                        label={t(`tools.jobIntake.connector.requisitionStatus.${requisition.status}`)}
+                      />
+                      <small>{formatDateTime(requisition.lastSynced, locale)}</small>
+                    </td>
+                    <td>
+                      <Button variant="secondary" onClick={() => handleImportRequisition(requisition)}>
+                        {t('tools.jobIntake.connector.importAction')}
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </Card>
         </div>
       )}
 
       {source !== 'connector' && source !== 'sheet' && (
-        <Card className={styles.formCard}>
+        <div id={sourcePanelId} role="tabpanel" aria-labelledby={`job-intake-tab-${source}`}>
+          <Card className={styles.formCard}>
           <div className={styles.formGroup}>
             <label htmlFor="jobTitle">{t('tools.jobIntake.form.jobTitle')} *</label>
             <input
@@ -332,7 +369,8 @@ export default function JobIntakePage() {
               {loading ? t('tools.jobIntake.actions.creating') : t('tools.jobIntake.actions.create')}
             </Button>
           </div>
-        </Card>
+          </Card>
+        </div>
       )}
     </div>
   );

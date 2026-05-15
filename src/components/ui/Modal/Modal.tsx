@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
 import styles from './Modal.module.css';
 
@@ -23,6 +24,7 @@ export function Modal({
   footer,
   size = 'md',
 }: ModalProps) {
+  const { t } = useTranslation();
   const modalRef = useRef<HTMLDivElement>(null);
   const previousActiveElement = useRef<HTMLElement | null>(null);
 
@@ -37,7 +39,7 @@ export function Modal({
     if (e.key !== 'Tab' || !modalRef.current) return;
 
     const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      'button, [href], input, select, textarea, iframe, details > summary, audio[controls], video[controls], [contenteditable="true"], [tabindex]:not([tabindex="-1"])'
     );
     const firstElement = focusableElements[0];
     const lastElement = focusableElements[focusableElements.length - 1];
@@ -61,7 +63,7 @@ export function Modal({
       // Focus the first focusable element after a short delay
       setTimeout(() => {
         const firstFocusable = modalRef.current?.querySelector<HTMLElement>(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          'button, [href], input, select, textarea, iframe, details > summary, audio[controls], video[controls], [contenteditable="true"], [tabindex]:not([tabindex="-1"])'
         );
         firstFocusable?.focus();
       }, 0);
@@ -85,22 +87,26 @@ export function Modal({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modal-title"
     >
-      <div className={`${styles.modal} ${styles[size]}`} ref={modalRef}>
+      <div
+        className={`${styles.modal} ${styles[size]}`}
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+        aria-describedby="modal-body"
+      >
         <div className={styles.header}>
           <h2 id="modal-title" className={styles.title}>{title}</h2>
           <button
             className={styles.closeButton}
             onClick={onClose}
-            aria-label="Close modal"
+            aria-label={t('common.closeModal')}
           >
-            ×
+            <span aria-hidden="true">×</span>
           </button>
         </div>
-        <div className={styles.body}>{children}</div>
+        <div id="modal-body" className={styles.body}>{children}</div>
         {footer && <div className={styles.footer}>{footer}</div>}
       </div>
     </div>

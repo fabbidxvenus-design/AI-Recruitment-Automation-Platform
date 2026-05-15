@@ -7,7 +7,7 @@ import { formatDateTime } from '@/lib/formatDate';
 import { Card, Button, Notice, LoadingState, Modal } from '@/components';
 import type { TranslatedCV, TargetLanguage, CVSection } from '@/types/cv-translation';
 import { translateCV } from '@/services/translationService';
-import { mockCandidates } from '@/lib/mockData';
+import { mockCandidates, mockJobs } from '@/lib/mockData';
 import styles from './cv-translation.module.css';
 
 type WorkflowStep = 'select' | 'generating' | 'review' | 'approved';
@@ -21,6 +21,7 @@ export default function CVTranslationPage() {
   const [selectedLanguage, setSelectedLanguage] = useState<TargetLanguage>('vi');
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
+  const getCandidateJobTitle = (jobId: string): string => mockJobs.find((job) => job.id === jobId)?.title ?? jobId;
 
   const handleTranslate = async (): Promise<void> => {
     if (!selectedCandidateId) return;
@@ -94,8 +95,8 @@ export default function CVTranslationPage() {
 
       {currentStep === 'select' && (
         <>
-          <Notice variant="info" title={t('tools.cvTranslation.workspace.sourceOfTruth')}>
-            {t('tools.cvTranslation.workspace.sourceOfTruth')}
+          <Notice variant="info" title={t('tools.cvTranslation.workspace.sourceOfTruthTitle')}>
+            {t('tools.cvTranslation.workspace.sourceOfTruthDesc')}
           </Notice>
 
           <Card className={styles.selectCard}>
@@ -113,7 +114,7 @@ export default function CVTranslationPage() {
                 <option value="">{t('common.status.pending')}</option>
                 {mockCandidates.map((candidate) => (
                   <option key={candidate.id} value={candidate.id}>
-                    {candidate.firstName} {candidate.lastName} - {candidate.jobId}
+                    {candidate.firstName} {candidate.lastName} - {getCandidateJobTitle(candidate.jobId)}
                   </option>
                 ))}
               </select>
@@ -155,6 +156,17 @@ export default function CVTranslationPage() {
 
       {(currentStep === 'review' || currentStep === 'approved') && translatedCV && (
         <div className={styles.workspace}>
+          <div className={styles.workflowStepper}>
+            <div className={`${styles.step} ${styles.stepComplete}`}>
+              <span className={styles.stepLabel}>{t('tools.cvTranslation.steps.select.title')}</span>
+            </div>
+            <div className={`${styles.step} ${currentStep === 'review' ? styles.stepActive : currentStep === 'approved' ? styles.stepComplete : styles.stepPending}`}>
+              <span className={styles.stepLabel}>{t('tools.cvTranslation.steps.review.title')}</span>
+            </div>
+            <div className={`${styles.step} ${currentStep === 'approved' ? styles.stepComplete : styles.stepPending}`}>
+              <span className={styles.stepLabel}>{t('tools.cvTranslation.workspace.approved')}</span>
+            </div>
+          </div>
           <div className={styles.sideBySide}>
             <div className={styles.cvPanel}>
               <h2 className={styles.sectionTitle}>{t('tools.cvTranslation.workspace.original')}</h2>

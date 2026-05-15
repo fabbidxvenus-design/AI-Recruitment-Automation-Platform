@@ -298,6 +298,58 @@
   margin-top: 1.5rem;
 }
 
+/* Timeline */
+.timelineCard {
+  padding: 1.25rem;
+  background-color: var(--color-surface-alt);
+}
+
+.timelineTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.timeline {
+  display: flex;
+  gap: 2rem;
+}
+
+.timelineStep {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.timelineDotCompleted {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background-color: #10b981;
+}
+
+.timelineDotRejected {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background-color: #ef4444;
+}
+
+.timelineLabel {
+  font-size: 0.875rem;
+  color: var(--color-text);
+}
+
+.nextActionHint {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 1rem;

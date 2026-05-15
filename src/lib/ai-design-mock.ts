@@ -1,9 +1,3 @@
-/**
- * Module B: Mock AI Design Generation
- * Deterministic fixtures for prototype demonstration
- * No external API calls
- */
-
 import { DesignBrief, DesignVariant, AIProvenance } from '@/types/ai-design';
 
 const MOCK_DELAY_MS = 2000;

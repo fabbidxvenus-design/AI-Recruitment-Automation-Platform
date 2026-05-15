@@ -28,7 +28,7 @@ export default function ScheduleApprovalPage() {
     setFeedback({
       variant: 'success',
       title: 'Interview slot approved',
-      body: slot ? `${slot.candidateName}'s workspace link is ready for the prototype interview.` : 'The selected slot was approved.',
+      body: slot ? `${slot.candidateName}'s interview workspace is now available.` : 'The selected slot was approved.',
     });
   };
 

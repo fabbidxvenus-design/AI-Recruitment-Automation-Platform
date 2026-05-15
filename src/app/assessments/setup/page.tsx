@@ -4,9 +4,9 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Card, Notice, StatusBadge } from '@/components';
 import {
-  approveAssessmentPlanForPrototype,
+  approveAssessmentPlan,
   getActiveAssessmentWorkflowState,
-  saveAssessmentPlanDraftForPrototype,
+  saveAssessmentPlanDraft,
 } from '@/lib/assessmentWorkflowState';
 import { mockJobs, mockJDVersions, mockParsedJDProfiles } from '@/lib/jobIntakeMockData';
 import {
@@ -30,17 +30,53 @@ interface TraceabilityPreview {
   testDefinitionVersionId: string;
 }
 
+interface WorkflowEvent {
+  timestamp: string;
+  label: string;
+  actor: string;
+}
+
 const statusVariantByPlanStatus: Record<AssessmentPlanStatus, 'default' | 'success' | 'warning'> = {
   draft: 'warning',
   approved: 'success',
   archived: 'default',
 };
 
+function buildWorkflowEvents(
+  status: AssessmentPlanStatus,
+  planVersion: { createdAt: string; createdBy: string }
+): WorkflowEvent[] {
+  const events: WorkflowEvent[] = [
+    { timestamp: planVersion.createdAt, label: 'assessments.setup.workflow.event.created', actor: planVersion.createdBy },
+  ];
+  if (status === 'approved') {
+    events.push({ timestamp: new Date().toISOString(), label: 'assessments.setup.workflow.event.planApproved', actor: 'Hiring Manager' });
+  }
+  return events;
+}
+
+function formatRelativeTime(isoString: string): string {
+  const date = new Date(isoString);
+  const now = new Date('2026-05-15T10:00:00Z');
+  const diffMs = now.getTime() - date.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return `${diffDays}d ago`;
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
+  return `${Math.floor(diffDays / 30)}mo ago`;
+}
+
+function formatTimestamp(isoString: string): string {
+  const date = new Date(isoString);
+  return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
 export default function AssessmentSetupPage() {
   const { t } = useTranslation();
-  const [selectedPlanId, setSelectedPlanId] = useState<string>(() => getActiveAssessmentWorkflowState().activeAssessmentPlanId);
+  const workflowState = getActiveAssessmentWorkflowState();
+  const [selectedPlanId, setSelectedPlanId] = useState<string>(() => workflowState.activeAssessmentPlanId);
   const [localStatus, setLocalStatus] = useState<AssessmentPlanStatus>(() => {
-    const workflowState = getActiveAssessmentWorkflowState();
     return workflowState.stages.planApproved ? 'approved' : 'draft';
   });
 
@@ -71,6 +107,7 @@ export default function AssessmentSetupPage() {
     [selectedPlan, selectedPlanVersion]
   );
 
+  const workflowEvents = useMemo(() => buildWorkflowEvents(localStatus, selectedPlanVersion), [localStatus, selectedPlanVersion]);
   const totalWeight = selectedRubric.criteria.reduce((sum, criterion) => sum + criterion.weight, 0);
 
   const handlePlanChange = (planId: string): void => {
@@ -80,14 +117,17 @@ export default function AssessmentSetupPage() {
   };
 
   const handleSaveDraft = (): void => {
-    saveAssessmentPlanDraftForPrototype(selectedPlan, selectedPlanVersion);
+    saveAssessmentPlanDraft(selectedPlan, selectedPlanVersion);
     setLocalStatus('draft');
   };
 
   const handleApprove = (): void => {
-    approveAssessmentPlanForPrototype(selectedPlan, selectedPlanVersion);
+    approveAssessmentPlan(selectedPlan, selectedPlanVersion);
     setLocalStatus('approved');
   };
+
+  const nextActionLabel = localStatus === 'approved' ? 'assessments.setup.workflow.action.viewResults' : 'assessments.setup.workflow.action.approve';
+  const nextActionDisabled = localStatus === 'approved';
 
   return (
     <div className={styles.container}>
@@ -121,6 +161,56 @@ export default function AssessmentSetupPage() {
         </select>
       </section>
 
+      <div className={styles.workflowGrid}>
+        <Card className={styles.workflowCard}>
+          <span className={styles.cardEyebrow}>{t('assessments.setup.workflow.state.label')}</span>
+          <h2 className={styles.sectionTitle}>{t(`assessments.setup.workflow.state.${localStatus}`)}</h2>
+          <p className={styles.mutedText}>{t(`assessments.setup.workflow.state.description.${localStatus}`)}</p>
+        </Card>
+
+        <Card className={styles.workflowCard}>
+          <span className={styles.cardEyebrow}>{t('assessments.setup.workflow.approval.label')}</span>
+          <h2 className={styles.sectionTitle}>{localStatus === 'approved' ? 'Hiring Manager' : t('common.pending')}</h2>
+          <p className={styles.mutedText}>
+            {localStatus === 'approved' ? t('assessments.setup.workflow.approval.approved') : t('assessments.setup.workflow.approval.pending')}
+          </p>
+        </Card>
+
+        <Card className={styles.workflowCard}>
+          <span className={styles.cardEyebrow}>{t('assessments.setup.workflow.evidence.label')}</span>
+          <dl className={styles.compactDetails}>
+            <div>
+              <dt>{t('assessments.setup.workflow.evidence.planVersion')}</dt>
+              <dd>{selectedPlanVersion.id}</dd>
+            </div>
+            <div>
+              <dt>{t('assessments.setup.workflow.evidence.rubricVersion')}</dt>
+              <dd>{selectedPlanVersion.rubricVersionId}</dd>
+            </div>
+          </dl>
+        </Card>
+      </div>
+
+      <Card className={styles.timelineCard}>
+        <span className={styles.cardEyebrow}>{t('assessments.setup.workflow.timeline.label')}</span>
+        <h2 className={styles.sectionTitle}>{t('assessments.setup.workflow.timeline.title')}</h2>
+        <div className={styles.timeline}>
+          {workflowEvents.map((event, idx) => (
+            <div key={idx} className={styles.timelineItem}>
+              <div className={styles.timelineDot} />
+              <div className={styles.timelineContent}>
+                <div className={styles.timelineHeader}>
+                  <span className={styles.timelineLabel}>{t(event.label)}</span>
+                  <span className={styles.timelineTime}>{formatRelativeTime(event.timestamp)}</span>
+                </div>
+                <p className={styles.timelineActor}>{event.actor}</p>
+                <p className={styles.timelineTimestamp}>{formatTimestamp(event.timestamp)}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
       <div className={styles.summaryGrid}>
         <Card className={styles.summaryCard}>
           <span className={styles.cardEyebrow}>{t('assessments.setup.jobContext.eyebrow')}</span>
@@ -140,7 +230,7 @@ export default function AssessmentSetupPage() {
             </div>
             <div>
               <dt>{t('assessments.setup.jobContext.jdStatus')}</dt>
-              <dd>{selectedJdVersion?.status ?? t('common.notAvailable')}</dd>
+              <dd>{selectedJdVersion ? t(`assessments.setup.status.${selectedJdVersion.status}`) : t('common.notAvailable')}</dd>
             </div>
           </dl>
         </Card>
@@ -250,7 +340,7 @@ export default function AssessmentSetupPage() {
             <span className={styles.cardEyebrow}>{t('assessments.setup.trace.eyebrow')}</span>
             <h2 className={styles.sectionTitle}>{t('assessments.setup.trace.title')}</h2>
           </div>
-          <StatusBadge variant="info" label={t('assessments.setup.trace.prototypeOnly')} />
+          <StatusBadge variant="info" label={t('assessments.setup.trace.previewMode')} />
         </div>
         <dl className={styles.traceGrid}>
           {Object.entries(traceabilityPreview).map(([key, value]) => (
@@ -266,7 +356,9 @@ export default function AssessmentSetupPage() {
         <Button variant="secondary" onClick={handleSaveDraft}>
           {t('assessments.setup.actions.saveDraft')}
         </Button>
-        <Button onClick={handleApprove}>{t('assessments.setup.actions.approve')}</Button>
+        <Button onClick={handleApprove} disabled={nextActionDisabled}>
+          {t(nextActionLabel)}
+        </Button>
       </div>
     </div>
   );

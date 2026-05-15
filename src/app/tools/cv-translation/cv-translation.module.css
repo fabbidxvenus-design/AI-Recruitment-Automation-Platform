@@ -76,6 +76,60 @@
   gap: 2rem;
 }
 
+.workflowStepper {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  position: relative;
+}
+
+.step::after {
+  content: '';
+  position: absolute;
+  top: 0.5rem;
+  left: calc(50% + 0.5rem);
+  right: calc(-50% - 0.5rem);
+  height: 2px;
+  background: var(--color-border);
+}
+
+.step:last-child::after {
+  display: none;
+}
+
+.stepComplete .stepLabel {
+  color: var(--color-success);
+}
+
+.stepComplete::after {
+  background: var(--color-success);
+}
+
+.stepActive .stepLabel {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.stepPending .stepLabel {
+  color: var(--color-text-secondary);
+}
+
+.stepLabel {
+  font-size: 0.75rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
 .sideBySide {
   display: grid;
   grid-template-columns: 1fr 1fr;

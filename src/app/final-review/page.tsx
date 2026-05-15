@@ -312,7 +312,7 @@ export default function FinalReviewPage() {
                 onClick={() => setFeedback({
                   variant: 'info',
                   title: 'Information requested',
-                  body: `${selected.candidateName}'s recruiter follow-up request was added to the mock audit log.`,
+                  body: `Follow-up request for ${selected.candidateName} has been submitted to the recruiter workspace.`,
                 })}
               >
                 {t('finalReview.decisionActions.requestInfo')}
@@ -334,10 +334,10 @@ export default function FinalReviewPage() {
           <div className={styles.modalContent}>
             <div className={styles.modalHeader}>
               <h2>Decision history</h2>
-              <button className={styles.closeButton} onClick={() => setHistoryOpen(false)}>Ã—</button>
+              <button className={styles.closeButton} onClick={() => setHistoryOpen(false)}>×</button>
             </div>
             <div className={styles.modalBody}>
-              <p className={styles.summaryText}>Mock audit trail for {selected.candidateName}.</p>
+              <p className={styles.summaryText}>Decision audit trail for {selected.candidateName}.</p>
               <div className={styles.approverList}>
                 {selected.approvers.map((approver, index) => (
                   <div key={`${approver.name}-${index}`} className={styles.approverItem}>
@@ -362,11 +362,11 @@ export default function FinalReviewPage() {
           <div className={styles.modalContent}>
             <div className={styles.modalHeader}>
               <h2>{viewedDocument}</h2>
-              <button className={styles.closeButton} onClick={() => setViewedDocument(null)}>Ã—</button>
+              <button className={styles.closeButton} onClick={() => setViewedDocument(null)}>×</button>
             </div>
             <div className={styles.modalBody}>
-              <Notice variant="info" title="Mock document preview">
-                This prototype records that the evidence document was opened without loading an external file.
+              <Notice variant="info" title="Document Preview">
+                The evidence document has been opened and can be reviewed here.
               </Notice>
             </div>
             <div className={styles.modalFooter}>

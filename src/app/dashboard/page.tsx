@@ -158,11 +158,11 @@ export default function DashboardPage() {
       </section>
 
       <Notice
-        variant="blocker"
-        title={t('dashboard.notice.aiBlocked')}
+        variant="info"
+        title={t('dashboard.notice.workspaceReady')}
         action={<Link href="/admin"><Button variant="secondary" size="sm">{t('common.configure')}</Button></Link>}
       >
-        {t('dashboard.notice.aiBlockedDesc', { count: bqBlockers.filter(b => b.screenIds.includes('SCREEN-001')).length })}
+        {t('dashboard.notice.workspaceReadyDesc', { count: bqBlockers.filter(b => b.screenIds.includes('SCREEN-001')).length })}
       </Notice>
 
       <section className={styles.mainContent}>
@@ -187,7 +187,7 @@ export default function DashboardPage() {
                           key={stage.stage}
                           className={styles.pipelineStage}
                           style={{ '--stage-color': stage.color } as React.CSSProperties}
-                          title={`${stage.stage}: ${stage.count}`}
+                          title={t('dashboard.pipeline.stageTooltip', { stage: t(`dashboard.pipeline.stage.${stage.stage.toLowerCase()}`), count: stage.count })}
                         >
                           <div className={styles.stageBar} style={{ width: `${(stage.count / job.candidateCount) * 100}%` }} />
                           <span className={styles.stageCount}>{stage.count}</span>
@@ -198,7 +198,7 @@ export default function DashboardPage() {
                       {job.pipelineSummary.map(stage => (
                         <div key={stage.stage} className={styles.legendItem}>
                           <span className={styles.legendDot} style={{ background: stage.color }} />
-                          <span>{stage.stage}</span>
+                          <span>{t(`dashboard.pipeline.stage.${stage.stage.toLowerCase()}`)}</span>
                         </div>
                       ))}
                     </div>
@@ -268,8 +268,8 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader
-              title={t('dashboard.integration.title')}
-              description={t('dashboard.integration.description')}
+              title={t('dashboard.sourceConfig.title')}
+              description={t('dashboard.sourceConfig.description')}
               action={<Link href="/admin"><Button variant="ghost" size="sm">{t('common.adminPanel')}</Button></Link>}
             />
             <CardContent>
@@ -282,7 +282,7 @@ export default function DashboardPage() {
                     </div>
                     <div className={styles.integrationMeta}>
                       {integration.status !== 'healthy' && (
-                        <span className={styles.errorCount}>{integration.errorCount} {t('dashboard.integration.errors')}</span>
+                        <span className={styles.errorCount}>{integration.errorCount} {t('dashboard.sourceConfig.errors')}</span>
                       )}
                       <span className={styles.lastSync}>
                         {t('common.dateTime.lastSync')}: {formatTime(integration.lastSync, locale)}

@@ -2,54 +2,86 @@
 
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
-import { Card } from '@/components';
+import { Card, StatusBadge } from '@/components';
 import styles from './tools.module.css';
+
+interface Tool {
+  id: string;
+  titleKey: string;
+  descKey: string;
+  icon: string;
+  href: string;
+  status: 'ready' | 'in_progress' | 'coming_soon';
+  workflowStep: string;
+  nextActionKey: string;
+}
 
 export default function ToolsHubPage() {
   const { t } = useTranslation();
 
-  const tools = [
+  const tools: Tool[] = [
     {
       id: 'content-generation',
       titleKey: 'tools.contentGeneration.title',
-      descKey: 'tools.contentGeneration.description',
+      descKey: 'tools.contentGeneration.workspaceDesc',
       icon: '✍️',
       href: '/tools/content-generation',
-      status: 'available' as const,
+      status: 'ready',
+      workflowStep: 'tools.hub.workflow.input',
+      nextActionKey: 'tools.contentGeneration.form.startWorkflow',
     },
     {
       id: 'ai-design',
       titleKey: 'tools.aiDesign.title',
-      descKey: 'tools.aiDesign.description',
+      descKey: 'tools.aiDesign.workspaceDesc',
       icon: '🎨',
       href: '/tools/ai-design',
-      status: 'available' as const,
+      status: 'ready',
+      workflowStep: 'tools.hub.workflow.designBrief',
+      nextActionKey: 'tools.aiDesign.form.startWorkflow',
     },
     {
       id: 'cv-evidence',
       titleKey: 'tools.cvEvidence.title',
-      descKey: 'tools.cvEvidence.description',
+      descKey: 'tools.cvEvidence.workspaceDesc',
       icon: '📄',
       href: '/tools/cv-evidence',
-      status: 'available' as const,
+      status: 'ready',
+      workflowStep: 'tools.hub.workflow.selectCandidate',
+      nextActionKey: 'tools.cvEvidence.form.selectCandidate',
     },
     {
       id: 'cv-translation',
       titleKey: 'tools.cvTranslation.title',
-      descKey: 'tools.cvTranslation.description',
+      descKey: 'tools.cvTranslation.workspaceDesc',
       icon: '🌐',
       href: '/tools/cv-translation',
-      status: 'available' as const,
+      status: 'ready',
+      workflowStep: 'tools.hub.workflow.selectCv',
+      nextActionKey: 'tools.cvTranslation.form.startTranslation',
     },
     {
       id: 'interview-translation',
       titleKey: 'tools.interviewTranslation.title',
-      descKey: 'tools.interviewTranslation.description',
+      descKey: 'tools.interviewTranslation.workspaceDesc',
       icon: '🗣️',
       href: '/tools/interview-translation',
-      status: 'available' as const,
+      status: 'ready',
+      workflowStep: 'tools.hub.workflow.selectInterview',
+      nextActionKey: 'tools.interviewTranslation.form.startTranslation',
     },
   ];
+
+  const getStatusVariant = (status: Tool['status']) => {
+    switch (status) {
+      case 'ready':
+        return 'success' as const;
+      case 'in_progress':
+        return 'warning' as const;
+      case 'coming_soon':
+        return 'info' as const;
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -67,9 +99,19 @@ export default function ToolsHubPage() {
                 <h2 className={styles.toolTitle}>{t(tool.titleKey)}</h2>
                 <p className={styles.toolDescription}>{t(tool.descKey)}</p>
                 <div className={styles.toolFooter}>
-                  <span className={styles.toolStatus}>
-                    {t('tools.hub.available')}
-                  </span>
+                  <div className={styles.toolStatusGroup}>
+                    <StatusBadge
+                      label={t(`tools.hub.status.${tool.status}`)}
+                      variant={getStatusVariant(tool.status)}
+                    />
+                    <span className={styles.toolWorkflow}>
+                      {t('tools.hub.workflow.currentStep')}: {t(tool.workflowStep)}
+                    </span>
+                  </div>
+                </div>
+                <div className={styles.toolNextAction}>
+                  <span className={styles.nextActionLabel}>{t('tools.hub.nextAction')}</span>
+                  <span className={styles.nextActionText}>{t(tool.nextActionKey)}</span>
                 </div>
               </Link>
             </Card>

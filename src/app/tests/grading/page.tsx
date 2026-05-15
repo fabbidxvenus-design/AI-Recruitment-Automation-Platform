@@ -14,6 +14,10 @@ import { mockTestResults } from '@/lib/mockData';
 import { markTestGraded, resolveTestResultForActivePlan } from '@/lib/assessmentWorkflowState';
 import styles from './grading.module.css';
 
+// Constants shared with grading logic
+const PASS_SCORE_THRESHOLD = 60;
+const HIGH_SCORE_THRESHOLD = 80;
+
 type TabType = 'all' | 'mcq' | 'essay' | 'coding';
 
 export default function TestGradingPage() {
@@ -53,7 +57,7 @@ export default function TestGradingPage() {
         ? {
             ...test,
             score: nextScore,
-            status: nextScore >= 60 ? 'approved' : 'flagged',
+            status: nextScore >= PASS_SCORE_THRESHOLD ? 'approved' : 'flagged',
             gradedBy: 'override',
             overrideReason,
             humanGrade: `${nextScore}/${test.maxScore}`,
@@ -256,7 +260,7 @@ export default function TestGradingPage() {
                         value={selected.score}
                         max={selected.maxScore}
                         showValue
-                        variant={selected.score >= 80 ? 'success' : selected.score >= 60 ? 'warning' : 'danger'}
+                        variant={selected.score >= HIGH_SCORE_THRESHOLD ? 'success' : selected.score >= PASS_SCORE_THRESHOLD ? 'warning' : 'danger'}
                         label={t('tests.grading.scoreBreakdown.overallScore')}
                       />
                       <div className={styles.sectionScores}>

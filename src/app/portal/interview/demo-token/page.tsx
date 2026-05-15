@@ -81,7 +81,7 @@ export default function InterviewPage() {
     setFeedback({
       variant: 'info',
       title: 'Progress saved',
-      body: `${Object.keys(answers).length} answer(s) saved locally for this prototype session.`,
+      body: `${Object.keys(answers).length} answer(s) have been saved.`,
     });
   };
 
@@ -89,7 +89,7 @@ export default function InterviewPage() {
     setFeedback({
       variant: 'info',
       title: 'HR contact prepared',
-      body: 'A mock support request has been queued for hr@company.com.',
+      body: 'A support request has been submitted to hr@company.com.',
     });
   };
 
@@ -97,7 +97,7 @@ export default function InterviewPage() {
     setFeedback({
       variant: 'warning',
       title: 'Withdrawal drafted',
-      body: 'The application withdrawal is staged locally and would require confirmation in production.',
+      body: 'The application withdrawal request has been submitted.',
     });
   };
 

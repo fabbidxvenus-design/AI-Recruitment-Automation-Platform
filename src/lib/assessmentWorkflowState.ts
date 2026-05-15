@@ -125,7 +125,7 @@ export function saveActiveAssessmentWorkflowState(state: AssessmentWorkflowState
   }
 }
 
-export function approveAssessmentPlanForPrototype(
+export function approveAssessmentPlan(
   plan: AssessmentPlan,
   planVersion: AssessmentPlanVersion,
   candidateId = DEFAULT_CANDIDATE_ID,
@@ -154,7 +154,7 @@ export function approveAssessmentPlanForPrototype(
   return nextState;
 }
 
-export function saveAssessmentPlanDraftForPrototype(plan: AssessmentPlan, planVersion: AssessmentPlanVersion): AssessmentWorkflowState {
+export function saveAssessmentPlanDraft(plan: AssessmentPlan, planVersion: AssessmentPlanVersion): AssessmentWorkflowState {
   const now = new Date().toISOString();
   const existingState = getActiveAssessmentWorkflowState();
   const nextState: AssessmentWorkflowState = {

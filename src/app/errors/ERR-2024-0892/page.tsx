@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/i18n';
@@ -43,6 +43,7 @@ export default function ErrorDetailPage() {
   const [retryBackoff, setRetryBackoff] = useState(60);
   const [assignee, setAssignee] = useState(error.assignee || 'Backend On-call');
   const [feedback, setFeedback] = useState<{ variant: 'success' | 'info' | 'warning'; title: string; body: string } | null>(null);
+  const [elapsedMinutes, setElapsedMinutes] = useState(0);
 
   const severityClass = styles[error.severity] || '';
 
@@ -53,8 +54,8 @@ export default function ErrorDetailPage() {
       setCurrentStep(3);
       setFeedback({
         variant: 'success',
-        title: 'Manual retry started',
-        body: `Retry queued with ${retryBackoff}s backoff and the resolution timeline advanced locally.`,
+        title: t('errors.detail.feedback.retryStarted.title'),
+        body: t('errors.detail.feedback.retryStarted.body', { seconds: retryBackoff }),
       });
     }
   };
@@ -65,8 +66,8 @@ export default function ErrorDetailPage() {
     setAssignee('Engineering Manager');
     setFeedback({
       variant: 'warning',
-      title: 'Escalated to engineering',
-      body: 'Engineering Manager has been assigned in this prototype incident workflow.',
+      title: t('errors.detail.feedback.escalated.title'),
+      body: t('errors.detail.feedback.escalated.body'),
     });
   };
 
@@ -75,12 +76,21 @@ export default function ErrorDetailPage() {
     setAssignee(nextAssignee);
     setFeedback({
       variant: 'info',
-      title: 'Incident reassigned',
-      body: `${error.errorCode} is now assigned to ${nextAssignee}.`,
+      title: t('errors.detail.feedback.reassigned.title'),
+      body: t('errors.detail.feedback.reassigned.body', { code: error.errorCode, assignee: nextAssignee }),
     });
   };
 
-  const elapsedMinutes = 187;
+  useEffect(() => {
+    const createdAtTime = new Date(error.createdAt).getTime();
+    const updateElapsedMinutes = () => {
+      setElapsedMinutes(Math.max(0, Math.floor((Date.now() - createdAtTime) / 60000)));
+    };
+
+    updateElapsedMinutes();
+    const timer = setInterval(updateElapsedMinutes, 60000);
+    return () => clearInterval(timer);
+  }, [error.createdAt]);
 
   return (
     <div className={styles.errorDetailPage}>

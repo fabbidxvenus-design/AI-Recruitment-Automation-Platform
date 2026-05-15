@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useId } from 'react';
 import styles from './Notice.module.css';
 
 type NoticeVariant = 'info' | 'warning' | 'danger' | 'success' | 'blocker';
@@ -24,14 +24,24 @@ export function Notice({
   children,
   action,
 }: NoticeProps) {
+  const role = variant === 'danger' || variant === 'blocker' ? 'alert' : 'status';
+  const noticeId = useId();
+  const titleId = title ? `${noticeId}-title` : undefined;
+  const messageId = `${noticeId}-message`;
+
   return (
-    <div className={`${styles.notice} ${styles[variant]}`} role="alert">
+    <div
+      className={`${styles.notice} ${styles[variant]}`}
+      role={role}
+      aria-labelledby={titleId}
+      aria-describedby={messageId}
+    >
       <span className={styles.noticeIcon} aria-hidden="true">
         {variantIcons[variant]}
       </span>
       <div className={styles.noticeContent}>
-        {title && <div className={styles.noticeTitle}>{title}</div>}
-        <div className={styles.noticeMessage}>{children}</div>
+        {title && <h3 id={titleId} className={styles.noticeTitle}>{title}</h3>}
+        <div id={messageId} className={styles.noticeMessage}>{children}</div>
         {action && <div className={styles.noticeAction}>{action}</div>}
       </div>
     </div>
