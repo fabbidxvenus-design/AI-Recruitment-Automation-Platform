@@ -11,6 +11,11 @@ import styles from './interview.module.css';
 
 export const dynamic = 'force-dynamic';
 
+type FeedbackContent = {
+  title: string;
+  body: string;
+};
+
 export default function InterviewPage() {
   const { t } = useTranslation();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -26,6 +31,8 @@ export default function InterviewPage() {
   const questionRef = useRef<HTMLHeadingElement>(null);
 
   const [session, setSession] = useState(() => resolveInterviewSessionForActivePlan());
+  const getFeedbackContent = (key: string, options?: Record<string, unknown>): FeedbackContent =>
+    t(key, { ...options, returnObjects: true }) as FeedbackContent;
   const currentQuestion = session.questions[currentQuestionIndex];
   const assessmentTraceability = session.assessmentTraceability;
   const progress = ((currentQuestionIndex + (answers[currentQuestion.id] ? 1 : 0)) / session.questions.length) * 100;
@@ -72,32 +79,34 @@ export default function InterviewPage() {
     setSession(prev => ({ ...prev, status: 'completed' }));
     setFeedback({
       variant: 'success',
-      title: 'Interview submitted',
-      body: 'AI analysis is queued and the recruiter workspace now shows this interview as completed.',
+      ...getFeedbackContent('portal.interview.feedback.submitted'),
     });
   };
 
   const handleSaveProgress = () => {
+    const saved = getFeedbackContent('portal.interview.feedback.saved', { count: Object.keys(answers).length });
     setFeedback({
       variant: 'info',
-      title: 'Progress saved',
-      body: `${Object.keys(answers).length} answer(s) have been saved.`,
+      title: saved.title,
+      body: saved.body,
     });
   };
 
   const handleContactHr = () => {
+    const contact = getFeedbackContent('portal.interview.feedback.contactHr');
     setFeedback({
       variant: 'info',
-      title: 'HR contact prepared',
-      body: 'A support request has been submitted to hr@company.com.',
+      title: contact.title,
+      body: contact.body,
     });
   };
 
   const handleWithdraw = () => {
+    const withdraw = getFeedbackContent('portal.interview.feedback.withdrawal');
     setFeedback({
       variant: 'warning',
-      title: 'Withdrawal drafted',
-      body: 'The application withdrawal request has been submitted.',
+      title: withdraw.title,
+      body: withdraw.body,
     });
   };
 
@@ -141,7 +150,7 @@ export default function InterviewPage() {
     );
   };
 
-  const timeRemaining = '68h 42m';
+  const timeRemaining = t('portal.interview.remainingValue');
 
   if (isExpired) {
     return (
@@ -201,7 +210,7 @@ export default function InterviewPage() {
                   <div className={styles.deadlineDisplay}>
                     <span className={styles.deadlineIcon} aria-hidden="true">⏱️</span>
                     <span className={styles.deadlineValue}>{t('portal.interview.timeRemaining', { time: timeRemaining })}</span>
-                    <span className={styles.deadlineDate}>{t('portal.interview.deadlineDate', { date: 'May 15, 2026 at 11:59 PM' })}</span>
+                    <span className={styles.deadlineDate}>{t('portal.interview.deadlineValue')}</span>
                   </div>
                 </div>
 
@@ -242,7 +251,7 @@ export default function InterviewPage() {
             className={`${styles.deadline} ${!prefersReducedMotion ? styles.animate : ''}`}
             role="timer"
             aria-live={prefersReducedMotion ? 'off' : 'polite'}
-            aria-label={`Time remaining: ${timeRemaining}`}
+            aria-label={t('portal.interview.inProgress.timeRemainingAria', { time: timeRemaining, defaultValue: `Time remaining: ${timeRemaining}` })}
           >
             <span className={styles.deadlineIcon} aria-hidden="true">⏱️</span>
             <span>{t('portal.interview.inProgress.timeRemaining', { time: timeRemaining })}</span>
@@ -284,7 +293,7 @@ export default function InterviewPage() {
             ref={questionRef}
             className={styles.questionText}
             tabIndex={-1}
-            aria-label={`Question ${currentQuestionIndex + 1}: ${currentQuestion.text}`}
+            aria-label={t('portal.interview.question.ariaLabel', { number: currentQuestionIndex + 1, text: currentQuestion.text, defaultValue: `Question ${currentQuestionIndex + 1}: ${currentQuestion.text}` })}
           >
             {currentQuestion.text}
           </h2>
@@ -342,16 +351,20 @@ export default function InterviewPage() {
             variant="ghost"
             onClick={handlePrev}
             disabled={currentQuestionIndex === 0}
-            aria-label="Go to previous question"
+            aria-label={t('portal.interview.navigation.previousAria', { defaultValue: 'Go to previous question' })}
           >
             {t('portal.interview.navigation.previous')}
           </Button>
-          <div className={styles.questionDots} role="navigation" aria-label="Question navigation">
+          <div className={styles.questionDots} role="navigation" aria-label={t('portal.interview.question.navigationLabel', { defaultValue: 'Question navigation' })}>
             {session.questions.map((_, index) => (
               <span
                 key={index}
                 className={`${styles.dot} ${index === currentQuestionIndex ? styles.active : ''} ${answers[session.questions[index].id] ? styles.completed : ''}`}
-                aria-label={`Question ${index + 1}: ${index === currentQuestionIndex ? 'current' : answers[session.questions[index].id] ? 'completed' : 'not answered'}`}
+                aria-label={t('portal.interview.question.statusLabel', {
+                  number: index + 1,
+                  status: index === currentQuestionIndex ? 'current' : answers[session.questions[index].id] ? 'completed' : 'not answered',
+                  defaultValue: `Question ${index + 1}: ${index === currentQuestionIndex ? 'current' : answers[session.questions[index].id] ? 'completed' : 'not answered'}`
+                })}
               />
             ))}
           </div>
@@ -360,7 +373,7 @@ export default function InterviewPage() {
               variant="primary"
               onClick={handleNext}
               disabled={!answers[currentQuestion.id]}
-              aria-label="Go to next question"
+              aria-label={t('portal.interview.navigation.nextAria', { defaultValue: 'Go to next question' })}
             >
               {t('portal.interview.navigation.next')}
             </Button>
@@ -369,7 +382,7 @@ export default function InterviewPage() {
               variant="primary"
               onClick={handleSubmit}
               disabled={!answers[currentQuestion.id] || Object.keys(answers).length < session.questions.length}
-              aria-label="Submit interview"
+              aria-label={t('portal.interview.navigation.submitAria', { defaultValue: 'Submit interview' })}
             >
               {t('portal.interview.navigation.submit')}
             </Button>
