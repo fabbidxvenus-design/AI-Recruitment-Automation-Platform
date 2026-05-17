@@ -126,7 +126,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Main content */}
       <main id="main-content" className={styles.main}>
-        <header className={styles.topbar}>
+        <header className={styles.topbar} aria-label="Top bar">
           <div className={styles.topbarTitle}>
             <span className={styles.topbarBreadcrumb}>{t('app.title')}</span>
           </div>

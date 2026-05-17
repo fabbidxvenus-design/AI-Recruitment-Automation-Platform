@@ -17,7 +17,7 @@ export default function RootLayout({
     <html lang="vi" suppressHydrationWarning>
       <body>
         <I18nProvider>
-          <AppShell>{children}</AppShell>
+          {children}
         </I18nProvider>
       </body>
     </html>
