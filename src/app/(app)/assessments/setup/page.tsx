@@ -80,6 +80,7 @@ export default function AssessmentSetupPage() {
   const [localStatus, setLocalStatus] = useState<AssessmentPlanStatus>(() => {
     return workflowState.stages.planApproved ? 'approved' : 'draft';
   });
+  const [setupError, setSetupError] = useState<string>('');
 
   const selectedPlan = mockAssessmentPlans.find((plan) => plan.id === selectedPlanId) ?? mockAssessmentPlans[0];
   const selectedPlanVersion = mockAssessmentPlanVersions.find((version) => version.id === selectedPlan.currentVersionId) ?? mockAssessmentPlanVersions[0];
@@ -117,21 +118,33 @@ export default function AssessmentSetupPage() {
     setLocalStatus(nextPlan?.status ?? 'draft');
   };
 
-  const handleSaveDraft = (): void => {
-    saveAssessmentPlanDraft(selectedPlan, selectedPlanVersion);
-    setLocalStatus('draft');
+  const handleSaveDraft = async (): Promise<void> => {
+    try {
+      setSetupError('');
+      await Promise.resolve(saveAssessmentPlanDraft(selectedPlan, selectedPlanVersion));
+      setLocalStatus('draft');
+    } catch (error: unknown) {
+      console.error('[AssessmentSetup] Failed to save draft:', error);
+      setSetupError(t('assessments.setup.feedback.saveFailed') || 'Failed to save assessment plan draft');
+    }
   };
 
-  const handleApprove = (): void => {
-    approveAssessmentPlan(selectedPlan, selectedPlanVersion);
-    setLocalStatus('approved');
+  const handleApprove = async (): Promise<void> => {
+    try {
+      setSetupError('');
+      await Promise.resolve(approveAssessmentPlan(selectedPlan, selectedPlanVersion));
+      setLocalStatus('approved');
+    } catch (error: unknown) {
+      console.error('[AssessmentSetup] Failed to approve plan:', error);
+      setSetupError(t('assessments.setup.feedback.approveFailed') || 'Failed to approve assessment plan');
+    }
   };
 
   const nextActionLabel = localStatus === 'approved' ? 'assessments.setup.workflow.action.viewResults' : 'assessments.setup.workflow.action.approve';
   const nextActionDisabled = localStatus === 'approved';
 
   return (
-    <div id="main-content" className={styles.container}>
+    <div className={styles.container}>
       <header className={styles.header}>
         <div>
           <h1 className={styles.title}>{t('assessments.setup.title')}</h1>
@@ -143,6 +156,16 @@ export default function AssessmentSetupPage() {
       <Notice variant="info" title={t('assessments.setup.notice.title')}>
         {t('assessments.setup.notice.body')}
       </Notice>
+      {setupError && (
+        <Notice variant="danger" title={t('common.error.title')}>
+          {setupError}
+        </Notice>
+      )}
+      {setupError && (
+        <Notice variant="danger" title={t('common.error.title')}>
+          {setupError}
+        </Notice>
+      )}
 
       <section className={styles.selectorBar} aria-label={t('assessments.setup.selector.aria')}>
         <label htmlFor="assessmentPlanSelect" className={styles.selectorLabel}>

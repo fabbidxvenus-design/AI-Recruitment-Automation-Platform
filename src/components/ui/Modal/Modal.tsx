@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useEffect, useCallback, useRef } from 'react';
+import { ReactNode, useEffect, useCallback, useRef, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { createPortal } from 'react-dom';
 import styles from './Modal.module.css';
@@ -25,6 +25,9 @@ export function Modal({
   size = 'md',
 }: ModalProps) {
   const { t } = useTranslation();
+  const modalId = useId();
+  const titleId = `${modalId}-title`;
+  const bodyId = `${modalId}-body`;
   const modalRef = useRef<HTMLDivElement>(null);
   const previousActiveElement = useRef<HTMLElement | null>(null);
 
@@ -93,12 +96,13 @@ export function Modal({
         ref={modalRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="modal-title"
-        aria-describedby="modal-body"
+        aria-labelledby={titleId}
+        aria-describedby={bodyId}
       >
         <div className={styles.header}>
-          <h2 id="modal-title" className={styles.title}>{title}</h2>
+          <h2 id={titleId} className={styles.title}>{title}</h2>
           <button
+            type="button"
             className={styles.closeButton}
             onClick={onClose}
             aria-label={t('common.closeModal')}
@@ -106,7 +110,7 @@ export function Modal({
             <span aria-hidden="true">×</span>
           </button>
         </div>
-        <div id="modal-body" className={styles.body}>{children}</div>
+        <div id={bodyId} className={styles.body}>{children}</div>
         {footer && <div className={styles.footer}>{footer}</div>}
       </div>
     </div>

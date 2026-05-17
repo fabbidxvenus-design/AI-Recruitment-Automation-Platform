@@ -434,8 +434,8 @@ export default function AdminPage() {
             />
             <CardContent>
               <div className={styles.eventList}>
-                {mockEventLog.map((event, idx) => (
-                  <div key={idx} className={styles.eventItem}>
+                {mockEventLog.map((event) => (
+                  <div key={`${event.time}-${event.eventKey}`} className={styles.eventItem}>
                     <span className={styles.eventTime}>{formatDateTime(event.time, locale)}</span>
                     <span className={styles.eventIcon} role="img" aria-label={t('admin.monitoring.events.iconLabel', { type: t(event.eventKey) })}>{event.icon}</span>
                     <h5 className={styles.eventText}>{t(event.eventKey, event.eventParams)}</h5>

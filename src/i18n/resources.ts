@@ -179,6 +179,7 @@ export const resources = {
         test: { eyebrow: 'Test / Assignment Setup', type: 'Type', sectionMeta: '{{weight}}% · {{duration}} min' },
         trace: { eyebrow: 'Evidence continuity', title: 'References carried into interview and test outputs', previewMode: 'Review references', jobId: 'Job ID', jdVersionId: 'JD Version ID', parsedCriteriaVersion: 'Evaluation Framework Version', assessmentPlanId: 'Assessment Plan ID', assessmentPlanVersionId: 'Assessment Plan Version ID', rubricVersionId: 'Rubric Version ID', interviewQuestionSetVersionId: 'Interview Question Set Version ID', testDefinitionVersionId: 'Test Definition Version ID' },
         actions: { saveDraft: 'Save Local Draft', approve: 'Approve Local Plan' },
+        feedback: { saveFailed: 'Failed to save draft', approveFailed: 'Failed to approve plan' },
       } },
       tests: { grading: {
         title: 'Test Grading Review & Override', description: 'Review AI-graded test results and override scores when necessary',
@@ -321,6 +322,8 @@ export const resources = {
           },
           workspace: {
             generating: 'Generating content with AI...',
+            generationFailed: 'Content generation failed. Your brief was preserved so you can review and try again.',
+            noVariants: 'No content variants were generated. Your brief was preserved so you can review and try again.',
             selectVariant: 'Select a variant to review',
             variants: 'Generated Variants',
             selectedContent: 'Selected Content',
@@ -448,6 +451,7 @@ export const resources = {
             rejectionReasonLabel: 'Rejection Reason',
             approved: 'Translation Approved',
             rejected: 'Translation Rejected',
+            generationFailed: 'CV translation failed. Your selection was preserved so you can review and try again.',
           },
         },
         interviewTranslation: {
@@ -627,6 +631,7 @@ export const resources = {
           confidenceValue: '92%',
           extractedAt: 'Extracted at',
           noData: 'No candidate selected or data is unavailable.',
+          loadFailed: 'Failed to load CV evidence. Please retry or choose another candidate.',
         },
         jobIntake: {
           title: 'Job / JD Intake',
@@ -787,6 +792,7 @@ export const resources = {
             approved: 'Approved',
             rejected: 'Rejected',
           },
+          feedback: { approveFailed: 'Failed to approve JD', rejectFailed: 'Failed to reject JD' },
         },
         versions: {
           title: 'JD Version History',
@@ -1068,6 +1074,7 @@ export const resources = {
         test: { eyebrow: 'Thiết lập Bài test / Bài tập', type: 'Loại', sectionMeta: '{{weight}}% · {{duration}} phút' },
         trace: { eyebrow: 'Liên tục bằng chứng', title: 'Tham chiếu được chuyển sang kết quả phỏng vấn và bài test', previewMode: 'Tham chiếu rà soát', jobId: 'ID vị trí', jdVersionId: 'ID phiên bản JD', parsedCriteriaVersion: 'Phiên bản khung đánh giá', assessmentPlanId: 'ID kế hoạch đánh giá', assessmentPlanVersionId: 'ID phiên bản kế hoạch đánh giá', rubricVersionId: 'ID phiên bản rubric', interviewQuestionSetVersionId: 'ID phiên bản bộ câu hỏi phỏng vấn', testDefinitionVersionId: 'ID phiên bản định nghĩa bài test' },
         actions: { saveDraft: 'Lưu nháp local', approve: 'Duyệt kế hoạch local' },
+        feedback: { saveFailed: 'Không thể lưu nháp', approveFailed: 'Không thể duyệt kế hoạch' },
       } },
       tests: { grading: {
         title: 'Xem xét & Ghi đè chấm điểm', description: 'Xem xét kết quả chấm điểm AI và ghi đè điểm khi cần thiết',
@@ -1198,6 +1205,8 @@ export const resources = {
           },
           workspace: {
             generating: 'Đang tạo nội dung bằng AI...',
+            generationFailed: 'Tạo nội dung thất bại. Các thông tin brief của bạn được giữ nguyên để bạn có thể xem lại và thử lại.',
+            noVariants: 'Không có biến thể nội dung nào được tạo. Các thông tin brief của bạn được giữ nguyên để bạn có thể xem lại và thử lại.',
             selectVariant: 'Chọn một biến thể để xem xét',
             variants: 'Các biến thể đã tạo',
             selectedContent: 'Nội dung đã chọn',
@@ -1322,6 +1331,7 @@ export const resources = {
             rejectionReasonLabel: 'Lý do từ chối',
             approved: 'Bản dịch đã Phê duyệt',
             rejected: 'Bản dịch bị Từ chối',
+            generationFailed: 'Dịch CV thất bại. Các lựa chọn của bạn được giữ nguyên để bạn có thể xem lại và thử lại.',
           },
         },
         interviewTranslation: {
@@ -1501,6 +1511,7 @@ export const resources = {
           confidenceValue: '92%',
           extractedAt: 'Trích xuất lúc',
           noData: 'Chưa chọn ứng viên hoặc dữ liệu không có sẵn.',
+          loadFailed: 'Không tải được bằng chứng CV. Vui lòng thử lại hoặc chọn ứng viên khác.',
         },
         jobIntake: {
           title: 'Nhập Yêu cầu Công việc / JD',
@@ -1661,6 +1672,7 @@ export const resources = {
             approved: 'Đã phê duyệt',
             rejected: 'Đã từ chối',
           },
+          feedback: { approveFailed: 'Không thể duyệt JD', rejectFailed: 'Không thể từ chối JD' },
         },
         versions: {
           title: 'Lịch sử Phiên bản JD',

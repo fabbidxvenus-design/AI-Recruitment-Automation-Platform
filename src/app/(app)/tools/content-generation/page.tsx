@@ -29,6 +29,7 @@ export default function ContentGenerationPage() {
   const [rejectionReason, setRejectionReason] = useState('');
   const [copiedToClipboard, setCopiedToClipboard] = useState(false);
   const [clipboardError, setClipboardError] = useState<string>('');
+  const [generationError, setGenerationError] = useState<string>('');
   const [showHistory, setShowHistory] = useState(false);
   const [publishingChannel, setPublishingChannel] = useState<string | null>(null);
   const [publishedChannels, setPublishedChannels] = useState<Record<string, string>>({});
@@ -37,9 +38,14 @@ export default function ContentGenerationPage() {
   // Fetch real role from Supabase on mount
   useEffect(() => {
     async function loadRole() {
-      const role = await getProfileRole(supabase);
-      setUserRole(role as UserRole);
-      setRoleLoading(false);
+      try {
+        const role = await getProfileRole(supabase);
+        setUserRole(role as UserRole);
+      } catch (error) {
+        console.error('[ContentGeneration] Failed to load role:', error);
+      } finally {
+        setRoleLoading(false);
+      }
     }
     loadRole();
   }, [supabase]);
@@ -126,12 +132,25 @@ export default function ContentGenerationPage() {
     keyRequirements: [],
     additionalNotes: '',
   });
+  const [touchedFields, setTouchedFields] = useState({
+    jobTitle: false,
+    department: false,
+    keyRequirements: false,
+  });
 
   const handleGenerateContent = async (): Promise<void> => {
+    setGenerationError('');
     setCurrentStep('generating');
 
     try {
       const result = await simulateAIGeneration(brief);
+
+      if (!result.variants.length) {
+        console.error('[ContentGeneration] AI returned empty variants');
+        setGenerationError(t('tools.contentGeneration.workspace.noVariants'));
+        setCurrentStep('brief');
+        return;
+      }
 
       const newContent: GeneratedContent = {
         id: `content-${Date.now()}`,
@@ -149,7 +168,8 @@ export default function ContentGenerationPage() {
       setEditedContent(result.variants[0].content);
       setCurrentStep('review');
     } catch (error: unknown) {
-      console.error('[ContentGeneration] Content generation failed:', error);
+      console.error('[ContentGeneration] Content generation failed:', error instanceof Error ? error.message : String(error));
+      setGenerationError(t('tools.contentGeneration.workspace.generationFailed'));
       setCurrentStep('brief');
     }
   };
@@ -198,6 +218,7 @@ export default function ContentGenerationPage() {
       setClipboardError('');
       setTimeout(() => setCopiedToClipboard(false), 2000);
     } catch (error: unknown) {
+      console.error('[ContentGeneration] Clipboard copy failed', error);
       setClipboardError(t('tools.contentGeneration.export.copyFailed') || 'Failed to copy to clipboard');
       setTimeout(() => setClipboardError(''), 3000);
     }
@@ -249,6 +270,12 @@ export default function ContentGenerationPage() {
         {t('tools.contentGeneration.notice.aiGeneratedDesc')}
       </Notice>
 
+      {generationError && (
+        <Notice variant="danger" title={t('common.error.title')}>
+          {generationError}
+        </Notice>
+      )}
+
       {currentStep === 'brief' && (
         <Card className={styles.briefCard}>
           <h2 className={styles.sectionTitle}>{t('tools.contentGeneration.steps.input.title')}</h2>
@@ -277,10 +304,11 @@ export default function ContentGenerationPage() {
               type="text"
               value={brief.jobTitle}
               onChange={(e) => setBrief((prev) => ({ ...prev, jobTitle: e.target.value }))}
+              onBlur={() => setTouchedFields((prev) => ({ ...prev, jobTitle: true }))}
               className={styles.input}
               required
               aria-required="true"
-              aria-invalid={!brief.jobTitle && brief.jobTitle !== '' ? 'true' : 'false'}
+              aria-invalid={touchedFields.jobTitle && brief.jobTitle.trim().length === 0}
             />
           </div>
 
@@ -291,10 +319,11 @@ export default function ContentGenerationPage() {
               type="text"
               value={brief.department}
               onChange={(e) => setBrief((prev) => ({ ...prev, department: e.target.value }))}
+              onBlur={() => setTouchedFields((prev) => ({ ...prev, department: true }))}
               className={styles.input}
               required
               aria-required="true"
-              aria-invalid={!brief.department && brief.department !== '' ? 'true' : 'false'}
+              aria-invalid={touchedFields.department && brief.department.trim().length === 0}
             />
           </div>
 
@@ -321,12 +350,13 @@ export default function ContentGenerationPage() {
               id="keyRequirements"
               value={brief.keyRequirements.join('\n')}
               onChange={(e) => setBrief((prev) => ({ ...prev, keyRequirements: e.target.value.split('\n').filter(r => r.trim()) }))}
+              onBlur={() => setTouchedFields((prev) => ({ ...prev, keyRequirements: true }))}
               placeholder={t('tools.contentGeneration.form.requirementsPlaceholder')}
               className={styles.textarea}
               rows={4}
               required
               aria-required="true"
-              aria-invalid={brief.keyRequirements.length === 0 ? 'true' : 'false'}
+              aria-invalid={touchedFields.keyRequirements && brief.keyRequirements.length === 0}
             />
           </div>
 

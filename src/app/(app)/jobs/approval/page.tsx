@@ -47,18 +47,23 @@ export default function JDApprovalPage() {
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
   const [decisionByProfileId, setDecisionByProfileId] = useState<Record<string, ValidationState>>({});
+  const [approvalError, setApprovalError] = useState<string>('');
 
   // Filter pending JD profiles
   const pendingItems: JDApprovalItem[] = mockParsedJDProfiles
     .filter((profile) => profile.status === 'draft')
-    .map((profile) => {
+    .flatMap((profile) => {
       const jdVersion = mockJDVersions.find((v) => v.id === profile.jdVersionId);
-      const job = mockJobs.find((j) => j.id === jdVersion?.jobId);
-      return {
+      if (!jdVersion) {
+        return [];
+      }
+
+      const job = mockJobs.find((j) => j.id === jdVersion.jobId);
+      return [{
         parsedProfile: profile,
-        jdVersion: jdVersion!,
+        jdVersion,
         jobTitle: job?.title || t('jobs.approval.unknownJob'),
-      };
+      }];
     });
 
   const handleSelectItem = (item: JDApprovalItem): void => {
@@ -66,23 +71,35 @@ export default function JDApprovalPage() {
     setCurrentStep('review');
   };
 
-  const handleApprove = (): void => {
+  const handleApprove = async (): Promise<void> => {
     if (!selectedItem) return;
-
-    setSelectedItem({
-      ...selectedItem,
-      parsedProfile: { ...selectedItem.parsedProfile, status: 'approved' },
-    });
-    setDecisionByProfileId({ ...decisionByProfileId, [selectedItem.parsedProfile.id]: 'approved' });
-    setCurrentStep('approved');
+    try {
+      setApprovalError('');
+      await Promise.resolve();
+      setSelectedItem({
+        ...selectedItem,
+        parsedProfile: { ...selectedItem.parsedProfile, status: 'approved' },
+      });
+      setDecisionByProfileId({ ...decisionByProfileId, [selectedItem.parsedProfile.id]: 'approved' });
+      setCurrentStep('approved');
+    } catch (error: unknown) {
+      console.error('[JDApproval] Failed to approve JD:', error);
+      setApprovalError(t('jobs.approval.feedback.approveFailed') || 'Failed to approve JD');
+    }
   };
 
-  const handleReject = (): void => {
+  const handleReject = async (): Promise<void> => {
     if (!selectedItem || !rejectionReason.trim()) return;
-
-    setDecisionByProfileId({ ...decisionByProfileId, [selectedItem.parsedProfile.id]: 'rejected' });
-    setCurrentStep('rejected');
-    setShowRejectModal(false);
+    try {
+      setApprovalError('');
+      await Promise.resolve();
+      setDecisionByProfileId({ ...decisionByProfileId, [selectedItem.parsedProfile.id]: 'rejected' });
+      setCurrentStep('rejected');
+      setShowRejectModal(false);
+    } catch (error: unknown) {
+      console.error('[JDApproval] Failed to reject JD:', error);
+      setApprovalError(t('jobs.approval.feedback.rejectFailed') || 'Failed to reject JD');
+    }
   };
 
   const handleBackToList = (): void => {
@@ -101,7 +118,7 @@ export default function JDApprovalPage() {
     <main id="main-content" className={styles.container}>
       <header className={styles.header}>
         <div className={styles.headerTop}>
-          <a href="/jobs/intake" className={styles.backLink}>
+          <a href="/jobs/intake" aria-label={t('jobs.approval.workflow.backToJobs')} className={styles.backLink}>
             {t('jobs.approval.workflow.backToJobs')}
           </a>
         </div>
@@ -114,6 +131,16 @@ export default function JDApprovalPage() {
           <Notice variant="info" title={t('jobs.approval.workflow.gateTitle')}>
             {t('jobs.approval.workflow.gateBody')}
           </Notice>
+          {approvalError && (
+            <Notice variant="danger" title={t('common.error.title')}>
+              {approvalError}
+            </Notice>
+          )}
+          {approvalError && (
+            <Notice variant="danger" title={t('common.error.title')}>
+              {approvalError}
+            </Notice>
+          )}
 
           <Card className={styles.listCard}>
             <h2 className={styles.sectionTitle}>
@@ -165,6 +192,11 @@ export default function JDApprovalPage() {
 
       {(currentStep === 'review' || currentStep === 'approved' || currentStep === 'rejected') && selectedItem && (
         <div className={styles.workspace}>
+          {approvalError && (
+            <Notice variant="danger" title={t('common.error.title')}>
+              {approvalError}
+            </Notice>
+          )}
           <Card className={styles.detailsCard}>
             <div className={styles.detailsHeader}>
               <div>
