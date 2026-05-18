@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/i18n';
@@ -20,6 +20,14 @@ const requiredCriteria: (keyof Pick<ParsedJDProfile, 'skills' | 'responsibilitie
   'language',
   'education',
 ];
+
+type AnalyticsEventName = 'approval_viewed';
+
+function trackEvent(eventName: AnalyticsEventName): void {
+  if (typeof window === 'undefined') return;
+
+  window.dispatchEvent(new CustomEvent('analytics:event', { detail: { eventName } }));
+}
 
 interface JDApprovalItem {
   parsedProfile: ParsedJDProfile;
@@ -48,6 +56,11 @@ export default function JDApprovalPage() {
   const [rejectionReason, setRejectionReason] = useState('');
   const [decisionByProfileId, setDecisionByProfileId] = useState<Record<string, ValidationState>>({});
   const [approvalError, setApprovalError] = useState<string>('');
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  useEffect(() => {
+    trackEvent('approval_viewed');
+  }, []);
 
   // Filter pending JD profiles
   const pendingItems: JDApprovalItem[] = mockParsedJDProfiles
@@ -72,33 +85,50 @@ export default function JDApprovalPage() {
   };
 
   const handleApprove = async (): Promise<void> => {
-    if (!selectedItem) return;
+    if (!selectedItem || isProcessing) return;
+    const profileId = selectedItem.parsedProfile.id;
+    setApprovalError('');
+    setIsProcessing(true);
     try {
-      setApprovalError('');
       await Promise.resolve();
-      setSelectedItem({
-        ...selectedItem,
-        parsedProfile: { ...selectedItem.parsedProfile, status: 'approved' },
+      setSelectedItem((currentItem) => {
+        if (!currentItem || currentItem.parsedProfile.id !== profileId) return currentItem;
+        return {
+          ...currentItem,
+          parsedProfile: { ...currentItem.parsedProfile, status: 'approved' },
+        };
       });
-      setDecisionByProfileId({ ...decisionByProfileId, [selectedItem.parsedProfile.id]: 'approved' });
+      setDecisionByProfileId((currentDecisions) => ({
+        ...currentDecisions,
+        [profileId]: 'approved',
+      }));
       setCurrentStep('approved');
     } catch (error: unknown) {
       console.error('[JDApproval] Failed to approve JD:', error);
       setApprovalError(t('jobs.approval.feedback.approveFailed') || 'Failed to approve JD');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
   const handleReject = async (): Promise<void> => {
-    if (!selectedItem || !rejectionReason.trim()) return;
+    if (!selectedItem || !rejectionReason.trim() || isProcessing) return;
+    const profileId = selectedItem.parsedProfile.id;
+    setApprovalError('');
+    setIsProcessing(true);
     try {
-      setApprovalError('');
       await Promise.resolve();
-      setDecisionByProfileId({ ...decisionByProfileId, [selectedItem.parsedProfile.id]: 'rejected' });
+      setDecisionByProfileId((currentDecisions) => ({
+        ...currentDecisions,
+        [profileId]: 'rejected',
+      }));
       setCurrentStep('rejected');
       setShowRejectModal(false);
     } catch (error: unknown) {
       console.error('[JDApproval] Failed to reject JD:', error);
       setApprovalError(t('jobs.approval.feedback.rejectFailed') || 'Failed to reject JD');
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -118,9 +148,9 @@ export default function JDApprovalPage() {
     <main id="main-content" className={styles.container}>
       <header className={styles.header}>
         <div className={styles.headerTop}>
-          <a href="/jobs/intake" aria-label={t('jobs.approval.workflow.backToJobs')} className={styles.backLink}>
+          <Link href="/jobs/intake" aria-label={t('jobs.approval.workflow.backToJobs')} className={styles.backLink}>
             {t('jobs.approval.workflow.backToJobs')}
-          </a>
+          </Link>
         </div>
         <h1 className={styles.title}>{t('jobs.approval.workflow.title')}</h1>
         <p className={styles.description}>{t('jobs.approval.workflow.description')}</p>
@@ -131,11 +161,6 @@ export default function JDApprovalPage() {
           <Notice variant="info" title={t('jobs.approval.workflow.gateTitle')}>
             {t('jobs.approval.workflow.gateBody')}
           </Notice>
-          {approvalError && (
-            <Notice variant="danger" title={t('common.error.title')}>
-              {approvalError}
-            </Notice>
-          )}
           {approvalError && (
             <Notice variant="danger" title={t('common.error.title')}>
               {approvalError}
@@ -221,7 +246,7 @@ export default function JDApprovalPage() {
                 <h3 className={styles.detailsSectionTitle}>{t('jobs.approval.details.languageRequirements')}</h3>
                 <ul className={styles.detailsList}>
                   {selectedItem.parsedProfile.language.map((lang, idx) => (
-                    <li key={idx}>{lang}</li>
+                    <li key={`lang-${lang}-${idx}`}>{lang}</li>
                   ))}
                 </ul>
               </div>
@@ -230,7 +255,7 @@ export default function JDApprovalPage() {
                 <h3 className={styles.detailsSectionTitle}>{t('jobs.approval.details.education')}</h3>
                 <ul className={styles.detailsList}>
                   {selectedItem.parsedProfile.education.map((edu, idx) => (
-                    <li key={idx}>{edu}</li>
+                    <li key={`edu-${edu}-${idx}`}>{edu}</li>
                   ))}
                 </ul>
               </div>
@@ -239,7 +264,7 @@ export default function JDApprovalPage() {
                 <h3 className={styles.detailsSectionTitle}>{t('jobs.approval.details.skills', { count: selectedItem.parsedProfile.skills.length })}</h3>
                 <div className={styles.skillsGrid}>
                   {selectedItem.parsedProfile.skills.map((skill, idx) => (
-                    <span key={idx} className={styles.skillBadge}>
+                    <span key={`skill-${skill}-${idx}`} className={styles.skillBadge}>
                       {skill}
                     </span>
                   ))}
@@ -250,7 +275,7 @@ export default function JDApprovalPage() {
                 <h3 className={styles.detailsSectionTitle}>{t('jobs.approval.details.responsibilities')}</h3>
                 <ul className={styles.detailsList}>
                   {selectedItem.parsedProfile.responsibilities.map((resp, idx) => (
-                    <li key={idx}>{resp}</li>
+                    <li key={`resp-${resp}-${idx}`}>{resp}</li>
                   ))}
                 </ul>
               </div>
@@ -259,7 +284,7 @@ export default function JDApprovalPage() {
                 <h3 className={styles.detailsSectionTitle}>{t('jobs.approval.details.requirements')}</h3>
                 <ul className={styles.detailsList}>
                   {selectedItem.parsedProfile.requirements.map((req, idx) => (
-                    <li key={idx}>{req}</li>
+                    <li key={`req-${req}-${idx}`}>{req}</li>
                   ))}
                 </ul>
               </div>
@@ -327,15 +352,15 @@ export default function JDApprovalPage() {
                 {t('jobs.approval.workflow.approvalRequiredBody')}
               </Notice>
 
-              <div className={styles.actions}>
+              <div className={styles.actions} aria-busy={isProcessing || undefined}>
                 <Button variant="secondary" onClick={handleBackToList}>
                   {t('jobs.approval.actions.backToList')}
                 </Button>
-                <Button variant="danger" onClick={() => setShowRejectModal(true)}>
-                  {t('jobs.approval.actions.reject')}
+                <Button variant="danger" onClick={() => setShowRejectModal(true)} disabled={isProcessing} aria-label={t('jobs.approval.actions.rejectAria', { defaultValue: 'Reject job' })}>
+                  {isProcessing ? t('common.loading') : t('jobs.approval.actions.reject')}
                 </Button>
-                <Button variant="primary" onClick={handleApprove}>
-                  {t('jobs.approval.actions.approve')}
+                <Button variant="primary" onClick={handleApprove} disabled={isProcessing} aria-label={t('jobs.approval.actions.approveAria', { defaultValue: 'Approve job' })}>
+                  {isProcessing ? t('common.loading') : t('jobs.approval.actions.approve')}
                 </Button>
               </div>
             </>
@@ -421,13 +446,14 @@ export default function JDApprovalPage() {
               />
             </div>
             <div className={styles.modalActions}>
-              <Button variant="secondary" onClick={() => setShowRejectModal(false)}>
+              <Button variant="secondary" onClick={() => setShowRejectModal(false)} aria-label={t('common.cancelAria', { defaultValue: 'Cancel' })}>
                 {t('jobs.approval.modal.cancel')}
               </Button>
               <Button
                 variant="danger"
                 onClick={handleReject}
                 disabled={!rejectionReason.trim()}
+                aria-label={t('jobs.approval.modal.confirmAria', { defaultValue: 'Confirm rejection' })}
               >
                 {t('jobs.approval.modal.confirm')}
               </Button>

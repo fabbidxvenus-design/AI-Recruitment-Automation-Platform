@@ -18,7 +18,7 @@ export const resources = {
         cancelAria: 'Cancel', confirmAria: 'Confirm',
         skip: 'Skip', merge: 'Merge', createNew: 'Create New', dismiss: 'Close', close: 'Close', or: 'or', notAvailable: 'N/A',
         status: { pending: 'Pending Approval', pending_approval: 'Pending Approval', open: 'Open', in_progress: 'In progress', resolved: 'Resolved', complete: 'Complete', partial: 'Partial', failed: 'Failed', approved: 'Approved', rejected: 'Rejected', all: 'All', flagged: 'Needs Review', generated: 'Generated' },
-        table: { selectAllRows: 'Select all rows', deselectAllRows: 'Deselect all rows', selectRow: 'Select row for {{item}}', item: 'item', noData: 'No data available' },
+        table: { selectAllRows: 'Select all rows', deselectAllRows: 'Deselect all rows', selectRow: 'Select row for {{item}}', item: 'item', noData: 'No data available', selectedRows: '{{count}} selected' },
         severity: { critical: 'Critical', high: 'High', medium: 'Medium', low: 'Low' },
         role: { hiringManager: 'Hiring Manager', vpProduct: 'VP Product', recruiter: 'Recruiter' },
         trend: { up: 'Increased', down: 'Decreased' },
@@ -400,6 +400,7 @@ export const resources = {
             approvalRequired: 'Content must be approved before export preparation',
             button: 'Prepare export',
             success: 'Export package prepared',
+            failedToPublish: 'Failed to prepare export package',
             neverPublished: 'No export prepared yet',
             channels: {
               linkedin: 'LinkedIn Jobs',
@@ -1292,6 +1293,7 @@ export const resources = {
             approvalRequired: 'Nội dung phải được phê duyệt trước khi chuẩn bị gói xuất',
             button: 'Chuẩn bị gói xuất',
             success: 'Đã chuẩn bị gói xuất',
+            failedToPublish: 'Không thể chuẩn bị gói xuất nội dung',
             neverPublished: 'Chưa có gói xuất nào',
             channels: {
               linkedin: 'LinkedIn Jobs',

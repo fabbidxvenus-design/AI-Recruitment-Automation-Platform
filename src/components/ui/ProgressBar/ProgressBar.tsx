@@ -34,6 +34,8 @@ export function ProgressBar({
       aria-valuemin={0}
       aria-valuemax={max}
       aria-label={label ?? t('common.progressLabel', { value: Math.round(percentage) })}
+      aria-live="polite"
+      aria-atomic="true"
     >
       {(label || showValue) && (
         <div className={styles.progressLabel}>

@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import Link from 'next/link';
 import { useLanguage } from '@/i18n';
 import { formatDateTime } from '@/lib/formatDate';
 import { createBrowserClient } from '@/lib/supabase/browser';
@@ -18,6 +19,9 @@ export default function ContentGenerationPage() {
   const supabase = createBrowserClient();
   const [userRole, setUserRole] = useState<UserRole>('hr_manager');
   const [roleLoading, setRoleLoading] = useState(true);
+  const [publishLoading, setPublishLoading] = useState(false);
+  const [publishError, setPublishError] = useState<string>('');
+  const [roleError, setRoleError] = useState<string>('');
   const { locale } = useLanguage();
   const [currentStep, setCurrentStep] = useState<WorkflowStep>('brief');
   const [currentContent, setCurrentContent] = useState<GeneratedContent | null>(null);
@@ -34,21 +38,34 @@ export default function ContentGenerationPage() {
   const [publishingChannel, setPublishingChannel] = useState<string | null>(null);
   const [publishedChannels, setPublishedChannels] = useState<Record<string, string>>({});
   const [lastPublishedChannel, setLastPublishedChannel] = useState<string | null>(null);
+  const clipboardTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const clipboardErrorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const publishTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Fetch real role from Supabase on mount
   useEffect(() => {
     async function loadRole() {
       try {
         const role = await getProfileRole(supabase);
-        setUserRole(role as UserRole);
+        const validRole: UserRole = role === 'hr_manager' || role === 'recruiter' ? role : 'recruiter';
+        setUserRole(validRole);
       } catch (error) {
         console.error('[ContentGeneration] Failed to load role:', error);
+        setRoleError(t('tools.contentGeneration.error.loadRoleFailed', { defaultValue: 'Failed to load user role. Falling back to default role.' }));
       } finally {
         setRoleLoading(false);
       }
     }
     loadRole();
-  }, [supabase]);
+  }, [supabase, t]);
+
+  useEffect(() => {
+    return () => {
+      if (clipboardTimerRef.current) clearTimeout(clipboardTimerRef.current);
+      if (clipboardErrorTimerRef.current) clearTimeout(clipboardErrorTimerRef.current);
+      if (publishTimerRef.current) clearTimeout(publishTimerRef.current);
+    };
+  }, []);
 
   const mockHistory: ApprovalHistoryEntry[] = [
     {
@@ -104,17 +121,27 @@ export default function ContentGenerationPage() {
     }
   ];
 
-  const handlePublish = (channelId: string) => {
+  const handlePublish = async (channelId: string) => {
+    setPublishLoading(true);
     setPublishingChannel(channelId);
-    setLastPublishedChannel(null);
-    setTimeout(() => {
+    setPublishError('');
+    try {
+      // Simulate async publish operation
+      await new Promise((resolve) => {
+        publishTimerRef.current = setTimeout(resolve, 1000);
+      });
       setPublishedChannels(prev => ({
         ...prev,
         [channelId]: new Date().toISOString()
       }));
       setLastPublishedChannel(channelId);
+    } catch (error) {
+      console.error('[ContentGeneration] Publish failed', error);
+      setPublishError(t('tools.contentGeneration.publish.failedToPublish') || 'Failed to prepare export package');
+    } finally {
+      setPublishLoading(false);
       setPublishingChannel(null);
-    }, 1000);
+    }
   };
 
   const channels = [
@@ -137,6 +164,14 @@ export default function ContentGenerationPage() {
     department: false,
     keyRequirements: false,
   });
+  const variantRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  useEffect(() => {
+    const focusedIndex = currentContent?.variants.findIndex(v => v.id === selectedVariantId);
+    if (focusedIndex !== undefined && focusedIndex >= 0 && variantRefs.current[focusedIndex]) {
+      variantRefs.current[focusedIndex]?.focus();
+    }
+  }, [selectedVariantId, currentContent]);
 
   const handleGenerateContent = async (): Promise<void> => {
     setGenerationError('');
@@ -168,7 +203,7 @@ export default function ContentGenerationPage() {
       setEditedContent(result.variants[0].content);
       setCurrentStep('review');
     } catch (error: unknown) {
-      console.error('[ContentGeneration] Content generation failed:', error instanceof Error ? error.message : String(error));
+      console.error('[ContentGeneration] Content generation failed:', error);
       setGenerationError(t('tools.contentGeneration.workspace.generationFailed'));
       setCurrentStep('brief');
     }
@@ -216,11 +251,13 @@ export default function ContentGenerationPage() {
       await navigator.clipboard.writeText(editedContent);
       setCopiedToClipboard(true);
       setClipboardError('');
-      setTimeout(() => setCopiedToClipboard(false), 2000);
-    } catch (error: unknown) {
+      if (clipboardTimerRef.current) clearTimeout(clipboardTimerRef.current);
+      clipboardTimerRef.current = setTimeout(() => setCopiedToClipboard(false), 2000);
+    } catch (error) {
       console.error('[ContentGeneration] Clipboard copy failed', error);
       setClipboardError(t('tools.contentGeneration.export.copyFailed') || 'Failed to copy to clipboard');
-      setTimeout(() => setClipboardError(''), 3000);
+      if (clipboardErrorTimerRef.current) clearTimeout(clipboardErrorTimerRef.current);
+      clipboardErrorTimerRef.current = setTimeout(() => setClipboardError(''), 3000);
     }
   };
 
@@ -249,6 +286,33 @@ export default function ContentGenerationPage() {
     URL.revokeObjectURL(url);
   };
 
+  const selectVariant = (variant: GeneratedContent['variants'][number]): void => {
+    setSelectedVariantId(variant.id);
+    setEditedContent(variant.content);
+    setIsEditing(false);
+  };
+
+  const handleVariantKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number): void => {
+    if (!currentContent) return;
+
+    const { variants } = currentContent;
+    const lastIndex = variants.length - 1;
+    const nextIndexByKey: Record<string, number> = {
+      ArrowDown: index === lastIndex ? 0 : index + 1,
+      ArrowRight: index === lastIndex ? 0 : index + 1,
+      ArrowUp: index === 0 ? lastIndex : index - 1,
+      ArrowLeft: index === 0 ? lastIndex : index - 1,
+      Home: 0,
+      End: lastIndex,
+    };
+    const nextIndex = nextIndexByKey[event.key];
+
+    if (nextIndex === undefined) return;
+
+    event.preventDefault();
+    selectVariant(variants[nextIndex]);
+  };
+
   const selectedVariant = currentContent?.variants.find(v => v.id === selectedVariantId);
   const currentContentStatusLabel = currentContent ? t(`common.status.${currentContent.status}`) : '';
 
@@ -256,15 +320,24 @@ export default function ContentGenerationPage() {
     <main id="main-content" className={styles.container}>
       <header className={styles.header}>
         <div className={styles.headerTop}>
-          <a href="/tools" className={styles.backLink}>
+          <Link href="/tools" className={styles.backLink}>
             ← {t('tools.hub.title')}
-          </a>
+          </Link>
         </div>
         <h1 className={styles.title}>{t('tools.contentGeneration.title')}</h1>
         <p className={styles.description}>
           {t('tools.contentGeneration.description')}
         </p>
       </header>
+
+      {roleError && (
+        <Notice role="alert" variant="warning" title={t('common.error.title')}>
+          {roleError}
+        </Notice>
+      )}
+      {roleLoading && (
+        <LoadingState text={t('common.loading')} />
+      )}
 
       <Notice variant="info" title={t('tools.contentGeneration.notice.aiGenerated')}>
         {t('tools.contentGeneration.notice.aiGeneratedDesc')}
@@ -286,7 +359,12 @@ export default function ContentGenerationPage() {
             <select
               id="contentType"
               value={brief.contentType}
-              onChange={(e) => setBrief((prev) => ({ ...prev, contentType: e.target.value as ContentType }))}
+              onChange={(e) => {
+                const VALID_TYPES: ContentType[] = ['job_description', 'interview_questions', 'email_template'];
+                if (VALID_TYPES.includes(e.target.value as ContentType)) {
+                  setBrief((prev) => ({ ...prev, contentType: e.target.value as ContentType }));
+                }
+              }}
               className={styles.select}
               required
               aria-required="true"
@@ -409,18 +487,19 @@ export default function ContentGenerationPage() {
             </div>
             <h2 className={styles.sectionTitle}>{t('tools.contentGeneration.workspace.variants')}</h2>
             <div role="radiogroup" aria-label={t('tools.contentGeneration.workspace.variants')}>
-              {currentContent.variants.map((variant) => (
+              {currentContent.variants.map((variant, index) => (
                 <button
                   key={variant.id}
+                  ref={(element) => {
+                    variantRefs.current[index] = element;
+                  }}
                   type="button"
                   className={`${styles.variantCard} ${selectedVariantId === variant.id ? styles.variantCardSelected : ''}`}
-                  onClick={() => {
-                    setSelectedVariantId(variant.id);
-                    setEditedContent(variant.content);
-                    setIsEditing(false);
-                  }}
+                  onClick={() => selectVariant(variant)}
+                  onKeyDown={(e) => handleVariantKeyDown(e, index)}
                   role="radio"
                   aria-checked={selectedVariantId === variant.id}
+                  tabIndex={selectedVariantId === variant.id ? 0 : -1}
                 >
                   <Card>
                     <h3 className={styles.variantTitle}>{variant.title}</h3>
@@ -538,10 +617,10 @@ export default function ContentGenerationPage() {
                   <Button variant="secondary" onClick={() => setCurrentStep('review')}>
                     {t('common.cancel')}
                   </Button>
-                  <Button variant="danger" onClick={() => setShowApprovalModal(true)}>
+                  <Button variant="danger" onClick={() => setShowApprovalModal(true)} aria-label={t('tools.contentGeneration.approval.rejectAria', { defaultValue: 'Reject content' })}>
                     {t('tools.contentGeneration.approval.reject')}
                   </Button>
-                  <Button variant="primary" onClick={handleApprove}>
+                  <Button variant="primary" onClick={handleApprove} aria-label={t('tools.contentGeneration.approval.approveAria', { defaultValue: 'Approve content' })}>
                     {t('tools.contentGeneration.approval.approve')}
                   </Button>
                 </>
@@ -585,30 +664,38 @@ export default function ContentGenerationPage() {
                     {t('tools.contentGeneration.notice.approvalGateDesc')}
                   </Notice>
                 ) : (
-                  <div className={styles.channelGrid}>
-                    {channels.map((channel) => (
-                      <div key={channel.id} className={styles.channelCard}>
-                        <h3 className={styles.variantTitle}>{channel.name}</h3>
-                        <div className={styles.channelMeta}>
-                          {publishedChannels[channel.id]
-                            ? `${t('common.dateTime.lastSync')}: ${formatDateTime(publishedChannels[channel.id], locale)}`
-                            : t('tools.contentGeneration.publish.neverPublished')}
+                  <>
+                    {publishError && (
+                      <Notice variant="danger" title={t('common.error.title')}>
+                        {publishError}
+                      </Notice>
+                    )}
+                    <div className={styles.channelGrid}>
+                      {channels.map((channel) => (
+                        <div key={channel.id} className={styles.channelCard}>
+                          <h3 className={styles.variantTitle}>{channel.name}</h3>
+                          <div className={styles.channelMeta}>
+                            {publishedChannels[channel.id]
+                              ? `${t('common.dateTime.lastSync')}: ${formatDateTime(publishedChannels[channel.id], locale)}`
+                              : t('tools.contentGeneration.publish.neverPublished')}
+                          </div>
+                          {lastPublishedChannel === channel.id && (
+                             <div style={{ color: 'var(--color-success)', fontSize: '0.75rem', marginBottom: '0.5rem' }}>
+                               {t('tools.contentGeneration.publish.success')}
+                             </div>
+                          )}
+                          <Button
+                            variant={publishedChannels[channel.id] ? "secondary" : "primary"}
+                            onClick={() => handlePublish(channel.id)}
+                            disabled={publishLoading}
+                            loading={publishingChannel === channel.id && publishLoading}
+                          >
+                            {publishingChannel === channel.id && publishLoading ? t('common.loading') : t('tools.contentGeneration.publish.button')}
+                          </Button>
                         </div>
-                        {lastPublishedChannel === channel.id && (
-                           <div style={{ color: 'var(--color-success)', fontSize: '0.75rem', marginBottom: '0.5rem' }}>
-                             {t('tools.contentGeneration.publish.success')}
-                           </div>
-                        )}
-                        <Button
-                          variant={publishedChannels[channel.id] ? "secondary" : "primary"}
-                          onClick={() => handlePublish(channel.id)}
-                          disabled={publishingChannel === channel.id}
-                        >
-                          {publishingChannel === channel.id ? t('common.loading') : t('tools.contentGeneration.publish.button')}
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  </>
                 )}
               </div>
             )}
@@ -636,10 +723,10 @@ export default function ContentGenerationPage() {
               />
             </div>
             <div className={styles.modalActions}>
-              <Button variant="secondary" onClick={() => setShowApprovalModal(false)}>
+              <Button variant="secondary" onClick={() => setShowApprovalModal(false)} aria-label={t('common.cancelAria', { defaultValue: 'Cancel' })}>
                 {t('common.cancel')}
               </Button>
-              <Button variant="danger" onClick={handleReject} disabled={!rejectionReason.trim()}>
+              <Button variant="danger" onClick={handleReject} disabled={!rejectionReason.trim()} aria-label={t('tools.contentGeneration.approval.rejectAria', { defaultValue: 'Reject content' })}>
                 {t('tools.contentGeneration.approval.reject')}
               </Button>
             </div>

@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from './DataTable.module.css';
 
+
 interface Column<T> {
   key: string;
   header: string;
@@ -30,7 +31,7 @@ export function DataTable<T extends { id: string | number }>({
   compact = false,
   emptyMessage,
   rowSelectionEnabled = false,
-  selectedRows = new Set(),
+  selectedRows = new Set<string | number>(),
   onRowSelectionChange,
   selectionAnnouncement,
   getRowSelectionLabel,
@@ -38,6 +39,7 @@ export function DataTable<T extends { id: string | number }>({
   const { t } = useTranslation();
   const tableClasses = `${styles.table} ${striped ? styles.striped : ''} ${compact ? styles.compact : ''}`;
   const captionId = caption ? `table-caption-${caption.replace(/\s+/g, '-').toLowerCase()}` : undefined;
+  const activeSelection = new Set(selectedRows);
 
   const handleSelectAll = (checked: boolean) => {
     if (!onRowSelectionChange) return;
@@ -51,7 +53,7 @@ export function DataTable<T extends { id: string | number }>({
 
   const handleSelectRow = (id: string | number, checked: boolean) => {
     if (!onRowSelectionChange) return;
-    const newSelection = new Set(selectedRows);
+    const newSelection = new Set(activeSelection);
     if (checked) {
       newSelection.add(id);
     } else {
@@ -60,21 +62,22 @@ export function DataTable<T extends { id: string | number }>({
     onRowSelectionChange(newSelection);
   };
 
-  const allSelected = data.length > 0 && data.every(d => selectedRows.has(d.id));
-  const someSelected = data.some(d => selectedRows.has(d.id)) && !allSelected;
+  const allSelected = data.length > 0 && data.every(d => activeSelection.has(d.id));
+  const someSelected = data.some(d => activeSelection.has(d.id)) && !allSelected;
 
   return (
     <div className={styles.tableWrapper}>
-      {selectionAnnouncement && selectedRows.size > 0 && (
-        <div
-          role="status"
-          aria-live="polite"
-          aria-atomic="true"
-          className="sr-only"
-        >
-          {selectionAnnouncement}
-        </div>
-      )}
+      <div
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {selectionAnnouncement ?? t('common.table.selectedRows', {
+          count: activeSelection.size,
+          defaultValue: `${activeSelection.size} selected`,
+        })}
+      </div>
       <table className={tableClasses} aria-describedby={captionId}>
         {caption && (
           <caption id={captionId} className="sr-only">
@@ -86,13 +89,18 @@ export function DataTable<T extends { id: string | number }>({
             {rowSelectionEnabled && (
               <th scope="col" className={styles.checkboxHeader}>
                 <input
+                  className={styles.checkboxInput}
                   type="checkbox"
                   checked={allSelected}
                   ref={(el) => {
                     if (el) el.indeterminate = someSelected;
                   }}
                   onChange={(e) => handleSelectAll(e.target.checked)}
-                  aria-label={allSelected ? t('common.table.deselectAllRows') : t('common.table.selectAllRows')}
+                  aria-label={
+                    allSelected
+                      ? t('common.table.deselectAllRows', { defaultValue: 'Deselect all rows' })
+                      : t('common.table.selectAllRows', { defaultValue: 'Select all rows' })
+                  }
                 />
               </th>
             )}
@@ -114,10 +122,14 @@ export function DataTable<T extends { id: string | number }>({
                 {rowSelectionEnabled && (
                   <td className={styles.checkboxCell}>
                     <input
+                      className={styles.checkboxInput}
                       type="checkbox"
-                      checked={selectedRows.has(row.id)}
+                      checked={activeSelection.has(row.id)}
                       onChange={(e) => handleSelectRow(row.id, e.target.checked)}
-                      aria-label={t('common.table.selectRow', { item: getRowSelectionLabel?.(row) ?? String(row.id) })}
+                      aria-label={t('common.table.selectRow', {
+                        item: getRowSelectionLabel?.(row) ?? String(row.id),
+                        defaultValue: `Select row ${getRowSelectionLabel?.(row) ?? String(row.id)}`,
+                      })}
                     />
                   </td>
                 )}

@@ -44,6 +44,13 @@ export function Modal({
     const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
       'button, [href], input, select, textarea, iframe, details > summary, audio[controls], video[controls], [contenteditable="true"], [tabindex]:not([tabindex="-1"])'
     );
+
+    if (focusableElements.length === 0) {
+      e.preventDefault();
+      modalRef.current?.focus();
+      return;
+    }
+
     const firstElement = focusableElements[0];
     const lastElement = focusableElements[focusableElements.length - 1];
 
@@ -58,18 +65,23 @@ export function Modal({
 
   useEffect(() => {
     if (isOpen) {
-      previousActiveElement.current = document.activeElement as HTMLElement;
+      previousActiveElement.current = document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
       document.addEventListener('keydown', handleEscape);
       document.addEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'hidden';
 
-      // Focus the first focusable element after a short delay
-      setTimeout(() => {
-        const firstFocusable = modalRef.current?.querySelector<HTMLElement>(
-          'button, [href], input, select, textarea, iframe, details > summary, audio[controls], video[controls], [contenteditable="true"], [tabindex]:not([tabindex="-1"])'
-        );
-        firstFocusable?.focus();
-      }, 0);
+      // Synchronously focus the modal container first
+      modalRef.current?.focus();
+
+      // Then focus the first focusable element if it exists
+      const focusableElements = modalRef.current?.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, iframe, details > summary, audio[controls], video[controls], [contenteditable="true"], [tabindex]:not([tabindex="-1"])'
+      );
+      if (focusableElements && focusableElements.length > 0) {
+        focusableElements[0].focus();
+      }
     }
     return () => {
       document.removeEventListener('keydown', handleEscape);
@@ -87,6 +99,7 @@ export function Modal({
   const modalContent = (
     <div
       className={styles.overlay}
+      role="presentation"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -98,6 +111,7 @@ export function Modal({
         aria-modal="true"
         aria-labelledby={titleId}
         aria-describedby={bodyId}
+        tabIndex={-1}
       >
         <div className={styles.header}>
           <h2 id={titleId} className={styles.title}>{title}</h2>
@@ -105,7 +119,7 @@ export function Modal({
             type="button"
             className={styles.closeButton}
             onClick={onClose}
-            aria-label={t('common.closeModal')}
+            aria-label={t('common.closeModal', { defaultValue: 'Close modal' })}
           >
             <span aria-hidden="true">×</span>
           </button>

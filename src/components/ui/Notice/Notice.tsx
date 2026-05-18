@@ -11,11 +11,14 @@ const variantIcons: Record<NoticeVariant, string> = {
   blocker: '🚫',
 };
 
+// srOnly is intentionally not added because the title and children text already convey variant meaning.
+
 interface NoticeProps {
   variant?: NoticeVariant;
   title?: string;
   children: ReactNode;
   action?: ReactNode;
+  role?: 'alert' | 'status';
 }
 
 export function Notice({
@@ -23,8 +26,11 @@ export function Notice({
   title,
   children,
   action,
+  role: roleOverride,
 }: NoticeProps) {
-  const role = variant === 'danger' || variant === 'blocker' ? 'alert' : 'status';
+  const isAssertive = variant === 'danger' || variant === 'blocker' || roleOverride === 'alert';
+  const role = roleOverride ?? (isAssertive ? 'alert' : 'status');
+  const ariaLive = isAssertive ? 'assertive' : 'polite';
   const noticeId = useId();
   const titleId = title ? `${noticeId}-title` : undefined;
   const messageId = `${noticeId}-message`;
@@ -33,6 +39,7 @@ export function Notice({
     <div
       className={`${styles.notice} ${styles[variant]}`}
       role={role}
+      aria-live={ariaLive}
       aria-labelledby={titleId}
       aria-describedby={messageId}
     >
