@@ -90,9 +90,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         <nav className={styles.nav} aria-label={t('nav.mainAriaLabel')}>
           {navSectionsMeta.map((section) => (
-            <div key={section.titleKey} className={styles.navSection}>
-              <h2 className={styles.navSectionTitle}>{t(section.titleKey)}</h2>
-              <ul className={styles.navList}>
+            <section key={section.titleKey} className={styles.navSection} aria-labelledby={`nav-section-title-${section.titleKey}`}>
+              <h2 id={`nav-section-title-${section.titleKey}`} className={styles.navSectionTitle}>{t(section.titleKey)}</h2>
+              <ul className={styles.navList} role="list">
                 {section.items.map((item) => {
                   const isActive = pathname === item.href || (item.href === '/tools' && pathname.startsWith('/tools/'));
                   return (
@@ -109,7 +109,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   );
                 })}
               </ul>
-            </div>
+            </section>
           ))}
         </nav>
 
@@ -125,7 +125,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* Main content */}
-      <main id="main-content" className={styles.main}>
+      <div className={styles.main}>
         <header className={styles.topbar} aria-label={t('shell.topbar.ariaLabel', { defaultValue: 'Workspace header' })}>
           <div className={styles.topbarTitle}>
             <span className={styles.topbarBreadcrumb}>{t('app.title')}</span>
@@ -140,10 +140,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             >
               {targetLocale.toUpperCase()}
             </button>
-            <button className={styles.topbarButton} type="button" aria-label={t('topbar.notifications')}>
+            <button className={styles.topbarButton} type="button" aria-label={t('topbar.notifications', { defaultValue: 'Notifications' })}>
               <span aria-hidden="true">🔔</span>
             </button>
-            <button className={styles.topbarButton} type="button" aria-label={t('topbar.settings')}>
+            <button className={styles.topbarButton} type="button" aria-label={t('topbar.settings', { defaultValue: 'Settings' })}>
               <span aria-hidden="true">⚙️</span>
             </button>
           </div>
@@ -152,7 +152,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className={styles.content}>
           {children}
         </div>
-      </main>
+      </div>
     </div>
   );
 }

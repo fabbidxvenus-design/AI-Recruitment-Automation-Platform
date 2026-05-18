@@ -62,7 +62,8 @@ const jobService = {
         success: true,
         data: { job: newJob, document: newDoc },
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error('[jobService] createJob failed', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to create job',
@@ -98,7 +99,8 @@ const jobService = {
         success: true,
         data: parsedProfile,
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error('[jobService] parseJD failed', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to parse JD',

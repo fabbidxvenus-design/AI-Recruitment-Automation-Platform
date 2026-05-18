@@ -84,7 +84,8 @@ const contentService = {
           isAiGenerated: true,
         },
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error('[contentService] generateContent failed', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Content generation failed',
@@ -108,10 +109,7 @@ const contentService = {
       if (!content) {
         return {
           success: false,
-          error: {
-            code: 'NOT_FOUND',
-            message: `Content with ID ${request.contentId} not found`,
-          },
+          error: `Content with ID ${request.contentId} not found`,
         };
       }
 
@@ -133,7 +131,8 @@ const contentService = {
           publishedContent,
         },
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error('[contentService] approveContent failed', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Content approval failed',

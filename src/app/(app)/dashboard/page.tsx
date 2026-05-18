@@ -26,6 +26,7 @@ import styles from './dashboard.module.css';
 export default function DashboardPage() {
   const { t } = useTranslation();
   const { locale } = useLanguage();
+
   const pendingApprovals = mockScreeningEvaluations.filter(e => e.status === 'pending');
   const pendingSchedules = mockScheduleSlots.filter(s => s.status === 'pending');
   const openErrors = mockErrorRemediationItems.filter(e => e.status !== 'resolved');
@@ -188,10 +189,11 @@ export default function DashboardPage() {
                       <span className={styles.jobDept}>{job.department}</span>
                     </div>
                     <div className={styles.pipelineBars}>
-                      {job.pipelineSummary.map(stage => (
+                      {job.pipelineSummary.map((stage, idx) => (
                         <div
-                          key={stage.stage}
+                          key={`pipeline-${stage.stage}-${idx}`}
                           className={styles.pipelineStage}
+                          aria-label={t('dashboard.pipeline.stageAria', { stage: t(`dashboard.pipeline.stage.${stage.stage.toLowerCase()}`), count: stage.count })}
                           style={{ '--stage-color': stage.color } as React.CSSProperties}
                           title={t('dashboard.pipeline.stageTooltip', { stage: t(`dashboard.pipeline.stage.${stage.stage.toLowerCase()}`), count: stage.count })}
                         >
@@ -201,8 +203,8 @@ export default function DashboardPage() {
                       ))}
                     </div>
                     <div className={styles.stageLegend}>
-                      {job.pipelineSummary.map(stage => (
-                        <div key={stage.stage} className={styles.legendItem}>
+                      {job.pipelineSummary.map((stage, idx) => (
+                        <div key={`legend-${stage.stage}-${idx}`} className={styles.legendItem}>
                           <span className={styles.legendDot} style={{ background: stage.color }} />
                           <span>{t(`dashboard.pipeline.stage.${stage.stage.toLowerCase()}`)}</span>
                         </div>

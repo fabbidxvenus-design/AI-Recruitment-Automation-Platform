@@ -8,6 +8,8 @@ import type { CVEvidenceExtraction } from '@/types/cv-evidence';
 import type { CandidateCV, CVVersion, CVExtractionResult } from '@/types/cv-intake';
 import { mockCandidateCVs, mockCVVersions, mockCVExtractionResults } from '@/lib/cvIntakeMockData';
 
+const MOCK_COMPANY = 'Tech Company Ltd.';
+
 // ---------------------------------------------------------------------------
 // Request/Response DTOs
 // ---------------------------------------------------------------------------
@@ -65,7 +67,8 @@ const cvService = {
         success: true,
         data: { cv: newCV, version: newVersion },
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error('[cvService] importCV failed', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to import CV',
@@ -100,7 +103,8 @@ const cvService = {
         success: true,
         data: result,
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error('[cvService] extractCVProfile failed', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Extraction failed',
@@ -138,7 +142,7 @@ const cvService = {
           ],
           experience: [
             {
-              company: 'Tech Company Ltd.',
+              company: MOCK_COMPANY,
               title: 'Frontend Developer',
               startDate: '2022-07',
               endDate: '2024-12',
@@ -160,7 +164,8 @@ const cvService = {
         success: true,
         data: mockEvidence,
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error('[cvService] getCVEvidence failed', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to retrieve CV evidence',

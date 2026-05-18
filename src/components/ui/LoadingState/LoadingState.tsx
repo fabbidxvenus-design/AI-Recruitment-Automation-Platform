@@ -17,17 +17,17 @@ export function LoadingState({ text }: LoadingStateProps) {
 }
 
 export function Skeleton({ className = '' }: { className?: string }) {
-  return <div className={`${styles.skeleton} ${className}`} />;
+  return <div className={`${styles.skeleton} ${className}`} role="presentation" aria-hidden="true" />;
 }
 
 export function SkeletonText() {
-  return <div className={`${styles.skeleton} ${styles.skeletonText}`} />;
+  return <div className={`${styles.skeleton} ${styles.skeletonText}`} role="presentation" aria-hidden="true" />;
 }
 
 export function SkeletonTitle() {
-  return <div className={`${styles.skeleton} ${styles.skeletonTitle}`} />;
+  return <div className={`${styles.skeleton} ${styles.skeletonTitle}`} role="presentation" aria-hidden="true" />;
 }
 
 export function SkeletonCard() {
-  return <div className={`${styles.skeleton} ${styles.skeletonCard}`} />;
+  return <div className={`${styles.skeleton} ${styles.skeletonCard}`} role="presentation" aria-hidden="true" />;
 }

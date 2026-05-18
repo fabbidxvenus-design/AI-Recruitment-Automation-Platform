@@ -18,7 +18,7 @@ interface LanguageContextValue {
 const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 function isSupportedLocale(value: string | null): value is Locale {
-  return SUPPORTED_LOCALES.includes(value as Locale);
+  return typeof value === 'string' && SUPPORTED_LOCALES.some((locale) => locale === value);
 }
 
 interface I18nProviderProps {
@@ -30,8 +30,13 @@ function getInitialLocale(): Locale {
     return DEFAULT_LOCALE;
   }
 
-  const storedLocale = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
-  return isSupportedLocale(storedLocale) ? storedLocale : DEFAULT_LOCALE;
+  try {
+    const storedLocale = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    return isSupportedLocale(storedLocale) ? storedLocale : DEFAULT_LOCALE;
+  } catch (error: unknown) {
+    console.error('[I18nProvider] Failed to read locale from localStorage', error);
+    return DEFAULT_LOCALE;
+  }
 }
 
 export function I18nProvider({ children }: I18nProviderProps) {
@@ -40,7 +45,12 @@ export function I18nProvider({ children }: I18nProviderProps) {
   useEffect(() => {
     i18n.changeLanguage(locale);
     document.documentElement.lang = locale;
-    window.localStorage.setItem(LANGUAGE_STORAGE_KEY, locale);
+
+    try {
+      window.localStorage.setItem(LANGUAGE_STORAGE_KEY, locale);
+    } catch (error: unknown) {
+      console.error('[I18nProvider] Failed to save locale to localStorage', error);
+    }
   }, [locale]);
 
   const setLocale = (nextLocale: Locale) => {

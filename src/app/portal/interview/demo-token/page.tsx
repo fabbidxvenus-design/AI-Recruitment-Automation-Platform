@@ -31,8 +31,15 @@ export default function InterviewPage() {
   const questionRef = useRef<HTMLHeadingElement>(null);
 
   const [session, setSession] = useState(() => resolveInterviewSessionForActivePlan());
-  const getFeedbackContent = (key: string, options?: Record<string, unknown>): FeedbackContent =>
-    t(key, { ...options, returnObjects: true }) as FeedbackContent;
+  const isFeedbackContent = (value: unknown): value is FeedbackContent =>
+    typeof value === 'object' &&
+    value !== null &&
+    typeof (value as Record<string, unknown>).title === 'string' &&
+    typeof (value as Record<string, unknown>).body === 'string';
+  const getFeedbackContent = (key: string, options?: Record<string, unknown>): FeedbackContent => {
+    const value = t(key, { ...options, returnObjects: true });
+    return isFeedbackContent(value) ? value : { title: t('common.error.title'), body: String(value) };
+  };
   const currentQuestion = session.questions[currentQuestionIndex];
   const assessmentTraceability = session.assessmentTraceability;
   const progress = ((currentQuestionIndex + (answers[currentQuestion.id] ? 1 : 0)) / session.questions.length) * 100;
@@ -355,15 +362,18 @@ export default function InterviewPage() {
           >
             {t('portal.interview.navigation.previous')}
           </Button>
-          <div className={styles.questionDots} role="navigation" aria-label={t('portal.interview.question.navigationLabel', { defaultValue: 'Question navigation' })}>
-            {session.questions.map((_, index) => (
-              <span
-                key={index}
-                className={`${styles.dot} ${index === currentQuestionIndex ? styles.active : ''} ${answers[session.questions[index].id] ? styles.completed : ''}`}
+          <div className={styles.questionDots} aria-label={t('portal.interview.question.navigationLabel', { defaultValue: 'Question navigation' })}>
+            {session.questions.map((question, index) => (
+              <button
+                key={question.id}
+                type="button"
+                className={`${styles.dot} ${index === currentQuestionIndex ? styles.active : ''} ${answers[question.id] ? styles.completed : ''}`}
+                onClick={() => setCurrentQuestionIndex(index)}
+                aria-current={index === currentQuestionIndex ? 'step' : undefined}
                 aria-label={t('portal.interview.question.statusLabel', {
                   number: index + 1,
-                  status: index === currentQuestionIndex ? 'current' : answers[session.questions[index].id] ? 'completed' : 'not answered',
-                  defaultValue: `Question ${index + 1}: ${index === currentQuestionIndex ? 'current' : answers[session.questions[index].id] ? 'completed' : 'not answered'}`
+                  status: index === currentQuestionIndex ? 'current' : answers[question.id] ? 'completed' : 'not answered',
+                  defaultValue: `Question ${index + 1}: ${index === currentQuestionIndex ? 'current' : answers[question.id] ? 'completed' : 'not answered'}`
                 })}
               />
             ))}

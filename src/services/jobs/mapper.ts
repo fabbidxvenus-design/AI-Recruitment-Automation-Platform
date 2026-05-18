@@ -240,6 +240,7 @@ export class JobsMapper {
       }
       return { state: 'loaded', data };
     } catch (error: unknown) {
+      console.error('[jobs.mapper] wrapInState failed', error);
       return {
         state: 'error',
         error: error instanceof Error ? error.message : 'Unknown error',

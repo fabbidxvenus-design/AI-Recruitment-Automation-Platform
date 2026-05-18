@@ -233,7 +233,8 @@
 }
 
 .answerInput:focus {
-  outline: none;
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
   border-color: var(--color-primary);
 }
 
@@ -444,6 +445,10 @@
 
   .deadline {
     /* No pulsing animation in reduced motion mode */
+    animation: none;
+  }
+
+  .stepActive {
     animation: none;
   }
 }

@@ -42,10 +42,15 @@ function validateServerEnv(): ServerEnvConfig {
     );
   }
 
+  // Use non-null assertions since validation above guarantees these are defined
+  const supabaseUrl = SERVER_SUPABASE_URL!;
+  const supabaseAnonKey = SERVER_SUPABASE_ANON_KEY!;
+  const supabaseServiceRoleKey = SERVER_SERVICE_ROLE_KEY!;
+
   return {
-    supabaseUrl: SERVER_SUPABASE_URL,
-    supabaseAnonKey: SERVER_SUPABASE_ANON_KEY,
-    supabaseServiceRoleKey: SERVER_SERVICE_ROLE_KEY,
+    supabaseUrl,
+    supabaseAnonKey,
+    supabaseServiceRoleKey,
   };
 }
 
@@ -56,6 +61,10 @@ export function clearClientEnvCache(): void {
 }
 
 export function getClientEnv(): EnvConfig {
+  if (isE2ETestEnv()) {
+    return { supabaseUrl: E2E_DUMMY_URL, supabaseAnonKey: E2E_DUMMY_KEY };
+  }
+
   if (cachedClientEnv) {
     return cachedClientEnv;
   }
@@ -78,9 +87,13 @@ export function getClientEnv(): EnvConfig {
     );
   }
 
+  // Use non-null assertions since validation above guarantees these are defined
+  const supabaseUrl = SERVER_SUPABASE_URL!;
+  const supabaseAnonKey = SERVER_SUPABASE_ANON_KEY!;
+
   const env: EnvConfig = {
-    supabaseUrl: SERVER_SUPABASE_URL,
-    supabaseAnonKey: SERVER_SUPABASE_ANON_KEY,
+    supabaseUrl,
+    supabaseAnonKey,
   };
 
   cachedClientEnv = env;
@@ -98,4 +111,15 @@ export function isSupabaseConfigured(): boolean {
 export function createBrowserClient(): SupabaseClient {
   const env = getClientEnv();
   return createSupabaseClient(env.supabaseUrl, env.supabaseAnonKey);
+}
+
+const E2E_DUMMY_URL = 'http://127.0.0.1:54321';
+const E2E_DUMMY_KEY = 'test-anon-key-for-e2e';
+
+function isE2ETestEnv(): boolean {
+  return (
+    process.env.NEXT_PUBLIC_SUPABASE_URL === E2E_DUMMY_URL ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY === E2E_DUMMY_KEY ||
+    process.env.PW_E2E === 'true'
+  );
 }

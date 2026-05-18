@@ -7,6 +7,20 @@ export interface CandidateInviteResult {
   error?: string;
 }
 
+function sanitizeErrorLog(error: unknown): { message?: string; code?: string } | null {
+  if (error instanceof Error) {
+    return { message: error.message, code: (error as { code?: string }).code };
+  }
+  if (typeof error === 'object' && error !== null) {
+    const e = error as { message?: unknown; code?: unknown };
+    return {
+      message: typeof e.message === 'string' ? e.message : undefined,
+      code: typeof e.code === 'string' ? e.code : undefined,
+    };
+  }
+  return null;
+}
+
 function isValidUUID(id: string): boolean {
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   return uuidRegex.test(id);
@@ -27,6 +41,7 @@ export async function prepareCandidateInvite(candidateId: string): Promise<Candi
       .single();
 
     if (fetchError || !candidate) {
+      console.error('[candidateInvite] prepareCandidateInvite candidate lookup failed', sanitizeErrorLog(fetchError));
       return { success: false, error: 'Candidate not found' };
     }
 
@@ -51,6 +66,7 @@ export async function prepareCandidateInvite(candidateId: string): Promise<Candi
       });
 
     if (tokenError) {
+      console.error('[candidateInvite] prepareCandidateInvite token insert failed', sanitizeErrorLog(tokenError));
       return { success: false, error: 'Candidate invitation could not be prepared' };
     }
 
@@ -75,8 +91,8 @@ export async function prepareCandidateInvite(candidateId: string): Promise<Candi
       sentAt,
     };
   } catch (error: unknown) {
-    console.error('[candidateInvite] prepareCandidateInvite failed:', error);
-    return { success: false, error: 'An unexpected error occurred' };
+    console.error('[candidateInvite] prepareCandidateInvite failed', sanitizeErrorLog(error));
+    return { success: false, error: 'Candidate invitation could not be prepared. Please retry or contact support.' };
   }
 }
 

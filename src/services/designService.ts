@@ -109,7 +109,8 @@ const designService = {
           isAiGenerated: true,
         },
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error('[designService] generateDesign failed', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Design generation failed',
@@ -156,7 +157,8 @@ const designService = {
           approvedDesign,
         },
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error('[designService] approveDesign failed', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Design approval failed',

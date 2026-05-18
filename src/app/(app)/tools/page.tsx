@@ -90,9 +90,9 @@ export default function ToolsHubPage() {
         <p className={styles.description}>{t('tools.hub.description')}</p>
       </header>
 
-      <div className={styles.toolsGrid} role="list">
+      <ul className={styles.toolsGrid}>
         {tools.map((tool) => (
-          <article key={tool.id} role="listitem">
+          <li key={tool.id}>
             <Card className={styles.toolCard}>
               <Link href={tool.href} className={styles.toolLink} aria-label={t(tool.titleKey)}>
                 <div className={styles.toolIcon} aria-hidden="true">{tool.icon}</div>
@@ -115,9 +115,9 @@ export default function ToolsHubPage() {
                 </div>
               </Link>
             </Card>
-          </article>
+          </li>
         ))}
-      </div>
+      </ul>
     </main>
   );
 }

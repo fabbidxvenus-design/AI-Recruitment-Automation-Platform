@@ -110,7 +110,8 @@ export function getActiveAssessmentWorkflowState(): AssessmentWorkflowState {
 
     const parsedValue: unknown = JSON.parse(storedValue);
     return isAssessmentWorkflowState(parsedValue) ? parsedValue : getDefaultAssessmentWorkflowState();
-  } catch {
+  } catch (err: unknown) {
+    console.error('[assessmentWorkflowState] Failed to parse stored state:', err);
     return getDefaultAssessmentWorkflowState();
   }
 }
@@ -120,7 +121,8 @@ export function saveActiveAssessmentWorkflowState(state: AssessmentWorkflowState
 
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  } catch {
+  } catch (err: unknown) {
+    console.error('[assessmentWorkflowState] Failed to save state to localStorage:', err);
     return;
   }
 }

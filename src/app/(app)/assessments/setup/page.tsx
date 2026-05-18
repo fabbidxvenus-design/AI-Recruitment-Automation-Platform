@@ -31,6 +31,7 @@ interface TraceabilityPreview {
 }
 
 interface WorkflowEvent {
+  id: string;
   timestamp: string;
   label: string;
   actor: string;
@@ -48,10 +49,10 @@ function buildWorkflowEvents(
   t: (key: string) => string
 ): WorkflowEvent[] {
   const events: WorkflowEvent[] = [
-    { timestamp: planVersion.createdAt, label: 'assessments.setup.workflow.event.created', actor: planVersion.createdBy },
+    { id: 'created', timestamp: planVersion.createdAt, label: 'assessments.setup.workflow.event.created', actor: planVersion.createdBy },
   ];
   if (status === 'approved') {
-    events.push({ timestamp: new Date().toISOString(), label: 'assessments.setup.workflow.event.planApproved', actor: t('common.role.hiringManager') });
+    events.push({ id: 'plan-approved', timestamp: new Date().toISOString(), label: 'assessments.setup.workflow.event.planApproved', actor: t('common.role.hiringManager') });
   }
   return events;
 }
@@ -114,8 +115,13 @@ export default function AssessmentSetupPage() {
 
   const handlePlanChange = (planId: string): void => {
     const nextPlan = mockAssessmentPlans.find((plan) => plan.id === planId);
+    if (!nextPlan) {
+      setSetupError(t('assessments.setup.feedback.planNotFound', { defaultValue: 'Selected assessment plan not found.' }));
+      return;
+    }
+    setSetupError('');
     setSelectedPlanId(planId);
-    setLocalStatus(nextPlan?.status ?? 'draft');
+    setLocalStatus(nextPlan.status);
   };
 
   const handleSaveDraft = async (): Promise<void> => {
@@ -156,11 +162,6 @@ export default function AssessmentSetupPage() {
       <Notice variant="info" title={t('assessments.setup.notice.title')}>
         {t('assessments.setup.notice.body')}
       </Notice>
-      {setupError && (
-        <Notice variant="danger" title={t('common.error.title')}>
-          {setupError}
-        </Notice>
-      )}
       {setupError && (
         <Notice variant="danger" title={t('common.error.title')}>
           {setupError}
@@ -220,7 +221,7 @@ export default function AssessmentSetupPage() {
         <h2 className={styles.sectionTitle}>{t('assessments.setup.workflow.timeline.title')}</h2>
         <div className={styles.timeline}>
           {workflowEvents.map((event, idx) => (
-            <div key={idx} className={styles.timelineItem}>
+            <div key={event.id ?? idx} className={styles.timelineItem}>
               <div className={styles.timelineDot} />
               <div className={styles.timelineContent}>
                 <div className={styles.timelineHeader}>
@@ -299,7 +300,14 @@ export default function AssessmentSetupPage() {
                   <h3>{criterion.label}</h3>
                   <span>{criterion.weight}%</span>
                 </div>
-                <div className={styles.weightTrack} aria-label={t('assessments.setup.rubric.weightLabel', { label: criterion.label, weight: criterion.weight })}>
+                <div
+                  className={styles.weightTrack}
+                  role="progressbar"
+                  aria-valuenow={criterion.weight}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-label={t('assessments.setup.rubric.weightLabel', { label: criterion.label, weight: criterion.weight })}
+                >
                   <span style={{ width: `${criterion.weight}%` }} />
                 </div>
                 <p>{criterion.description}</p>
@@ -377,10 +385,10 @@ export default function AssessmentSetupPage() {
       </Card>
 
       <div className={styles.actionBar}>
-        <Button variant="secondary" onClick={handleSaveDraft}>
+        <Button variant="secondary" onClick={handleSaveDraft} aria-label={t('assessments.setup.actions.saveDraftAria', { defaultValue: 'Save draft' })}>
           {t('assessments.setup.actions.saveDraft')}
         </Button>
-        <Button onClick={handleApprove} disabled={nextActionDisabled}>
+        <Button onClick={handleApprove} disabled={nextActionDisabled} aria-label={t('assessments.setup.actions.approveAria', { defaultValue: 'Approve and proceed' })}>
           {t(nextActionLabel)}
         </Button>
       </div>

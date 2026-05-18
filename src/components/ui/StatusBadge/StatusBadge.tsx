@@ -10,7 +10,7 @@ interface StatusBadgeProps {
 
 export function StatusBadge({ variant = 'default', label, dot = false }: StatusBadgeProps) {
   return (
-    <span className={`${styles.badge} ${styles[variant]}`} role="status" aria-label={label}>
+    <span role="status" className={`${styles.badge} ${styles[variant]}`}>
       {dot && <span className={styles.dot} aria-hidden="true" />}
       {label}
     </span>

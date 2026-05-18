@@ -77,6 +77,22 @@ export default function CVEvidencePage() {
     }
   };
 
+  const handleSectionKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number): void => {
+    const lastIndex = sections.length - 1;
+    const nextIndexByKey: Record<string, number> = {
+      ArrowRight: index === lastIndex ? 0 : index + 1,
+      ArrowLeft: index === 0 ? lastIndex : index - 1,
+      Home: 0,
+      End: lastIndex,
+    };
+    const nextIndex = nextIndexByKey[event.key];
+
+    if (nextIndex === undefined) return;
+
+    event.preventDefault();
+    setSelectedSection(sections[nextIndex].key);
+  };
+
   const renderEducation = () => {
     if (!cvEvidence?.structuredData.education.length) {
       return <p className={styles.itemMeta}>{t('tools.cvEvidence.noData')}</p>;
@@ -84,8 +100,8 @@ export default function CVEvidencePage() {
 
     return (
       <div className={styles.evidenceList}>
-        {cvEvidence.structuredData.education.map((edu, index) => (
-          <div key={`education-${index}`} className={styles.evidenceItem}>
+        {cvEvidence.structuredData.education.map((edu, idx) => (
+          <div key={`education-${edu.institution}-${edu.degree}-${idx}`} className={styles.evidenceItem}>
             <h3 className={styles.itemTitle}>{edu.institution}</h3>
             <p className={styles.itemSubtitle}>{edu.degree}</p>
             {edu.fieldOfStudy && (
@@ -109,8 +125,8 @@ export default function CVEvidencePage() {
 
     return (
       <div className={styles.evidenceList}>
-        {cvEvidence.structuredData.experience.map((exp, index) => (
-          <div key={`experience-${index}`} className={styles.evidenceItem}>
+        {cvEvidence.structuredData.experience.map((exp, idx) => (
+          <div key={`experience-${exp.company}-${exp.title}-${idx}`} className={styles.evidenceItem}>
             <div className={styles.itemHeader}>
               <h3 className={styles.itemTitle}>{exp.title}</h3>
             </div>
@@ -126,7 +142,7 @@ export default function CVEvidencePage() {
             {exp.achievements.length > 0 && (
               <ul className={styles.achievementList}>
                 {exp.achievements.map((achievement, i) => (
-                  <li key={`achievement-${index}-${i}`}>{achievement}</li>
+                  <li key={`achievement-${exp.company}-${exp.title}-${achievement}-${i}`}>{achievement}</li>
                 ))}
               </ul>
             )}
@@ -143,8 +159,8 @@ export default function CVEvidencePage() {
 
     return (
       <div className={styles.skillsGrid}>
-        {cvEvidence.structuredData.skills.map((skill, index) => (
-          <span key={`skill-${index}`} className={styles.skillBadge}>
+        {cvEvidence.structuredData.skills.map((skill, idx) => (
+          <span key={`skill-${skill}-${idx}`} className={styles.skillBadge}>
             {skill}
           </span>
         ))}
@@ -159,8 +175,8 @@ export default function CVEvidencePage() {
 
     return (
       <div className={styles.evidenceList}>
-        {cvEvidence.structuredData.certifications.map((cert, index) => (
-          <div key={`certification-${index}`} className={styles.evidenceItem}>
+        {cvEvidence.structuredData.certifications.map((cert, idx) => (
+          <div key={`certification-${cert}-${idx}`} className={styles.evidenceItem}>
             <h3 className={styles.itemTitle}>{cert}</h3>
           </div>
         ))}
@@ -245,7 +261,7 @@ export default function CVEvidencePage() {
         <>
           <div className={styles.viewerLayout}>
             <nav className={styles.sidebar} role="tablist" aria-label={t('tools.cvEvidence.sectionsAria', { defaultValue: 'CV sections' })}>
-              {sections.map((section) => (
+              {sections.map((section, idx) => (
                 <button
                   key={section.key}
                   id={`${section.key}-tab`}
@@ -254,8 +270,10 @@ export default function CVEvidencePage() {
                   }`}
                   role="tab"
                   onClick={() => setSelectedSection(section.key)}
+                  onKeyDown={(e) => handleSectionKeyDown(e, idx)}
                   aria-selected={selectedSection === section.key}
                   aria-controls={`${section.key}-panel`}
+                  tabIndex={selectedSection === section.key ? 0 : -1}
                 >
                   {t(section.labelKey)}
                 </button>
@@ -320,22 +338,22 @@ export default function CVEvidencePage() {
                 <h3 className={styles.provenanceTitle}>
                   {t('tools.cvEvidence.provenance')}
                 </h3>
-                <div className={styles.provenanceGrid}>
+                <dl className={styles.provenanceGrid}>
                   <div className={styles.provenanceItem}>
-                    <label>{t('tools.cvEvidence.extractionModel')}</label>
-                    <span className={styles.provenanceValue}>{t('tools.cvEvidence.aiReviewEngine')}</span>
+                    <dt>{t('tools.cvEvidence.extractionModel')}</dt>
+                    <dd className={styles.provenanceValue}>{t('tools.cvEvidence.aiReviewEngine')}</dd>
                   </div>
                   <div className={styles.provenanceItem}>
-                    <label>{t('tools.cvEvidence.confidence')}</label>
-                    <span className={styles.provenanceValue}>{t('tools.cvEvidence.confidenceValue')}</span>
+                    <dt>{t('tools.cvEvidence.confidence')}</dt>
+                    <dd className={styles.provenanceValue}>{t('tools.cvEvidence.confidenceValue')}</dd>
                   </div>
                   <div className={styles.provenanceItem}>
-                    <label>{t('tools.cvEvidence.extractedAt')}</label>
-                    <span className={styles.provenanceValue}>
+                    <dt>{t('tools.cvEvidence.extractedAt')}</dt>
+                    <dd className={styles.provenanceValue}>
                       {formatDateTime(cvEvidence.extractedAt, locale)}
-                    </span>
+                    </dd>
                   </div>
-                </div>
+                </dl>
               </Card>
             </div>
           </div>

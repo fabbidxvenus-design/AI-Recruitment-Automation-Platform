@@ -79,7 +79,12 @@
     transparent
   );
   background-size: 1rem 1rem;
-  animation: stripes 1s linear infinite;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .striped .progressBar {
+    animation: stripes 1s linear infinite;
+  }
 }
 
 @keyframes stripes {

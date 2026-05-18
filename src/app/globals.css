@@ -3,11 +3,13 @@
   /* Primary brand colors */
   --color-primary: #1d4ed8;
   --color-primary-hover: #1e40af;
-  --color-primary-light: #dbeafe;
+  --color-primary-light: #bfdbfe;
   --color-ai-purple: #7c3aed;
   --color-ai-purple-hover: #6d28d9;
+  --color-ai-purple-light: #ede9fe;
   --color-scheduling-teal: #0d9488;
   --color-scheduling-teal-hover: #0f766e;
+  --color-scheduling-teal-light: #ccfbf1;
 
   /* Surface colors */
   --color-surface: #f8fafc;
@@ -15,11 +17,24 @@
   --color-surface-elevated: #ffffff;
   --color-border: #e2e8f0;
   --color-border-strong: #cbd5e1;
+  --color-on-surface: #0f172a;
+  --color-on-surface-variant: #64748b;
+  --color-surface-container-low: #e2e8f0;
+  --color-surface-container-high: #f1f5f9;
+  --color-surface-hover: #f8fafc;
+  --color-primary-fixed: #dbeafe;
+  --color-surface-alt: #f1f5f9;
+  --color-text-tertiary: #64748b;
+  --color-text-primary: #0f172a;
+  --color-background: #ffffff;
+  --color-outline: #e2e8f0;
+  --color-outline-variant: #cbd5e1;
+  --color-on-primary: #ffffff;
 
   /* Text colors */
   --color-text: #0f172a;
   --color-text-secondary: #475569;
-  --color-text-muted: #94a3b8;
+  --color-text-muted: #64748b;
   --color-text-inverse: #ffffff;
 
   /* Semantic colors */

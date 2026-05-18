@@ -124,7 +124,8 @@ const translationService = {
         success: true,
         data: { translatedCV },
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error('[translationService] translateCV failed', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'CV translation failed',
@@ -150,7 +151,8 @@ const translationService = {
           status,
         },
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error('[translationService] approveCVTranslation failed', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'CV translation approval failed',
@@ -181,7 +183,8 @@ const translationService = {
           isAiGenerated: true,
         },
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error('[translationService] translateInterview failed', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Interview translation failed',
@@ -207,7 +210,8 @@ const translationService = {
           status,
         },
       };
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error('[translationService] approveInterviewTranslation failed', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Interview translation approval failed',

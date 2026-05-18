@@ -110,10 +110,8 @@ describe('contentService', () => {
 
       expect(result.success).toBe(false);
       expect(result.error).toBeDefined();
-      expect(typeof result.error).toBe('object');
-      if (typeof result.error === 'object' && result.error !== null) {
-        expect(result.error).toHaveProperty('code', 'NOT_FOUND');
-      }
+      expect(typeof result.error).toBe('string');
+      expect(result.error).toContain('Content with ID non-existent-id not found');
     });
   });
 });
