@@ -224,6 +224,157 @@
   text-transform: uppercase;
 }
 
+/* Interview Tabs */
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+  overflow-x: auto;
+}
+
+.tabButton {
+  padding: 0.5rem 0.875rem;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+}
+
+.tabButton:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.tabButtonActive {
+  background: var(--color-primary-light, #e0e7ff);
+  color: var(--color-primary);
+}
+
+.tabContent {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Panels */
+.panelTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  color: var(--color-text);
+}
+
+.uploadZone {
+  border: 2px dashed var(--color-border);
+  border-radius: 0.75rem;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  background: var(--color-surface);
+  transition: border-color 0.2s;
+  cursor: pointer;
+}
+
+.uploadZone:hover {
+  border-color: var(--color-primary);
+}
+
+.uploadZone p {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.previewScroll {
+  max-height: 300px;
+  overflow-y: auto;
+  margin: 1rem 0;
+  padding-right: 0.5rem;
+}
+
+.panelActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+/* Drive Panel */
+.driveFiles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin-top: 1rem;
+}
+
+.driveFileItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  border-radius: 0.625rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.driveFileItem:hover {
+  border-color: var(--color-primary);
+}
+
+.fileName {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* AI Panel */
+.aiPromptArea {
+  width: 100%;
+  padding: 0.875rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+}
+
+.aiPromptArea:focus {
+  outline: 2px solid var(--color-primary);
+  border-color: transparent;
+}
+
+.inputGroup {
+  margin-bottom: 1.25rem;
+}
+
+.inputGroup label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.textInput {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: var(--color-background);
+  color: var(--color-text);
+}
+
 .sectionItem {
   display: flex;
   align-items: center;
