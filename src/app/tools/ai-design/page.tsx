@@ -100,16 +100,19 @@ export default function AIDesignPage() {
     if (!selectedVariantId) return;
 
     setStatus('pending_approval');
+    const newRecord: ApprovalRecord = {
+      id: `approval-${Date.now()}`,
+      status: 'pending',
+      timestamp: new Date().toISOString(),
+    };
+    setApprovalHistory(prev => [newRecord, ...prev]);
+
     try {
       await mockApprovalRequest(selectedVariantId);
-      const newRecord: ApprovalRecord = {
-        id: `approval-${Date.now()}`,
-        status: 'pending',
-        timestamp: new Date().toISOString(),
-      };
-      setApprovalHistory([newRecord, ...approvalHistory]);
     } catch (error: unknown) {
+      console.warn('Approval request failed:', error);
       setStatus('generated');
+      setApprovalHistory(prev => prev.filter(r => r.id !== newRecord.id));
     }
   };
 

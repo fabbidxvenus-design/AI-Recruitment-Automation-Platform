@@ -1,3 +1,5 @@
+'use client';
+
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from './DataTable.module.css';
@@ -75,10 +77,15 @@ export function DataTable<T extends { id: string | number }>({
           {selectionAnnouncement}
         </div>
       )}
-      <table className={tableClasses} aria-describedby={captionId}>
+      <table className={tableClasses} aria-describedby={captionId || 'data-table-description'}>
         {caption && (
           <caption id={captionId} className="sr-only">
             {caption}
+          </caption>
+        )}
+        {!caption && (
+          <caption id="data-table-description" className="sr-only">
+            {'Data table'}
           </caption>
         )}
         <thead>
@@ -109,8 +116,8 @@ export function DataTable<T extends { id: string | number }>({
               </td>
             </tr>
           ) : (
-            data.map((row) => (
-              <tr key={row.id}>
+            data.map((row, rowIndex) => (
+              <tr key={`${row.id ?? rowIndex}`}>
                 {rowSelectionEnabled && (
                   <td className={styles.checkboxCell}>
                     <input
@@ -123,13 +130,14 @@ export function DataTable<T extends { id: string | number }>({
                 )}
                 {columns.map((col, columnIndex) => {
                   const cellContent = col.render ? col.render(row) : (row as Record<string, unknown>)[col.key] as ReactNode;
+                  const cellKey = `${row.id ?? rowIndex}-${col.key}`;
 
                   return columnIndex === 0 ? (
-                    <th key={col.key} scope="row">
+                    <th key={cellKey} scope="row">
                       {cellContent}
                     </th>
                   ) : (
-                    <td key={col.key}>
+                    <td key={cellKey}>
                       {cellContent}
                     </td>
                   );

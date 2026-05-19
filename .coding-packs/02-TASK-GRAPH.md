@@ -77,6 +77,15 @@
 | TIP-011 | Candidate portal full workflow | TIP-004, TIP-007, TIP-010 | P0 | 16 | 4 |
 | TIP-012 | End-to-end audit/evidence timeline integration | TIP-007, TIP-008, TIP-009, TIP-010, TIP-011 | P0 | 14 | 4 |
 | TIP-013 | Critical E2E demo and release quality gates | TIP-011, TIP-012 | P0 | 12 | 4 |
+| TIP-P08 | Productization WCAG 2.2 — StatusBadge, form errors, grading modal | — | P1 | 0.75 | UI/UX loop |
+| TIP-P09 | Productization UX resilience — error feedback, flow guards | — | P1 | 0.75 | UI/UX loop |
+| TIP-P05 | Productization accessibility — final-review CRITICAL modals | — | P1 | 0.75 | UI/UX loop |
+| TIP-P06 | Productization error boundaries and loading states | — | P1 | 0.5 | UI/UX loop |
+| TIP-P07 | Productization keyboard navigation and ARIA polish | — | P1 | 0.75 | UI/UX loop |
+| TIP-P01 | Productization error logging and feedback fixes | — | P1 | 0.5 | UI/UX loop |
+| TIP-P02 | Productization accessibility fixes | — | P1 | 0.75 | UI/UX loop |
+| TIP-P03 | Productization code quality fixes | — | P1 | 0.5 | UI/UX loop |
+| TIP-P04 | Productization visual refinements | — | P2 | 0.35 | UI/UX loop |
 
 ## TIP DETAILS
 

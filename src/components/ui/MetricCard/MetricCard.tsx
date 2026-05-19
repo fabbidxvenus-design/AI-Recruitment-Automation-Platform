@@ -1,3 +1,5 @@
+'use client';
+
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from './MetricCard.module.css';
@@ -24,7 +26,7 @@ export function MetricCard({
   const { t } = useTranslation();
 
   return (
-    <div className={`${styles.metricCard} ${variant !== 'default' ? styles[variant] : ''}`} role="group" aria-label={label}>
+    <div className={`${styles.metricCard} ${variant !== 'default' ? styles[variant] : ''}`} role="group" aria-label={label || 'Metric'}>
       <div className={styles.metricHeader}>
         <span className={styles.metricLabel}>{label}</span>
         {icon && <span className={styles.metricIcon} aria-hidden="true">{icon}</span>}

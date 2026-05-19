@@ -216,6 +216,9 @@ export default function AdminPage() {
                     <div className={styles.healthHeader}>
                       <span className={`${styles.healthDot} ${styles[integration.status]}`} aria-hidden="true" />
                       <span className={styles.healthName}>{integration.name}</span>
+                      <span className={styles.healthStatusLabel}>
+                        {t(`dashboard.integration.status.${integration.status}`)}
+                      </span>
                       <span className="sr-only">{t(`dashboard.integration.status.${integration.status}`)}</span>
                     </div>
                     <div className={styles.healthMeta}>

@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { Notice } from '@/components/ui/Notice';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { StatusBadge } from '@/components/ui/StatusBadge';
+import { Modal } from '@/components/ui/Modal';
 import { mockTestResults } from '@/lib/mockData';
 import { markTestGraded, resolveTestResultForActivePlan } from '@/lib/assessmentWorkflowState';
 import styles from './grading.module.css';
@@ -325,53 +326,51 @@ export default function TestGradingPage() {
       </div>
 
       {overrideModalOpen && (
-        <div className={styles.modal}>
-          <div className={styles.modalContent}>
-            <div className={styles.modalHeader}>
-              <h2>{t('tests.grading.modal.title')}</h2>
-              <button className={styles.closeButton} onClick={() => setOverrideModalOpen(false)}>×</button>
-            </div>
-            <div className={styles.modalBody}>
-              <p className={styles.modalDescription}>
-                {t('tests.grading.modal.description')}
-              </p>
-              <div className={styles.formGroup}>
-                <label htmlFor="overrideScore">{t('tests.grading.modal.newScore')}</label>
-                <input
-                  type="number"
-                  id="overrideScore"
-                  min="0"
-                  max={selected?.maxScore ?? 100}
-                  className={styles.input}
-                  value={overrideScore}
-                  onChange={(e) => setOverrideScore(e.target.value)}
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label htmlFor="overrideReason">{t('tests.grading.modal.reasonRequired')}</label>
-                <textarea
-                  id="overrideReason"
-                  className={styles.textarea}
-                  rows={4}
-                  value={overrideReason}
-                  onChange={(e) => setOverrideReason(e.target.value)}
-                  placeholder={t('tests.grading.modal.reasonPlaceholder')}
-                  required
-                />
-              </div>
-              <div className={styles.mfaNotice}>
-                <span className={styles.mfaIcon}>🔐</span>
-                <span>{t('tests.grading.modal.mfaRequired')}</span>
-              </div>
-            </div>
-            <div className={styles.modalFooter}>
+        <Modal
+          isOpen={overrideModalOpen}
+          onClose={() => setOverrideModalOpen(false)}
+          title={t('tests.grading.modal.title')}
+          footer={(
+            <>
               <Button variant="ghost" onClick={() => setOverrideModalOpen(false)}>{t('tests.grading.modal.cancel')}</Button>
               <Button variant="primary" onClick={handleOverrideSubmit} disabled={!overrideReason.trim()}>
                 {t('tests.grading.modal.submit')}
               </Button>
-            </div>
+            </>
+          )}
+        >
+          <p className={styles.modalDescription}>
+            {t('tests.grading.modal.description')}
+          </p>
+          <div className={styles.formGroup}>
+            <label htmlFor="overrideScore">{t('tests.grading.modal.newScore')}</label>
+            <input
+              type="number"
+              id="overrideScore"
+              min="0"
+              max={selected?.maxScore ?? 100}
+              className={styles.input}
+              value={overrideScore}
+              onChange={(e) => setOverrideScore(e.target.value)}
+            />
           </div>
-        </div>
+          <div className={styles.formGroup}>
+            <label htmlFor="overrideReason">{t('tests.grading.modal.reasonRequired')}</label>
+            <textarea
+              id="overrideReason"
+              className={styles.textarea}
+              rows={4}
+              value={overrideReason}
+              onChange={(e) => setOverrideReason(e.target.value)}
+              placeholder={t('tests.grading.modal.reasonPlaceholder')}
+              required
+            />
+          </div>
+          <div className={styles.mfaNotice}>
+            <span className={styles.mfaIcon}>🔐</span>
+            <span>{t('tests.grading.modal.mfaRequired')}</span>
+          </div>
+        </Modal>
       )}
     </div>
   );

@@ -97,7 +97,8 @@ export default function CVImportPage() {
       } else if (importSource === 'drive' && driveFolder) {
         setVersionCreated(true);
       }
-    } catch {
+    } catch (error) {
+      console.warn('CV import failed:', error);
       setImportError(true);
     } finally {
       setImporting(false);
@@ -126,7 +127,7 @@ export default function CVImportPage() {
             <div className={styles.timeline}>
               <div className={styles.timelineItem}>
                 <div className={styles.timelineMarker}>
-                  <StatusBadge variant="success" label="" />
+                  <StatusBadge variant="success" label={t('cvImport.timeline.status.complete') || 'Complete'} />
                 </div>
                 <div className={styles.timelineContent}>
                   <h3 className={styles.timelineStep}>{t('cvImport.timeline.importCompleted')}</h3>
@@ -137,7 +138,7 @@ export default function CVImportPage() {
               {rescreenRequested && (
                 <div className={styles.timelineItem}>
                   <div className={styles.timelineMarker}>
-                    <StatusBadge variant="info" label="" />
+                    <StatusBadge variant="info" label={t('cvImport.timeline.status.queued') || 'Queued'} />
                   </div>
                   <div className={styles.timelineContent}>
                     <h3 className={styles.timelineStep}>{t('cvImport.timeline.rescreenQueued')}</h3>
@@ -148,7 +149,7 @@ export default function CVImportPage() {
 
               <div className={styles.timelineItem}>
                 <div className={styles.timelineMarker}>
-                  <StatusBadge variant={rescreenRequested ? 'warning' : 'info'} label="" />
+                  <StatusBadge variant={rescreenRequested ? 'warning' : 'info'} label={rescreenRequested ? (t('cvImport.timeline.status.pending') || 'Pending') : (t('cvImport.timeline.status.processing') || 'Processing')} />
                 </div>
                 <div className={styles.timelineContent}>
                   <h3 className={styles.timelineStep}>{t('cvImport.timeline.screeningReview')}</h3>
@@ -158,7 +159,7 @@ export default function CVImportPage() {
 
               <div className={styles.timelineItem}>
                 <div className={styles.timelineMarker}>
-                  <StatusBadge variant="info" label="" />
+                  <StatusBadge variant="info" label={t('cvImport.timeline.status.pending') || 'Pending'} />
                 </div>
                 <div className={styles.timelineContent}>
                   <h3 className={styles.timelineStep}>{t('cvImport.timeline.interviewScheduling')}</h3>

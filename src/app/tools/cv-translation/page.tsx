@@ -21,12 +21,14 @@ export default function CVTranslationPage() {
   const [selectedLanguage, setSelectedLanguage] = useState<TargetLanguage>('vi');
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
+  const [translateError, setTranslateError] = useState(false);
   const getCandidateJobTitle = (jobId: string): string => mockJobs.find((job) => job.id === jobId)?.title ?? jobId;
 
   const handleTranslate = async (): Promise<void> => {
     if (!selectedCandidateId) return;
 
     setCurrentStep('generating');
+    setTranslateError(false);
 
     try {
       const result = await translateCV({
@@ -41,9 +43,11 @@ export default function CVTranslationPage() {
         });
         setCurrentStep('review');
       } else {
+        setTranslateError(true);
         setCurrentStep('select');
       }
     } catch {
+      setTranslateError(true);
       setCurrentStep('select');
     }
   };
@@ -95,6 +99,11 @@ export default function CVTranslationPage() {
 
       {currentStep === 'select' && (
         <>
+          {translateError && (
+            <Notice variant="danger" title={t('common.status.failed')}>
+              {t('tools.cvTranslation.error.message')}
+            </Notice>
+          )}
           <Notice variant="info" title={t('tools.cvTranslation.workspace.sourceOfTruthTitle')}>
             {t('tools.cvTranslation.workspace.sourceOfTruthDesc')}
           </Notice>

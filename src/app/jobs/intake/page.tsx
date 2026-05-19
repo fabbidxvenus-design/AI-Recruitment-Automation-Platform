@@ -148,6 +148,15 @@ export default function JobIntakePage() {
   };
 
   const handleCreate = async (): Promise<void> => {
+    if (!jobData.title.trim() || !jobData.content.trim()) {
+      setFeedback({
+        variant: 'warning',
+        title: t('tools.jobIntake.messages.unexpected'),
+        body: t('common.required', 'Required field'),
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       // Simulate local creation - in production this would call jobService.createJob
@@ -164,6 +173,7 @@ export default function JobIntakePage() {
       setJobData({ title: '', department: '', location: '', content: '' });
       setSelectedRequisitionId(null);
     } catch (error: unknown) {
+      console.warn('Job creation failed:', error);
       setFeedback({
         variant: 'warning',
         title: t('tools.jobIntake.messages.unexpected'),
@@ -320,7 +330,15 @@ export default function JobIntakePage() {
               onChange={(event) => setJobData({ ...jobData, title: event.target.value })}
               placeholder={t('tools.jobIntake.form.jobTitlePlaceholder')}
               className={styles.input}
+              aria-required="true"
+              aria-invalid={!jobData.title}
+              aria-describedby={!jobData.title ? 'jobTitleError' : undefined}
             />
+            {(!jobData.title) && (
+              <span id="jobTitleError" role="alert" className={styles.errorText} style={{ color: 'red', fontSize: '0.875rem' }}>
+                {t('common.required', 'Required field')}
+              </span>
+            )}
           </div>
 
           <div className={styles.formRow}>
@@ -357,7 +375,15 @@ export default function JobIntakePage() {
               onChange={(event) => setJobData({ ...jobData, content: event.target.value })}
               placeholder={t('tools.jobIntake.form.jdContentPlaceholder')}
               className={styles.textarea}
+              aria-required="true"
+              aria-invalid={!jobData.content}
+              aria-describedby={!jobData.content ? 'jdContentError' : undefined}
             />
+            {(!jobData.content) && (
+              <span id="jdContentError" role="alert" className={styles.errorText} style={{ color: 'red', fontSize: '0.875rem' }}>
+                {t('common.required', 'Required field')}
+              </span>
+            )}
           </div>
 
           <div className={styles.actions}>

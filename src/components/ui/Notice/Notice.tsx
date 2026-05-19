@@ -1,3 +1,5 @@
+'use client';
+
 import { ReactNode, useId } from 'react';
 import styles from './Notice.module.css';
 
@@ -25,6 +27,7 @@ export function Notice({
   action,
 }: NoticeProps) {
   const role = variant === 'danger' || variant === 'blocker' ? 'alert' : 'status';
+  const ariaLive = variant === 'danger' || variant === 'blocker' ? 'assertive' : 'polite';
   const noticeId = useId();
   const titleId = title ? `${noticeId}-title` : undefined;
   const messageId = `${noticeId}-message`;
@@ -35,6 +38,7 @@ export function Notice({
       role={role}
       aria-labelledby={titleId}
       aria-describedby={messageId}
+      aria-live={ariaLive}
     >
       <span className={styles.noticeIcon} aria-hidden="true">
         {variantIcons[variant]}

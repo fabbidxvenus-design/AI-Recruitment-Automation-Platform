@@ -188,6 +188,7 @@ export default function DashboardPage() {
                           className={styles.pipelineStage}
                           style={{ '--stage-color': stage.color } as React.CSSProperties}
                           title={t('dashboard.pipeline.stageTooltip', { stage: t(`dashboard.pipeline.stage.${stage.stage.toLowerCase()}`), count: stage.count })}
+                          aria-label={t('dashboard.pipeline.stageTooltip', { stage: t(`dashboard.pipeline.stage.${stage.stage.toLowerCase()}`), count: stage.count })}
                         >
                           <div className={styles.stageBar} style={{ width: `${(stage.count / job.candidateCount) * 100}%` }} />
                           <span className={styles.stageCount}>{stage.count}</span>
@@ -230,21 +231,25 @@ export default function DashboardPage() {
               action={<Link href="/interviews/schedule-approval"><Button variant="ghost" size="sm">{t('common.viewAll')}</Button></Link>}
             />
             <CardContent>
-              <div className={styles.scheduleList}>
-                {pendingSchedules.map(slot => (
-                  <div key={slot.id} className={styles.scheduleItem}>
-                    <div className={styles.scheduleInfo}>
-                      <span className={styles.scheduleCandidate}>{slot.candidateName}</span>
-                      <span className={styles.scheduleType}>{slot.interviewType}</span>
+              {pendingSchedules.length === 0 ? (
+                <p>{t('dashboard.schedule.noPending')}</p>
+              ) : (
+                <div className={styles.scheduleList}>
+                  {pendingSchedules.map(slot => (
+                    <div key={slot.id} className={styles.scheduleItem}>
+                      <div className={styles.scheduleInfo}>
+                        <span className={styles.scheduleCandidate}>{slot.candidateName}</span>
+                        <span className={styles.scheduleType}>{slot.interviewType}</span>
+                      </div>
+                      <div className={styles.scheduleMeta}>
+                        <span>{slot.interviewerName}</span>
+                        <span>{formatDate(slot.scheduledAt, locale)}</span>
+                      </div>
+                      <StatusBadge variant="warning" label={t('common.status.pending')} />
                     </div>
-                    <div className={styles.scheduleMeta}>
-                      <span>{slot.interviewerName}</span>
-                      <span>{formatDate(slot.scheduledAt, locale)}</span>
-                    </div>
-                    <StatusBadge variant="warning" label={t('common.status.pending')} />
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -279,6 +284,9 @@ export default function DashboardPage() {
                     <div className={styles.integrationStatus}>
                       <span className={`${styles.statusDot} ${styles[integration.status]}`} />
                       <span className={styles.integrationName}>{integration.name}</span>
+                      <span className={styles.healthStatusLabel}>
+                        {t(`dashboard.integration.status.${integration.status}`)}
+                      </span>
                     </div>
                     <div className={styles.integrationMeta}>
                       {integration.status !== 'healthy' && (

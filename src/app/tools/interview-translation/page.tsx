@@ -37,6 +37,7 @@ export default function InterviewTranslationPage() {
   const [currentTranslation, setCurrentTranslation] = useState<InterviewTranslation | null>(null);
   const [segments, setSegments] = useState<TranscriptSegment[]>([]);
   const [progress, setProgress] = useState<number>(0);
+  const [translateError, setTranslateError] = useState(false);
   const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isMountedRef = useRef(true);
 
@@ -52,70 +53,81 @@ export default function InterviewTranslationPage() {
   const handleGenerate = async (): Promise<void> => {
     setCurrentStep('generating');
     setProgress(0);
+    setTranslateError(false);
 
-    // Simulate progress
-    progressIntervalRef.current = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 90) {
-          if (progressIntervalRef.current) {
-            clearInterval(progressIntervalRef.current);
-            progressIntervalRef.current = null;
+    try {
+      // Simulate progress
+      progressIntervalRef.current = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 90) {
+            if (progressIntervalRef.current) {
+              clearInterval(progressIntervalRef.current);
+              progressIntervalRef.current = null;
+            }
+            return 90;
           }
-          return 90;
-        }
-        return prev + 10;
-      });
-    }, 200);
+          return prev + 10;
+        });
+      }, 200);
 
-    // Simulate AI translation
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    if (progressIntervalRef.current) {
-      clearInterval(progressIntervalRef.current);
-      progressIntervalRef.current = null;
+      // Simulate AI translation
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
+      if (!isMountedRef.current) return;
+      setProgress(100);
+
+      // Mock translated segments
+      const mockSegments: TranscriptSegment[] = [
+        {
+          speakerKey: 'interviewer',
+          original: 'Xin chào, bạn có thể giới thiệu về bản thân không?',
+          translated: 'Hello, can you introduce yourself?',
+        },
+        {
+          speakerKey: 'candidate',
+          original: 'Chào anh/chị. Tôi tên là Nguyen Van A, có 5 năm kinh nghiệm làm việc trong lĩnh vực phát triển phần mềm.',
+          translated: 'Hello. My name is Nguyen Van A, I have 5 years of experience working in software development.',
+        },
+        {
+          speakerKey: 'interviewer',
+          original: 'Bạn có kinh nghiệm với React không?',
+          translated: 'Do you have experience with React?',
+        },
+        {
+          speakerKey: 'candidate',
+          original: 'Có, tôi đã sử dụng React trong 3 năm qua cho nhiều dự án khác nhau.',
+          translated: 'Yes, I have been using React for the past 3 years on various projects.',
+        },
+      ];
+
+      const translation: InterviewTranslation = {
+        id: `trans-${Date.now()}`,
+        interviewId: selectedInterview || 'manual',
+        candidateId: 'cand-001',
+        sourceLang: 'vi',
+        targetLang,
+        translatedText: mockSegments.map((s) => `${t(`tools.interviewTranslation.speakers.${s.speakerKey}`)}: ${s.translated}`).join('\n'),
+        status: 'pending',
+        isAiGenerated: true,
+        createdAt: new Date().toISOString(),
+      };
+
+      if (!isMountedRef.current) return;
+      setCurrentTranslation(translation);
+      setSegments(mockSegments);
+      setCurrentStep('review');
+    } catch {
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
+      if (!isMountedRef.current) return;
+      setTranslateError(true);
+      setCurrentStep('input');
     }
-    if (!isMountedRef.current) return;
-    setProgress(100);
-
-    // Mock translated segments
-    const mockSegments: TranscriptSegment[] = [
-      {
-        speakerKey: 'interviewer',
-        original: 'Xin chào, bạn có thể giới thiệu về bản thân không?',
-        translated: 'Hello, can you introduce yourself?',
-      },
-      {
-        speakerKey: 'candidate',
-        original: 'Chào anh/chị. Tôi tên là Nguyen Van A, có 5 năm kinh nghiệm làm việc trong lĩnh vực phát triển phần mềm.',
-        translated: 'Hello. My name is Nguyen Van A, I have 5 years of experience working in software development.',
-      },
-      {
-        speakerKey: 'interviewer',
-        original: 'Bạn có kinh nghiệm với React không?',
-        translated: 'Do you have experience with React?',
-      },
-      {
-        speakerKey: 'candidate',
-        original: 'Có, tôi đã sử dụng React trong 3 năm qua cho nhiều dự án khác nhau.',
-        translated: 'Yes, I have been using React for the past 3 years on various projects.',
-      },
-    ];
-
-    const translation: InterviewTranslation = {
-      id: `trans-${Date.now()}`,
-      interviewId: selectedInterview || 'manual',
-      candidateId: 'cand-001',
-      sourceLang: 'vi',
-      targetLang,
-      translatedText: mockSegments.map((s) => `${t(`tools.interviewTranslation.speakers.${s.speakerKey}`)}: ${s.translated}`).join('\n'),
-      status: 'pending',
-      isAiGenerated: true,
-      createdAt: new Date().toISOString(),
-    };
-
-    if (!isMountedRef.current) return;
-    setCurrentTranslation(translation);
-    setSegments(mockSegments);
-    setCurrentStep('review');
   };
 
   const handleApprove = () => {
@@ -158,8 +170,14 @@ export default function InterviewTranslationPage() {
       </Notice>
 
       {currentStep === 'input' && (
-        <Card className={styles.inputCard}>
-          <h2 className={styles.sectionTitle}>{t('tools.interviewTranslation.steps.input')}</h2>
+        <>
+          {translateError && (
+            <Notice variant="danger" title={t('common.status.failed')}>
+              {t('tools.interviewTranslation.error.message')}
+            </Notice>
+          )}
+          <Card className={styles.inputCard}>
+            <h2 className={styles.sectionTitle}>{t('tools.interviewTranslation.steps.input')}</h2>
 
           <div className={styles.formGroup}>
             <label htmlFor="selectInterview">{t('tools.interviewTranslation.selectInterview')}</label>
@@ -224,6 +242,7 @@ export default function InterviewTranslationPage() {
             </Button>
           </div>
         </Card>
+        </>
       )}
 
       {currentStep === 'generating' && (

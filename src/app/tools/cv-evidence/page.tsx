@@ -18,6 +18,7 @@ export default function CVEvidencePage() {
   const [selectedCandidateId, setSelectedCandidateId] = useState<string>('');
   const [selectedSection, setSelectedSection] = useState<SectionKey>('education');
   const [isLoading, setIsLoading] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const [cvEvidence, setCVEvidence] = useState<CVEvidenceExtraction | null>(null);
 
   // Candidate options for dropdown
@@ -32,8 +33,8 @@ export default function CVEvidencePage() {
     let cancelled = false;
 
     const loadCVEvidence = async () => {
+      if (!cancelled) setLoadError(false);
       if (!selectedCandidateId) {
-        await Promise.resolve();
         if (!cancelled) setCVEvidence(null);
         return;
       }
@@ -47,8 +48,12 @@ export default function CVEvidencePage() {
         // Find matching mock evidence
         const evidence = mockCVEvidence.find((e) => e.candidateId === selectedCandidateId);
         setCVEvidence(evidence || null);
-      } catch {
-        if (!cancelled) setCVEvidence(null);
+      } catch (error) {
+        console.warn('Failed to load CV evidence:', error);
+        if (!cancelled) {
+          setCVEvidence(null);
+          setLoadError(true);
+        }
       } finally {
         if (!cancelled) setIsLoading(false);
       }
@@ -219,6 +224,12 @@ export default function CVEvidencePage() {
       <Notice variant="info" title={t('tools.cvEvidence.sourceOfTruthTitle')}>
         {t('tools.cvEvidence.sourceOfTruthDesc')}
       </Notice>
+
+      {loadError && (
+        <Notice variant="danger" title={t('common.error')}>
+          {t('tools.cvEvidence.loadError')}
+        </Notice>
+      )}
 
       {isLoading ? (
         <LoadingState />

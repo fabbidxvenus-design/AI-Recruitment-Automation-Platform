@@ -98,10 +98,12 @@ export default function ScheduleApprovalPage() {
             <CardContent>
               <div className={styles.slotItems}>
                 {pendingSlots.map(slot => (
-                  <div
+                  <button
                     key={slot.id}
+                    type="button"
                     className={`${styles.slotItem} ${selectedSlot === slot.id ? styles.selected : ''}`}
                     onClick={() => setSelectedSlot(slot.id)}
+                    aria-pressed={selectedSlot === slot.id}
                   >
                     <div className={styles.slotHeader}>
                       <span className={styles.candidateName}>{slot.candidateName}</span>
@@ -109,23 +111,23 @@ export default function ScheduleApprovalPage() {
                     </div>
                     <div className={styles.slotDetails}>
                       <div className={styles.slotDetail}>
-                        <span className={styles.detailIcon}>📋</span>
+                        <span className={styles.detailIcon} aria-hidden="true">📋</span>
                         <span>{slot.interviewType}</span>
                       </div>
                       <div className={styles.slotDetail}>
-                        <span className={styles.detailIcon}>👤</span>
+                        <span className={styles.detailIcon} aria-hidden="true">👤</span>
                         <span>{slot.interviewerName}</span>
                       </div>
                       <div className={styles.slotDetail}>
-                        <span className={styles.detailIcon}>📅</span>
+                        <span className={styles.detailIcon} aria-hidden="true">📅</span>
                         <span>{formatDate(slot.scheduledAt)}</span>
                       </div>
                       <div className={styles.slotDetail}>
-                        <span className={styles.detailIcon}>⏰</span>
+                        <span className={styles.detailIcon} aria-hidden="true">⏰</span>
                         <span>{formatTime(slot.scheduledAt)} ({slot.duration} {t('interviews.scheduleApproval.suggestedSlots.minDuration')})</span>
                       </div>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             </CardContent>
@@ -188,15 +190,15 @@ export default function ScheduleApprovalPage() {
                     <h3 className={styles.sectionTitle}>{t('interviews.scheduleApproval.detail.availability')}</h3>
                     <div className={styles.availabilityList}>
                       <div className={styles.availabilityItem}>
-                        <span className={styles.availabilityIcon}>✓</span>
+                        <span className={styles.availabilityIcon} aria-hidden="true">✓</span>
                         <span>{t('interviews.scheduleApproval.detail.candidateConfirmed')}</span>
                       </div>
                       <div className={styles.availabilityItem}>
-                        <span className={styles.availabilityIcon}>✓</span>
+                        <span className={styles.availabilityIcon} aria-hidden="true">✓</span>
                         <span>{t('interviews.scheduleApproval.detail.interviewerFree')}</span>
                       </div>
                       <div className={styles.availabilityItem}>
-                        <span className={styles.availabilityIcon}>✓</span>
+                        <span className={styles.availabilityIcon} aria-hidden="true">✓</span>
                         <span>{t('interviews.scheduleApproval.detail.withinWorkingHours')}</span>
                       </div>
                     </div>
@@ -245,7 +247,7 @@ export default function ScheduleApprovalPage() {
             <Card>
               <CardContent>
                 <div className={styles.emptyState}>
-                  <span className={styles.emptyIcon}>📅</span>
+                  <span className={styles.emptyIcon} aria-hidden="true">📅</span>
                   <p>{t('interviews.scheduleApproval.empty.selectToReview')}</p>
                 </div>
               </CardContent>

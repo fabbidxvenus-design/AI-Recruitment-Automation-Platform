@@ -29,6 +29,7 @@ export default function ContentGenerationPage() {
   const [publishingChannel, setPublishingChannel] = useState<string | null>(null);
   const [publishedChannels, setPublishedChannels] = useState<Record<string, string>>({});
   const [lastPublishedChannel, setLastPublishedChannel] = useState<string | null>(null);
+  const [generationError, setGenerationError] = useState(false);
 
   const mockHistory: ApprovalHistoryEntry[] = [
     {
@@ -134,7 +135,8 @@ export default function ContentGenerationPage() {
       setSelectedVariantId(result.variants[0].id);
       setEditedContent(result.variants[0].content);
       setCurrentStep('review');
-    } catch (error) {
+    } catch {
+      setGenerationError(true);
       setCurrentStep('brief');
     }
   };
@@ -235,8 +237,14 @@ export default function ContentGenerationPage() {
       </Notice>
 
       {currentStep === 'brief' && (
-        <Card className={styles.briefCard}>
-          <h2 className={styles.sectionTitle}>{t('tools.contentGeneration.steps.input.title')}</h2>
+        <>
+          {generationError && (
+            <Notice variant="danger" title={t('common.status.failed')}>
+              {t('tools.contentGeneration.error.message')}
+            </Notice>
+          )}
+          <Card className={styles.briefCard}>
+            <h2 className={styles.sectionTitle}>{t('tools.contentGeneration.steps.input.title')}</h2>
           <p className={styles.stepDescription}>{t('tools.contentGeneration.steps.input.description')}</p>
 
           <div className={styles.formGroup}>
@@ -337,6 +345,7 @@ export default function ContentGenerationPage() {
             </Button>
           </div>
         </Card>
+        </>
       )}
 
       {currentStep === 'generating' && (

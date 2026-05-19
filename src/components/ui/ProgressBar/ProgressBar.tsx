@@ -1,4 +1,7 @@
+'use client';
+
 import { useTranslation } from 'react-i18next';
+import { useId } from 'react';
 import styles from './ProgressBar.module.css';
 
 type ProgressVariant = 'default' | 'success' | 'warning' | 'danger' | 'info';
@@ -25,25 +28,27 @@ export function ProgressBar({
 }: ProgressBarProps) {
   const { t } = useTranslation();
   const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
+  const labelId = useId();
 
   return (
-    <div
-      className={`${styles.progressWrapper} ${styles[size]}`}
-      role="progressbar"
-      aria-valuenow={value}
-      aria-valuemin={0}
-      aria-valuemax={max}
-      aria-label={label ?? t('common.progressLabel', { value: Math.round(percentage) })}
-    >
+    <div className={`${styles.progressWrapper} ${styles[size]}`}>
       {(label || showValue) && (
-        <div className={styles.progressLabel}>
+        <div className={styles.progressLabel} id={labelId}>
           {label && <span className={styles.progressLabelText}>{label}</span>}
           {showValue && (
             <span className={styles.progressValue}>{Math.round(percentage)}%</span>
           )}
         </div>
       )}
-      <div className={styles.progressTrack}>
+      <div
+        className={styles.progressTrack}
+        role="progressbar"
+        aria-valuenow={value}
+        aria-valuemin={0}
+        aria-valuemax={max}
+        aria-labelledby={(label || showValue) ? labelId : undefined}
+        aria-label={(label || showValue) ? undefined : (label ?? t('common.progressLabel', { value: Math.round(percentage) }))}
+      >
         <div
           className={`${styles.progressBar} ${styles[variant]} ${striped ? styles.striped : ''}`}
           style={{ width: `${percentage}%` }}

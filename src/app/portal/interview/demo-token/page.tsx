@@ -25,7 +25,15 @@ export default function InterviewPage() {
 
   const questionRef = useRef<HTMLHeadingElement>(null);
 
-  const [session, setSession] = useState(() => resolveInterviewSessionForActivePlan());
+  const [session, setSession] = useState(() => {
+    try {
+      return resolveInterviewSessionForActivePlan();
+    } catch {
+      // Fallback with proper type
+      const fallbackSession = resolveInterviewSessionForActivePlan();
+      return fallbackSession;
+    }
+  });
   const currentQuestion = session.questions[currentQuestionIndex];
   const assessmentTraceability = session.assessmentTraceability;
   const progress = ((currentQuestionIndex + (answers[currentQuestion.id] ? 1 : 0)) / session.questions.length) * 100;
@@ -241,7 +249,7 @@ export default function InterviewPage() {
           <div
             className={`${styles.deadline} ${!prefersReducedMotion ? styles.animate : ''}`}
             role="timer"
-            aria-live={prefersReducedMotion ? 'off' : 'polite'}
+            aria-live='off'
             aria-label={`Time remaining: ${timeRemaining}`}
           >
             <span className={styles.deadlineIcon} aria-hidden="true">⏱️</span>
@@ -342,6 +350,7 @@ export default function InterviewPage() {
             variant="ghost"
             onClick={handlePrev}
             disabled={currentQuestionIndex === 0}
+            aria-disabled={currentQuestionIndex === 0}
             aria-label="Go to previous question"
           >
             {t('portal.interview.navigation.previous')}
@@ -360,6 +369,7 @@ export default function InterviewPage() {
               variant="primary"
               onClick={handleNext}
               disabled={!answers[currentQuestion.id]}
+              aria-disabled={!answers[currentQuestion.id]}
               aria-label="Go to next question"
             >
               {t('portal.interview.navigation.next')}
@@ -369,6 +379,7 @@ export default function InterviewPage() {
               variant="primary"
               onClick={handleSubmit}
               disabled={!answers[currentQuestion.id] || Object.keys(answers).length < session.questions.length}
+              aria-disabled={!answers[currentQuestion.id] || Object.keys(answers).length < session.questions.length}
               aria-label="Submit interview"
             >
               {t('portal.interview.navigation.submit')}
